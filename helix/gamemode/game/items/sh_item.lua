@@ -286,6 +286,28 @@ if SERVER then
 		query:Execute()
 	end
 
+	function Item:LoadToInventory(id, inventory, itemCallback, callback)
+		if !id then
+			return
+		end
+		
+		self:LoadInstanceByID(id, function(item)
+			if item.inventory_id then
+				return
+			end
+
+			if !item.inventory_type or (inventory.type != item.inventory_type) then
+				return
+			end
+
+			if itemCallback then
+				itemCallback(item, inventory)
+			end
+			
+			inventory:AddItem(item, item.x, item.y, nil, true)
+		end, callback)
+	end
+
 	function Item:LoadInstanceCount()
 		local query = mysql:Select("ix_items")
 			query:Select("item_id")
@@ -310,8 +332,8 @@ if SERVER then
 
 			if item then
 				item.data = istable(itemData) and table.Copy(itemData) or {}
-				item.characterID = characterID
-				item.playerID = playerID
+				item.characterID = characterID or 0
+				item.playerID = playerID or 0
 				item.mark_as_save = true
 				
 				if item.OnInstanced then

@@ -13,3 +13,4 @@ ITEM.iconCam = {
 ITEM.stats.container = false
 ITEM.stats.hunger = 8
 ITEM.stats.uses = 2
+ITEM.stats.noExpire = true

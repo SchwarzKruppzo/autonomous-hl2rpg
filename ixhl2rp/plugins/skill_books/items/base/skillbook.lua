@@ -63,7 +63,7 @@ do
 			return false
 		end
 
-		if self:Alive() and !IsValid(self.ixRagdoll) and self:GetCharacter() == character and !self:IsUnconscious() then
+		if self:Alive() and !IsValid(self.ixRagdoll) and self:GetCharacter() == character then --and !self:IsUnconscious() then
 			return true
 		end
 	end

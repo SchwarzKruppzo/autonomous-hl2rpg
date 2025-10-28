@@ -664,7 +664,7 @@ function GM:PostDrawHUD()
 	cam.Start2D()
 		ix.hud.DrawAll(true)
 
-		if (!IsValid(ix.gui.characterMenu) or ix.gui.characterMenu:IsClosing()) then
+		if !IsValid(ix.gui.characterMenu) or ix.gui.characterMenu:IsClosing() then
 			ix.bar.DrawAction()
 		end
 	cam.End2D()
@@ -719,6 +719,19 @@ function GM:PopulateImportantCharacterInfo(client, character, container)
 end
 
 function GM:PopulateCharacterInfo(client, character, container)
+	local genetic = character:Genetic()
+	local genText = ""
+
+	if genetic then
+		genText = genetic:GetDesc(true)
+	end
+
+	if genText != "" then
+		local description = container:AddRow("genetic")
+		description:SetText(genText)
+		description:SizeToContents()
+	end
+
 	-- description
 	local maxLen = ix.config.Get("descriptionDisplayLength", 256)
 	local descriptionText = character:GetDescription()
@@ -809,7 +822,7 @@ function GM:ShowEntityMenu(entity)
 	local options = entity:GetEntityMenu(LocalPlayer())
 
 	if (istable(options) and !table.IsEmpty(options)) then
-		ix.menu.Open(options, entity)
+		ix.menu.Open(options, entity, true)
 	end
 end
 

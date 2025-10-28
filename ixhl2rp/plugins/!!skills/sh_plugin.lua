@@ -222,14 +222,14 @@ do
 					local count = 0
 
 					for _, v in pairs(value) do
-						count = count + v + -1
+						count = count + v
 					end
 
 					local defaulSpecialPoints = hook.Run("GetDefaultSpecialPoints", client, data)
-
+/*
 					if faction.defaultLevel then
 						defaulSpecialPoints = 5 + (5 * math.min(faction.defaultLevel, 5)) + (1 * math.max(faction.defaultLevel - 5, 0))
-					end
+					end*/
 
 					if (count < defaulSpecialPoints) then
 						return false, "Вы должны потратить все очки SPECIAL!"
@@ -272,11 +272,56 @@ do
 				end
 			end
 		end,
+		OnRestore = function(self, value)
+			if istable(value) then
+				for k, v in pairs(ix.skills.list) do
+					value[k] = value[k] or v:OnDefault()
+				end
+
+				return value
+			end
+		end
+	})
+
+	ix.char.RegisterVar("skillPoints", {
+		field = "skillpoints",
+		fieldType = ix.type.number,
+		default = 0,
+		isLocal = true,
+		Net = {
+			Transmit = ix.transmit.owner,
+			Write = function(character, value)
+				net.WriteInt(value, 10)
+			end,
+			Read = function(character)
+				return net.ReadInt(10)
+			end
+		},
+		bNoDisplay = true
+	})
+
+	ix.char.RegisterVar("skillMemory", {
+		field = "memory",
+		fieldType = ix.type.number,
+		default = 750,
+		isLocal = true,
+		Net = {
+			Transmit = ix.transmit.owner,
+			Write = function(character, value)
+				net.WriteUInt(value, 12)
+			end,
+			Read = function(character)
+				return net.ReadUInt(12)
+			end
+		},
+		bNoDisplay = true
 	})
 end
 
-function PLUGIN:GetDefaultSpecialPoints()
-	return 10
+function PLUGIN:GetDefaultSpecialPoints(client, payload)
+	local levelSystem = ix.plugin.list["!!levelsystem"]
+
+	return levelSystem.PointsTable and levelSystem.PointsTable[1] or 0
 end
 
 function PLUGIN:CharacterSkillUpdated(client, character, skillID, isIncreased)
@@ -318,325 +363,6 @@ ix.chat.Register("statroll", {
 	end
 })
 
-
-if SERVER then
-	util.AddNetworkString("ixLevelPatch")
-	util.AddNetworkString("ixLevelUp")
-
-	local TIME_PATCH = 1617188178
-	local TIME_PATCH2 = 1617191206
-
-	function PLUGIN:CharacterLoaded(character)
-		if !character:GetPlayer():IsBot() then
-			if tonumber(character:GetCreateTime()) <= TIME_PATCH then
-				if character:GetData("patch14") then
-					return
-				end
-
-				net.Start("ixLevelPatch")
-				net.Send(character:GetPlayer())
-			end
-
-			if tonumber(character:GetCreateTime()) <= TIME_PATCH2 then
-				character:SetBleeding(false)
-			end
-		end
-	end
-
-	function PLUGIN:CharacterRestored(character)
-		local skills = character:GetSkills({})
-		local updateNewSkills = false
-
-		for k, v in pairs(ix.skills.list) do
-			if skills[k] then continue end
-
-			skills[k] = v:OnDefault()
-			updateNewSkills = true
-		end
-
-		if updateNewSkills then
-			character:SetSkills(skills)
-		end
-	end
-
-	local function CalcAthleticsSpeed(athletics)
-		return 1 + (athletics * 0.1) * 0.25
-	end
-	net.Receive("ixLevelPatch", function(len, ply)
-		local character = ply:GetCharacter()
-
-		if tonumber(character:GetCreateTime()) > TIME_PATCH then
-			return
-		end
-
-		if character:GetData("patch14") then
-			return
-		end
-
-		local specials = net.ReadTable()
-		local lvl = character:GetLevel()
-		local pointsmax = 5 + (5 * math.min(lvl, 5)) + (1 * math.max(lvl - 5, 0))
-
-		if istable(value) then
-			local count = 0
-
-			for _, v in pairs(value) do
-				count = count + v + -1
-			end
-
-			if count < pointsmax then
-				print("Error")
-				return
-			end
-		end
-
-		character:SetData("patch14", true)
-		character:SetSpecials(specials)
-
-		local skills = character:GetSkills()
-
-		for k, v in pairs(skills) do
-			skills[k][1] = math.Clamp(math.floor(10 * ((skills[k][1] or 0) / 100)), 0, 10)
-		end
-
-		character:SetSkills(skills)
-		character:SetBleeding(false)
-		ply:SetRunSpeed(ix.config.Get("runSpeed") * CalcAthleticsSpeed(character:GetSkillModified("athletics")))
-		ply:SetJumpPower(160 * (1 + math.min(math.Remap(character:GetSkillModified("acrobatics"), 0, 10, 0, 0.75), 0.75)))
-	end)
-else
-	local function CalculateWidestName(tbl)
-		local highest = 0
-		do
-			local highs = {}
-			for k, v in pairs(tbl) do
-				surface.SetFont("ixAttributesFont")
-				local w1 = surface.GetTextSize(L(v.name))
-				highs[#highs+1] = w1
-
-				highest = math.max(unpack(highs))
-			end
-		end
-
-		return highest
-	end
-
-	local function OpenSpecials(container, specials, pointsmax, default)
-		local stats = container:Add("ixStatsPanel")
-		stats:Dock(TOP)
-		local y
-		local total = 0
-		local totalBar = stats:Add("ixAttributeBar")
-		totalBar:SetMax(pointsmax)
-		totalBar:SetValue(pointsmax)
-		totalBar:Dock(TOP)
-		totalBar:DockMargin(2, 2, 2, 2)
-		totalBar:SetText(L("attribPointsLeft"))
-		totalBar:SetReadOnly(true)
-		totalBar:SetColor(Color(20, 120, 20, 255))
-
-		y = totalBar:GetTall() + 4
-
-		stats.attributes = stats:Add("ixStatsPanelCategory")
-		stats.attributes:SetText(L("attributes"):upper())
-		stats.attributes:Dock(FILL)
-
-		local w1 = CalculateWidestName(ix.specials.list)
-
-		stats.attributes.offset = w1 * 1.75
-		stats.attributes:SetWide(w1 * 2.75)
-
-		local values = {}
-		local oldValues = {}
-		for k, v in SortedPairsByMemberValue(ix.specials.list, "weight") do
-			specials[k] = default and 1 or LocalPlayer():GetCharacter():GetSpecial(k)
-			oldValues[k] = specials[k]
-			values[k] = values[k] or 0
-			
-			local bar = stats.attributes:Add("ixStatBar")
-			bar:Dock(TOP)
-
-			if !bFirst then
-				bar:DockMargin(4, 1, 0, 0)
-			else
-				bar:DockMargin(4, 0, 0, 0)
-				bFirst = false
-			end
-
-			bar:SetValue(specials[k])
-
-			local maximum = v.maxValue or 10
-			bar:SetMax(maximum)
-			bar:SetText(L(v.name), Format("%i/%i", specials[k], maximum))
-			bar:SetDesc(L(v.description))
-			bar.OnChanged = function(this, difference)
-				total = 0
-				for k, v in pairs(values) do
-					total = total + v
-				end
-
-				if (values[k] + difference) >= 0 and (total + difference) <= pointsmax and (total + difference) >= 0 then
-					values[k] = values[k] + difference
-
-					total = 0
-					for k, v in pairs(values) do
-						total = total + v
-					end
-				else
-					return false
-				end
-
-				specials[k] = oldValues[k] + values[k]
-
-				this:SetText(L(v.name), Format("%i/%i", specials[k], maximum))
-				totalBar:SetValue(pointsmax - total)
-			end
-		end
-
-		stats.attributes:SizeToContents()
-
-		stats:SizeToContents()
-	end
-
-	local color_green = Color(0, 255, 0)
-	local function OpenBackward()
-		if IsValid(ix.gui.patchfix1) then
-			ix.gui.patchfix1:Remove()
-		end
-
-		local w, h = ScrW(), ScrH()
-		w = math.max(w * 0.6, h * 0.7)
-		h = h * 0.5
-
-		local frame = vgui.Create("DFrame")
-		frame:SetTitle(L"skillPatchTitle")
-		frame:SetDraggable(false)
-		frame:SetSize(w, h)
-		frame:MakePopup()
-		frame:Center()
-		frame:ShowCloseButton(false)
-		frame.OnClose = function(self)
-			ix.gui.patchfix1 = nil
-		end
-
-		local specials = {}
-
-		local label = frame:Add("DLabel")
-		label:SetFont("ixMenuButtonHugeFont")
-		label:SetTextColor(ix.config.Get("color"))
-		label:SetText("Перераспределение очков")
-		label:SizeToContents()
-		label:Dock(TOP)
-		label:DockMargin(10, 0, 0, 0)
-
-		local label = frame:Add("DLabel")
-		label:SetFont("ixSmallTitleFont")
-		label:SetTextColor(color_white)
-		label:SetAutoStretchVertical(true)
-		label:SetWrap(true)
-		label:SetText("В связи с обновлением характеристик и навыков, Вам необходимо заного перераспределить очки характеристик персонажа.")
-		label:SizeToContents()
-		label:Dock(TOP)
-		label:DockMargin(0, 0, 0, 0)
-
-		local container = frame:Add("DScrollPanel")
-		container:Dock(FILL)
-
-		local accept = frame:Add("DButton")
-		accept:SetFont("ixMenuButtonLabelFont")
-		accept:SetText(L"skillPatchApply")
-		accept:SetTextColor(color_green)
-		accept:SetTall(48)
-		accept:Dock(BOTTOM)
-		accept.DoClick = function(self)
-			net.Start("ixLevelPatch")
-				net.WriteTable(specials or {})
-			net.SendToServer()
-
-			frame:Close()
-		end
-
-		local lvl = LocalPlayer():GetCharacter():GetLevel()
-		local pointsmax = 5 + (5 * math.min(lvl, 5)) + (1 * math.max(lvl - 5, 0))
-
-		OpenSpecials(container, specials, pointsmax, true)
-
-		ix.gui.patchfix1 = frame
-	end
-
-	local function OpenLevelUp()
-		if IsValid(ix.gui.levelup) then
-			ix.gui.levelup:Remove()
-		end
-
-		local lvl = LocalPlayer():GetCharacter():GetLevel()
-		local pointsmax = 6 + (5 + (5 * math.min(lvl, 5)) + (1 * math.max(lvl - 5, 0)))
-
-		for k, v in pairs(ix.specials.list) do
-			pointsmax = pointsmax - LocalPlayer():GetCharacter():GetSpecial(k)
-		end
-
-		local w, h = ScrW(), ScrH()
-		w = math.max(w * 0.6, h * 0.7)
-		h = h * 0.5
-
-		local frame = vgui.Create("DFrame")
-		frame:SetTitle(L"skillPatchTitle")
-		frame:SetDraggable(false)
-		frame:SetSize(w, h)
-		frame:MakePopup()
-		frame:Center()
-		frame:ShowCloseButton(false)
-		frame.OnClose = function(self)
-			ix.gui.levelup = nil
-		end
-
-		local specials = {}
-
-		local label = frame:Add("DLabel")
-		label:SetFont("ixMenuButtonHugeFont")
-		label:SetTextColor(ix.config.Get("color"))
-		label:SetText("Повышение уровня")
-		label:SizeToContents()
-		label:Dock(TOP)
-		label:DockMargin(10, 0, 0, 0)
-
-		local label = frame:Add("DLabel")
-		label:SetFont("ixSmallTitleFont")
-		label:SetTextColor(color_white)
-		label:SetAutoStretchVertical(true)
-		label:SetWrap(true)
-		label:SetText("Ваш уровень был повышен! Распределите "..pointsmax.." очков характеристик.")
-		label:SizeToContents()
-		label:Dock(TOP)
-		label:DockMargin(0, 0, 0, 0)
-
-		local container = frame:Add("DScrollPanel")
-		container:Dock(FILL)
-
-		local accept = frame:Add("DButton")
-		accept:SetFont("ixMenuButtonLabelFont")
-		accept:SetText(L"skillPatchApply")
-		accept:SetTextColor(color_green)
-		accept:SetTall(48)
-		accept:Dock(BOTTOM)
-		accept.DoClick = function(self)
-			net.Start("ixLevelUp")
-				net.WriteTable(specials or {})
-			net.SendToServer()
-
-			frame:Close()
-		end
-
-		OpenSpecials(container, specials, pointsmax)
-
-		ix.gui.levelup = frame
-	end
-
-	net.Receive("ixLevelUp", OpenLevelUp)
-	net.Receive("ixLevelPatch", OpenBackward)
-end
-
 ix.specials.LoadFromDir(PLUGIN.folder.."/specials")
 ix.skills.LoadFromDir(PLUGIN.folder.."/skills")
 
@@ -646,7 +372,26 @@ function PLUGIN:DoPluginIncludes(path)
 end
 
 function PLUGIN:CharacterMaxStamina(character)
-	return 30 + (12 * character:GetSpecial("en"))
+	local endurance = character:GetSpecial("en")
+	local perPoint = (0.5 * endurance)
+	local PERK = character:HasSpecialLevel("en", 5) and 30 or 0
+
+	if PERK > 0 then -- DO PERK SYSTEM WITH CACHING, not this mess
+		local LVL25 = character:HasSpecialLevel("en", 25) and 15 or 0
+		PERK = PERK + LVL25
+
+		if LVL25 > 0 then
+			local LVL50 = character:HasSpecialLevel("en", 50) and 25 or 0
+			PERK = PERK + LVL50
+
+			if LVL50 > 0 then
+				local LVL75 = character:HasSpecialLevel("en", 75) and 15 or 0
+				PERK = PERK + LVL75
+			end
+		end
+	end
+
+	return 40 + PERK + perPoint
 end
 
 -- Athletics Skill Related code

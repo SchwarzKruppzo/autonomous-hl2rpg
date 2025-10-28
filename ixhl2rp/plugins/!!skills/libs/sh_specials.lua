@@ -32,6 +32,16 @@ function ix.specials.Setup(client)
 	end
 end
 
+function ix.specials.ParseBonus(info)
+	local text = ""
+
+	for k, v in pairs(info) do
+		text = text .. "<font=autonomous.hint.infobig><colour=0,255,255>"..v.level..": </colour></font>" .. "<font=autonomous.hint.info><colour=210,240,250>"..v.bonus.."</colour></font>\n"
+	end
+
+	return text
+end
+
 do
 	local charMeta = ix.meta.character
 
@@ -138,15 +148,28 @@ do
 	end
 
 	function charMeta:GetSpecial(key, default)
-		local att = self:GetSpecials()[key] or default
-		local boosts = self:GetSpecialBoosts()[key]
+		default = default or 1
 
-		if (boosts) then
-			for _, v in pairs(boosts) do
-				att = att + v
+		local specials = self:GetSpecials() or {}
+		local boosts =  self:GetSpecialBoosts() or {}
+
+		local stat = specials[key] or default
+		local boost = boosts[key]
+
+		local isPrimary = self:GetPrimaryStat(key) or false
+
+		if boost then
+			for _, v in pairs(boost) do
+				stat = stat + v
 			end
 		end
 
-		return att
+		stat = 1 + math.max(isPrimary and stat or math.floor(stat / 4), 0)
+
+		return stat
+	end
+
+	function charMeta:HasSpecialLevel(key, value)
+		return self:GetSpecial(key) >= value
 	end
 end

@@ -1,7 +1,7 @@
 ITEM.name = "MK3A2"
 ITEM.description = "Осколочная граната, оснащенная предупредительным сигналом, повсеместно используется силами Надзора и представляет из себя модификацию земного предшественника — MK3A1."
 ITEM.model = "models/items/grenadeammo.mdl"
-ITEM.class = "weapon_frag"
+ITEM.class = "cellar_hl2_grenade"
 ITEM.weaponCategory = "grenade"
 ITEM.isGrenade = true
 ITEM.rarity = 2

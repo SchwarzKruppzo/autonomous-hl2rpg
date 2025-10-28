@@ -46,7 +46,8 @@ function ix.plugin.Load(uniqueID, path, isSingleFile, variable)
 		ix.class.LoadFromDir(path.."/classes")
 		ix.Item:LoadFromDir(path.."/items")
 		ix.plugin.LoadFromDir(path.."/plugins")
-		ix.util.IncludeDir(path.."/derma", true)
+		ix.util.IncludeDir(path.."/derma", true, "client")
+		ix.util.IncludeDir(path.."/ui", true, "client")
 		ix.plugin.LoadEntities(path.."/entities")
 
 		hook.Run("DoPluginIncludes", path, PLUGIN)
@@ -83,7 +84,7 @@ function ix.plugin.Load(uniqueID, path, isSingleFile, variable)
 		end
 
 		ix.plugin.list[uniqueID] = PLUGIN
-		_G[variable] = nil
+		_G[variable] = oldPlugin
 	end
 
 	if (PLUGIN.OnLoaded) then
@@ -244,7 +245,9 @@ function ix.plugin.LoadEntities(path)
 end
 
 function ix.plugin.Initialize()
-	ix.plugin.unloaded = ix.data.Get("unloaded", {}, true, true)
+	if SERVER then
+		ix.plugin.unloaded = ix.data.Get("unloaded", {}, true, true)
+	end
 
 	ix.plugin.LoadFromDir("helix/plugins")
 
@@ -281,7 +284,7 @@ function ix.plugin.SetUnloaded(uniqueID, state, bNoSave)
 
 		ix.plugin.unloaded[uniqueID] = true
 	elseif (ix.plugin.unloaded[uniqueID]) then
-		ix.plugin.unloaded[uniqueID] = nil
+		ix.plugin.unloaded[uniqueID] = false
 	else
 		return false
 	end

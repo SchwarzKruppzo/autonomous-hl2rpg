@@ -13,6 +13,16 @@ function ENT:SetupDataTables()
 	end
 end
 
+function ENT:HasTag(tag)
+	if self.uniqueID == tag then
+		return true
+	end
+	
+	if istable(self.Tags) then
+		return table.HasValue(tag)
+	end
+end
+
 if SERVER then
 	util.AddNetworkString("ixOpenStationCraft")
 
@@ -43,6 +53,14 @@ if SERVER then
 		inventory.owner = self
 
 		self.inventory = inventory
+	end
+
+	function ENT:LoadItems(items)
+		if istable(items) then
+			local inventory = ix.Inventory:Get(self.inventory.id)
+			
+			ix.Item:LoadToInventory(items, inventory)
+		end
 	end
 
 	function ENT:OnVarChanged(name, oldID, newID)

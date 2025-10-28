@@ -12,30 +12,23 @@ ITEM.iconCam = {
 	fov = 3.5272163345147,
 }
 function ITEM:OnConsume(player, injector, mul, character)
-	local healedLimbs = 0
-	local limbs = character:GetLimbData()
-	for k, v in pairs(limbs) do
-		healedLimbs = healedLimbs + (10 - math.max(10 - v, 0))
+	local fractures = {}
+	local health = character:Health()
+	for k, v in health:GetHediffs() do
+		if !v.isFracture then continue end
+		if v.tended_time != -1 then continue end
+	
+		fractures[#fractures + 1] = {diff = v, severity = v.severity}
+	end
+	
+	local healed = 0
+	if #fractures > 0 then
+		table.sort(fractures, function(a, b) return a.severity > b.severity end)
+
+		local fracture = fractures[1]
+		healed = fracture.severity
+		health:TendHediff(fracture.diff, (30 * 60) * mul)
 	end
 
-	local rightLeg = character:GetLimbDamage(HITGROUP_RIGHTLEG)
-	local leftLeg = character:GetLimbDamage(HITGROUP_LEFTLEG)
-
-	character:HealLimbs(10)
-
-	if rightLeg > 80 then
-		character:HealLimbDamage(HITGROUP_RIGHTLEG, 100)
-
-		healedLimbs = healedLimbs + 20
-	end
-
-	if leftLeg > 80 then
-		character:HealLimbDamage(HITGROUP_LEFTLEG, 100)
-
-		healedLimbs = healedLimbs + 20
-	end
-
-	return {
-		limbs = healedLimbs,
-	}
+	return {limbs = healed}
 end

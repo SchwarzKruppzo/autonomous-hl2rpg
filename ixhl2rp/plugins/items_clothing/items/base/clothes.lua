@@ -38,11 +38,23 @@ function ItemCloth:OnEquipped(client)
 		model = self.genderReplacement[char:GetGender()] or self.genderReplacement[GENDER_MALE]
 	end
 
-	client.char_outfit:AddItem(self, model, self.bodyGroups or {})
+	local bodyGroups = (self.bodyGroups or {})
+
+	if self.GetOutfitBodyGroups then
+		bodyGroups = self:GetOutfitBodyGroups(client)
+	end
+
+	client.char_outfit:AddItem(self, model, bodyGroups)
 	client.char_outfit:Update()
 
 	if self.isGasmask then
 		client.char_outfit.gasmask = self
+	end
+
+	if self.skinGroups then
+		for k, v in pairs(self.skinGroups or {}) do
+			client:SetNWInt("sg_"..k, v)
+		end
 	end
 end
 
@@ -52,6 +64,12 @@ function ItemCloth:OnUnequipped(client)
 
 	if self.isGasmask then
 		client.char_outfit.gasmask = nil
+	end
+
+	if self.skinGroups then
+		for k, v in pairs(self.skinGroups or {}) do
+			client:SetNWInt("sg_"..k, 0)
+		end
 	end
 end
 

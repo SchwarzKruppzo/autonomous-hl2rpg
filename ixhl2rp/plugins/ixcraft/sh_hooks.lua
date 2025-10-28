@@ -30,7 +30,8 @@ function PLUGIN:LoadStations()
 				entity:SetPos(v[2])
 				entity:SetAngles(v[3])
 				entity:Spawn()
-
+				entity:LoadItems(v[4] or {})
+				
 				local physObject = entity:GetPhysicsObject()
 
 				if IsValid(physObject) then
@@ -45,17 +46,21 @@ function PLUGIN:SaveStations()
 	local data = {}
 
 	for _, v in ipairs(ents.FindByClass("ix_station_*")) do
-		
+		local items = {}
+
 		if v.inventory then
 			for z, x in pairs(v.inventory:GetItems() or {}) do
 				x:Save()
 			end
+
+			items = v.inventory:GetItemsID()
 		end
 
 		data[#data + 1] = {
 			v.uniqueID,
 			v:GetPos(),
-			v:GetAngles()
+			v:GetAngles(),
+			items
 		}
 	end
 

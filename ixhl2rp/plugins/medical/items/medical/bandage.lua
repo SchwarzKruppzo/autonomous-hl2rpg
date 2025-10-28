@@ -11,9 +11,28 @@ ITEM.stats.uses = 5
 ITEM.stats.time = 5
 
 function ITEM:OnConsume(player, injector, mul, character)
-	local isBleeding, bleedDmg = character:IsBleeding(), character:GetDmgData().bleedDmg or 0
+	local health = character:Health()
+	local injuries = {}
 
-	character:SetBleeding(false)
+	for k, v in health:GetHediffs() do
+		if v.part == 1 or !v.isInjury then continue end
+		if v.tended_time != -1 then continue end
+		if v.isFracture then continue end
 
-	return {bleed = isBleeding, bleedDmg = bleedDmg}
+		injuries[#injuries + 1] = {diff = v, severity = v.severity}
+	end
+
+	table.sort(injuries, function(a, b) return a.severity > b.severity end)
+
+	local dmg = 0
+	for i = 1, 3 do
+		local injury = injuries[i]
+
+		if injury then
+			dmg = dmg + (injury.severity or 0)
+			health:TendHediff(injury.diff, (10 * 60) * mul)
+		end
+	end
+
+	return {dmg = dmg}
 end

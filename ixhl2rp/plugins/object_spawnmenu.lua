@@ -68,6 +68,35 @@ spawnmenu.AddContentType("ixBed", function(container, data)
 	end
 end)
 
+spawnmenu.AddContentType("ixLoot", function(container, data)
+	local icon = vgui.Create("ContentIcon", container)
+
+	icon:SetContentType("ixItem")
+	icon:SetSpawnName(data[1])
+	icon:SetName(data[1])
+
+	icon.model = vgui.Create("ModelImage", icon)
+	icon.model:SetMouseInputEnabled(false)
+	icon.model:SetKeyboardInputEnabled(false)
+	icon.model:StretchToParent(16, 16, 16, 16)
+	icon.model:SetModel(istable(data[2]) and data[2][1] or data[2], 0, "000000000")
+	icon.model:MoveToBefore(icon.Image)
+
+	function icon:DoClick()
+		net.Start("loot.spawnpoint")
+			net.WriteString(data[3])
+		net.SendToServer()
+		
+		surface.PlaySound("ui/buttonclickrelease.wav")
+	end
+
+	function icon:OpenMenu() end
+
+	if IsValid(container) then
+		container:Add(icon)
+	end
+end)
+
 local function CreateObjectPanel()
 	local base = vgui.Create("SpawnmenuContentPanel")
 	local tree = base.ContentNavBar.Tree
@@ -117,6 +146,30 @@ local function CreateObjectPanel()
 		end
 	end
 	function beds:DoClick()
+		self:DoPopulate()
+		base:SwitchPanel(self.Container)
+	end
+
+	local loots = tree:AddNode("Точки лута", "icon16/heart.png")
+	function loots:DoPopulate()
+		if (self.Container) then return end
+
+		self.Container = vgui.Create("ContentContainer", base)
+		self.Container:SetVisible(false)
+		self.Container:SetTriggerSpawnlistChange(false)
+
+		
+		for id, data in SortedPairsByMemberValue(ix.LootContainer.stored, "Name") do
+			local data = {
+				[1] = data.Name,
+				[2] = data.Model,
+				[3] = id,
+			}
+
+			spawnmenu.CreateContentIcon("ixLoot", self.Container, data)
+		end
+	end
+	function loots:DoClick()
 		self:DoPopulate()
 		base:SwitchPanel(self.Container)
 	end

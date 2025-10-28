@@ -1,4 +1,4 @@
-ITEM.name = "Сэндвич из муравиьного льва"
+ITEM.name = "Сэндвич из муравьиного льва"
 ITEM.description = "Соедините два куска хлеба вместе с куском мяса муравьиного льва между ними, и вы получите сэндвич."
 ITEM.model = "models/foodnhouseholditems/sandwich.mdl"
 ITEM.cost = 20

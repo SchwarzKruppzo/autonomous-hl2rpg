@@ -24,7 +24,7 @@ function PANEL:Init()
 	self:SetTextColor(TEXT_COLOR)
 
 	self:SetContentAlignment(5)
-	self:SetTextInset(32, 0) -- Room for icon on left
+	--self:SetTextInset(32, 0) -- Room for icon on left
 
 end
 
@@ -36,8 +36,45 @@ function PANEL:SetSubMenu(menu)
 		self.SubMenuArrow.Paint = function(panel, w, h) derma.SkinHook("Paint", "MenuRightArrow", panel, w, h) end
 	end
 end
-function PANEL:SetImage( img )
+
+function PANEL:SetImage(img)
+	if !img then
+		if IsValid(self.img) then
+			self.img:Remove()
+		end
+
+		return
+	end
+
+	if !IsValid(self.img) then
+		self.img = self:Add("DImage")
+	end
+
+	self.img:SetImage(img)
+	self.img:SizeToContents()
+
+	self:InvalidateLayout()
 end
+
+function PANEL:SetMaterial(img)
+	if !img then
+		if IsValid(self.img) then
+			self.img:Remove()
+		end
+
+		return
+	end
+
+	if !IsValid(self.img) then
+		self.img = self:Add("DImage")
+	end
+
+	self.img:SetImage(img)
+	self.img:SizeToContents()
+
+	self:InvalidateLayout()
+end
+
 function PANEL:AddSubMenu()
 	local SubMenu = ix.SimpleMenu(true, self)
 	SubMenu:SetVisible(false)
@@ -113,6 +150,24 @@ function PANEL:DoClickInternal()
 	end
 end
 
+function PANEL:PerformLayoutImage()
+	if IsValid(self.img) then
+		local targetSize = math.min(self:GetWide() - 4, self:GetTall() - 4)
+
+		local imgW, imgH = self.img.ActualWidth, self.img.ActualHeight
+		local zoom = math.min(targetSize / imgW, targetSize / imgH, 1)
+		local newSizeX = math.ceil(imgW * zoom)
+		local newSizeY = math.ceil(imgH * zoom)
+
+		self.img:SetWide(newSizeX)
+		self.img:SetTall(newSizeY)
+
+		self.img:SetPos(OPTION_HEIGHT * 0.3 + 2, (self:GetTall() - self.img:GetTall()) * 0.5)
+
+		self:SetTextInset(32, 0)
+	end
+end
+
 function PANEL:PerformLayout(w, h)
 	self:SizeToContents()
 	self:SetWide(self:GetWide() + 30)
@@ -127,8 +182,11 @@ function PANEL:PerformLayout(w, h)
 		self.SubMenuArrow:AlignRight(4)
 	end
 
+	self:PerformLayoutImage()
+
 	DButton.PerformLayout(self, w, h)
 end
+
 vgui.Register('simple.option.button', PANEL, 'DButton')
 
 

@@ -14,3 +14,4 @@ ITEM.stats.container = true
 ITEM.stats.thirst = -2
 ITEM.stats.hunger = 8
 ITEM.stats.uses = 5
+ITEM.stats.expireTime = 172800 -- 2 days

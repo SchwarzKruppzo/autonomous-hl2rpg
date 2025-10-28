@@ -31,15 +31,42 @@ if (CLIENT) then
 	-- @tparam MenuOptionsStructure options Data describing what options to display
 	-- @entity[opt] entity Entity to send commands to
 	-- @treturn boolean Whether or not the menu opened successfully. It will fail when there is already a menu open.
-	function ix.menu.Open(options, entity)
-		if (IsValid(ix.menu.panel)) then
-			return false
+	function ix.menu.Open(options, entity, center)
+		local menu = ix.SimpleMenu()
+		menu.ent = entity
+
+		for name, func in pairs(options) do
+			menu:AddOption(name, func)
 		end
 
-		local panel = vgui.Create("ixEntityMenu")
-		panel:SetEntity(entity)
-		panel:SetOptions(options)
+		if center then
+			menu:Open(ScrW() / 2, ScrH() / 2)
+		else
+			menu:Open()
+		end
 
+		if entity then
+			menu.Think = function(this)
+				cam.Start3D()
+				cam.End3D()
+
+				if !IsValid(this.ent) then
+					this:Remove()
+					
+					ix.gui.entityMenu = nil
+					return
+				end
+				 
+				local pos = this.ent:GetPos()
+				local screen = pos:ToScreen()
+
+				this:SetPos(screen.x, screen.y)
+			end
+		end
+
+		
+		ix.gui.entityMenu = menu
+		
 		return true
 	end
 

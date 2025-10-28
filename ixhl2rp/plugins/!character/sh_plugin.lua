@@ -5,7 +5,13 @@ PLUGIN.author = "SchwarzKruppzo"
 PLUGIN.description = ""
 
 ix.util.Include("sh_gender.lua")
-//ix.util.Include("sh_humannames.lua")
+ix.util.Include("sh_genetic.class.lua")
+
+ix.NameData = {}
+
+ix.NameData.Female = ix.util.Include("sh_names.female.lua")
+ix.NameData.Male = ix.util.Include("sh_names.male.lua")
+ix.NameData.Last = ix.util.Include("sh_names.last.lua")
 
 do
 	ix.char.RegisterVar("description", {
@@ -205,95 +211,87 @@ do
 		end
 	})
 
-	/*
-	ix.char.RegisterVar("attributes", {
-		field = "attributes",
+	ix.char.RegisterVar("primaryStat", {
+		field = "primarystat",
 		fieldType = ix.type.text,
 		default = {},
-		index = 6,
-		category = "attributes",
 		isLocal = true,
 		Net = {
 			Transmit = ix.transmit.owner
 		},
-		OnDisplay = function(self, container, payload)
-			local maximum = hook.Run("GetDefaultAttributePoints", LocalPlayer(), payload) or ix.config.Get("maxAttributes", 30)
+		OnSet = function(character, value, bool)
+			character.vars.primaryStat = character.vars.primaryStat or {}
 
-			if (maximum < 1) then
-				return
-			end
+			local oldVar = character.vars.primaryStat[value]
 
-			local attributes = container:Add("DPanel")
-			attributes:Dock(TOP)
-
-			local y
-			local total = 0
-
-			payload.attributes = {}
-
-			-- total spendable attribute points
-			local totalBar = attributes:Add("ixAttributeBar")
-			totalBar:SetMax(maximum)
-			totalBar:SetValue(maximum)
-			totalBar:Dock(TOP)
-			totalBar:DockMargin(2, 2, 2, 2)
-			totalBar:SetText(L("attribPointsLeft"))
-			totalBar:SetReadOnly(true)
-			totalBar:SetColor(Color(20, 120, 20, 255))
-
-			y = totalBar:GetTall() + 4
-
-			for k, v in SortedPairsByMemberValue(ix.attributes.list, "name") do
-				payload.attributes[k] = 0
-
-				local bar = attributes:Add("ixAttributeBar")
-				bar:SetMax(maximum)
-				bar:Dock(TOP)
-				bar:DockMargin(2, 2, 2, 2)
-				bar:SetText(L(v.name))
-				bar.OnChanged = function(this, difference)
-					if ((total + difference) > maximum) then
-						return false
-					end
-
-					total = total + difference
-					payload.attributes[k] = payload.attributes[k] + difference
-
-					totalBar:SetValue(totalBar.value - difference)
-				end
-
-				if (v.noStartBonus) then
-					bar:SetReadOnly()
-				end
-
-				y = y + bar:GetTall() + 4
-			end
-
-			attributes:SetTall(y)
-			return attributes
-		end,
-		OnValidate = function(self, value, data, client)
-			if (value != nil) then
-				if (istable(value)) then
-					local count = 0
-
-					for _, v in pairs(value) do
-						count = count + v
-					end
-
-					if (count > (hook.Run("GetDefaultAttributePoints", client, count) or ix.config.Get("maxAttributes", 30))) then
-						return false, "unknownError"
-					end
+			if ix.specials.list[value] then
+				if bool then
+					character.vars.primaryStat[value] = true
 				else
-					return false, "unknownError"
+					character.vars.primaryStat[value] = nil
 				end
+
+				net.Start("CharacterVarChanged")
+					net.WriteUInt(character:GetID(), 32
+						)
+					net.WriteCharVar(character, "primaryStat")
+				net.Send(character.player)
+
+				hook.Run("CharacterVarChanged", character, "primaryStat", oldVar, bool)
 			end
 		end,
-		ShouldDisplay = function(self, container, payload)
-			return false //!table.IsEmpty(ix.attributes.list)
-		end
+		OnGet = function(character, value)
+			character.vars.primaryStat = character.vars.primaryStat or {}
+
+			return character.vars.primaryStat[value]
+		end,
+		OnValidate = function(self, primaryStats, data, client)
+			for k, v in pairs(primaryStats) do
+				if !ix.specials.list[k] then
+					return false
+				end
+			end
+
+			return primaryStats
+		end,
 	})
-	*/
+
+	ix.char.RegisterVar("genetic", {
+		field = "genetic",
+		fieldType = ix.type.string,
+		Meta = ix.meta.GeneticStat,
+		Net = {
+			Transmit = ix.transmit.all
+		},
+		OnValidate = function(self, genetic, data, client)
+			return genetic
+		end,
+	})
+
+	ix.char.RegisterVar("face", {
+		field = "face",
+		fieldType = ix.type.text,
+		default = {},
+		Net = {
+			Transmit = ix.transmit.all,
+			Write = function(character, value)
+				local face = value[1]
+				local hair = value[2]
+
+				net.WriteUInt(value, 4)
+				net.WriteUInt(hair, 4)
+			end,
+			Read = function(character)
+				local face = net.ReadUInt(4)
+				local hair = net.ReadUInt(4)
+
+				return {face, hair}
+			end
+		},
+		OnValidate = function(self, face, data, client)
+			return face
+		end,
+	})
 end
 
 if CLIENT then

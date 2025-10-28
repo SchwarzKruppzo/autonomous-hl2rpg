@@ -15,8 +15,8 @@ ix.action:Register("unarmedParry", "unarmed", {
 	name = "Рукопашный бой (парирование)",
 	noLogging = true,
 	experience = {
-		{level = 0, xp = 6},
-		{level = 5, xp = 2}
+		{level = 0, xp = 9},
+		{level = 5, xp = 5}
 	}
 })
 

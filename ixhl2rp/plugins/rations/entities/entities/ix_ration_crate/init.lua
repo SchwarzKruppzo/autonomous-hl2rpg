@@ -3,7 +3,7 @@ include("shared.lua")
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 
-local RATION_TO_FILL = "ration_tier_1"
+local RATION_TO_FILL = "ration_tier_1v"
 
 function ENT:Initialize()
 	self:SetModel("models/Items/item_item_crate.mdl")

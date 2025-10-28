@@ -12,21 +12,10 @@ ITEM.iconCam = {
 }
 
 function ITEM:OnConsume(player, injector, mul, character)
-	local client = character:GetPlayer()
-	local lastShock = character:GetShock()
-	local isUnconscious = client:IsUnconscious()
-	
-	character:SetShock(0)
+	local health = character:Health()
+	local effect = 500
 
-	if isUnconscious then
-		client:SetAction("@wakingUp", 10, function(client)
-			client.ixUnconsciousOut = nil
-			client:SetLocalVar("knocked", false)
-			client:SetRagdolled(false)
-		end)
+	health:AddHediff("epinephrine", 0, {severity = effect, tended_start = os.time(), tended_time = (5 * 60)})
 
-		client.ixUnconsciousOut = true
-	end
-
-	return {unconscious = isUnconscious, shock = lastShock}
+	return {dmg = effect * 2}
 end

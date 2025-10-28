@@ -9,6 +9,21 @@ end
 ix.action:Register("craft_crafting", "crafting", {
 	name = "Крафт",
 	experience = function(action, character, skill, price)
+		if character:HasSpecialLevel("st", 25) then
+			price = price + (price * 0.15)
+		end
+		
+		return price
+	end
+})
+
+ix.action:Register("craft_recycle", "crafting", {
+	name = "Переработка мусора",
+	experience = function(action, character, skill, price)
+		if character:HasSpecialLevel("st", 25) then
+			price = price + (price * 0.15)
+		end
+
 		return price
 	end
 })

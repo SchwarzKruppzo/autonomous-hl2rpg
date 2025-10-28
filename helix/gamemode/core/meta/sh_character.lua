@@ -123,13 +123,19 @@ if (SERVER) then
 				net.WriteUInt(self.player:EntIndex(), 8)
 			net.Send(self.player)
 
-			for k, meta in pairs(self.meta_vars) do
-				local info = ix.char.vars[k]
+			timer.Simple(0, function()
+				if !IsValid(self.player) then
+					return 
+				end
+					
+				for k, meta in pairs(self.meta_vars) do
+					local info = ix.char.vars[k]
 
-				if !info[k] or bit.band(info.Net.Transmit, ix.transmit.none) == ix.transmit.none then continue end
+					if !info or bit.band(info.Net.Transmit, ix.transmit.none) == ix.transmit.none then continue end
 
-				meta:Sync(self.player, ix.transmit.owner)
-			end
+					meta:Sync(self.player, ix.transmit.owner)
+				end
+			end)
 		else
 			local data = {}
 
@@ -146,11 +152,18 @@ if (SERVER) then
 				net.WriteUInt(self.player:EntIndex(), 8)
 			net.Send(receiver)
 
-			for k, v in pairs(ix.char.meta_vars) do
-				if bit.band(v.Net.Transmit, ix.transmit.all) != ix.transmit.all then continue end
+			timer.Simple(0, function()
+				if !IsValid(receiver) then
+					return 
+				end
+				
+				for k, meta in pairs(self.meta_vars) do
+					local info = ix.char.vars[k]
+					if !info or bit.band(info.Net.Transmit, ix.transmit.all) != ix.transmit.all then continue end
 
-				self.meta_vars[k]:Sync(receiver, ix.transmit.all)
-			end
+					meta:Sync(receiver, ix.transmit.all)
+				end
+			end)
 		end
 	end
 

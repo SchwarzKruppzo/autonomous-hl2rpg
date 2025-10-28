@@ -1,7 +1,8 @@
 RECIPE.name = "Высококачественный сплав"
-RECIPE.category = "Переработка"
+RECIPE.category = "Переплавка"
 RECIPE.requirements = {
-	metal_reclaimed = 4,
+	mat_ore_titan = 4,
+	metal_reclaimed = 2,
 	combine_resine = 2
 }
 RECIPE.results = {

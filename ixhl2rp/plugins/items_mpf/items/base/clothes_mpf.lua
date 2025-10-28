@@ -74,16 +74,16 @@ function ItemClothMPF:OnGetReplacement(client, char)
 end
 
 local armbandRank = {
-	[0] = "r",
+	[0] = "R",
 	[1] = "i4",
 	[2] = "i3",
 	[3] = "i2",
 	[4] = "i1",
-	[5] = "is",
-	[6] = "dl",
-	[7] = "cc",
-	[8] = "oo",
-	[9] = "sF"
+	[5] = "RL",
+	[6] = "RC",
+	[7] = "OVERSEER",
+	[8] = "OVERSEER",
+	[9] = "SF"
 }
 
 function ItemClothMPF:UpdateMPF(client, armband)
@@ -92,8 +92,8 @@ function ItemClothMPF:UpdateMPF(client, armband)
 		client:SetSecondaryVisorColor(self.secondaryVisor)
 
 		local name = client:GetName()
-		local format = "(CCA%:.*%.).*(%.%d+)"
-		local ranks = string.match(name, "CCA%:.*%.(.*)%.%d+") or string.match(name, "CCA%:.*%:(.*)%.%d+")
+		local format = "(c24%:).*(°.*)"
+		local ranks = string.match(name, "c24%:(.*)°.*")
 		local a = string.Explode(":", ranks)
 		local spec = Schema:GetPlayerCombineSpec(client)
 

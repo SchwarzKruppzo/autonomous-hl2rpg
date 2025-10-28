@@ -30,7 +30,7 @@ local function CalcStaminaChange(client)
 	local walkSpeed = ix.config.Get("walkSpeed")
 	local offset = 0
 
-	if (!client:GetNetVar("brth", false) and client:KeyDown(IN_SPEED) and client:GetVelocity():LengthSqr() >= (walkSpeed * walkSpeed)) then
+	if (!client:GetNetVar("brth", false) and client:KeyDown(IN_SPEED) and client:GetSprintMove() and client:GetVelocity():LengthSqr() > 0) then
 		-- characters could have attribute values greater than max if the config was changed
 		offset = -1
 		offset = hook.Run("AdjustStaminaOffsetRunning", client, offset) or -1

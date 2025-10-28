@@ -51,10 +51,6 @@ function PLUGIN:SetupHealTimer(client, entity, rate)
 	local uniqueID = "ixHeal" .. client:SteamID64()
 	timer.Remove(uniqueID)
 
-	if client:InCriticalState() then
-		return
-	end
-
 	if IsValid(entity) then
 		local data = ix.bed.stored[entity:GetModel():lower()]
 		if data then
@@ -76,8 +72,6 @@ function PLUGIN:SetupHealTimer(client, entity, rate)
 			if !client:GetNetVar("forcedSequence") then
 				return
 			end
-
-			self:HealTick(client, rate)
 		end)
 	end
 end
@@ -88,50 +82,24 @@ function PLUGIN:RemoveHealTimer(client)
 	if timer.Exists(uniqueID) then
 		timer.Remove(uniqueID)
 	end
+
+	client.healRate = nil
 end
 
 function PLUGIN:PostPlayerLoadout(client)
 	self:RemoveHealTimer(client)
 end
 
-local function CalculateResting(rate, startTime)
-	local ticks = ((os.time() - startTime) / 5)
-	local HP = ((75 * rate * 5 / 3600) * ticks)
-	local bleeding, pain = false, false
-
-	if math.random(0, HP) < (HP * 0.26) then
-		bleeding = true
-	end
-
-	if math.random(0, HP) < (HP * 0.26) then
-		pain = true
-	end
-
-	return HP, bleeding, pain
-end
-
 function PLUGIN:CharacterLoaded(character)
 	local resting = character:GetData("resting")
 
 	if resting then
-		local data = util.JSONToTable(resting)
-
-		local hp, bleeding, pain = CalculateResting(tonumber(data[1]), tonumber(data[2]))
-
-		character:HealLimbs(hp)
-		character:SetBlood(math.min(character:GetBlood() + (25 * hp), 5000))
-
-		if character:IsBleeding() and bleeding then
-			character:SetBleeding(false)
-		end
-
-		if character:IsFeelPain() and pain then
-			character:SetFeelPain(false)
-		end
-
-		character:GetPlayer():SetHealth(ix.plugin.list["!damagesystem"]:GetMinimalHealth(character))
+		local data = util.JSONToTable(resting) or {}
+		local timePass = os.time() - (tonumber(data[2] or 0) or os.time())
 
 		character:SetData("resting", nil)
+
+		hook.Run("CharacterRested", character, tonumber(data[1] or 0), timePass)
 	end
 end
 

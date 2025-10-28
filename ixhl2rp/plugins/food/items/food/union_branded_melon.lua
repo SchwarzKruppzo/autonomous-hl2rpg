@@ -9,5 +9,6 @@ ITEM.stats.container = false
 ITEM.stats.thirst = 6
 ITEM.stats.hunger = 2
 ITEM.stats.uses = 10
+ITEM.stats.expireTime = 345600 -- 4 days
 
 ITEM.rarity = 1

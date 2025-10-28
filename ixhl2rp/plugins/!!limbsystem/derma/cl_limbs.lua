@@ -13,6 +13,7 @@ function PANEL:Init()
 	self:BuildData()
 end
 
+local tex_body = Material("clockwork/limbs/body.png")
 function PANEL:BuildData()
 	local character = LocalPlayer():GetCharacter()
 	local limbs = character:Limbs()
@@ -22,13 +23,15 @@ function PANEL:BuildData()
 	end
 
 	self.character = character
-	self.texBG = limbs.bodytexture
+	self.texBG = tex_body
 	self.tex = {}
 
-	for k, limb in pairs(limbs.stored or {}) do
-		if limb:IsHidden() then continue end
+	local health = self.character:Health()
 
-		self.tex[#self.tex + 1] = {limb:Name(), limb:Texture()}
+	for k, limb in ipairs(health.body.parts or {}) do
+		if limb.hidden then continue end
+
+		self.tex[#self.tex + 1] = {limb.name, limb.texture, limb.id, limb.health}
 	end
 
 	self:SetHelixTooltip(function(tooltip)
@@ -40,11 +43,11 @@ function PANEL:BuildData()
 
 		if self.character then
 			local text = ""
-			for k, limb in pairs(limbs.stored or {}) do
-				local name = limb:Name()
-				local health = self.character:GetLimbHealth(name)
-				
-				text = text .. string.format("%s: %i%%", L(name), health) .. ((k != #limbs) and "\n" or "")
+			local health = self.character:Health()
+			for k, limb in ipairs(health.body.parts or {}) do
+				if limb.hidden then continue end
+
+				text = text .. string.format("%s — %s/%s HP", limb.name, health:GetPartHealth(limb.id), limb.health) .. ((k != #limbs) and "\n" or "")
 			end
 				  
 			local description = tooltip:AddRow("description")
@@ -60,8 +63,9 @@ function PANEL:Paint(w, h)
 		surface.SetMaterial(self.texBG)
 		surface.DrawTexturedRect(0, 0, w, h)
 
-		for k, v in pairs(self.tex) do
-			local limbColor = ix.limb:GetColor(self.character:GetLimbHealth(v[1]))
+		local health = self.character:Health()
+		for k, v in ipairs(self.tex) do
+			local limbColor = ix.limb:GetColor(health:GetPartHealth(v[3]), v[4])
 
 			surface.SetDrawColor(limbColor.r, limbColor.g, limbColor.b, 150)
 			surface.SetMaterial(v[2])

@@ -1,30 +1,14 @@
 ITEM.name = "Монтировка"
 ITEM.description = "Цельнометаллическая монтировка, скованная в пучине войны, которой не суждено закончиться. Обладает приличным весом, боевым окрасом и смыслом, который многим еще только предстоит узнать, если те доживут до момента в будущем, который обязательно случится."
-ITEM.model = "models/weapons/w_crowbar.mdl"
-ITEM.class = "arccw_crowbar"
+ITEM.model = "models/weapons/tfa_nmrih/w_me_crowbar.mdl"
+ITEM.class = "tfa_nmrih_crowbar"
 ITEM.weaponCategory = "melee"
-ITEM.width = 3
-ITEM.height = 1
+ITEM.width = 1
+ITEM.height = 3
 ITEM.iconCam = {
-	pos = Vector(0, 200, 0),
-	ang = Angle(0, 270, 0),
-	fov = 8,
-}
-ITEM.Info = {
-	Type = 1,
-	Skill = "meleeguns",
-	Dmg = {
-		Attack = 1,
-		Limb = 33,
-		Shock = {111, 2000},
-		Blood = {25, 100},
-		Bleed = 75
-	}
-}
-ITEM.iconCam = {
-	pos = Vector(0, 200, 0),
-	ang = Angle(-0.37200209498405, 269.58325195313, 0),
-	fov = 10.118458648433,
+	pos = Vector(307.93508911133, 289.47528076172, 141.46713256836),
+	ang = Angle(18.666589736938, 223.25354003906, 0),
+	fov = 1.3164812222903,
 }
 
 function ITEM:HasDurability()

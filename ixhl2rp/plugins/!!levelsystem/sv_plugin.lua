@@ -9,6 +9,7 @@ do
 		self:SetLevelXP(0)
 
 		if nextLevel <= PLUGIN.maxLevel then
+			self:SetSkillPoints(self:GetSkillPoints() + PLUGIN:GetPointsAtLevel(nextLevel))
 			self:SetLevel(nextLevel)
 			self:SetData("levelup", true)
 			ix.chat.Send(nil, "level", "", nil, {self:GetPlayer()}, {
@@ -27,6 +28,7 @@ do
 		self:SetLevelXP(0)
 		
 		if nextLevel > 0 then
+			self:SetSkillPoints(self:GetSkillPoints() - PLUGIN:GetPointsAtLevel(nextLevel + 1))
 			self:SetLevel(nextLevel)
 			
 			ix.chat.Send(nil, "level", "", nil, {self:GetPlayer()}, {
@@ -38,16 +40,7 @@ do
 			self:AddLevelXP(deltaXP)
 		end
 
-		for k, v in pairs(ix.specials.list) do
-			self:SetSpecial(k, 1)
-		end
-
 		self:SetData("levelup", true)
-
-		timer.Simple(0.1, function()
-			net.Start("ixLevelUp")
-			net.Send(self:GetPlayer())
-		end)
 	end
 
 	function charMeta:AddLevelXP(xp, reasonType)
@@ -78,20 +71,15 @@ do
 		self:SetLevelXP(cur)
 	end
 
-	local rollTable = {
-		[1] = {1, 80},
-		[2] = {1, 80},
-		[3] = {1, 100},
-		[4] = {7, 100},
-		[5] = {14, 100},
-		[6] = {21, 100},
-		[7] = {28, 100},
-		[8] = {35, 100},
-		[9] = {42, 100},
-		[10] = {49, 100},
-	}
-	
-	function charMeta:GetRolls()
-		return rollTable[self:GetLevel() or 1] or rollTable[3]
+	local PLAYER = FindMetaTable("Player")
+
+	function PLAYER:RewardXP(xp, text)
+		local character = self:GetCharacter()
+		
+		if character then
+			character:AddLevelXP(xp)
+
+			self:NotifyLocalized("rewardXP", xp, text)
+		end
 	end
 end

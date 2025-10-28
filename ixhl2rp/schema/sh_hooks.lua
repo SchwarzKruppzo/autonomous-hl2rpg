@@ -15,7 +15,9 @@ function Schema:InitializedChatClasses()
 		OnChatAdd = function(self, speaker, text, anonymous, info)
 			local icon, langPrefix
 
-			if info.lang then
+			local isValidLang = ix.languages:FindByID(info.lang or "")
+
+			if info.lang and isValidLang then
 				icon, langPrefix, text = ix.languages.OnChatAdd(speaker, text, info.lang)
 			end
 
@@ -50,7 +52,9 @@ function Schema:InitializedChatClasses()
 		OnChatAdd = function(self, speaker, text, anonymous, info)
 			local icon, langPrefix
 
-			if info.lang then
+			local isValidLang = ix.languages:FindByID(info.lang or "")
+
+			if info.lang and isValidLang then
 				icon, langPrefix, text = ix.languages.OnChatAdd(speaker, text, info.lang)
 			end
 
@@ -77,7 +81,9 @@ function Schema:InitializedChatClasses()
 		OnChatAdd = function(self, speaker, text, anonymous, info)
 			local icon, langPrefix
 
-			if info.lang then
+			local isValidLang = ix.languages:FindByID(info.lang or "")
+
+			if info.lang and isValidLang then
 				icon, langPrefix, text = ix.languages.OnChatAdd(speaker, text, info.lang)
 			end
 

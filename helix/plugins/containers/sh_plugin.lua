@@ -84,9 +84,9 @@ if (SERVER) then
 	end
 
 	function PLUGIN:SaveData()
-		if !ix.shuttingDown then
+		--if !ix.shuttingDown then -- WHY it is here?
 			self:SaveContainer()
-		end
+		--end
 	end
 
 	function PLUGIN:LoadData()

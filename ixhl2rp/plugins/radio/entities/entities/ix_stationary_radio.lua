@@ -92,7 +92,11 @@ else
 
 	function ENT:GetEntityMenu()
 		local options = {
-			["Toggle"] = true,
+			["Toggle"] = function()
+				ix.menu.NetworkChoice(self, "Toggle")
+
+				return false
+			end,
 		}
 
 		if (self:GetChannelTuningEnabled()) then

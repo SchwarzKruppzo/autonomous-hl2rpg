@@ -12,6 +12,47 @@ function Item:Init()
 
 	self.stackable = true
 	self.max_stack = 8
+
+	self.functions.InsertCoupon = {
+		name = "Вставить купон",
+		OnRun = function(itemTable)
+			local client = itemTable.player
+			local data = {}
+				data.start = client:GetShootPos()
+				data.endpos = data.start + client:GetAimVector() * 96
+				data.filter = client
+			local target = util.TraceLine(data).Entity
+			
+
+			if IsValid(target) and target.IsRationDispenser then
+				local display = target:GetDisplay()
+
+				if display == 2 then
+					target:StartDispense(client, 8, itemTable.uniqueID)
+					target.nextUseTime = CurTime() + 2
+
+					itemTable.bBeingUsed = true
+					itemTable:Remove()
+				end
+			end
+
+			return false
+		end,
+		OnCanRun = function(itemTable)
+			local client = itemTable.player
+			local entity
+
+			if IsValid(client) then
+				local target = client:GetEyeTrace().Entity
+
+				if target and target.IsRationDispenser then
+					entity = target
+				end
+			end
+
+			return !itemTable.bBeingUsed and !IsValid(itemTable.entity) and IsValid(entity)
+		end
+	}
 end
 
 if CLIENT then

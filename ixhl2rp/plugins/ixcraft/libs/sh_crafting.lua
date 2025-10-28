@@ -3,6 +3,38 @@ local Craft = ix.util.Lib("Craft", {
 	stations = {},
 })
 
+local function ValidateItem(recipe, entry)
+	if isstring(entry) then
+		if !ix.Item.stored[entry] then
+			ErrorNoHalt("[ixcraft] Attempt to index unknown item '"..entry.."' in recipe '"..recipe.."'\n")
+		end
+	elseif istable(entry) then
+		for key, _ in pairs(entry) do
+			ValidateItem(recipe, key)
+		end
+	end
+end
+
+function Craft:ValidateRecipe(recipe, data)
+	if data.requirements then
+		ValidateItem(recipe, data.requirements)
+	end
+
+	if data.results then
+		ValidateItem(recipe, data.results)
+	end
+
+	if data.any then
+		ValidateItem(recipe, data.any)
+	end
+
+	if data.tools then
+		for _, key in pairs(data.tools) do
+			ValidateItem(recipe, key)
+		end
+	end
+end
+
 function Craft:LoadFromDir(directory, pathType, category)
 	for _, v in ipairs(file.Find(directory.."/*.lua", "LUA")) do
 		local uniqueID = v:sub(1, #v - 4)
@@ -13,7 +45,11 @@ function Craft:LoadFromDir(directory, pathType, category)
 
 				ix.util.Include(directory.."/"..v, "shared")
 
-				self.recipes[uniqueID] = RECIPE
+				if !RECIPE.disabled then
+					--self:ValidateRecipe(uniqueID, RECIPE)
+
+					self.recipes[uniqueID] = RECIPE
+				end
 			RECIPE = nil
 		elseif pathType == "station" then
 			STATION = ix.meta.CraftStation:New(uniqueID)
@@ -26,6 +62,7 @@ function Craft:LoadFromDir(directory, pathType, category)
 					STATION_ENT.uniqueID = uniqueID
 					STATION_ENT.Spawnable = true
 					STATION_ENT.AdminOnly = true
+					STATION_ENT.Tags = STATION_ENT.tags
 					scripted_ents.Register(STATION_ENT, "ix_station_"..uniqueID)
 				//end
 
@@ -305,10 +342,10 @@ if SERVER then
 
 			for _, item in pairs(found) do
 				if item.TakeDurability then
-					local default_durability = 100
+					local default_durability = item.DurabilityCraft or 100
 
 					if recipe.isBreakdown then
-						default_durability = 10
+						default_durability = item.DurabilityBreakdown or 10
 					end
 
 					item:TakeDurability(recipe.tool_durability and recipe.tool_durability[item.uniqueID] or default_durability, client)

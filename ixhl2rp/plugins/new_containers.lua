@@ -197,3 +197,24 @@ ix.container.Register("models/props_office/file_cabinet_large_static.mdl", {
 	width = 8,
 	height = 3
 })
+
+ix.container.Register("models/props_combine/combine_crate_large_static.mdl", {
+	name = "Контейнер Надзора",
+	description = "Массивный ящик Альянса, выполненный из сплава титана и армированной стали. Поручень позволяет поднять массивную крышку. Сам контейнер предназначен для траннспортировки оружия, боеприпасов - и имеет термоконтроль. Произведен в Сити-17.",
+	width = 12,
+	height = 8
+})
+
+ix.container.Register("models/props_combine/combine_crate_medium_static.mdl", {
+	name = "Средний ящик Надзора",
+	description = "Сделанный из сплава титана и армированной стали ящик, с встроенным электронным замком и поручнями для удобной транспортировки. Внутри установлен аккумулятор, а также несколько тусклых ламп для освещения ваших сокровищ.",
+	width = 5,
+	height = 5
+})
+
+ix.container.Register("models/props_combine/combine_crate_small_static.mdl", {
+	name = "Малый ящик Надзора",
+	description = "Малый кейс с символом Альянса на нем, выполненный из крепкого сплава титана и армированной стали. Встроенный в корпус электронный замок позволяет защитить ваши пожитки. Плохо сохраняет температуру.",
+	width = 3,
+	height = 4
+})

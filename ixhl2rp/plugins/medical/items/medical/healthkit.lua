@@ -15,71 +15,31 @@ ITEM.iconCam = {
 }
 
 function ITEM:OnConsume(player, injector, mul, character)
-	local client = character:GetPlayer()
-	local blood, shock, rad = character:GetBlood(), character:GetShock(), character:GetRadLevel()
-	local isBleeding, isPain, isUnconscious, bleedDmg = character:IsBleeding(), character:IsFeelPain(), client:IsUnconscious(), (character:GetDmgData().bleedDmg or 0)
-	local newBlood = math.Clamp(blood + 800, -1, 5000)
-	local newShock = math.max(shock - 2500, 0)
-	local newRad = math.max(rad - 350, 0)
+	local health = character:Health()
+	local injuries = {}
 
-	character:SetBlood(newBlood)
-	character:SetBleeding(false)
-	character:SetFeelPain(false)
+	for k, v in health:GetHediffs() do
+		if v.part == 1 or !v.isInjury then continue end
+		if v.tended_time != -1 then continue end
 
-	local rightLeg = character:GetLimbDamage(HITGROUP_RIGHTLEG)
-	local leftLeg = character:GetLimbDamage(HITGROUP_LEFTLEG)
-
-	local healedLimbs = 0
-	local limbs = character:GetLimbData()
-	for k, v in pairs(limbs) do
-		healedLimbs = healedLimbs + (40 - math.max(40 - v, 0))
+		injuries[#injuries + 1] = {diff = v, severity = v.severity}
 	end
 
-	character:HealLimbs(40)
+	table.sort(injuries, function(a, b) return a.severity > b.severity end)
 
-	if rightLeg > 80 then
-		character:HealLimbDamage(HITGROUP_RIGHTLEG, 100)
+	local dmg = 0
+	for i = 1, math.min(#injuries, 10) do
+		local injury = injuries[i]
 
-		healedLimbs = healedLimbs + 20
+		if injury then
+			dmg = dmg + (injury.severity or 0)
+			health:TendHediff(injury.diff, (5 * 60) * mul)
+		end
 	end
 
-	if leftLeg > 80 then
-		character:HealLimbDamage(HITGROUP_LEFTLEG, 100)
+	local effect = 10
 
-		healedLimbs = healedLimbs + 20
-	end
+	health:AddHediff("painkiller", 0, {severity = effect, tended_start = os.time(), tended_time = 2 * 60})
 
-	local head = character:GetLimbDamage("head")
-	local chest = character:GetLimbDamage("chest")
-	local stomach = character:GetLimbDamage("stomach")
-	local lleg = character:GetLimbDamage("leftLeg")
-	local rleg = character:GetLimbDamage("rightLeg")
-	local lhand = character:GetLimbDamage("leftHand")
-	local rhand = character:GetLimbDamage("rightHand")
-	local minHP = 100 - (head + ((chest + stomach)/2) + ((lleg + rleg)/2) + ((lhand + rhand)/2))/4
-	client:SetHealth(math.max(client:Health(), minHP))
-
-	character:SetShock(newShock)
-	character:SetRadLevel(newRad)
-
-	if isUnconscious then
-		client:SetAction("@wakingUp", 10, function(client)
-			client.ixUnconsciousOut = nil
-			client:SetLocalVar("knocked", false)
-			client:SetRagdolled(false)
-		end)
-
-		client.ixUnconsciousOut = true
-	end
-
-	return {
-		bleed = isBleeding, 
-		bleedDmg = bleedDmg,
-		blood = (newBlood - blood),
-		unconscious = isUnconscious, 
-		shock = math.abs(newShock - shock),
-		rad = math.abs(newRad - rad),
-		limbs = healedLimbs,
-		pain = isPain
-	}
+	return {dmg = dmg}
 end

@@ -3,7 +3,7 @@ local ItemMedical = class("ItemMedical"):implements("Item")
 ItemMedical.useSound = {"npc/barnacle/barnacle_gulp1.wav", "npc/barnacle/barnacle_gulp2.wav"}
 
 local function action(self, time, condition, callback)
-	local uniqueID = "ixStare"..self:UniqueID()
+	local uniqueID = "ixMedical"..self:UniqueID()
 
 	timer.Create(uniqueID, 0.1, time / 0.1, function()
 		if (IsValid(self)) then
@@ -40,7 +40,8 @@ function ItemMedical:Init()
 			local uses = item:GetUses()
 			local client, character = item.player, item.player:GetCharacter()
 
-			local mod = 1 + character:GetSkillModified("medicine") * 0.1 or 1
+			local medicineFactor = 0.5 * (character:GetSkillModified("medicine") * 0.1)
+			local mod = 1 - medicineFactor
 
 			if client.bUsingMedical then
 				return
@@ -58,7 +59,7 @@ function ItemMedical:Init()
 					return false
 				end
 
-				if client:Alive() and !IsValid(client.ixRagdoll) and client:GetCharacter() == character and !client:IsUnconscious() then
+				if client:Alive() and !IsValid(client.ixRagdoll) and client:GetCharacter() == character then --and !client:IsUnconscious() then
 					return true
 				end
 			end, function(success)
@@ -128,7 +129,8 @@ function ItemMedical:Init()
 				return
 			end
 
-			local mod = 1 + character:GetSkillModified("medicine") * 0.1 or 1
+			local medicineFactor = 0.5 * (character:GetSkillModified("medicine") * 0.1)
+			local mod = 1 - medicineFactor
 
 			if client.bUsingMedical then
 				return

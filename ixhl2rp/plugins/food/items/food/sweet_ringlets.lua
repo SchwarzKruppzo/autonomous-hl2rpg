@@ -15,3 +15,4 @@ ITEM.stats.container = true
 ITEM.stats.thirst = -1.7
 ITEM.stats.hunger = 4.2
 ITEM.stats.uses = 12
+ITEM.stats.noExpire = true

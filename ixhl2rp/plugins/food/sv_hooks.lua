@@ -68,3 +68,22 @@ ix.config.Add("needsTickTime", 4, "How many seconds between each time a characte
 	data = {min = 1, max = 24},
 	category = "needs"
 })
+
+local chatTypes = {
+	["ic"] = true,
+	["w"] = true,
+	["y"] = true,
+	["radio"] = true,
+}
+
+function PLUGIN:PlayerMessageSend(speaker, chatType, text, bAnonymous, receivers, rawText)
+	if IsValid(speaker) and speaker:IsPlayer() and chatTypes[chatType] then	
+		local drunkFactor = speaker:GetLocalVar("drunk", 0)
+
+		if drunkFactor > 0.5 then
+			return ix.util.Slur(ix.util.Stutter(text, 50))
+		elseif drunkFactor > 0 then
+			return ix.util.Stutter(text, 50)
+		end
+	end
+end

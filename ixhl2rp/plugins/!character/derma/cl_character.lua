@@ -208,23 +208,23 @@ function PANEL:Init()
 		local titleLabel = logoPanel:Add("DLabel")
 		titleLabel:SetTextColor(color_white)
 		titleLabel:SetFont("ixTitleFont")
-		titleLabel:SetText(L2("schemaName") or Schema.name or L"unknown")
+		titleLabel:SetText("LEGACY MENU")
 		titleLabel:SizeToContents()
 		titleLabel:SetPos(halfWidth - titleLabel:GetWide() * 0.5, halfPadding)
 		titleLabel:SetPaintedManually(true)
 		newHeight = newHeight + titleLabel:GetTall()
 
-		if (subtitle) then
-			local subtitleLabel = logoPanel:Add("DLabel")
-			subtitleLabel:SetTextColor(color_white)
-			subtitleLabel:SetFont("ixSubTitleFont")
-			subtitleLabel:SetText(subtitle)
-			subtitleLabel:SizeToContents()
-			subtitleLabel:SetPos(halfWidth - subtitleLabel:GetWide() * 0.5, 0)
-			subtitleLabel:MoveBelow(titleLabel)
-			subtitleLabel:SetPaintedManually(true)
-			newHeight = newHeight + subtitleLabel:GetTall()
-		end
+
+		local subtitleLabel = logoPanel:Add("DLabel")
+		subtitleLabel:SetTextColor(color_white)
+		subtitleLabel:SetFont("ixSubTitleFont")
+		subtitleLabel:SetText("Не установлена х86-64 версия игры, игровой опыт может отличаться!")
+		subtitleLabel:SizeToContents()
+		subtitleLabel:SetPos(halfWidth - subtitleLabel:GetWide() * 0.5, 0)
+		subtitleLabel:MoveBelow(titleLabel)
+		subtitleLabel:SetPaintedManually(true)
+		newHeight = newHeight + subtitleLabel:GetTall()
+
 
 		logoPanel:SetTall(newHeight)
 	end
@@ -238,16 +238,6 @@ function PANEL:Init()
 	createButton:SetText("create")
 	createButton:SizeToContents()
 	createButton.DoClick = function()
-		if !LocalPlayer():GetData("quiz", false) then
-			if IsValid(ix.gui.quizAnswering) then
-				ix.gui.quizAnswering:Remove()
-			end
-			
-			vgui.Create("ixQuizMenu")
-			ix.gui.quizAnswering:CreateQuizContent()
-			return
-		end
-
 		local maximum = hook.Run("GetMaxPlayerCharacter", LocalPlayer()) or ix.config.Get("maxCharacters", 5)
 		-- don't allow creation if we've hit the character limit
 		if (#ix.characters >= maximum) then
@@ -368,7 +358,7 @@ function PANEL:Init()
 	self.mainPanel = self:Add("ixCharMenuMain")
 
 	-- new character panel
-	self.newCharacterPanel = self:Add("ixCharMenuNew")
+	self.newCharacterPanel = self:Add("ui.character.create")
 	self.newCharacterPanel:SlideDown(0)
 
 	-- load character panel
@@ -543,139 +533,139 @@ end
 
 vgui.Register("ixCharMenu", PANEL, "EditablePanel")
 
-if BRANCH == "x86-64" then
-	local gradient = surface.GetTextureID("vgui/gradient-d")
-	local audioFadeInTime = 2
-	local animationTime = 0.5
-	local matrixZScale = Vector(1, 1, 0.0001)
+local gradient = surface.GetTextureID("vgui/gradient-d")
+local audioFadeInTime = 2
+local animationTime = 0.5
+local matrixZScale = Vector(1, 1, 0.0001)
 
-	-- character menu panel
-	DEFINE_BASECLASS("ixSubpanelParent")
-	local PANEL = {}
+-- character menu panel
+DEFINE_BASECLASS("ixSubpanelParent")
+local PANEL = {}
 
-	function PANEL:Init()
-		self:SetSize(self:GetParent():GetSize())
-		self:SetPos(0, 0)
+function PANEL:Init()
+	self:SetSize(self:GetParent():GetSize())
+	self:SetPos(0, 0)
 
-		self.childPanels = {}
-		self.subpanels = {}
-		self.activeSubpanel = ""
+	self.childPanels = {}
+	self.subpanels = {}
+	self.activeSubpanel = ""
 
-		self.currentFade = 0
+	self.currentFade = 0
+	self.currentDimAmount = 0
+end
+
+function PANEL:Dim(panel, callback)
+	if panel then
+		local length = 0.5
+
 		self.currentDimAmount = 0
+		self.currentFade = 0
+
+		self:CreateAnimation(length, {
+			index = 1,
+			target = {
+				currentDimAmount = 1,
+				currentFade = 1,
+			},
+			easing = "outCubic",
+			OnComplete = function(anim, self)
+				self.dimPanel = panel
+
+				panel.currentFade = 1
+				panel:SlideUp()
+				panel:CreateAnimation(length, {
+					index = 1,
+					target = {
+						currentFade = 0,
+					},
+					easing = "outCubic",
+					OnComplete = callback
+				})
+			end
+		})
+
+		self:OnDim()
 	end
+end
 
-	function PANEL:Dim(panel, callback)
-		if panel then
-			local length = 0.5
+function PANEL:Undim(callback)
+	if self.dimPanel then
+		local length = 0.5
 
-			self.currentDimAmount = 0
-			self.currentFade = 0
+		self.dimPanel.currentFade = 0
+		self.dimPanel:CreateAnimation(length, {
+			index = 1,
+			target = {
+				currentFade = 1,
+			},
+			easing = "outCubic",
+			OnComplete = function(anim, panel)
+				panel:SlideDown()
 
-			self:CreateAnimation(length, {
-				index = 1,
-				target = {
-					currentDimAmount = 1,
-					currentFade = 1,
-				},
-				easing = "outCubic",
-				OnComplete = function(anim, self)
-					self.dimPanel = panel
+				self:CreateAnimation(length, {
+					index = 1,
+					target = {
+						currentDimAmount = 0,
+						currentFade = 0,
+					},
+					easing = "outCubic",
+					OnComplete = callback
+				})
 
-					panel.currentFade = 1
-					panel:SlideUp()
-					panel:CreateAnimation(length * 2, {
-						index = 1,
-						target = {
-							currentFade = 0,
-						},
-						easing = "outCubic",
-						OnComplete = callback
-					})
-				end
-			})
-
-			self:OnDim()
-		end
+				self:OnUndim()
+			end
+		})
+	else
+		self:OnUndim()
 	end
+end
 
-	function PANEL:Undim(callback)
-		if self.dimPanel then
-			local length = 0.5
+function PANEL:OnDim()
+end
 
-			self.dimPanel.currentFade = 0
-			self.dimPanel:CreateAnimation(length, {
-				index = 1,
-				target = {
-					currentFade = 1,
-				},
-				easing = "outCubic",
-				OnComplete = function(anim, panel)
-					panel:SlideDown()
+function PANEL:OnUndim()
+end
 
-					self:CreateAnimation(length * 2, {
-						index = 1,
-						target = {
-							currentDimAmount = 0,
-							currentFade = 0,
-						},
-						easing = "outCubic",
-						OnComplete = callback
-					})
+function PANEL:SlideUp(...)
+	self:SetMouseInputEnabled(true)
+	self:SetKeyboardInputEnabled(true)
 
-					self:OnUndim()
-				end
-			})
-		else
-			self:OnUndim()
-		end
-	end
+	self:OnSlideUp()
+	self:SetVisible(true)
+end
 
-	function PANEL:OnDim()
-	end
+function PANEL:SlideDown(...)
+	self:SetMouseInputEnabled(false)
+	self:SetKeyboardInputEnabled(false)
 
-	function PANEL:OnUndim()
-	end
+	self:OnSlideDown()
+	self:SetVisible(false)
+end
 
-	function PANEL:SlideUp(...)
-		self:SetMouseInputEnabled(true)
-		self:SetKeyboardInputEnabled(true)
+function PANEL:Paint(width, height)
+	local amount = self.currentDimAmount
 
-		self:OnSlideUp()
-		self:SetVisible(true)
-	end
+	BaseClass.Paint(self, width, height)
 
-	function PANEL:SlideDown(...)
-		self:SetMouseInputEnabled(false)
-		self:SetKeyboardInputEnabled(false)
-
-		self:OnSlideDown()
-		self:SetVisible(false)
-	end
-
-	function PANEL:Paint(width, height)
-		local amount = self.currentDimAmount
-
-		BaseClass.Paint(self, width, height)
-
-		if (amount > 0) then
-			local color = Color(0, 0, 0, 255 * amount)
-
-			surface.SetDrawColor(color)
-			surface.DrawRect(0, 0, width, height)
-		end
-	end
-
-	function PANEL:PaintOver(width, height)
-		local amount = self.currentFade
+	if (amount > 0) then
 		local color = Color(0, 0, 0, 255 * amount)
 
 		surface.SetDrawColor(color)
 		surface.DrawRect(0, 0, width, height)
 	end
+end
 
-	vgui.Register("ixCharMenuPanel", PANEL, "ixSubpanelParent")
+function PANEL:PaintOver(width, height)
+	local amount = self.currentFade
+	local color = Color(0, 0, 0, 255 * amount)
 
+	surface.SetDrawColor(color)
+	surface.DrawRect(0, 0, width, height)
+end
+
+vgui.Register("ixCharMenuPanel", PANEL, "ixSubpanelParent")
+
+if BRANCH == "x86-64" then
 	-- container panel
 	PANEL = {}
 
@@ -699,7 +689,7 @@ if BRANCH == "x86-64" then
 		self.mainPanel = self:Add("ui.mainmenu.wrapper")
 
 		-- new character panel
-		self.newCharacterPanel = self:Add("ixCharMenuNew")
+		self.newCharacterPanel = self:Add("ui.character.create")
 		self.newCharacterPanel:SlideDown(0)
 
 		-- load character panel

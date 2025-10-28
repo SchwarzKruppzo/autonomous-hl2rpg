@@ -1,0 +1,263 @@
+
+
+local ValueChangeException = ix.meta.ValueChangeException
+
+
+local Resource = class("CityResource")
+function Resource:Init(name, baseValue)
+	--self.id = id
+	self.name = name
+	self.base = baseValue
+	self.exception = ValueChangeException:New(self.base, self.base)
+
+	self.cachedValue = nil
+end
+
+function Resource:AddRaw(modifier, reasonID)
+	local flow
+
+	if isnumber(reasonID) then
+		flow = ix.City:GetEconomicFlow(reasonID)
+	else
+		flow = ix.City:GetEconomicFlowByID(reasonID)
+	end
+	
+	if !flow then return end
+	
+	modifier.reason = flow.index
+
+	self.exception:AddModifier(modifier)
+	self.cachedValue = nil
+end
+
+local AddValue = ix.meta.AddValueModifier
+function Resource:Add(value, reasonID)
+	local add = AddValue:New(0, value)
+
+	self:AddRaw(add, reasonID)
+end
+
+function Resource:Get()
+	if self.cachedValue then
+		return self.cachedValue
+	else
+		self.cachedValue = self.exception:GetModifiedValue()
+
+		return self.cachedValue
+	end
+end
+
+local StockItem = class("CityStockItem")
+function StockItem:Init(id)
+	self.id = id
+	self.supply = 0
+	self.demand = 0
+
+	self.lastSupply = 0
+	self.lastDemand = 0
+end
+function StockItem:SetSupply(value)
+	self.lastSupply = self.supply
+	self.supply = value
+end
+function StockItem:SetDemand(value)
+	self.lastDemand = self.demand
+	self.demand = value
+end
+function StockItem:SetStock(supply, demand)
+	self.supply = supply
+	self.demand = demand
+
+	self.lastSupply = supply
+	self.lastDemand = demand
+end
+function StockItem:GetSupply() return self.supply end
+function StockItem:GetDemand() return self.demand end
+
+local Stock = class("CityStock")
+
+function Stock:Init(city)
+	self.city = city
+
+	self.items = {}
+end
+
+function Stock:AddItem(id, info)
+	if self.items[id] then return end
+	
+	local item = StockItem:New(id)
+
+	if info.baseCost then
+		item.baseCost = info.baseCost
+	end
+	
+	if info.supply then
+		item:SetSupply(info.supply)
+	end
+	
+	if info.demand then
+		item:SetDemand(info.demand)
+	end
+
+	self.items[id] = item
+end
+
+function Stock:GetPrice(id)
+	local item = self.items[id]
+	local base = item.baseCost
+
+	return base + (base * (1 + 0.975 * math.min(math.max(-1, (item.demand - item.supply) / math.min(item.demand, item.supply)), 2)))
+end
+
+function Stock:GetItem(id)
+	return self.items[id]
+end
+
+function Stock:GetItems()
+	return table.GetKeys(self.items) 
+end
+
+
+local CITY = class("City")
+
+function CITY:Init()
+	self.resources = {}
+	self.resources.tokens = Resource:New("Tokens", 0)
+
+	self.stock = Stock:New(self)
+
+	self.stock:AddItem("breens_water", {
+		baseCost = 4,
+		supply = 100,
+		demand = 100
+	})
+
+	self.cycleID = 1
+	self.priceHistory = {}
+	self.percentHistory = {[1] = 100}
+	self.velocity = 0
+	self.priceHistory[#self.priceHistory + 1] = self.stock:GetPrice("breens_water")
+
+	self.seed = os.time()
+end
+
+function CITY:DoCycle()
+	math.randomseed(self.seed)
+	
+	local testItem = self.stock:GetItem("breens_water")
+	local supply = testItem:GetSupply()
+	local demand = testItem:GetDemand()
+
+	local velocity = TestNoise(self.cycleID) 
+	if math.random(-1, 1) > velocity then
+		self.velocity = velocity
+		--00print("changed velocity to", self.velocity)
+	else
+		--00print("do nothing")
+	end
+
+
+	if self.velocity > 0 then
+		local factor = ((supply + demand) * 0.1) * self.velocity
+
+		demand = demand + factor
+
+		testItem:SetDemand(demand)
+
+	elseif self.velocity < 0 then
+		local factor = ((supply + demand) * 0.1) * self.velocity
+
+
+
+		supply = supply + math.abs(factor)
+
+		testItem:SetSupply(supply)
+
+	end
+	local last = self.priceHistory[#self.priceHistory]
+	local new = self.stock:GetPrice("breens_water")
+	
+	
+
+	self.percentHistory[#self.percentHistory + 1] = ((new - last) / last) * 100
+	self.priceHistory[#self.priceHistory + 1] = math.Round(new, 2)
+	self.cycleID = self.cycleID + 1
+end
+
+local test = CITY:New()
+for i = 1, 5024 do
+test:DoCycle()
+end
+print("===============================================")
+
+for k, v in ipairs(test.priceHistory) do
+	print(v)
+end
+/*
+
+local VVP = ix.City:AddEconomicFlow({
+	label = "от ВВП"
+})
+
+local TRADEEXPORT = ix.City:AddEconomicFlow({
+	label = "от экспорта товаров"
+})
+
+local TRADEIMPORT = ix.City:AddEconomicFlow({
+	label = "на импорт товаров"
+})
+
+local NALOG = ix.City:AddEconomicFlow({
+	label = "от налогов"
+})
+local PRODUCTION = ix.City:AddEconomicFlow({
+	label = "на затраты инфраструктуры"
+})
+
+local WAGE = ix.City:AddEconomicFlow({
+	label = "на зарплаты"
+})
+
+
+local test = CITY:New()
+
+test.resources.tokens:Add(5325, TRADEEXPORT)
+test.resources.tokens:Add(850, NALOG)
+test.resources.tokens:Add(235, VVP)
+test.resources.tokens:Add(-3784, TRADEIMPORT)
+test.resources.tokens:Add(-1645, PRODUCTION)
+test.resources.tokens:Add(-250, WAGE)
+
+print("= CITY ==============")
+local x = test.resources.tokens:Get()
+print("= КРЕДИТЫ")
+print("Баланс:", (x > 0 and "+" or "-")..math.abs(x))
+print("Резерв:", test.resources.tokens.base)
+
+local function Compare(a, b)
+	return a.sortOrder < b.sortOrder
+end
+
+local _income = {}
+local _expenses = {}
+
+table.sort(test.resources.tokens.exception.modifiers, Compare)
+for k, modifier in ipairs(test.resources.tokens.exception.modifiers) do
+	local value = modifier:Modify(test.resources.tokens.exception._from, test.resources.tokens.exception._to)
+
+	if value >= 0 then
+		_income[modifier.reason] = (_income[modifier.reason] or 0) + value
+	else
+		_expenses[modifier.reason] = (_expenses[modifier.reason] or 0) + value
+	end
+end
+
+local income = {}
+for k, v in pairs(_income) do
+	print((v > 0 and "+" or "-")..math.abs(v), ix.City:GetEconomicFlow(k).label)
+end
+
+local expenses = {}
+for k, v in pairs(_expenses) do
+	print((v > 0 and "+" or "-")..math.abs(v), ix.City:GetEconomicFlow(k).label)
+end*/

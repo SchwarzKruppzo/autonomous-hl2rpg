@@ -214,7 +214,7 @@ function GM:PlayerShouldTakeDamage(client, attacker)
 end
 
 function GM:GetFallDamage(client, speed)
-	return (speed - 580) * (100 / 444)
+	return math.max((speed - 464) * 0.225225225, 0)
 end
 
 function GM:EntityTakeDamage(entity, dmgInfo)
@@ -645,6 +645,10 @@ function GM:PlayerDeathThink(client)
 	end
 
 	return false
+end
+
+function GM:ScalePlayerDamage(client, hit_group, dmg)
+	dmg:ScaleDamage(1)
 end
 
 function GM:PlayerDisconnected(client)

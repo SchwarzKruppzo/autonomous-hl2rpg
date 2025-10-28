@@ -78,6 +78,21 @@ function UI:OpenMessage(title, text, btnText, callback)
 end
 
 do
+	local vignette = Material("effects/shaders/autonomous_vignette")
+
+	local outerPos = 0.9
+	local innerPos = 0.5
+
+	function UI:DrawMainVignette()
+		render.UpdateScreenEffectTexture()
+		vignette:SetFloat("$c0_x", outerPos)
+		vignette:SetFloat("$c0_y", innerPos)
+		render.SetMaterial(vignette)
+		render.DrawScreenQuad()
+	end
+end
+
+do
 	local model_panel = vgui.GetControlTable('DModelPanel')
 
 	function model_panel:Paint(w, h)

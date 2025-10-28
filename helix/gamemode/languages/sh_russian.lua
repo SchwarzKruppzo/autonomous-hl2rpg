@@ -36,6 +36,30 @@ LANGUAGE = {
 	chatTabExists = "Вкладка чата с таким именем уже существует!",
 	chatMarkRead = "Отметить как прочитанные",
 
+	charcreate_faction = "ПРИНАДЛЕЖНОСТЬ  /// СОЗДАНИЕ ПЕРСОНАЖА",
+	charcreate_visual = "ВНЕШНОСТЬ  /// СОЗДАНИЕ ПЕРСОНАЖА",
+	charcreate_left = "ПЕРСОНАЖ",
+	charcreate_right = "ВНЕШНОСТЬ",
+
+	charcreate_name = "ИМЯ",
+	charcreate_random = "СЛУЧАЙНОЕ ИМЯ",
+	charcreate_visual = "ВНЕШНЕЕ ОПИСАНИЕ",
+	charcreate_phys = "ФИЗИЧЕСКОЕ ОПИСАНИЕ",
+
+	char_age = "ВОЗРАСТ: ",
+	char_height = "РОСТ: ",
+	char_eye = "ЦВЕТ ГЛАЗ: ",
+	char_shape = "ТЕЛОСЛОЖЕНИЕ: ",
+	char_lang = "РОДНОЙ ЯЗЫК: ",
+
+	charcreate_secondary = "ДОПОЛНИТЕЛЬНО",
+	charcreate_type = "ВЫБЕРИТЕ ПОЛ",
+	charcreate_model = "ВНЕШНИЙ ВИД",
+
+	charcreate_back = "НАЗАД",
+	charcreate_next = "ДАЛЕЕ",
+	charcreate_apply = "СОЗДАТЬ ПЕРСОНАЖА",
+
 	community = "Сообщество",
 	checkAll = "Отметить все",
 	uncheckAll = "Убрать все",

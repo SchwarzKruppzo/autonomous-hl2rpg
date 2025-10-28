@@ -28,12 +28,15 @@ function ix.limb:IsActive()
 end
 
 if CLIENT then
-	function ix.limb:GetColor(health)
-		if health > 75 then
+	function ix.limb:GetColor(health, max)
+		max = max or health
+		local percent = health / max 
+
+		if percent > 0.75 then
 			return Color(166, 243, 76, 255)
-		elseif health > 50 then
+		elseif percent > 0.5 then
 			return Color(233, 225, 94, 255)
-		elseif health > 25 then
+		elseif percent > 0.25 then
 			return Color(233, 173, 94, 255)
 		else
 			return Color(222, 57, 57, 255)

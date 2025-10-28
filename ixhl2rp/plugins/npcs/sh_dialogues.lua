@@ -371,26 +371,31 @@ ix.dialogues.Add("snektil", {
 			if SERVER then
 				local rations = 0
 				local work_points = {}
-
 				local unique_crates = {}
 
 				for k, v in ipairs(ents.FindByClass("ix_ration_palette")) do
 					for z, x in pairs(v.crates or {}) do
 						if !IsValid(x) then continue end
+						local entIndex = x:EntIndex()
 						
-						unique_crates[x:EntIndex()] = x
+						if table.HasValue(unique_crates, entIndex) then continue end
+						table.insert(unique_crates, entIndex)
 					end
 
 					v.crates = {}
 				end
 
-				for z, x in pairs(unique_crates) do
-					for _, charID in pairs(x.workers or {}) do
+				for _, index in pairs(unique_crates) do
+					local crate = Entity(index)
+
+					if !IsValid(crate) then continue end
+					
+					for _, charID in pairs(crate.workers or {}) do
 						work_points[charID] = math.min((work_points[charID] or 0) + 1, 75)
 					end
 
-					rations = rations + (x:GetCount() * 11)
-					x:Remove()
+					rations = rations + (crate:GetCount() * 11)
+					crate:Remove()
 				end
 
 				for charID, points in pairs(work_points) do
@@ -405,11 +410,13 @@ ix.dialogues.Add("snektil", {
 						local character = ix.char.loaded[charID]
 						
 						if character then
-							character:GiveMoney(points)
-
 							local owner = character:GetPlayer()
-							if owner then
+							
+							if IsValid(owner) then
+								character:GiveMoney(points)
 								owner:NotifyLocalized("Вы получили "..points.." токенов за работу на заводе рационов.")
+								
+								owner:RewardXP(math.max(math.Round(points), 50), "производство")
 							end
 						end
 					end

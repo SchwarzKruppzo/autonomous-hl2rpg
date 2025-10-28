@@ -156,11 +156,23 @@ function QUERY_CLASS:Select(fieldName)
 end
 
 function QUERY_CLASS:Insert(key, value)
-	self.insertList[#self.insertList + 1] = {"`"..key.."`", "'"..self:Escape(value).."'"}
+	local bvalue = value
+
+	if isbool(value) then
+		bvalue = (value == true) and 1 or 0
+	end
+	
+	self.insertList[#self.insertList + 1] = {"`"..key.."`", "'"..self:Escape(bvalue).."'"}
 end
 
 function QUERY_CLASS:Update(key, value)
-	self.updateList[#self.updateList + 1] = {"`"..key.."`", "'"..self:Escape(value).."'"}
+	local bvalue = value
+
+	if isbool(value) then
+		bvalue = (value == true) and 1 or 0
+	end
+
+	self.updateList[#self.updateList + 1] = {"`"..key.."`", "'"..self:Escape(bvalue).."'"}
 end
 
 function QUERY_CLASS:Create(key, value)
@@ -231,18 +243,26 @@ local function BuildSelectQuery(queryObj)
 	if (isnumber(queryObj.limit)) then
 		queryString[#queryString + 1] = " LIMIT "
 		queryString[#queryString + 1] = queryObj.limit
+
+		if (isnumber(queryObj.offset)) then
+			queryString[#queryString + 1] = " OFFSET "
+			queryString[#queryString + 1] = queryObj.offset
+		end
 	end
 
 	return table.concat(queryString)
 end
 
 local function BuildInsertQuery(queryObj, bIgnore, bReplace)
-	local suffix = (bIgnore and (mysql.module == "sqlite" and "INSERT OR IGNORE INTO" or "INSERT IGNORE INTO") or "INSERT INTO")
-	suffix = bReplace and (mysql.module == "sqlite" and "INSERT OR REPLACE INTO" or "INSERT INTO") or suffix
+	local isSQL = mysql.module == "sqlite"
+
+	local suffix = (bIgnore and (isSQL and "INSERT OR IGNORE INTO" or "INSERT IGNORE INTO") or "INSERT INTO")
+	suffix = bReplace and (isSQL and "INSERT OR REPLACE INTO" or "INSERT INTO") or suffix
 
 	local queryString = {suffix}
 	local keyList = {}
 	local valueList = {}
+	local replaceList = {}
 
 	if (isstring(queryObj.tableName)) then
 		queryString[#queryString + 1] = " `"..queryObj.tableName.."`"
@@ -254,6 +274,10 @@ local function BuildInsertQuery(queryObj, bIgnore, bReplace)
 	for i = 1, #queryObj.insertList do
 		keyList[#keyList + 1] = queryObj.insertList[i][1]
 		valueList[#valueList + 1] = queryObj.insertList[i][2]
+
+		if bReplace and !isSQL then
+			replaceList[#replaceList + 1] = queryObj.insertList[i][1] .. " = " .. queryObj.insertList[i][2]
+		end
 	end
 
 	if (#keyList == 0) then
@@ -263,8 +287,8 @@ local function BuildInsertQuery(queryObj, bIgnore, bReplace)
 	queryString[#queryString + 1] = " ("..table.concat(keyList, ", ")..")"
 	queryString[#queryString + 1] = " VALUES ("..table.concat(valueList, ", ")..")"
 
-	if bReplace and mysql.module != "sqlite" then
-		queryString[#queryString + 1] = " ON DUPLICATE KEY UPDATE"
+	if bReplace and !isSQL then
+		queryString[#queryString + 1] = " ON DUPLICATE KEY UPDATE "..table.concat(replaceList, ", ")
 	end
 	
 	return table.concat(queryString)

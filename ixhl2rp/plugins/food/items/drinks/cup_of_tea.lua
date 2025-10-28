@@ -14,3 +14,4 @@ ITEM.stats.container = false
 ITEM.stats.thirst = 17
 ITEM.stats.hunger = 0
 ITEM.stats.uses = 5
+ITEM.stats.noExpire = true

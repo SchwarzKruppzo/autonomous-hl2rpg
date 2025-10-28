@@ -36,6 +36,30 @@ LANGUAGE = {
 	chatTabExists = "A chat tab with that name already exists!",
 	chatMarkRead = "Mark all as read",
 
+	charcreate_faction = "FACTION  /// CHARACTER CREATION",
+	charcreate_visual = "APPEARANCE  /// CHARACTER CREATION",
+	charcreate_left = "CHARACTER BIO",
+	charcreate_right = "VISUAL LOOK",
+
+	charcreate_name = "NAME",
+	charcreate_random = "RANDOMIZE NAME",
+	charcreate_visual = "VISUAL DESCRIPTION",
+	charcreate_phys = "PHYSICAL DESCRIPTION",
+
+	char_age = "AGE: ",
+	char_height = "HEIGHT: ",
+	char_eye = "EYE COLOR: ",
+	char_shape = "BODY SHAPE: ",
+	char_lang = "SECONDARY LANGUAGE: ",
+
+	charcreate_secondary = "ADDITIONAL",
+	charcreate_type = "CHOOSE GENDER",
+	charcreate_model = "APPEARANCE",
+
+	charcreate_back = "BACK",
+	charcreate_next = "NEXT",
+	charcreate_apply = "CREATE CHARACTER",
+
 	community = "Community",
 	checkAll = "Check All",
 	uncheckAll = "Uncheck All",

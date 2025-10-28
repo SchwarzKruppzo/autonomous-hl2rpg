@@ -1,10 +1,10 @@
 local PLUGIN = PLUGIN
 
-PLUGIN.name = "Basic Level System"
+PLUGIN.name = "Level System"
 PLUGIN.author = "Schwarz Kruppzo"
 PLUGIN.description = ""
 
-PLUGIN.maxLevel = 10
+PLUGIN.maxLevel = 100
 
 ix.char.RegisterVar("level", {
 	field = "level",
@@ -14,10 +14,10 @@ ix.char.RegisterVar("level", {
 	Net = {
 		Transmit = ix.transmit.all,
 		Write = function(character, value)
-			net.WriteUInt(value, 4)
+			net.WriteUInt(value, 7)
 		end,
 		Read = function(character)
-			return net.ReadUInt(4)
+			return net.ReadUInt(7)
 		end
 	},
 	bNoDisplay = true
@@ -58,8 +58,15 @@ ix.chat.Register("level", {
 	end
 })
 
+PLUGIN.XPTable = PLUGIN.XPTable or ix.util.Include("sh_data.levelxp.lua")
+PLUGIN.PointsTable = PLUGIN.PointsTable or ix.util.Include("sh_data.levelpoints.lua")
+
 function PLUGIN:GetRequiredLevelXP(currentLevel)
-	return 50 * (currentLevel - 1) ^ 2.125 + (75 + (currentLevel * 50))
+	return PLUGIN.XPTable[currentLevel] or 0
+end
+
+function PLUGIN:GetPointsAtLevel(currentLevel)
+	return PLUGIN.PointsTable[currentLevel] or 0
 end
 
 ix.util.Include("cl_hooks.lua")
@@ -127,9 +134,19 @@ ix.command.Add("CharSetLevel", {
 	},
 	OnRun = function(self, client, target, targetValue)
 		local lastLVL = target:GetLevel()
-		targetValue = math.Clamp(targetValue, 1, 10)
+		targetValue = math.Clamp(targetValue, 1, PLUGIN.maxLevel)
 
 		target:SetLevel(targetValue)
+
+		local points = 0
+		for i = lastLVL, targetValue, (targetValue > lastLVL and 1 or -1) do
+			if i == targetValue and (targetValue < lastLVL) then continue end
+			if i == 1 then continue end
+
+			points = points + PLUGIN:GetPointsAtLevel(i)
+		end
+		points = (targetValue < lastLVL) and -points or points
+		target:SetSkillPoints(target:GetSkillPoints() + points)
 
 		if targetValue > lastLVL then
 			target:SetData("levelup", true)
@@ -141,16 +158,7 @@ ix.command.Add("CharSetLevel", {
 				t = 3,
 			})
 
-			for k, v in pairs(ix.specials.list) do
-				target:SetSpecial(k, 1)
-			end
-
 			target:SetData("levelup", true)
-
-			timer.Simple(0.1, function()
-				net.Start("ixLevelUp")
-				net.Send(target:GetPlayer())
-			end)
 		end
 
 		return "Вы успешно изменили уровень персонажа."
@@ -170,6 +178,16 @@ ix.command.Add("CharAddLevel", {
 		targetValue = math.Clamp(lastLVL + targetValue, 1, PLUGIN.maxLevel)
 
 		target:SetLevel(targetValue)
+
+		local points = 0
+		for i = lastLVL, targetValue, (targetValue > lastLVL and 1 or -1) do
+			if i == targetValue and (targetValue < lastLVL) then continue end
+			if i == 1 then continue end
+
+			points = points + PLUGIN:GetPointsAtLevel(i)
+		end
+		points = (targetValue < lastLVL) and -points or points
+		target:SetSkillPoints(target:GetSkillPoints() + points)
 
 		if targetValue > lastLVL then
 			target:SetData("levelup", true)

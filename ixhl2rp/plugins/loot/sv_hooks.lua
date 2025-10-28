@@ -1,3 +1,5 @@
+util.AddNetworkString("loot.spawnpoint")
+
 function PLUGIN:SaveData()
 	local data = {}
 
@@ -31,3 +33,29 @@ function PLUGIN:LoadData()
 		end
 	end
 end
+
+net.Receive("loot.spawnpoint", function(len, client)
+	if !client:IsSuperAdmin() then return end
+
+	local id = net.ReadString()
+
+	local vStart = client:GetShootPos()
+	local vForward = client:GetAimVector()
+	local trace = {}
+	trace.start = vStart
+	trace.endpos = vStart + (vForward * 2048)
+	trace.filter = client
+
+	local tr = util.TraceLine(trace)
+	local ang = client:EyeAngles()
+	ang.yaw = ang.yaw + 180
+	ang.roll = 0
+	ang.pitch = 0
+
+	local loot = ents.Create("ix_loot")
+	loot:SetPos(tr.HitPos)
+	loot:SetAngles(ang)
+	loot:Spawn()
+	loot:Activate()
+	loot:SetupContainer(id)
+end)

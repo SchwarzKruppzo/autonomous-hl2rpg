@@ -46,6 +46,14 @@ if SERVER then
 		self:SetUseType(SIMPLE_USE)
 		self:SetSolid(SOLID_VPHYSICS)
 
+		if info.Skin then
+			self:SetSkin(info.Skin)
+		end
+		
+		if info.BodyGroups then
+			self:SetBodyGroups(info.BodyGroups)
+		end
+
 		if info.NotSolid then
 			self:SetCollisionGroup(COLLISION_GROUP_WEAPON)
 		end

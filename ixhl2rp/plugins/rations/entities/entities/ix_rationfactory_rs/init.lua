@@ -3,7 +3,7 @@ include("shared.lua")
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 
-local SPAWN_ITEM = "ration_tier_1"
+local SPAWN_ITEM = "ration_tier_1v"
 
 function ENT:Initialize()
 	self:SetModel("models/props_combine/combine_smallmonitor001.mdl")

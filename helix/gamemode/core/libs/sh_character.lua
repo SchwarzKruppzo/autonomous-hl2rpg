@@ -269,6 +269,14 @@ if (SERVER) then
 						value = istable(value) and value or util.JSONToTable(value)
 					end
 
+					if v.OnRestore then
+						local result = v:OnRestore(value, characterInfo)
+
+						if result then
+							value = result
+						end
+					end
+
 					-- load meta vars
 
 					data[k] = value

@@ -11,9 +11,12 @@ function ItemDrink:Init()
 		thirst = 0,
 		hunger = 0,
 		uses = 1,
+		freezeSpeed = 2 * 60 * 60, -- 2 hours
+		unfreezeSpeed = 60 * 60, -- 1 hour
+		--noExpire = true,
 		expireTime = 24 * 60 * 60,
 		expireMultiplier = {
-			cold = 2
+			cold = 999
 		}
 	}
 	
@@ -21,7 +24,7 @@ function ItemDrink:Init()
 		name = "Вскрыть",
 		OnRun = function(item)
 			item:SetData("closed", false)
-			item:SetData("expire_time", os.time() + self.stats.expireTime)
+			item:StartRotProgress()
 
 			item.player:EmitSound("foley/crushable/tin_can_break.mp3")
 			return true
@@ -151,21 +154,22 @@ function ItemDrink:Init()
 		Transmit = ix.transmit.owner,
 	})
 
-	self:AddData("expire_time", {
+	self:AddData("expire", {
 		Transmit = ix.transmit.owner,
 	})
-	self:AddData("expire_delta", {
-		Transmit = ix.transmit.owner,
-	})
-	self:AddData("expire_delta_time", {
+	self:AddData("expire_last", {
 		Transmit = ix.transmit.owner,
 	})
 
-	self:AddData("expire_mul_last", {
+	self:AddData("delta_time", {
 		Transmit = ix.transmit.owner,
 	})
-	self:AddData("expire_mul", {
+	self:AddData("delta_seconds", {
 		Transmit = ix.transmit.owner,
+	})
+
+	self:AddData("freezed_time", {
+		Transmit = ix.transmit.none,
 	})
 end
 
@@ -185,36 +189,78 @@ function ItemDrink:OnInstanced(isCreated)
 	if isCreated then
 		self:SetData("uses", self.stats.uses or 1)
 		self:SetData("closed", self.stats.container or false)
-		self:SetData("expire_time", !self:IsClosed() and (os.time() + self.stats.expireTime) or 0)
+
+		if !self:IsClosed() then
+			self:StartRotProgress()
+		end
 	end
 end
 
-function ItemDrink:CalculateExpireMultiplier()
-	local dateDelta = self:GetData("expire_delta") or 0
-	local dateDeltaTime = self:GetData("expire_delta_time") or 0
-
-	local mul = 0
-
-	if dateDeltaTime > 0 then
-		mul = (1 - math.Clamp((((dateDelta + dateDeltaTime) - os.time()) / dateDeltaTime), 0, 1))
+function ItemDrink:StartRotProgress()
+	if self.stats.noExpire then
+		return
 	end
 
-	mul = math.Remap(mul, 0, 1, self:GetData("expire_mul_last") or 1, self:GetData("expire_mul") or 0)
+	self:SetData("expire", os.time() + self.stats.expireTime)
+	self:SetData("expire_last", nil)
+	self:SetData("delta_time", nil)
+	self:SetData("delta_seconds", nil)
+	self:SetData("freezed_time", nil)
+end
 
-	return mul
+function ItemDrink:GetRottenTime()
+	local currentTime = os.time()
+
+	local expireNew = self:GetData("expire") or 0
+	local expireLast = self:GetData("expire_last") or 0
+	local deltaTime = self:GetData("delta_time") or 0
+	local deltaSeconds = self:GetData("delta_seconds") or 0
+
+	local delta = (1 - math.Clamp(((deltaTime + deltaSeconds) - currentTime) / deltaSeconds, 0, 1))
+	local rottenTime = Lerp(delta, expireLast, expireNew)
+
+	return rottenTime
+end
+
+function ItemDrink:IsRotten()
+	return self.stats.noExpire and false or (os.time() >= self:GetRottenTime())
 end
 
 function ItemDrink:OnTransfer(newInventory, oldInventory)
-	self:SetData("expire_mul_last", self:CalculateExpireMultiplier())
+	if self.stats.noExpire then
+		return
+	end
 
+	local currentTime = os.time()
+	local expireTime = (self:GetData("expire") or 0)
+	local rottenTime = self:GetRottenTime()
+
+	if currentTime >= rottenTime then
+		return
+	end
+	
 	if !newInventory or newInventory.type != "container" then
-		self:SetData("expire_delta", os.time())
-		self:SetData("expire_delta_time", 24 * 60 * 60)
-		self:SetData("expire_mul", 1)
+		local freezedTime = self:GetData("freezed_time") or 0
+		local remainingTime = expireTime - freezedTime
+		local expireLast = (self:GetData("expire_last") or 0)
+
+		self:SetData("freezed_time",  nil)
+
+		self:SetData("expire_last", expireLast + (rottenTime - expireLast))
+		self:SetData("expire", currentTime + (remainingTime / self.stats.expireMultiplier.cold))
+		
+		self:SetData("delta_time", currentTime)
+		self:SetData("delta_seconds", self.stats.unfreezeSpeed)
 	elseif newInventory and newInventory.type == "container" then
-		self:SetData("expire_delta", os.time())
-		self:SetData("expire_delta_time", 24 * 2 * 60 * 60)
-		self:SetData("expire_mul", self.stats.expireMultiplier.cold)
+		local remainingTime = expireTime - currentTime
+
+		self:SetData("freezed_time", currentTime)
+
+		self:SetData("expire_last", expireTime)
+		self:SetData("expire", currentTime + (remainingTime * self.stats.expireMultiplier.cold))
+
+		self:SetData("delta_time", currentTime)
+		self:SetData("delta_seconds", self.stats.freezeSpeed)
 	end
 end
 
@@ -264,14 +310,17 @@ if CLIENT then
 		if !self:GetEntity() then
 			local expDateT
 
-			if !self:IsClosed() then
-				local expirationDate = (self:GetData("expire_time") or 0) * self:CalculateExpireMultiplier()
+			if !self.stats.noExpire and !self:IsClosed() then
+				local expirationDate = self:GetRottenTime()
 
-				expDateT = tooltip:AddRowAfter("name", "expirationDate")
-				expDateT:SetBackgroundColor(derma.GetColor("Error", tooltip))
-				expDateT:SetTextColor(derma.GetColor("Warning", expDateT))
-				
-				expDateT:SetText("Испортится через: " .. ParseDuration((expirationDate - os.time()) / 60))
+				if os.time() >= expirationDate then
+
+				else
+					expDateT = tooltip:AddRowAfter("name", "expirationDate")
+					expDateT:SetBackgroundColor(derma.GetColor("Error", tooltip))
+					expDateT:SetTextColor(derma.GetColor("Warning", expDateT))
+					expDateT:SetText("Испортится через: " .. ParseDuration((expirationDate - os.time()) / 60))
+				end
 			end
 			
 			local uses = tooltip:AddRowAfter(expDateT and "expirationDate" or "name")

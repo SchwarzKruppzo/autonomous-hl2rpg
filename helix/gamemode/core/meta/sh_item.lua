@@ -585,12 +585,12 @@ if (SERVER) then
 					return false, "itemOwned"
 				end
 			else
-				self.characterID = characterID
+				self.characterID = characterID 
 				self.playerID = playerID
 
 				local query = mysql:Update("ix_items")
-					query:Update("character_id", characterID)
-					query:Update("player_id", playerID)
+					query:Update("character_id", tonumber(characterID) or 0)
+					query:Update("player_id", tonumber(playerID) or 0)
 					query:Where("item_id", self:GetID())
 				query:Execute()
 			end

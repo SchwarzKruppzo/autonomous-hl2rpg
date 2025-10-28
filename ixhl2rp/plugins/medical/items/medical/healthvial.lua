@@ -15,51 +15,32 @@ ITEM.iconCam = {
 }
 
 function ITEM:OnConsume(player, injector, mul, character)
-	local client = character:GetPlayer()
-	local blood, shock, rad = character:GetBlood(), character:GetShock(), character:GetRadLevel()
-	local isBleeding, isPain, bleedDmg = false, character:IsFeelPain(), 0
-	local newBlood = math.Clamp(blood + 300, -1, 5000)
-	local newShock = math.max(shock - 500, 0)
-	local newRad = math.max(rad - 125, 0)
+	local health = character:Health()
+	local injuries = {}
 
-	character:SetBlood(newBlood)
+	for k, v in health:GetHediffs() do
+		if v.part == 1 or !v.isInjury then continue end
+		if v.tended_time != -1 then continue end
+		if v.isFracture then continue end
 
-	if math.random(0, 100) < 25 then
-		isBleeding = character:IsBleeding()
-		bleedDmg = (character:GetDmgData().bleedDmg or 0)
-
-		character:SetBleeding(false)
+		injuries[#injuries + 1] = {diff = v, severity = v.severity}
 	end
 
-	local healedLimbs = 0
-	local limbs = character:GetLimbData()
-	for k, v in pairs(limbs) do
-		healedLimbs = healedLimbs + (25 - math.max(25 - v, 0))
+	table.sort(injuries, function(a, b) return a.severity > b.severity end)
+
+	local dmg = 0
+	for i = 1, math.min(#injuries, 6) do
+		local injury = injuries[i]
+
+		if injury then
+			dmg = dmg + (injury.severity or 0)
+			health:TendHediff(injury.diff, (9 * 60) * mul)
+		end
 	end
 
-	character:SetFeelPain(false)
-	character:HealLimbs(25)
+	local effect = 10
 
-	local head = character:GetLimbDamage("head")
-	local chest = character:GetLimbDamage("chest")
-	local stomach = character:GetLimbDamage("stomach")
-	local lleg = character:GetLimbDamage("leftLeg")
-	local rleg = character:GetLimbDamage("rightLeg")
-	local lhand = character:GetLimbDamage("leftHand")
-	local rhand = character:GetLimbDamage("rightHand")
-	local minHP = 100 - (head + ((chest + stomach)/2) + ((lleg + rleg)/2) + ((lhand + rhand)/2))/4
-	client:SetHealth(math.max(client:Health(), minHP))
+	health:AddHediff("painkiller", 0, {severity = effect, tended_start = os.time(), tended_time = 2 * 60})
 
-	character:SetShock(newShock)
-	character:SetRadLevel(newRad)
-
-	return {
-		bleed = isBleeding, 
-		bleedDmg = bleedDmg,
-		blood = (newBlood - blood),
-		shock = math.abs(newShock - shock),
-		rad = math.abs(newRad - rad),
-		limbs = healedLimbs,
-		pain = isPain
-	}
+	return {dmg = dmg}
 end

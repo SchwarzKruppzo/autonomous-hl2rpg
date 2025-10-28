@@ -13,3 +13,4 @@ ITEM.stats.uses = 5
 
 ITEM.junk = "empty_tin_can"
 ITEM.rarity = 1
+ITEM.stats.expireTime = 172800 -- 2 days

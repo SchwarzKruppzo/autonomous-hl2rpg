@@ -50,13 +50,9 @@ do
 			local client = self:GetPlayer()
 
 			local instance = ix.Item:Instance(type)
-			instance:CreateDatafile(client)
+			instance:SetupCharacter(self)
 
-			timer.Simple(1, function()
-				client.ixDatafile = instance:GetData("datafileID", 0)
-
-				client:AddItem(instance, "cid")
-			end)
+			client:AddItem(instance, "cid")
 		end
 	end
 end

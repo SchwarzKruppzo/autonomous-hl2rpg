@@ -14,5 +14,6 @@ ITEM.stats.container = true
 ITEM.stats.thirst = 4
 ITEM.stats.hunger = 8
 ITEM.stats.uses = 5
+ITEM.stats.expireTime = 172800 -- 2 days
 
 ITEM.junk =  "empty_tin_can"

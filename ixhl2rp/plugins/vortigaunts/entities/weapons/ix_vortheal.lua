@@ -231,6 +231,40 @@ function SWEP:PrimaryAttack()
 					if (target:IsPlayer()) then
 						local character = target:GetCharacter()
 
+						local health = character:Health()
+						local bloodLoss
+						local injuries = {}
+
+						for k, v in health:GetHediffs() do
+							if v.uniqueID == "bleeding" then 
+								bloodLoss = v
+							end
+
+							if v.part == 1 or !v.isInjury then continue end
+							if v.tended_time != -1 then continue end
+
+							injuries[#injuries + 1] = {diff = v, severity = v.severity}
+						end
+
+						table.sort(injuries, function(a, b) return a.severity > b.severity end)
+
+						if bloodLoss then
+							bloodLoss:AdjustSeverity(-0.08)
+						end
+
+						for i = 1, math.min(#injuries, 5) do
+							local injury = injuries[i]
+
+							if injury then
+								health:TendHediff(injury.diff, (15 * 60))
+							end
+						end
+
+						local effect = 25
+
+						health:AddHediff("painkiller", 0, {severity = effect, tended_start = os.time(), tended_time = 2 * 60})
+
+						/*
 						character:HealLimbs(40)
 						character:SetBlood(math.min(character:GetBlood() + 800, 5000))
 						character:SetShock(math.max(character:GetShock() - 2500, 0))
@@ -253,7 +287,7 @@ function SWEP:PrimaryAttack()
 							end)
 
 							target.ixUnconsciousOut = true
-						end
+						end*/
 
 						self.Owner:ConsumeStamina(10)
 						ConsumeFood(self.Owner, 15)

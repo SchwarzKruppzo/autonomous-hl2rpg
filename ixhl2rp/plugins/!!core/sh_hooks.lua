@@ -140,8 +140,9 @@ local function UpdatePlayerHoldType(client, weapon)
 		local class = weapon:GetClass()
 		local baseTable = ix.anim[client.ixAnimModelClass] or {}
 
-		holdType = weapon.HoldtypeActive and weapon.HoldtypeActive or weapon:GetHoldType()
+		holdType = weapon.HoldType or weapon:GetHoldType()
 		holdType = HOLDTYPE_TRANSLATOR[holdType] or holdType
+
 
 		if baseTable and baseTable[class] then
 			holdType = class or holdType
@@ -247,7 +248,11 @@ function GAMEMODE:DoAnimationEvent(client, event, data)
 
 				return ACT_VM_SECONDARYATTACK
 			elseif (event == PLAYERANIMEVENT_RELOAD) then
-				client:AnimRestartGesture(GESTURE_SLOT_ATTACK_AND_RELOAD, animation.reload or ACT_GESTURE_RELOAD_SMG1, true)
+				if isstring(animation.reload) then
+					client:AddVCDSequenceToGestureSlot(GESTURE_SLOT_ATTACK_AND_RELOAD, client:LookupSequence(animation.reload), 0, true)
+				else
+					client:AnimRestartGesture(GESTURE_SLOT_ATTACK_AND_RELOAD, animation.reload or ACT_GESTURE_RELOAD_SMG1, true)
+				end
 
 				return ACT_INVALID
 			elseif (event == PLAYERANIMEVENT_JUMP) then

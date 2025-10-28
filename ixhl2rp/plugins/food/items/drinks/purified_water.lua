@@ -14,6 +14,7 @@ ITEM.stats.container = true
 ITEM.stats.thirst = 15
 ITEM.stats.hunger = 0
 ITEM.stats.uses = 5
+ITEM.stats.noExpire = true
 
 ITEM.rarity = 1
 ITEM.junk =  "empty_plastic_bottle"

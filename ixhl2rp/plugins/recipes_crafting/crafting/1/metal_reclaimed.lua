@@ -8,7 +8,7 @@ RECIPE.results = {
 	metal_reclaimed = 1
 }
 RECIPE.tool_durability = {
-	tool_hammer = 10
+	tool_hammer = 5
 }
 RECIPE.skill = {"crafting", 1}
 RECIPE.tools = {"tool_hammer"}

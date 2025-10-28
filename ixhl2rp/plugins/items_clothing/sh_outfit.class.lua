@@ -13,9 +13,16 @@ function Outfit:Init(client)
 end
 
 function Outfit:SetupItems()
-	if IsValid(self.client) then
-		self.client:SetNWFloat("speed_debuff", 1)
+	if !IsValid(self.client) then
+		return
 	end
+
+	if !self.prepareItems then
+		return
+	end
+	
+	self.prepareItems = nil
+	self.client:SetNWFloat("speed_debuff", 1)
 	
 	self.armor = {}
 	self.gasmask = nil
@@ -35,8 +42,11 @@ end
 
 function Outfit:LoadCharacter(character, prevCharacter)
 	self.loading = true
-	
-	self:SetupItems()
+	self.prepareItems = true
+
+	timer.Simple(0, function()
+		self:SetupItems()
+	end)
 end
 
 function Outfit:ModelChanged(model, oldModel)
@@ -45,6 +55,7 @@ function Outfit:ModelChanged(model, oldModel)
 	end
 
 	self:Reset()
+	self.prepareItems = true
 	self:SetupItems()
 end
 
@@ -74,6 +85,17 @@ function Outfit:AddItem(item, mdl, bodygroups)
 	}
 
 	table.insert(self.layers, layer)
+end
+
+function Outfit:ModifyItem(item, bodygroups)
+	for k, v in ipairs(self.layers) do
+		if v.item == false then continue end
+
+		if v.item == item.id then
+			self.layers[k].bodygroups = table.Copy(bodygroups)
+			return
+		end
+	end
 end
 
 function Outfit:RemoveItem(item)

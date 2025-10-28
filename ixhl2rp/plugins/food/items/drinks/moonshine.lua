@@ -13,3 +13,9 @@ ITEM.iconCam = {
 ITEM.stats.container = false
 ITEM.stats.thirst = 8
 ITEM.stats.uses = 5
+
+function ITEM:CustomEffect(client, uses)
+	local health = client:GetCharacter():Health()
+
+	health:AddHediff("alcohol", 0, {severity = 0, effect = 50 * uses, tended_start = os.time(), tended_time = 120})
+end

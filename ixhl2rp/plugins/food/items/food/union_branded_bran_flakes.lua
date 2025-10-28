@@ -9,5 +9,6 @@ ITEM.stats.container = true
 ITEM.stats.thirst = -3
 ITEM.stats.hunger = 6
 ITEM.stats.uses = 10
+ITEM.stats.noExpire = true
 
 ITEM.rarity = 1

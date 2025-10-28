@@ -1,7 +1,7 @@
 RECIPE.name = "Молоток"
 RECIPE.category = "Инструменты"
 RECIPE.requirements = {
-	metal_reclaimed = 2,
+	metal_reclaimed = 1,
 	mat_wood = 2,
 }
 RECIPE.results = {

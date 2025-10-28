@@ -13,5 +13,6 @@ ITEM.iconCam = {
 ITEM.stats.container = true
 ITEM.stats.hunger = 7
 ITEM.stats.uses = 3
+ITEM.stats.expireTime = 172800 -- 2 days
 
 ITEM.junk =  "empty_tin_can"

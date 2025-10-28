@@ -666,15 +666,17 @@ function PANEL:Paint(w, h)
 	end
 
 	render.SetBlend(1 * self:GetAlpha())
+	render.SetColorModulation(1, 1, 1)
+	
 	cam.Start3D(pos, ang, 5, 0, 0, nil, nil, 0.01, 5280)
-		cam.IgnoreZ(true)
+		--cam.IgnoreZ(true)
 			render.SuppressEngineLighting(true)
 			self.mdl:SetPos(pos + Vector(580, 20, 7))
 			self.mdl:SetAngles(mdlang)
 			self.mdl:DrawModel()
 
 			render.SuppressEngineLighting(false)
-		cam.IgnoreZ(false)
+		--cam.IgnoreZ(false)
 	cam.End3D()
 
 	local h = h - 100 - 155
@@ -745,16 +747,6 @@ function PANEL:MenuClick(id)
 	local bHasCharacter = #ix.characters > 0
 
 	if id == 1 then
-		if !LocalPlayer():GetData("quiz", false) then
-			if IsValid(ix.gui.quizAnswering) then
-				ix.gui.quizAnswering:Remove()
-			end
-			
-			vgui.Create("ixQuizMenu")
-			ix.gui.quizAnswering:CreateQuizContent()
-			return
-		end
-		
 		if (#ix.characters >= maximum) then
 			parent:ShowNotice(3, L("maxCharacters"))
 			return

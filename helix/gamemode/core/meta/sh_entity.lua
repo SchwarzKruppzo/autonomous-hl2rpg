@@ -14,7 +14,7 @@ local CHAIR_CACHE = {}
 
 -- Add chair models to the cache by checking if its vehicle category is a class.
 for _, v in pairs(list.Get("Vehicles")) do
-	if (v.Category == "Chairs") then
+	if (v.Category == "#spawnmenu.category.chairs") then
 		CHAIR_CACHE[v.Model] = true
 	end
 end

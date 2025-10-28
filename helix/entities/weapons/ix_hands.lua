@@ -404,7 +404,7 @@ function SWEP:PrimaryAttack()
 
 	timer.Simple(0.055, function()
 		if (IsValid(self) and IsValid(self:GetOwner())) then
-			local damage = 25
+			local damage = 5
 			self:GetOwner():LagCompensation(true)
 				local data = {}
 					data.start = self:GetOwner():GetShootPos()

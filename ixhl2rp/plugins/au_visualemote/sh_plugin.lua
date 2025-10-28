@@ -23,7 +23,9 @@ ix.chat.Register("mev", {
 			trace = util.TraceLine(trace)
 			
 			if (trace.Fraction >= (0.75)) then
-				return true
+				local distance = (speaker:GetPos() - listener:GetPos()):LengthSqr() <= (280 * 280)
+
+				return distance
 			end
 		end
 
@@ -51,7 +53,9 @@ ix.chat.Register("sv", {
 			trace = util.TraceLine(trace)
 			
 			if (trace.Fraction >= (0.75)) then
-				return true
+				local distance = (speaker:GetPos() - listener:GetPos()):LengthSqr() <= (280 * 280)
+
+				return distance
 			end
 		end
 

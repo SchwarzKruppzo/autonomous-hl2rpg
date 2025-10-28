@@ -23,6 +23,7 @@ function ix.bar.Add(getValue, icon, priority, identifier)
 end
 
 do
+
 	ix.bar.Add(function()
 		local character = LocalPlayer():GetCharacter()
 

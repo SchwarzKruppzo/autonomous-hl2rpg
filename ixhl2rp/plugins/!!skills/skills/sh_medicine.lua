@@ -5,8 +5,8 @@ SKILL.category = 4
 local function GetHealFactor(data)
 	local factor = 0
 
-	if data.bleed then
-		factor = factor + (data.bleedDmg or 0) * 0.01
+	if data.dmg then
+		factor = factor + (data.dmg or 0) * 0.01
 	end
 
 	if data.blood then
@@ -39,20 +39,36 @@ end
 ix.action:Register("healing", "medicine", {
 	name = "Лечение",
 	experience = function(action, character, skill, data)
-		return 10 * GetHealFactor(data)
+		local price = 5 + (20 * GetHealFactor(data))
+
+		if character:HasSpecialLevel("in", 25) then
+			price = price + (price * 0.15)
+		end
+
+		return price
 	end
 })
 
 ix.action:Register("healingTarget", "medicine", {
 	name = "Лечение цели",
 	experience = function(action, character, skill, data)
-		return 15 * GetHealFactor(data)
+		local price = 10 + (30 * GetHealFactor(data))
+
+		if character:HasSpecialLevel("in", 25) then
+			price = price + (price * 0.15)
+		end
+		
+		return price
 	end
 })
 
 ix.action:Register("craft_medicine", "medicine", {
 	name = "Крафт",
 	experience = function(action, character, skill, price)
+		if character:HasSpecialLevel("in", 25) then
+			price = price + (price * 0.15)
+		end
+
 		return price
 	end
 })

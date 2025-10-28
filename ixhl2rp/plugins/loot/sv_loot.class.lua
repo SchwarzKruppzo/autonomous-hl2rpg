@@ -52,14 +52,11 @@ function LootTemplate:Process(loot, seed, mul)
 		elseif info.count then
 			amount = math.max(info.count * mul, 0)
 		end
-
-		//amount = amount * 2
-		
 		local v = 0
 		for i = 1, amount do
 			local class = entry[1]:Roll(client)
 
-			if class then
+			if class and class.id != "empty" then
 				local count = 1
 				if class.min and class.max then
 					count = math.random(class.min, class.max)

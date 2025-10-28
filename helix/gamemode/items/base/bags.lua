@@ -172,10 +172,12 @@ end
 function Item:CanEquip(client)
 	local hasBag
 
-	for k, v in pairs(client:GetInventory("main"):GetItems()) do
-		if v.isBag then
-			hasBag = true
-			break
+	if IsValid(client) then
+		for k, v in pairs(client:GetInventory("main"):GetItems()) do
+			if v.isBag and v != self then
+				hasBag = true
+				break
+			end
 		end
 	end
 
@@ -187,17 +189,13 @@ function Item:CanEquip(client)
 end
 
 function Item:OnEquipped(client)
-	if self.GetOutfitData then
-		client.char_outfit:AddItem(self, false, {})
-		client.char_outfit:Update()
-	end
+	client.char_outfit:AddItem(self, false, self.bodyGroups or {})
+	client.char_outfit:Update()
 end
 
 function Item:OnUnequipped(client)
-	if self.GetOutfitData then
-		client.char_outfit:RemoveItem(self)
-		client.char_outfit:Update()
-	end
+	client.char_outfit:RemoveItem(self)
+	client.char_outfit:Update()
 end
 
 function Item:OnRegistered()
@@ -216,9 +214,7 @@ if SERVER then
 			self:CreateInventory()
 
 			if self.items then
-				ix.Item:LoadInstanceByID(self.items, function(item)
-					self.inventory:AddItem(item, item.x, item.y)
-				end)
+				ix.Item:LoadToInventory(self.items, self.inventory)
 
 				self.items = nil
 			end

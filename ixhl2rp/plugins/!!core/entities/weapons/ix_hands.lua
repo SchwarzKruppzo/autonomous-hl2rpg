@@ -203,6 +203,7 @@ function SWEP:Think()
 		-- Prevents the camera from getting stuck when the object that the client is holding gets deleted.
 		if(!IsValid(self.heldEntity) and self:GetOwner():GetLocalVar("bIsHoldingObject", true)) then
 			self:GetOwner():SetLocalVar("bIsHoldingObject", false)
+			self:GetOwner():SetLocalVar("holdingObject", nil)
 		end
 	end
 end
@@ -286,6 +287,7 @@ function SWEP:DropObject(bThrow)
 	
 	self.lastPlayerAngles = nil
 	self:GetOwner():SetLocalVar("bIsHoldingObject", false)
+	self:GetOwner():SetLocalVar("holdingObject", nil)
 
 	self.constraint:Remove()
 	self.holdEntity:Remove()
@@ -307,6 +309,7 @@ function SWEP:DropObject(bThrow)
 		end)
 	end
 
+	self.heldEntity.ixLastHeldOwner = self.heldEntity.ixHeldOwner
 	self.heldEntity.ixHeldOwner = nil
 	self.heldEntity.ixCollisionGroup = nil
 	self.heldEntity = nil
@@ -379,21 +382,8 @@ function SWEP:PrimaryAttack()
 		return
 	end
 
-/*
-	if (ix.plugin.Get("stamina")) then
-		local staminaUse = ix.config.Get("punchStamina")
-
-		if (staminaUse > 0) then
-			local value = self:GetOwner():GetLocalVar("stm", 0) - staminaUse
-
-			if (value < 0) then
-				return
-			elseif (SERVER) then
-				self:GetOwner():ConsumeStamina(staminaUse)
-			end
-		end
-	end
-*/
+	local staminaUse = ix.config.Get("punchStamina")
+	local canAttack = self:GetOwner():ProcessMeleeStamina(staminaUse)
 
 	if (SERVER) then
 		self:GetOwner():EmitSound("npc/vort/claw_swing"..math.random(1, 2)..".wav")
@@ -406,7 +396,7 @@ function SWEP:PrimaryAttack()
 
 	timer.Simple(0.055, function()
 		if (IsValid(self) and IsValid(self:GetOwner())) then
-			local damage = 25
+			local damage = 1
 			
 			self:GetOwner():LagCompensation(true)
 				local data = {}
@@ -483,6 +473,7 @@ function SWEP:SecondaryAttack()
 			self:SetNextSecondaryFire(CurTime() + 1.5)
 			self:SetNextPrimaryFire(CurTime() + 1.5)
 		elseif (!entity:IsNPC() and self:CanHoldObject(entity)) then
+			self:GetOwner():SetLocalVar("holdingObject", entity)
 			self:GetOwner():SetLocalVar("bIsHoldingObject", true)
 			self:PickupObject(entity)
 			self:PlayPickupSound(trace.SurfaceProps)

@@ -11,15 +11,11 @@ ITEM.iconCam = {
 }
 
 function ITEM:OnConsume(player, injector, mul, character)
-	local shock = character:GetShock()
-	local isPain = character:IsFeelPain()
-	local newShock = math.max(shock - 3000, 0)
+	local health = character:Health()
+	local timeMul = (2 - mul)
+	local effect = 10
 
-	character:SetFeelPain(false)
-	character:SetShock(newShock)
+	health:AddHediff("painkiller", 0, {severity = effect, tended_start = os.time(), tended_time = 60 * timeMul})
 
-	return {
-		shock = math.abs(newShock - shock),
-		pain = isPain
-	}
+	return {dmg = effect}
 end

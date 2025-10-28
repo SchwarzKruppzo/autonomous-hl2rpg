@@ -10,10 +10,12 @@ ITEM.iconCam = {
 	ang = Angle(5.5947318077087, 153.84669494629, -2.5044780613825e-06),
 	fov = 12.977123688937,
 }
+/*
 ITEM.factionLock = {
 	[FACTION_SECADMIN] = true,
 	[FACTION_ADMIN_HEAD] = true,
 	[FACTION_ADMIN] = true,
+	[FACTION_CONSCRIPT] = true,
 	[FACTION_MPF] = true,
 	[FACTION_OTA] = true
-}
+}*/

@@ -13,10 +13,24 @@ ITEM.iconCam = {
 }
 
 function ITEM:OnConsume(player, injector, mul, character)
-	local blood = character:GetBlood()
-	local newBlood = math.Clamp(blood + 600, -1, 5000)
+	local health = character:Health()
+	local bloodLoss
 
-	character:SetBlood(newBlood)
+	for k, v in health:GetHediffs() do
+		if v.part != 1 then continue end
+		if v.uniqueID == "bleeding" then 
+			bloodLoss = v
+			break
+		end
+	end
 
-	return {blood = (newBlood - blood)}
+	local blood = 0
+
+	if bloodLoss then
+		bloodLoss:AdjustSeverity(-0.12)
+
+		blood = 120
+	end
+
+	return {dmg = blood}
 end

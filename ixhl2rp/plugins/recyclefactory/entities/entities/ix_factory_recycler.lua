@@ -43,6 +43,7 @@ function ENT:Initialize()
 		end
 
 		self:SetFuelAmount(100)
+		self.workers = {}
 	else
 		self.NextSmoke = -1
 		self.Emitter = ParticleEmitter(self:GetPos())
@@ -54,65 +55,236 @@ local allowedItems = {
 	mat_plastic = {
 		junk_paintcan = 1,
 		junk_vcr = 1,
-		junk_monitor = 3,
-		junk_keyboard = 1,
-		junk_calculator = 1,
-		junk_deskfan = 1,
-		junk_desklamp = 1,
-		junk_plasticcrate = 1,
+		junk_monitor = 5,
+		junk_keyboard = 3,
+		junk_calculator = 2,
+		junk_deskfan = 3,
+		junk_desklamp = 4,
+		junk_plasticcrate = 3,
 		junk_plasticbucket = 1,
 		empty_plastic_can = 1,
-		empty_plastic_bottle = 1,
+		empty_plastic_bottle = 1, 
 		empty_jug = 1,
 		junk_harddrive = 2,
 		junk_tv = 2,
-		empty_ration = 1,
-		junk_audiosystem = 2,
-		junk_geiger = 1,
+		empty_ration = 2,
+		junk_audiosystem = 5,
+		junk_geiger = 2,
 		junk_gurevich = 1,
-		junk_lamp = 2
+		junk_lamp = 3,
+		workerhelmet = 5,		  
+		gasmask_early = 5,
+		eyes_glasses_regular = 2,
 	},
 	metal_reclaimed = {
 		junk_axel = 4,
 		junk_muffler = 4,
 		junk_bicycle = 5,
 		junk_engine = 5,
-		junk_pot = 1,
-		junk_lantern = 1,
-		junk_cardoor = 3,
+		junk_pot = 2,
+		junk_lantern = 3,
+		junk_cardoor = 5,
 		junk_metalgascan = 2,
 		empty_can = 1,
 		empty_tin_can = 1,
-		junk_propane = 1,
-		junk_radiator = 4,
+		junk_propane = 2,
+		junk_radiator = 5,
 		junk_pipe = 2,
-		junk_metalbucket = 1,
-		junk_metalpot = 1,
-		junk_citizenradio = 1,
+		junk_metalbucket = 3,
+		junk_metalpot = 2,
+		junk_citizenradio = 2,
 		junk_cid = 1,
 		junk_metalbucket2 = 2,
 		junk_pot2 = 2,
 		junk_chair = 3,
-		junk_paintcan = 1
+		junk_paintcan = 2,
+		metal_scrap = 3,
+		mat_ore_titan = 5,
+		hatchet = 5,
+		machete = 5,
+		knife = 5,
+		sledgehammer = 5,
+		pickaxe = 5,
+		uspmatch = 5,
+		shotgun = 5,
+		rpg = 5,
+		m70 = 5,
+		magnum = 5,
+		stunstick = 5,
+		crowbar = 5,
+		mp133 = 5,
+		ar25u = 5,
+		ar25 = 5,
+		ar29 = 5,
+		broken_pistol = 5,
+		broken_mp7 = 5,
+		broken_shotgun = 5,
+		broken_357 = 5,
+		gun_shotgun_frame = 5,
+		gun_smg_frame = 5,
+		gun_pistol_frame = 2,
+		gun_pistol_receiver = 2,
+		gun_shotgun_grip = 2,
+		gun_smg_receiver = 4,
+		gun_weapon_barrel = 3,
+		gun_pistol_barrel = 1,
+		gun_smg_grip = 2,
+		tool_pot = 3,
+		tool_kettle = 2,
+		tool_pan = 2,
+		tool_wrench = 2,
+		tool_hammer = 2,
+		tool_hacksaw = 1,
+		tool_scissors = 1, 
+		tool_screw = 1,
+		chain = 2,
+		mat_weaponparts = 2,
+	},
+	gold_reclaimed = {
+		mat_ore_gold = 3,
 	},
 	mat_glass = {
-		empty_glass_bottle = 2,
+		empty_glass_bottle = 5, 
+		eyes_glasses_aviators = 5,
+		eyes_glasses_police = 5,
 	},
-	mat_wood = {
-		junk_huladoll = 1,
-		junk_clock = 1,
-		junk_cupboard = 3,
-		junk_drawerchunk = 2,
-		junk_woodchair = 2,
-		junk_clock2 = 1,
-		junk_doll = 1,
+	mat_wood = { 
+		junk_huladoll = 5,
+		junk_clock = 5,
+		junk_cupboard = 5,
+		junk_drawerchunk = 5,
+		junk_woodchair = 5,
+		junk_clock2 = 5,
+		junk_doll = 5,
+		tool_woodhammer = 5,
 	},
 	mat_resine = {
-		junk_tire = 5,
+		junk_tire = 5,  
+		hazmat_regular = 5,
+		hazmat_medic = 5,
+		gasmask_standard = 5,
 	},
 	mat_leather = {
+		junk_cwuturtle = 5,
+		junk_shoe = 5,
+	},
+	mat_cloth_reclaimed = {
+		mask_scarf = 2,
+		legs_cargo = 5,
+		legs_suit_2 = 5,
+		torso_suit_4 = 5,
+		mask_scarf = 5,
+		torso_suit_5 = 5,
+		head_baseball_black = 1,
+		torso_qamis_black = 5,
+		labcoat_medic = 5,
+		head_eastwrap = 5,
+		torso_suit_1 = 5,
+		torso_suit_3 = 5,
+		head_easthat_black = 2,
+		torso_worker_blue = 5,
+		torso_worker_blue_short = 5,
+		legs_jeans = 5,
+		legs_jeans_boots = 5,
+		legs_casual_red = 5,
+		legs_jeans_green = 5,
+		legs_jeans_green_boots = 5,
+		head_bandana = 1,
+		head_baseball_green = 2,
+		torso_tshirt_blue = 5,
+		torso_shirt_blue = 5,
+		legs_casual_blue = 5,
+		torso_shirt_gray = 5,
+		head_eastwrap_white = 2,
+		head_easthat_white = 2,
+		legs_casual_yellow = 5,
+		torso_tshirt_yellow = 5,
+		gloves = 1,
+		gloves_full = 1,
+		head_boonie = 2,
+		torso_tshirt_orange = 5,
+		head_baseball_olive = 2,
+		head_bandana_full = 1,
+		surgerymask = 1,
+		head_eastbandana = 2,
+		head_poncho_red = 3,
+		torso_tshirt_redblack = 5,
+		torso_tshirt_red = 5,
+		torso_shirt_red = 5,
+		legs_suit_1 = 5,
+		head_poncho = 2,
+		legs_cargo_green = 5,
+		torso_tshirt_green = 5,
+		torso_shirt_green = 5,
+		torso_worker_yellow = 5,
+		torso_worker_yellow_short = 5,
+		legs_jungleshorts = 5,
+		head_millitary_cap = 2,
+		torso_millitary_shirt = 5,
+		torso_millitary_jacket = 5,
+		head_medical_blue = 1,
+		torso_shirt_hawai = 5,
+		head_medical_white = 1,
+		legs_suit_3 = 5,
+		torso_tshirt_white = 5,
+		torso_shirt_white = 5,
+		torso_qamis_white = 5,
+		neck_shemagh = 2,
+		head_jimmys = 2,
+		head_army_cap = 2,
+		harness_army_1 = 5,
+		harness_army_2 = 5,
+		harness_army_3 = 5,
+		mat_cloth = 1,
+		medicbag = 5,
+		bag = 5,
+		bag_cp = 5,
+		smallbag = 5,
+		junk_clothes = 2,
 		junk_cwuturtle = 1,
-		junk_shoe = 1,
+		junk_gloves = 1,
+	},
+	mat_kevlar = {
+		broken_armor_light = 5,
+		head_army_helmet_mp = 5,
+		head_army_helmet_mp_googles = 5,
+		head_army_helmet = 5,
+		head_army_helmet_googles = 5,
+		armor_army_vest = 5,
+		padded_green_jeans = 5,
+		padded_blue_jeans = 5,
+		torso_nato_tier2 = 5,
+		legs_nato_tier2 = 5,
+		torso_armor_tier1 = 5,
+		torso_armor_tier2 = 5,
+		torso_shirt_tier1 = 5,
+		head_helmet_tier2 = 5,
+		torso_armor_tier3 = 5,
+		torso_armor2_tier1 = 5,
+		torso_medic_tier1 = 5,
+		torso_armor_tier0 = 5,
+		mpf_dl = 5,
+		mpf_engineer = 5,
+		mpf_engineer_i1 = 5,
+		mpf_comissar = 5,
+		mpf_medic = 5,
+		mpf_medic_i1 = 5,
+		mpf_ofc = 5,
+		mpf_engineer_ofc = 5,
+		mpf_medic_ofc = 5,
+		mpf_guard_ofc = 5,
+		mpf_support_ofc = 5,
+		mpf_investigator_ofc = 5,
+		mpf_sf = 5,
+		mpf_guard = 5,
+		mpf_guard_i1 = 5,
+		mpf_support = 5,
+		mpf_support_i1 = 5,
+		mpf_investigator = 5,
+		mpf_investigator_i1 = 5,
+		mpf_regular = 5, 	
+		mpf_i1 = 5,
+		gasmask_m40 = 5,
 	},
 }
 
@@ -125,7 +297,10 @@ local allowedEntities = {
 				local currentFuel = factory:GetFuelAmount()
 
 				if currentFuel < 100 then
-					factory:SetFuelAmount(100)
+					local isBadGascan = itemTable.uniqueID == "gascan_bad"
+					local value = isBadGascan and 50 or 100
+
+					factory:SetFuelAmount(math.Clamp(currentFuel + value, 0, 100))
 					factory:EmitSound("refill_sound")
 
 					timer.Simple(2, function()
@@ -152,6 +327,12 @@ local allowedEntities = {
 
 				if !hasItem then
 					return
+				end
+
+				local heldOwner = IsValid(entity.ixHeldOwner) and entity.ixHeldOwner or (IsValid(entity.ixLastHeldOwner) and entity.ixLastHeldOwner)
+				if IsValid(heldOwner) and heldOwner:IsPlayer() then
+					local id = heldOwner:GetCharacter():GetID()
+					factory.workers[id] = (factory.workers[id] or 0) + 1
 				end
 
 				factory:SetRawResource(factory:GetRawResource() + hasItem)
@@ -181,6 +362,16 @@ if SERVER then
 			ix.Item:Spawn(vPos, Angle(), instance)
 
 			self:SetProduct("")
+
+			local workerCount = table.Count(self.workers)
+			for charID, points in pairs(self.workers) do
+				local character = ix.char.loaded[charID]
+				if character and IsValid(character:GetPlayer()) then
+					character:DoAction("craft_recycle", math.Clamp(points * 20, 5, 100))
+				end
+			end
+
+			self.workers = {}
 		end)
 
 		self:SetRawResource(0)
@@ -248,6 +439,10 @@ if SERVER then
 			util.ScreenShake(activator:GetPos(), 5, 5, 4, 62)
 		end)
 
+		local id = activator:GetCharacter():GetID()
+
+		self.workers[id] = (self.workers[id] or 0) + 1
+
 		activator:SetAction("", 25)
 		activator:DoStaredAction(self, function()
 			self:StopSound("machine_moving")
@@ -256,7 +451,7 @@ if SERVER then
 
 			self:CreateProduct(activator)
 
-			local nNewFuelAmount = self:GetFuelAmount() - 10
+			local nNewFuelAmount = self:GetFuelAmount() - 2
 
 			self:SetFuelAmount(nNewFuelAmount)
 			if nNewFuelAmount <= 0 then

@@ -34,9 +34,9 @@ ix.command.Add("CharSetSkill", {
 ix.command.Add("lvl", {
 	description = "Распределить очки характеристик",
 	OnRun = function(self, client)
-		local levelup = client:GetCharacter():GetData("levelup")
+		local points = client:GetCharacter():GetSkillPoints()
 
-		if levelup then
+		if points and points != 0 then
 			net.Start("ixLevelUp")
 			net.Send(client)
 		end
@@ -44,24 +44,29 @@ ix.command.Add("lvl", {
 })
 
 ix.command.Add("lvlreset", {
-	description = "Сбросить очки характеристик (стоимость - 1000 токенов)",
+	description = "Сбросить очки характеристик",
 	OnRun = function(self, client)
+		/*
 		local char = client:GetCharacter()
 
 		if char:HasMoney(1000) then
 			char:TakeMoney(1000)
 
 			for k, v in pairs(ix.specials.list) do
-				char:SetSpecial(k, 1)
+				char:SetSpecial(k, 0)
 			end
 
-			char:SetData("levelup", true)
+			local points = 0
+			for i = 1, char:GetLevel() do
+				points = points + ix.plugin.list["!!levelsystem"]:GetPointsAtLevel(i)
+			end
 
-			timer.Simple(0.1, function()
-				net.Start("ixLevelUp")
-				net.Send(client)
-			end)
-		end
+			target:SetSkillPoints(points)
+
+			char:SetData("levelup", true)
+		end*/
+
+		client:Notify("Сброс характеристик временно отключен, обратитесь к старшей администрации.")
 	end
 })
 

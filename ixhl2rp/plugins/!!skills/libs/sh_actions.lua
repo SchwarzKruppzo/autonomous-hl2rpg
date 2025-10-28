@@ -43,7 +43,52 @@ do
 		end
 	end
 
+	function CHAR:GetMaxSkillMemory()
+		local intelligence = self:GetSpecial("in")
+		local perPoint = (5 * (intelligence - 1))
+		local hasPerk = (intelligence >= 5) and 250 or 0
+		local hasPerk2 = (intelligence >= 50) and 500 or 0
+
+		return 750 + hasPerk + hasPerk2 + perPoint
+	end
+
+	function CHAR:HasSkillMemory(xp)
+		local memory = self:GetSkillMemory() or 0
+		local afford = (memory - xp)
+		local value = xp
+
+		if afford < 0 then
+			value = xp + afford
+		end
+		
+		return afford >= 0, value
+	end
+
 	if SERVER then
+		function CHAR:TakeSkillMemory(xp)
+			local memory = self:GetSkillMemory() or 0
+
+			memory = math.max(memory - xp, 0)
+
+			if memory <= 0 then
+				hook.Run("OnSkillMemoryDepleted", self)
+			end
+
+			self:SetSkillMemory(memory)
+		end
+
+		function CHAR:AddSkillMemory(xp)
+			local oldMemory = self:GetSkillMemory() or 0
+			local maxMemory = self:GetMaxSkillMemory()
+			local memory = math.min(oldMemory + xp, maxMemory)
+
+			if memory >= maxMemory then
+				hook.Run("OnSkillMemoryRestored", self)
+			end
+
+			self:SetSkillMemory(memory)
+		end
+
 		function CHAR:XPStarvationMod(experience)
 			local hunger = self:GetHunger()
 			local thirst = self:GetThirst()
@@ -65,6 +110,11 @@ do
 				modB = 0.5
 			end
 
+			local STARVATION_PERK = self:HasSpecialLevel("en", 75)
+
+			if STARVATION_PERK then
+				modB = modB * 0.5
+			end
 
 
 			return experience * (1 - (modA + modB))
@@ -74,6 +124,22 @@ do
 			local action = ix.action:Get(actionID)
 			local result = self:GetActionResult(action, ...)
 
+			if action.bonus then
+				result = action:bonus(self, result)
+			end
+			
+			local baseResult = result
+			local starvationXP = (result - self:XPStarvationMod(result))
+			local skillMemoryCost = result + starvationXP
+
+			local canAfford, afford = self:HasSkillMemory(skillMemoryCost)
+
+			result = math.min(result, (afford - starvationXP))
+
+			if action.noSkillMemory then
+				result = baseResult
+			end
+			
 			if result and result > 0 then
 				/*
 				local int = self:GetSpecial("in")
@@ -81,8 +147,10 @@ do
 
 				result = self:XPStarvationMod(result * intFactor)*/
 				
-				//result = result * 3
-
+				if !action.noSkillMemory then
+					self:TakeSkillMemory(afford)
+				end
+				
 				self:UpdateSkillProgress(action.skill, result)
 
 				if !action.noLogging then

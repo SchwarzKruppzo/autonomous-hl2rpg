@@ -16,3 +16,9 @@ ITEM.stats.hunger = 3
 ITEM.stats.uses = 10
 
 ITEM.rarity = 4
+
+function ITEM:CustomEffect(client, uses)
+	local health = client:GetCharacter():Health()
+
+	health:AddHediff("alcohol", 0, {severity = 0, effect = 25 * uses, tended_start = os.time(), tended_time = 300})
+end

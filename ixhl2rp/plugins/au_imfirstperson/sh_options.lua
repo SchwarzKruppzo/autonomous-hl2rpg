@@ -1,4 +1,4 @@
-ix.option.Add("enableImmersiveFirstPerson", ix.type.bool, true, {
+ix.option.Add("enableImmersiveFirstPerson", ix.type.bool, false, {
     category = "Первое Лицо"
 })
 

@@ -14,3 +14,4 @@ ITEM.iconCam = {
 ITEM.stats.container = false
 ITEM.stats.hunger = 6
 ITEM.stats.uses = 5
+ITEM.stats.expireTime = 43200 -- 12 hours

@@ -5,6 +5,8 @@ SKILL.category = 3
 ix.action:Register("athleticsRun", "athletics", {
 	name = "Бег",
 	noLogging = true,
+	noSkillMemory = true,
+	noCharacterLevel = true,
 	experience = function(action, character, skill, value)
 		return value
 	end

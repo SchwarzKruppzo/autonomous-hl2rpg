@@ -5,6 +5,8 @@ SKILL.category = 3
 ix.action:Register("jump", "acrobatics", {
 	name = "Прыжок",
 	noLogging = true,
+	noSkillMemory = true,
+	noCharacterLevel = true,
 	experience = {
 		{level = 0, xp = 2},
 		{level = 3, xp = 1},

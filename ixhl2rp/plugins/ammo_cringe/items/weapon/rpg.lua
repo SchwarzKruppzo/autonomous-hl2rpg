@@ -1,7 +1,7 @@
 ITEM.name = "RPG"
 ITEM.description = "Управляемая ракетная установка с лазерным наведением."
 ITEM.model = "models/weapons/w_rocket_launcher.mdl"
-ITEM.class = "weapon_rpg"
+ITEM.class = "cellar_hl2_rpg"
 ITEM.weaponCategory = "primary"
 ITEM.price = 950
 ITEM.width = 5

@@ -44,6 +44,25 @@ function ix.skills.Setup(client)
 	end
 end
 
+function ix.skills.CalculateTotalXP(key, skills, x, y)
+	local skill = ix.skills.list[key]
+
+	if !skill then
+		return
+	end
+
+	if x >= y then
+		return 0
+	end
+
+	local totalXP = 0
+	for i = x, y - 1 do
+		totalXP = totalXP + skill:GetRequiredXP(skills, i)
+	end
+
+	return totalXP
+end
+
 do
 	local charMeta = ix.meta.character
 
@@ -115,6 +134,12 @@ do
 				skills[key][2] = 0
 
 				self:SetSkills(skills)
+
+				if !skill.noCharacterLevel then
+					local cumulative = ix.skills.CalculateTotalXP(key, skills, value, newValue)
+
+					self:AddLevelXP(cumulative)
+				end
 
 				local client = self:GetPlayer()
 

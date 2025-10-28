@@ -13,6 +13,7 @@ ITEM.iconCam = {
 ITEM.stats.container = false
 ITEM.stats.thirst = 4
 ITEM.stats.uses = 5
+ITEM.stats.noExpire = true
 
 ITEM.junk = "empty_can"
 

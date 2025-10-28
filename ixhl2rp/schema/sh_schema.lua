@@ -21,12 +21,11 @@ ix.util.Include("meta/sh_player.lua")
 ix.util.Include("meta/sv_player.lua")
 ix.util.Include("meta/sh_character.lua")
 
+ix.Net:AddEntityVar("stock", nil, ix.Net.Type.Table)
 ix.Net:AddPlayerVar("tying", false, nil, ix.Net.Type.Bool)
 ix.Net:AddPlayerVar("untying", false, nil, ix.Net.Type.Bool)
 
-Schema.banned_doors = {
-	3333, 1263, 1254, 1255, 3732, 3733, 1259, 1264
-}
+Schema.banned_doors = {}
 
 function Schema:ZeroNumber(number, length)
 	local amount = math.max(0, length - string.len(number))
@@ -42,7 +41,12 @@ function Schema:IsStringCombineRank(text, rank)
 		end
 	else
 		text = text:lower()
-		local founded_ranks = string.match(text,"ow%:.-%.(.*)-%d+") or string.match(text,"cca%:.-%.(.*)%.%d+")
+
+		if faction == FACTION_OTA then
+			founded_ranks = string.match(text,"ow%:.-%.(.*)-%d+")
+		else
+			founded_ranks = string.match(text, "c24%:(.*)°.*")
+		end
 
 		if founded_ranks then
 			for crank in string.gmatch(founded_ranks, "[%a%-%_%d]+") do
@@ -68,8 +72,14 @@ function Schema:IsPlayerCombineRank(player, rank)
 			local name = player:Name()
 			name = name:lower()
 			
-			local founded_ranks = string.match(name, (faction == FACTION_OTA and "ow" or "cca").."%:.-%.(.*)"..(faction == FACTION_OTA and "-%d+" or "%.%d+"))
+			local founded_ranks
 
+			if faction == FACTION_OTA then
+				founded_ranks = string.match(name, (faction == FACTION_OTA and "ow" or "cca").."%:.-%.(.*)"..(faction == FACTION_OTA and "-%d+" or "%.%d+"))
+			else
+				founded_ranks = string.match(name, "c24%:(.*)°.*")
+			end
+			
 			if founded_ranks then
 				for crank in string.gmatch(founded_ranks, "[%a%-%_%d]+") do
 					if crank == rank then
@@ -169,7 +179,7 @@ else
 		surface.PlaySound("pa_speaker/schedule_reminder.mp3")
 
 		timer.Simple(4, function()
-			chat.AddText(Color(150, 125, 175), ix.util.GetMaterial("cellar/chat/broadcast.png"), "Система оповещения Сити-8 вещает ", color_white, "\"" .. "Внимание гражданам Сити-8. Терминал выдачи пищевых рационов доступен. Помните, граждане от красного уровня лояльности имеют более высокий приоритет на выдачу. У вас есть 1 час чтобы забрать пищевой рацион." .. "\"")
+			chat.AddText(Color(150, 125, 175), ix.util.GetMaterial("cellar/chat/broadcast.png"), "Система оповещения Сити-24 вещает ", color_white, "\"" .. "Внимание гражданам Сити-24. Терминал выдачи пищевых рационов доступен. Помните, граждане от красного уровня лояльности имеют более высокий приоритет на выдачу. У вас есть 1 час чтобы забрать пищевой рацион." .. "\"")
 			
 			surface.PlaySound("city8/city8-rations.wav")
 		end)

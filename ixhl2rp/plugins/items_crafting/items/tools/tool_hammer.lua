@@ -9,3 +9,4 @@ ITEM.iconCam = {
 	ang = Angle(-164.87673950195, -8.1954441070557, 89.843566894531),
 	fov = 3.8535574545379,
 }
+ITEM.DurabilityCraft = 20

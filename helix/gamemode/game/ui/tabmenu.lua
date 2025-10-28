@@ -501,8 +501,8 @@ function PANEL:Init()
 	local skills = self:AddButton("skills", 'ХАРАКТЕРИСТИКИ')
 	local perks = self:AddButton("perks", 'ПЕРКИ')
 
-	health:SetDisabled(true)
-	health:SetStyle(5)
+	--health:SetDisabled(true)
+	--health:SetStyle(5)
 
 	perks:SetDisabled(true)
 	perks:SetStyle(5)
@@ -570,7 +570,14 @@ function PANEL:Init()
 		food:DockMargin(16, 0, 16, 16)
 		food.hsv = true
 		food.OnUpdate = function()
-			return "42%", 0.42
+			local hunger = LocalPlayer():GetCharacter():GetHunger()
+			local value = hunger / 100
+
+			if value > 0 then
+				return tostring(math.Round(100 * value)).."%", value
+			end
+
+			return "100%", 1
 		end
 		food:SetBarSize(big_size)
 		food:SizeToContents()
@@ -581,7 +588,14 @@ function PANEL:Init()
 		water:DockMargin(16, 0, 16, 5)
 		water.hsv = true
 		water.OnUpdate = function()
-			return "31%", 0.31
+			local hunger = LocalPlayer():GetCharacter():GetThirst()
+			local value = hunger / 100
+
+			if value > 0 then
+				return tostring(math.Round(100 * value)).."%", value
+			end
+
+			return "100%", 1
 		end
 		water:SetBarSize(big_size)
 		water:SizeToContents()
@@ -741,6 +755,18 @@ function PANEL:Init()
 		label:SetContentAlignment(4)
 		label:Dock(TOP)
 
+		AddTextBox(character:Genetic():GetDesc(), 0, function() 
+		end)
+
+		local label = right_container:Add("DLabel")
+		label:SetTextColor(Color(0, 225, 255, 255))
+		label:SetText("ВНЕШНЕЕ ОПИСАНИЕ")
+		label:SetFont("ui.tab.smalltitle2")
+		label:DockMargin(16, 16, 0, 0)
+		label:SizeToContents()
+		label:SetContentAlignment(4)
+		label:Dock(TOP)
+
 		AddTextBox(character:GetDescription(), 0, function() 
 			ix.gui.menu:CloseFrame("character")
 			ix.command.Send("CharDesc") 
@@ -822,16 +848,16 @@ function PANEL:Init()
 			attribute:SetText(name:utf8upper(), character:GetSpecial(k))
 			attribute:SizeToContents()
 			attribute:SizeToChildren(true, true)
-			attribute:SetHelixTooltip(function(tooltip)
-				local title = tooltip:AddRow("name")
-				title:SetImportant()
-				title:SetText(name)
-				title:SizeToContents()
-				title:SetMaxWidth(math.max(title:GetMaxWidth(), ScrW() * 0.5))
+			attribute:SetAutonomousTooltip(function(tooltip)
+				tooltip:SetTitle(name:utf8upper())
+				tooltip:AddSmallText("ХАРАКТЕРИСТИКА ПЕРСОНАЖА")
+				tooltip:AddDivider()
 
-				local description = tooltip:AddRow("description")
-				description:SetText(desc)
-				description:SizeToContents()
+				if v.Tooltip then
+					v.Tooltip(v, tooltip)
+				end
+				
+				tooltip:Resize()
 			end)
 		end
 
@@ -887,8 +913,8 @@ function PANEL:Init()
 
 	timer.Simple(0, function()
 		if !self.active then
-			info.state = true
-			info:OnToggle(true)
+			health.state = true
+			health:OnToggle(true)
 		end
 	end)
 end
@@ -1320,6 +1346,9 @@ local buttons = {
 				local container = x:Add("ixHelpMenu")
 				container:SizeToContents()
 				container:Dock(FILL)
+				container:RequestFocus()
+
+				x:MakePopup()
 			end
 		},
 		[4] = {
@@ -1331,6 +1360,26 @@ local buttons = {
 				local container = x:Add("ixScoreboard")
 				container:SizeToContents()
 				container:Dock(FILL)
+			end
+		},
+		[5] = {
+			id = "config",
+			text = "СЕРВЕР",
+			width = 1400,
+			height = 800,
+			OnShow = function(parent, x)
+				local container = x:Add("ixConfigManager")
+				container:SizeToContents()
+				container:Dock(FILL)
+				
+				x:MakePopup()
+			end,
+			CanUse = function()
+				if !CAMI.PlayerHasAccess(LocalPlayer(), "Helix - Manage Config", nil) then
+					return
+				end
+
+				return true
 			end
 		}
 	}
@@ -1591,12 +1640,12 @@ function PANEL:Init()
 	self.money:DockMargin(0, 0, 5, 0)
 	self.money:SetText(FormatMoney(999999999))
 	self.money:SizeToContents()
-
+/*
 	self.limbs = self:Add("ixLimbStatus")
 	self.limbs:AlignLeft(0)
 	self.limbs:AlignBottom(self.tab:GetTall())
 	self.limbs:SetAlpha(64)
-
+*/
 	self.frames = {}
 
 
@@ -1633,6 +1682,10 @@ function PANEL:Init()
 				end
 			else
 				button.OnToggle = function(this, state)
+					if v.CanUse and !v.CanUse() then
+						return
+					end
+					
 					if state then
 						local frame = self:Add("ui.tab.frame")
 						frame:SetTitle(v.text:utf8upper())
@@ -1716,9 +1769,9 @@ end
 
 function PANEL:Think()
 	local character = LocalPlayer():GetCharacter()
-	local date = os.date("%H:%M:%S - %d.%m.%Y")
+	local date = os.date("%H:%M:%S - %d.%m")
 
-	self.time:SetText(date)
+	self.time:SetText(date..".2026")
 
 	if !self.nextSlowThink or self.nextSlowThink <= CurTime() then
 		self.money:SetText(FormatMoney(character:GetMoney()))

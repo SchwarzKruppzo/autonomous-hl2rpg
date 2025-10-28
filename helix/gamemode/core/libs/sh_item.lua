@@ -68,11 +68,11 @@ function ix.item.Instance(index, uniqueID, itemData, x, y, callback, characterID
 			query:Insert("y", y)
 
 			if (characterID) then
-				query:Insert("character_id", characterID)
+				query:Insert("character_id", characterID or 0)
 			end
 
 			if (playerID) then
-				query:Insert("player_id", playerID)
+				query:Insert("player_id", playerID or 0)
 			end
 
 			query:Callback(function(result, status, lastID)

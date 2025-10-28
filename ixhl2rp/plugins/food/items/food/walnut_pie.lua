@@ -10,4 +10,5 @@ ITEM.stats.thirst = 0
 ITEM.stats.hunger = 12
 ITEM.stats.uses = 10
 
+
 ITEM.rarity = 2

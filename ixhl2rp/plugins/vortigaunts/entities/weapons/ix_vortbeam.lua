@@ -244,7 +244,7 @@ function SWEP:PrimaryAttack()
 		end
 
 		if (SERVER) then
-			local damage = 1 //self.Owner:GetCharacter():GetSkillScale("vort_beam")
+			local damage = 50 //self.Owner:GetCharacter():GetSkillScale("vort_beam")
 			local damageInfo = DamageInfo()
 			damageInfo:SetAttacker(self.Owner)
 			damageInfo:SetInflictor(self)
@@ -261,7 +261,7 @@ function SWEP:PrimaryAttack()
 				local target = IsValid(v.ixPlayer) and v.ixPlayer or v
 
 				if target and (target:IsNPC() or target:IsPlayer()) then
-					if target:Team() == FACTION_VORTIGAUNT or target:GetMoveType() == 8 then continue end
+					if target:IsPlayer() and (target:Team() == FACTION_VORTIGAUNT or target:GetMoveType() == 8) then continue end
 					
 					target:TakeDamageInfo(damageInfo)
 				end

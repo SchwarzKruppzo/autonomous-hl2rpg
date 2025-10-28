@@ -155,7 +155,8 @@ function Item:AddDurability(x)
 		self.lastDurability = delta
 	end
 
-	if math.abs(self.lastDurability - delta) >= 0.2 then
+	local newDelta = math.abs(self.lastDurability - delta)
+	if newDelta >= 0.2 or newDelta < 0 then
 		self:SetData("durability", math.min(math.floor(5 * delta), 4))
 		self.lastDurability = delta
 	end
@@ -251,8 +252,8 @@ function Item:Equip(client, bNoSelect, bNoSound)
 				client:SetAmmo(0, ammoType)
 			else
 				if (self.isGrenade) then
-					weapon:SetClip1(0)
-					client:SetAmmo(1, ammoType)
+					weapon:SetClip1(1)
+					client:SetAmmo(0, ammoType)
 				else
 					weapon:SetClip1(self:GetData("ammo", 0))
 				end
@@ -380,7 +381,7 @@ function Item:OnLoadout()
 			weapon.ixItem = self
 
 			if self.isRPG then
-				client:SetAmmo(self:GetData("ammo", 0), ammoType)
+				client:SetAmmo(self:GetData("ammo", 0), weapon:GetPrimaryAmmoType())
 			else
 				weapon:SetClip1(self:GetData("ammo", 0))
 			end
@@ -476,8 +477,9 @@ if CLIENT then
 		return 1
 	end
 
-	local dmg = "БАЗОВЫЙ DPS: %i - %i"
-	local chardmg = "ВАШ DPS: %i - %i"
+	local dmg = "УРОН: %i"
+	local rpm = "ВЫСТРЕЛОВ В МИНУТУ: %i"
+	local attackspeed = "СКОРОСТЬ АТАКИ: %i"
 
 	local penetration = "БРОНЕПРОБИВАЕМОСТЬ:"
 	local armorx = "КЛАСС БРОНИ %i: %s%%"
@@ -499,46 +501,20 @@ if CLIENT then
 		local weapon = weapons.GetStored(self.class)
 		if weapon then
 			local character = LocalPlayer():GetCharacter()
+			local isMelee = weapon.Type == "Melee"
+			local damage = weapon.Primary.Damage
 
-			local hitsPerSecond = 1 / (weapon.MeleeTime or 1)
-			if weapon.Delay and weapon.Primary.ClipSize then
-				hitsPerSecond = math.min(1 / weapon.Delay, weapon.Primary.ClipSize)
-			end
-
-			local dmg_min = 0
-			local dmg_max = 0
-
-			if !weapon.MeleeTime then
-				dmg_min = (weapon.DamageMin or weapon.Damage) * hitsPerSecond
-				dmg_max = weapon.Damage * hitsPerSecond
-			else
-				dmg_min = weapon.MeleeDamage * hitsPerSecond
-				dmg_max = dmg_min
-			end
-
-			if weapon.Num then
-				dmg_min = dmg_min * weapon.Num
-				dmg_max = dmg_max * weapon.Num
+			if weapon.Primary.NumShots then
+				damage = damage * weapon.Primary.NumShots
 			end
 			
-			StatRow("base", string.format(dmg, dmg_min, dmg_max), color_white, tooltip, true)
+			StatRow("base", string.format(dmg, damage), color_white, tooltip, true)
 
-			local hitScale = 1
-
-			if !weapon.MeleeTime then
-				local skill = weapon.ImpulseSkill and character:GetSkillModified("impulse") or character:GetSkillModified("guns")
-				local weaponSkill = math.Clamp(skill / 10, 0, 1)
-				local perceptionMod = math.max(math.Remap(character:GetSpecial("pe"), 1, 10, 0.25, 1.125), 0.25)
-				local levelMod = math.max(math.Remap(character:GetLevel(), 1, 10, 0.5, 1.125), 0.5)
-
-				hitScale = weaponSkill * ScaleHitChanceByHandsDamage(character) * perceptionMod * levelMod
-			else
-				hitScale = math.Clamp(math.Remap(character:GetSpecial("st"), 1, 10, 0.25, 3), 0.25, 3)
+			if weapon.Primary.RPM and !isMelee then
+				StatRow("rpm", string.format(rpm, weapon.Primary.RPM), color_white, tooltip, true)
+			elseif weapon.Primary.RPM and isMelee then
+				StatRow("attackspeed", string.format(attackspeed, math.Round(weapon.Primary.RPM / 60, 1)), color_white, tooltip, true)
 			end
-
-			local new_min = dmg_min * hitScale
-			local new_max = dmg_max * hitScale
-			StatRow("you", string.format(chardmg, new_min, new_max), ((new_min + new_max) >= (dmg_min + dmg_max)) and greenClr or redClr, tooltip)
 
 			if weapon.armor then
 				if weapon.armor.penetration then
@@ -597,8 +573,8 @@ hook.Add("PlayerDeath", "ixStripClip", function(client)
 
 	for _, v in pairs(client:GetItems()) do
 		if (v.isWeapon and v:GetData("equip")) then
-			v:SetData("ammo", nil)
-			v:SetData("equip", nil)
+			v:SetData("ammo", 0)
+			v:SetData("equip", false)
 		end
 	end
 end)

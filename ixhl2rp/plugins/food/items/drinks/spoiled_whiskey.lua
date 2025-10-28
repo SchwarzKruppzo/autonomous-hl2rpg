@@ -16,3 +16,9 @@ ITEM.stats.hunger = 0
 ITEM.stats.uses = 5
 
 ITEM.junk =  "empty_glass_bottle"
+
+function ITEM:CustomEffect(client, uses)
+	local health = client:GetCharacter():Health()
+
+	health:AddHediff("alcohol", 0, {severity = 0, effect = 5 * uses, tended_start = os.time(), tended_time = 60})
+end

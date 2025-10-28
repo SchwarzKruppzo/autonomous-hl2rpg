@@ -68,6 +68,7 @@ ix.char.RegisterVar("hunger", {
 	bNoDisplay = true
 })
 
+ix.util.Include("cl_drunk.lua")
 ix.util.Include("sh_commands.lua")
 ix.util.Include("sh_config.lua")
 ix.util.Include("sv_hooks.lua")

@@ -1324,5 +1324,77 @@ function ix.util.Imap(t, func)
 	return res
 end
 
+function ix.util.Slur(phrase, slurLetters)
+	slurLetters = slurLetters or { "'" }
+	
+	local newPhrase = {}
+	local leng = string.utf8len(phrase)
+	for i = 1, leng do
+		local char = phrase:utf8sub(i, i)
+		local newChar = char
+		
+		if math.random() < 0.3333 then
+			local lowerChar = char:utf8lower()
+			if lowerChar == "o" then
+				newChar = "u"
+			elseif lowerChar == "ñ" then
+				newChar = "ñø"
+			elseif lowerChar == "à" then
+				newChar = "àõ"
+			end
+		end
+		
+		if math.random() < 0.6 then
+			if math.random() < 0.1111 then
+				newChar = newChar .. slurLetters[math.random(#slurLetters)]
+			else
+				if math.random() < 0.5 then
+					newChar = newChar:utf8lower()
+				else
+					newChar = newChar:utf8upper()
+				end
+			end
+		end
+		
+		table.insert(newPhrase, newChar)
+	end
+	
+	return table.concat(newPhrase)
+end
+
+function ix.util.Stutter(phrase, stamina_loss)
+	local split_phrase = string.Explode(" ", phrase)
+
+	local phrase_length = string.utf8len(phrase)
+	local stutter_chance = math.max(math.random(25, 50), stamina_loss)
+	stutter_chance = math.Clamp(stutter_chance, 0, 100)
+
+	for i = 1, #split_phrase do
+		if math.random(1, 100) > stutter_chance then
+			continue
+		end
+
+		local word = split_phrase[i]
+		local first_letter = string.utf8sub(word, 1, 1)
+
+		local first_sound = string.utf8sub(word, 1, 2)
+		if string.utf8lower(first_sound) == "c" or string.utf8lower(first_sound) == "ø" or string.utf8lower(first_sound) == "õ" then
+			first_letter = first_sound
+		end
+
+		local second_repeat = first_letter
+
+		if math.random() < 0.3333 then
+			word = first_letter .. "-" .. second_repeat .. "-" .. word
+		else
+			word = first_letter .. "-" .. word
+		end
+
+		split_phrase[i] = word
+	end
+
+	return table.concat(split_phrase, " ")
+end
+
 ix.util.Include("helix/gamemode/core/meta/sh_entity.lua")
 ix.util.Include("helix/gamemode/core/meta/sh_player.lua")

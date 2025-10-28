@@ -19,6 +19,13 @@ if CLIENT then
 		end
 	})
 
+	ix.option.Add("observerShowLootESP", ix.type.bool, true, {
+		category = "observer",
+		hidden = function()
+			return !CAMI.PlayerHasAccess(LocalPlayer(), "Helix - Observer", nil)
+		end
+	})
+
 	surface.CreateFont("ixESPMainText", {
 		font = "Arial",
 		weight = 700,
@@ -130,6 +137,7 @@ if CLIENT then
 	local colors = {
 		[1] = Color(0, 255, 255, 255),
 		[2] = Color(100, 180, 255, 255),
+		[3] = Color(255, 100, 100, 255),
 	}
 	function PLUGIN.esp:GetAdminESPInfo(info)
 		for k, v in ipairs(player.GetAll()) do
@@ -188,6 +196,26 @@ if CLIENT then
 						}
 					})
 				end
+			end
+		end
+
+		if ix.option.Get("observerShowLootESP", true) then
+			for k, v in ipairs(ents.FindByClass("ix_loot")) do 
+				local lootName = v:GetContainer() or "Empty"
+
+				table.insert(info, {
+					position = v:GetPos(),
+					text = {
+						{
+							text = "Loot",
+							color = colors[3]
+						},
+						{
+							text = lootName,
+							color = colors[3]
+						}
+					}
+				})
 			end
 		end
 

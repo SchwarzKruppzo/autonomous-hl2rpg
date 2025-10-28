@@ -218,49 +218,6 @@ ix.command.Add("CharSetBodygroup", {
 		end
 	end
 })
-/*
-ix.command.Add("CharSetAttribute", {
-	description = "@cmdCharSetAttribute",
-	privilege = "Manage Character Attributes",
-	adminOnly = true,
-	arguments = {
-		ix.type.character,
-		ix.type.string,
-		ix.type.number
-	},
-	OnRun = function(self, client, target, attributeName, level)
-		for k, v in pairs(ix.attributes.list) do
-			if (ix.util.StringMatches(L(v.name, client), attributeName) or ix.util.StringMatches(k, attributeName)) then
-				target:SetAttrib(k, math.abs(level))
-				return "@attributeSet", target:GetName(), L(v.name, client), math.abs(level)
-			end
-		end
-
-		return "@attributeNotFound"
-	end
-})
-
-ix.command.Add("CharAddAttribute", {
-	description = "@cmdCharAddAttribute",
-	privilege = "Manage Character Attributes",
-	adminOnly = true,
-	arguments = {
-		ix.type.character,
-		ix.type.string,
-		ix.type.number
-	},
-	OnRun = function(self, client, target, attributeName, level)
-		for k, v in pairs(ix.attributes.list) do
-			if (ix.util.StringMatches(L(v.name, client), attributeName) or ix.util.StringMatches(k, attributeName)) then
-				target:UpdateAttrib(k, math.abs(level))
-				return "@attributeUpdate", target:GetName(), L(v.name, client), math.abs(level)
-			end
-		end
-
-		return "@attributeNotFound"
-	end
-})
-*/
 
 ix.command.Add("CharSetName", {
 	description = "@cmdCharSetName",

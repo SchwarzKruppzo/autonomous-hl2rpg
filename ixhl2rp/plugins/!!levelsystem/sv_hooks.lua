@@ -9,7 +9,7 @@ function PLUGIN:PostPlayerLoadout(client)
 	local uniqueID = "ixLeveling" .. client:SteamID()
 	timer.Remove(uniqueID)
 
-	if character and character:GetLevel() < 10 then
+	if character then
 		timer.Create(uniqueID, self.PassiveXPRate, 0, function()
 			if !IsValid(client) then
 				timer.Remove(uniqueID)
@@ -17,18 +17,67 @@ function PLUGIN:PostPlayerLoadout(client)
 			end
 
 			local character = client:GetCharacter()
-			local lvl = character:GetLevel()
 
-			if !character or lvl >= 10 then
+			if !character then
 				timer.Remove(uniqueID)
 				return
 			end
 
-			local xpGain = math.max(self:GetRequiredLevelXP(lvl) * 0.0002, 1)
+			local lvl = character:GetLevel()
 
-			character:AddLevelXP(xpGain, 1)
+			if lvl < 10 then
+				local xpGain = math.max(self:GetRequiredLevelXP(lvl) * 0.01, 1)
+
+				character:AddLevelXP(xpGain, 1)
+			end
+			
+			local memory = character:GetSkillMemory() or 0
+			local cost = 15
+
+			if memory < character:GetMaxSkillMemory() then
+				local drunkFactor = client:GetLocalVar("drunk", 0)
+				local zone = client.inPropertyZone
+				local hp = character:Health()
+
+				if IsValid(zone) and zone.propertyID then
+					local poi = ix.poi[zone.propertyID or ""]
+					if poi and poi.active then
+						cost = 30
+					end
+				end
+
+				if drunkFactor > 0 then
+					cost = cost + (cost * drunkFactor)
+				end
+
+				if hp then
+					local hasBuff
+					for k, v in hp:GetHediffs() do
+						if v.uniqueID != "pornbuff" then continue end
+
+						hasBuff = true
+						break
+					end
+
+					if hasBuff then
+						cost = cost * 3
+					end
+				end
+
+				character:AddSkillMemory(cost)
+			end
 		end)
 	end
+end
+
+function PLUGIN:CharacterRested(character, rate, timePassed)
+	timePassed = timePassed or 1
+
+	local restRate = math.min(2 * rate, 1)
+	local ticksPassed = math.floor(timePassed / 300)
+	local skillMemory = (30 * restRate) * ticksPassed
+
+	character:AddSkillMemory(skillMemory)
 end
 
 function PLUGIN:OnCharacterCreated(client, character)
@@ -39,18 +88,17 @@ function PLUGIN:OnCharacterCreated(client, character)
 	end
 end
 
-local xpPerSymbol = 0.016
+local xpPerSymbol = 0.02
 
 local function GetTextXP(text, level)
 	local length = string.utf8len(text)
 	local words = #string.Explode(" ", text) or 0
 	local symbols = length - (length / words)
-	local b = 1 - ((level - 1) / 10) ^ 1.44
-	local a = (b ^ (1.5 + (1.75 ^ (1 - b))))
-	local xp = (xpPerSymbol * symbols) * a
+	local xp = (xpPerSymbol * symbols)
 
 	return xp
 end
+
 
 local blacklist = {
 	["pm"] = true,
@@ -67,7 +115,10 @@ function PLUGIN:PlayerMessageSend(speaker, chatType, text, bAnonymous, receivers
 
 			local character = client:GetCharacter()
 
-			character:AddLevelXP(GetTextXP(text, character:GetLevel()), 2)
+			local level = character:GetLevel()
+			local xp = GetTextXP(text, level)
+
+			character:AddLevelXP(xp, 2)
 		end
 	end
 end

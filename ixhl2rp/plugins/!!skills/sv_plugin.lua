@@ -2,32 +2,75 @@ local PLUGIN = PLUGIN
 
 util.AddNetworkString("ixSkillRoll")
 util.AddNetworkString("ixStatRoll")
+util.AddNetworkString("ixLevelUp")
+
+local messagesDepleted = {
+	"Вы чувствуете усталость...",
+	"Кажется, ваш ум измучен...",
+	"Необходимо задуматься об отдыхе...",
+	"Вам стоит посетить бар и выпить что-нибудь крепкое, чтобы восстановить силы."
+}
+
+local messagesRestored = {
+	"Вы почувствовали прилив энергии, как будто выпили эликсира жизни.",
+	"Ваши мысли становятся легкими, как парус, наполненный ветром.",
+	"Мудрость возвращается к вам.",
+	"Кажется, вы готовы к новым вызовам."
+}
+
+function PLUGIN:OnSkillMemoryDepleted(character)
+	local client = character:GetPlayer()
+	local ct = CurTime()
+
+	if !character.skillMemoryDepletedNotify or (ct >= character.skillMemoryDepletedNotify) then
+		client:ChatNotify("*** "..messagesDepleted[math.random(#messagesDepleted)])
+
+		character.skillMemoryDepletedNotify = ct + 3600
+	end 
+end
+
+function PLUGIN:OnSkillMemoryRestored(character)
+	local client = character:GetPlayer()
+	local ct = CurTime()
+
+	if !character.skillMemoryRestoredNotify or (ct >= character.skillMemoryRestoredNotify) then
+		client:ChatNotify("*** "..messagesRestored[math.random(#messagesRestored)])
+
+		character.skillMemoryRestoredNotify = ct + 3600
+	end 
+end
 
 net.Receive("ixLevelUp", function(len, ply)
 	local character = ply:GetCharacter()
 
-	if !character:GetData("levelup") then
+	local points = character:GetSkillPoints()
+
+	if points == 0 then
 		return
 	end
 
+	local spendPoints = net.ReadInt(10)
 	local specials = net.ReadTable()
-	local lvl = character:GetLevel()
-	local pointsmax = 6 + (5 + (5 * math.min(lvl, 5)) + (1 * math.max(lvl - 5, 0)))
+	local diff = math.abs(points) - math.abs(spendPoints)
 
-	if istable(value) then
-		local count = 0
-
-		for _, v in pairs(value) do
-			count = count + v + -1
-		end
-
-		if count < pointsmax then
-			return
-		end
+	if diff < 0 or diff > math.abs(points) then
+		return
 	end
 
-	character:SetData("levelup", false)
-	character:SetSpecials(specials)
+	local sum = 0
+	local charSpecials = character:GetSpecials()
+
+	for k, v in pairs(specials) do
+		sum = sum + math.abs(v)
+		charSpecials[k] = charSpecials[k] + v
+	end
+
+	if sum != math.abs(spendPoints) then
+		return
+	end
+
+	character:SetSkillPoints(points - spendPoints)
+	character:SetSpecials(charSpecials)
 end)
 
 do

@@ -47,11 +47,9 @@ if (SERVER) then
 
 	function ENT:LoadItems(items)
 		if istable(items) then
-			ix.Item:LoadInstanceByID(items, function(item)
-				local inventory = ix.Inventory:Get(self:GetID())
+			local inventory = ix.Inventory:Get(self:GetID())
 
-				inventory:AddItem(item, item.x, item.y)
-			end)
+			ix.Item:LoadToInventory(items, inventory)
 		end
 	end
 

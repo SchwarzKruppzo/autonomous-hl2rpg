@@ -237,6 +237,8 @@ function ITEM:Init(uniqueID)
 	self.var_max_bits = self.var_max_bits or 0
 	self.vars_id = self.vars_id or {}
 
+	self.closelook_sync = self.closelook_sync or {}
+
 	self.bases = self.bases or {}
 	self.base_count = 0
 
@@ -491,6 +493,13 @@ function ITEM:SetData(key, value, receivers, noSave, noCheckEntity)
 	self.data[key] = value
 
 	if SERVER then
+		/*
+		local isCloseLook = bit.band(self.vars[key].Transmit, ix.transmit.closelook) == ix.transmit.closelook
+
+		if isCloseLook then
+			self.closelook_sync[key] = {}
+		end*/
+
 		if self.vars[key].Sync then
 			self.vars[key].Sync(self, receivers)
 		end
@@ -623,8 +632,8 @@ if SERVER then
 			query:Update("y", self.y)
 			query:Update("rotated", self.rotated)
 			query:Update("inventory_type", self.inventory_type)
-			query:Update("character_id", tonumber(self.character_id))
-			query:Update("player_id", tonumber(self.player_id))
+			query:Update("character_id", tonumber(self.character_id) or 0)
+			query:Update("player_id", tonumber(self.player_id) or 0)
 			
 			if istable(self.items) then
 				query:Update("items", util.TableToJSON(self.items or {}))

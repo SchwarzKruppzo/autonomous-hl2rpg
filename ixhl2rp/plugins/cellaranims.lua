@@ -689,6 +689,7 @@ ix.anim.SetModelClass("models/cellar/characters/oldcitizens/male_15.mdl", "cella
 ix.anim.SetModelClass("models/cellar/characters/oldcitizens/male_16.mdl", "cellarMale")
 ix.anim.SetModelClass("models/cellar/characters/oldcitizens/male_17.mdl", "cellarMale")
 ix.anim.SetModelClass("models/cellar/characters/oldcitizens/male_18.mdl", "cellarMale")
+ix.anim.SetModelClass("models/autonomous/base_female.mdl", "cellarFemale")
 ix.anim.SetModelClass("models/cellar/characters/oldcitizens/female_01.mdl", "cellarFemale")
 ix.anim.SetModelClass("models/cellar/characters/oldcitizens/female_02.mdl", "cellarFemale")
 ix.anim.SetModelClass("models/cellar/characters/oldcitizens/female_03.mdl", "cellarFemale")
@@ -983,8 +984,7 @@ ix.anim.SetModelClass("models/santopadre/diper/diper_miller.mdl", "cellarMale")
 
 ix.anim.SetModelClass("models/female_retribution.mdl", "cellarFemale")
 ix.anim.SetModelClass("models/female_18_retribution.mdl", "cellarFemaleMPF")
-ix.anim.SetModelClass("models/bybig/smiley_eng.mdl", "cellarMaleMPF")
-ix.anim.SetModelClass("models/bybig/female_dominq.mdl", "cellarFemale")
+
 if CLIENT then
 	RunConsoleCommand('r_eyemove', 0)
 end

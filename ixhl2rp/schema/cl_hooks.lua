@@ -96,7 +96,7 @@ local colorModify = {
 	["$pp_colour_mulb"] = 0
 }
 
-local combineOverlay = ix.util.GetMaterial("effects/combine_binocoverlay")
+local combineOverlay = ix.util.GetMaterial("effects/combine_mockup5")
 
 function Schema:RenderScreenspaceEffects()
 	//DrawColorModify(colorModify)
@@ -104,7 +104,7 @@ function Schema:RenderScreenspaceEffects()
 	if (LocalPlayer():IsCombine()) then
 		render.UpdateScreenEffectTexture()
 
-		combineOverlay:SetFloat("$alpha", 0.25)
+		combineOverlay:SetFloat("$alpha", 1)
 		combineOverlay:SetInt("$ignorez", 1)
 
 		render.SetMaterial(combineOverlay)
@@ -233,6 +233,18 @@ function Schema:PopulateHelpMenu(tabs)
 end
 
 function Schema:RenderScreenspaceEffects()
+	if (LocalPlayer():IsCombine()) then
+		render.UpdateScreenEffectTexture()
+
+		combineOverlay:SetFloat("$refractamount", 0.3)
+		combineOverlay:SetFloat("$alpha", 0.5)
+		combineOverlay:SetInt("$ignorez", 1)
+
+		render.SetMaterial(combineOverlay)
+		render.DrawScreenQuad()
+	end
+	
+	if true then return end
 
 	if (ix.option.Get("ColorModify", true)) then
 		local colorModify = {}

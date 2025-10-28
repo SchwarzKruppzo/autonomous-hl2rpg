@@ -24,4 +24,11 @@ LANGUAGE = {
 	fistsFailMe = "%s ударяет мимо.",
 	lfistsMe = "Вы ударили %s %s%s!",
 	lfistsFailMe = "Вы ударили мимо.",
+
+	lminingEmote = "Вы добыли немного руды из месторождения.",
+	miningEmote = "%s добывает немного руды из месторождения!",
+
+	lwoodworkEmote = "Вы добыли немного древесины.",
+	woodworkEmote = "%s добывает немного древесины!"
+
 }

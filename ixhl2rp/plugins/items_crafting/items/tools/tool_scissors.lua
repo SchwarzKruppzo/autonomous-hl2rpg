@@ -9,6 +9,7 @@ ITEM.iconCam = {
 	ang = Angle(65.710968017578, 222.84214782715, 0),
 	fov = 3.4427581317421,
 }
+ITEM.DurabilityCraft = 20
 
 ITEM.combine = ITEM.combine or {}
 ITEM.combine.breakx = {
@@ -35,7 +36,11 @@ ITEM.combine.breakx = {
 		if item == targetItem then
 			return false
 		end
+
+		if targetItem.BreakDown then
+			return targetItem.BreakDownType == "cloth"
+		end
 		
-		return targetItem.BreakDown and targetItem.BreakDownType == "cloth"
+		return false
 	end
 }

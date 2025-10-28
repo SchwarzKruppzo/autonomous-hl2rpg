@@ -77,7 +77,7 @@ function FACTION:GetModels(client, gender)
 end
 
 function FACTION:GetDefaultName(client)
-	return "CCA:c08.r." .. Schema:ZeroNumber(math.random(1, 9999), 4), true
+	return "c24:R°URBAN-"..Schema:ZeroNumber(math.random(1, 9999), 4), true
 end
 
 function FACTION:GetRationType(character)

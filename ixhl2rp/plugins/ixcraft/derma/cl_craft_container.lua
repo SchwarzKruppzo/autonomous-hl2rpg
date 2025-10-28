@@ -97,6 +97,17 @@ function PANEL:Setup(isMini, inventoryID)
 	local recipesList = {}
 
 	for _, recipe in pairs(ix.Craft.recipes) do
+		if recipe.skill then
+			local skill = recipe.skill[1]
+			local level = recipe.skill[2]
+
+			local currentLevel = LocalPlayer():GetCharacter():GetSkillModified(skill)
+
+			if level > currentLevel then
+				continue
+			end
+		end
+		
 		if recipe.mainCategory then
 			local list = recipesList[recipe.mainCategory] or {recipes = {}, subcategories = {}, noSkill = true}
 

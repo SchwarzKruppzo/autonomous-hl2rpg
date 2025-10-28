@@ -15,6 +15,27 @@ CARDTYPE_CWU = 2
 CARDTYPE_UNION = 3
 CARDTYPE_CITY = 4
 
+local prime = 9999999787 -- prime % 4 = 3! DO NOT CHANGE EVER
+local offset = 100000 -- slightly larger than sqrt(prime) is ok. DO NOT CHANGE EVER
+local block = 100000000
+local function generateCardNumber(id)
+	id = (id + offset) % prime
+
+	local cardNum = 0
+
+	for _ = 1, math.floor(id/block) do
+		cardNum = (cardNum + (id * block) % prime) % prime
+	end
+
+	cardNum = (cardNum + (id * (id % block) % prime)) % prime
+
+	if (2 * id < prime) then
+		return cardNum
+	else
+		return prime - cardNum
+	end
+end
+
 function Item:GetDescription()
 	return L(string.format("iCardDesc%s", self.cardType or 0), self:GetData("name", "nobody"))
 end
@@ -60,20 +81,28 @@ function Item:Init()
 	})
 
 	self:AddData("datafileID", {
-		Transmit = ix.transmit.none,
-	})
-
-	self:AddData("nextRationTime", {
-		Transmit = ix.transmit.none,
+		Transmit = ix.transmit.owner,
 	})
 end
 
 function Item:OnInstanced(isCreated)
 	if isCreated then
+		local cardNumber = Schema:ZeroNumber(generateCardNumber(self:GetID()), 10)
+		self:SetData("number", string.format("%s-%d",
+			string.gsub(cardNumber, "^(%d%d)(%d%d%d%d)(%d%d%d%d)", "%1%-%2%-%3"),
+			Schema:ZeroNumber(cardNumber % 97, 2)
+		))
+
 		self:SetData("access", self.access or {})
 	end
 
 	hook.Run("OnIDCardInstanced", self)
+end
+
+function Item:SetupCharacter(character)
+	self:SetData("name", character:GetName())
+	self:SetData("cid", "000-00")
+	self:SetData("datafileID", character:GetID())
 end
 
 function Item:CreateDatafile(client)
@@ -82,21 +111,17 @@ function Item:CreateDatafile(client)
 
 		self:SetData("name", character:GetName())
 		self:SetData("cid", Schema:ZeroNumber(math.random(1, 99999), 5))
-		self:SetData("number", string.format("%s-%d",
-			string.gsub(math.random(100000000, 999999999), "^(%d%d%d)(%d%d%d%d)(%d%d)", "%1:%2:%3"),
-			Schema:ZeroNumber(math.random(1, 99), 2)
-		))
 
 		hook.Run("OnIDCardUpdated", self)
 	end
 end
 
 function Item:OnEquipped(client)
-	client.ixDatafile = self:GetData("datafileID", 0)
+	ix.Datafile:OnCardEquipped(client, self, true)
 end
 
 function Item:OnUnequipped(client)
-	client.ixDatafile = nil
+	ix.Datafile:OnCardEquipped(client, self, false)
 end
 
 if CLIENT then
@@ -107,14 +132,14 @@ if CLIENT then
 		if cid then
 			local panel = tooltip:AddRowAfter("rarity", "cid")
 			panel:SetBackgroundColor(derma.GetColor("Warning", tooltip))
-			panel:SetText("CID: #" .. cid)
+			panel:SetText("Citizen ID: #" .. cid)
 			panel:SizeToContents()
 		end
 
 		if number then
 			local panel = tooltip:AddRowAfter("rarity", "number")
 			panel:SetBackgroundColor(derma.GetColor("Warning", tooltip))
-			panel:SetText("RegID: #" .. number)
+			panel:SetText("Card ID: #" .. number)
 			panel:SizeToContents()
 		end
 
