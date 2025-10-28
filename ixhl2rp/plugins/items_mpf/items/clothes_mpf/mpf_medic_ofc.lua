@@ -5,14 +5,13 @@ ITEM.genderReplacement = {
 	[GENDER_FEMALE] = "models/cellar/characters/metropolice/female.mdl"
 }
 ITEM.uniform = 1
-ITEM.primaryVisor = Vector(0.75, 0.2, 0.1)
-ITEM.secondaryVisor = Vector(0.75, 0.2, 0.1)
+ITEM.primaryVisor = Vector(1, 0.6, 0.1)
+ITEM.secondaryVisor = Vector(5, 0.8, 0.1)
 ITEM.specialization = "m"
 ITEM.bodyGroups = {
-	[1] = 1,
-	[2] = 1,
-	[4] = 1,
-	[6] = 4
+	[1] = 1, -- coat
+	[3] = 3, -- mask
+	[4] = 2, -- vest
 }
 ITEM.armor = {
 	class = 3,

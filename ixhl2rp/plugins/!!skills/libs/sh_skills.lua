@@ -68,6 +68,10 @@ do
 			local required = skill:GetRequiredXP(skills, value)
 			local oldXP = (skills[key][2] or 0)
 
+			if IsValid(client) and client:IsDonator() then
+				xp = xp + (xp * 0.15)
+			end
+		
 			skills[key][2] = oldXP + xp
 
 			self:SetSkills(skills)

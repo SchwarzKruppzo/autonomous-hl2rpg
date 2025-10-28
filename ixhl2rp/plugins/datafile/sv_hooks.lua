@@ -14,6 +14,7 @@ function PLUGIN:LoadData()
 	query:Execute()
 
 	self.stored = {}
+	self.datafiles_save = {}
 
 	query = mysql:Select("ix_datafiles")
 		query:Select("datafile_id")
@@ -34,7 +35,7 @@ function PLUGIN:LoadData()
 						[3] = v.regid,
 						[4] = util.JSONToTable(v.genericdata),
 						[5] = util.JSONToTable(v.datafile),
-						[6] = util.JSONToTable(v.access),
+						[6] = util.JSONToTable(v.access)
 					}
 				end
 			end
@@ -48,9 +49,16 @@ function PLUGIN:OnWipeTables()
 end
 
 function PLUGIN:SaveData()
-	for k, v in pairs(self.stored) do
+
+	local saved = {}
+	for k, id in ipairs(self.datafiles_save) do
+		if saved[id] then continue end
+		
+		saved[id] = true
+
+		local v = self.stored[id]
 		local query = mysql:Update("ix_datafiles")
-			query:Where("datafile_id", k)
+			query:Where("datafile_id", id)
 			query:Update("character_name", v[1])
 			query:Update("cid", v[2])
 			query:Update("regid", v[3])
@@ -59,6 +67,8 @@ function PLUGIN:SaveData()
 			query:Update("access", v[6] and util.TableToJSON(v[6]) or "[]")
 		query:Execute()
 	end
+
+	self.datafiles_save = {}
 end
 
 function PLUGIN:CreateDatafile(name, cid, regid, access, callback)
@@ -111,6 +121,8 @@ function PLUGIN:CreateDatafile(name, cid, regid, access, callback)
 				[5] = CivilianData,
 				[6] = access,
 			}
+
+			table.insert(self.datafiles_save, id)
 		end)
 	query:Execute()
 end
@@ -146,6 +158,8 @@ function PLUGIN:OnIDCardUpdated(item)
 			self.stored[id][3] = regid
 			self.stored[id][6] = access
 		end
+
+		table.insert(self.datafiles_save, id)
 	end
 end
 

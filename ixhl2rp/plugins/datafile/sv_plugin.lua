@@ -115,6 +115,8 @@ function PLUGIN:UpdateLastSeen(datafileID)
 	if !self.stored[datafileID] then return end
 
 	self.stored[datafileID][4].last_seen = os.time()
+
+	table.insert(self.datafiles_save, datafileID)
 end
 
 function PLUGIN:SetCivilStatus(datafileID, civilStatus, client, char)
@@ -129,6 +131,8 @@ function PLUGIN:SetCivilStatus(datafileID, civilStatus, client, char)
 	if IsValid(client) then
 		self:AddEntry(client, datafileID, "union", Format("%s has changed Civil Status to %s", char:GetName(), civilStatus), 0)
 	end
+
+	table.insert(self.datafiles_save, datafileID)
 end
 
 function PLUGIN:AddEntry(poster, player, category, text, points)
@@ -177,6 +181,8 @@ function PLUGIN:AddEntry(poster, player, category, text, points)
 		net.Send(rf)
 	end
 
+	table.insert(self.datafiles_save, id)
+
 	netstream.Start(rf:GetPlayers(), "AddDatafileEntry", datafile[#datafile])
 end
 
@@ -207,6 +213,8 @@ function PLUGIN:SetBOL(poster, player, bBOL, reason)
 
 		self:AddEntry(poster, id, "union", Format(text, poster:GetCharacter():GetName()), 0)
 	end
+
+	table.insert(self.datafiles_save, id)
 end
 
 function PLUGIN:SetRestricted(poster, player, bRestricted, text)
@@ -229,6 +237,8 @@ function PLUGIN:SetRestricted(poster, player, bRestricted, text)
 
 		self:AddEntry(poster, id, "civil", Format("%s has removed the restriction on this file.", poster:GetCharacter():GetName()), 0)
 	end
+
+	table.insert(self.datafiles_save, id)
 end
 
 function PLUGIN:SetRegistry(poster, player, text)
@@ -249,6 +259,8 @@ function PLUGIN:SetRegistry(poster, player, text)
 
 		self:AddEntry(poster, id, "reg", Format("%s has removed a registration of this file.", poster:GetCharacter():GetName()), 0)
 	end
+
+	table.insert(self.datafiles_save, id)
 end
 
 function PLUGIN:ReturnPoints(player)

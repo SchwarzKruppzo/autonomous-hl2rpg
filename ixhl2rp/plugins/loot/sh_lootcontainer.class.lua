@@ -9,7 +9,7 @@ end
 local function Process(info, entity)
 	local items = {}
 
-	local rate = math.Clamp(math.Clamp(#player.GetAll(), 1, 40) / 40, math.random(0, 0.25), 1)
+	local rate = math.Clamp(math.Clamp(#player.GetAll(), 1, 20) / 20, math.random(0, 0.25), 1)
 
 	if info.NoRate then
 		rate = 1

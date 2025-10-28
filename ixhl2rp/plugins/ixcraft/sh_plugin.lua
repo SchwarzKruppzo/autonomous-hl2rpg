@@ -6,7 +6,7 @@ PLUGIN.description = "Adds a better crafting solution to helix."
 
 if CLIENT then
 	surface.CreateFont("ui.craft.large", {
-		font = "Blender Pro Bold",
+		font = "Blender Pro Medium",
 		extended = true,
 		size = ix.UI.Scale(19),
 		weight = 550,
@@ -20,9 +20,9 @@ if CLIENT then
 		antialias = true,
 	})
 	surface.CreateFont("craft.item.title", {
-		font = "Blender Pro Bold",
+		font = "Blender Pro Medium",
 		extended = true,
-		size = ix.UI.Scale(30),
+		size = ix.UI.Scale(24),
 		weight = 500,
 		antialias = true,
 	})

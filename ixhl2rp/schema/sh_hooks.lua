@@ -13,6 +13,12 @@ function Schema:InitializedChatClasses()
 		end,
 		CanHear = ix.config.Get("chatRange", 280),
 		OnChatAdd = function(self, speaker, text, anonymous, info)
+			local icon, langPrefix
+
+			if info.lang then
+				icon, langPrefix, text = ix.languages.OnChatAdd(speaker, text, info.lang)
+			end
+
 			local color = self:GetColor(speaker, text, info)
 			local name = anonymous and
 				L"someone" or hook.Run("GetCharacterName", speaker, "ic") or
@@ -20,7 +26,9 @@ function Schema:InitializedChatClasses()
 
 			local bToYou = speaker:GetEyeTraceNoCursor().Entity == LocalPlayer()
 
-			chat.AddText(color, ix.util.GetMaterial("cellar/chat/ic.png"), name, " говорит", bToYou and " (вам)" or "", color_white, string.format(self.format, text))
+			chat.AddText(icon or "", color, ix.util.GetMaterial("cellar/chat/ic.png"), name, " говорит", langPrefix or "", bToYou and " (вам)" or "", color_white, string.format(self.format, text))
+			
+			return text
 		end
 	})
 
@@ -40,6 +48,12 @@ function Schema:InitializedChatClasses()
 		description = "@cmdW",
 		indicator = "chatWhispering",
 		OnChatAdd = function(self, speaker, text, anonymous, info)
+			local icon, langPrefix
+
+			if info.lang then
+				icon, langPrefix, text = ix.languages.OnChatAdd(speaker, text, info.lang)
+			end
+
 			local color = self:GetColor(speaker, text, info)
 			local name = anonymous and
 				L"someone" or hook.Run("GetCharacterName", speaker, "w") or
@@ -47,7 +61,9 @@ function Schema:InitializedChatClasses()
 
 			local bToYou = speaker:GetEyeTraceNoCursor().Entity == LocalPlayer()
 
-			chat.AddText(color, ix.util.GetMaterial("cellar/chat/whisper.png"), name, " шепчет", bToYou and " (вам)" or "", color_white, string.format(self.format, text))
+			chat.AddText(icon or "", color, ix.util.GetMaterial("cellar/chat/whisper.png"), name, " шепчет", langPrefix or "", bToYou and " (вам)" or "", color_white, string.format(self.format, text))
+			
+			return text
 		end
 	})
 
@@ -59,11 +75,19 @@ function Schema:InitializedChatClasses()
 		description = "@cmdY",
 		indicator = "chatYelling",
 		OnChatAdd = function(self, speaker, text, anonymous, info)
+			local icon, langPrefix
+
+			if info.lang then
+				icon, langPrefix, text = ix.languages.OnChatAdd(speaker, text, info.lang)
+			end
+
 			local name = anonymous and
 				L"someone" or hook.Run("GetCharacterName", speaker, "y") or
 				(IsValid(speaker) and speaker:Name() or "Console")
 
-			chat.AddText(self.color, ix.util.GetMaterial("cellar/chat/yell.png"), name, " кричит", color_white, string.format(self.format, text))
+			chat.AddText(icon or "", self.color, ix.util.GetMaterial("cellar/chat/yell.png"), name, " кричит", langPrefix or "", color_white, string.format(self.format, text))
+			
+			return text
 		end
 	})
 
@@ -379,7 +403,9 @@ function Schema:OnPlayerHitGround(client)
 end
 
 function Schema:SetupMove(client, moveData, userCmd)
-	if (userCmd:KeyDown(IN_BACK)) then
+	local value = client:GetNW2Bool("Arcade")
+	
+	if !value and (userCmd:KeyDown(IN_BACK)) then
 		moveData:SetForwardSpeed(-client:GetWalkSpeed())
 		moveData:SetSideSpeed(math.Clamp(moveData:GetSideSpeed(), -client:GetWalkSpeed(), client:GetWalkSpeed()))
 	end

@@ -81,6 +81,8 @@ do
 
 				result = self:XPStarvationMod(result * intFactor)*/
 				
+				//result = result * 3
+
 				self:UpdateSkillProgress(action.skill, result)
 
 				if !action.noLogging then

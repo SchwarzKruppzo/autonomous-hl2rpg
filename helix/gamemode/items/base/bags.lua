@@ -169,6 +169,23 @@ function Item:CanTake(client)
 	end
 end
 
+function Item:CanEquip(client)
+	local hasBag
+
+	for k, v in pairs(client:GetInventory("main"):GetItems()) do
+		if v.isBag then
+			hasBag = true
+			break
+		end
+	end
+
+	if hasBag then
+		return false
+	end
+
+	return true
+end
+
 function Item:OnEquipped(client)
 	if self.GetOutfitData then
 		client.char_outfit:AddItem(self, false, {})

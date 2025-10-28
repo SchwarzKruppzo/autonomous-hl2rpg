@@ -5,9 +5,9 @@ local categories = {}
 local recipesList = {}
 
 local function DrawCorners(x, y, w, h)
-	surface.SetDrawColor(16, 32, 48, 255 * 0.9)
-	surface.DrawRect(0, 0, w, h)
-
+	surface.SetDrawColor(8, 32, 48, 128)
+	surface.DrawRect(x, y, w, h)
+	
 	local size = ix.UI.Scale( (h / 4) * 0.1 )
 
 	surface.SetDrawColor(0, 190, 255, 255)
@@ -79,6 +79,7 @@ function PANEL:Setup(isMini, inventoryID)
 	firstTitle:Dock(TOP)
 	firstTitle:DockMargin(0, 10, 0, 0)
 	firstTitle:SetContentAlignment(5)
+	firstTitle:SetTextColor(Color(0, 225, 255))
 	firstTitle:SetFont("craft.item.title")
 	firstTitle:SetText("РЕЦЕПТЫ")
 	
@@ -156,6 +157,8 @@ function PANEL:Setup(isMini, inventoryID)
 
 	ix.gui.craft_categories = ix.gui.craft_categories or {}
 
+	local category_style = Color(0, 225, 255)
+
 	for k, v in ipairs(categories) do
 		local noSkill = (v.recipesList or {}).noSkill
 		local collapsibleCategory = parent.first:Add("DCollapsibleCategory")
@@ -173,7 +176,7 @@ function PANEL:Setup(isMini, inventoryID)
 		collapsibleCategory:SetLabel("")
 		collapsibleCategory:SetExpanded(false)
 		collapsibleCategory.Paint = function(_, w, h)
-			surface.SetDrawColor(color_white)
+			surface.SetDrawColor(category_style)
 
 			if collapsibleCategory:GetExpanded() then
 				surface.SetMaterial(ix.util.GetMaterial("cellar/ui/minus.png"))
@@ -192,6 +195,7 @@ function PANEL:Setup(isMini, inventoryID)
 		
 		categoryTitle:SetText(noSkill and v.category or ix.skills.list[v.category].name)
 		categoryTitle:SetFont("ui.craft.large")
+		categoryTitle:SetTextColor(category_style)
 		categoryTitle:SizeToContents()
 		categoryTitle:SetPos(iconOffset + sizeIcon * 1.75, collapsibleCategory:GetTall() * 0.5 - categoryTitle:GetTall() * 0.5)
 
@@ -217,7 +221,7 @@ function PANEL:Setup(isMini, inventoryID)
 			collapsibleSubCategory:SetExpanded( false )
 			collapsibleSubCategory:SetTall(buttonHeight)
 			collapsibleSubCategory.Paint = function(_, w, h)
-				surface.SetDrawColor(color_white)
+				surface.SetDrawColor(category_style)
 
 				if collapsibleSubCategory:GetExpanded() then
 					surface.SetMaterial(ix.util.GetMaterial("cellar/ui/minus.png"))
@@ -238,6 +242,7 @@ function PANEL:Setup(isMini, inventoryID)
 			local subcategoryTitle = vgui.Create("DLabel", collapsibleSubCategory)
 			subcategoryTitle:SetText(v2.category)
 			subcategoryTitle:SetFont("ui.craft.large")
+			subcategoryTitle:SetTextColor(category_style)
 			subcategoryTitle:SizeToContents()
 			subcategoryTitle:SetPos(iconOffset + sizeIcon * 2.75, collapsibleSubCategory:GetTall() * 0.5 - subcategoryTitle:GetTall() * 0.5 + scale(1 / 3))
 
@@ -270,7 +275,12 @@ function PANEL:Setup(isMini, inventoryID)
 	
 	parent.second = second:Add("DScrollPanel")
 	parent.second:Dock(TOP)
-	parent.second:SetSize(second:GetWide(), second:GetTall() * 0.525)
+	if !isMini then
+		parent.second:SetSize(second:GetWide(), second:GetTall() * 0.525)
+	else
+		parent.second:Dock(FILL)
+		//parent.second:SetSize(second:GetWide(), second:GetTall())
+	end
 	parent.second:DockMargin(0, 0, 0, margin)
 	parent.second:InvalidateParent(true)
 	parent.second.Paint = function(panel, w, h)
@@ -279,29 +289,32 @@ function PANEL:Setup(isMini, inventoryID)
 
 	second:InvalidateParent(true)
 
-	local inv = second:Add("Panel")
-	inv:Dock(FILL)
-	inv:DockMargin(0, 0, 0, 10)
-	inv:InvalidateParent(true)
-	inv.Paint = function(panel, w, h)
-		DrawCorners(0, 0, w, h)
+	if !isMini then
+		local inv = second:Add("Panel")
+		inv:Dock(FILL)
+		inv:DockMargin(0, 0, 0, 10)
+		inv:InvalidateParent(true)
+		inv.Paint = function(panel, w, h)
+			DrawCorners(0, 0, w, h)
+		end
+
+		local firstTitle = inv:Add("DLabel")
+		firstTitle:Dock(TOP)
+		firstTitle:DockMargin(0, 10, 0, 0)
+		firstTitle:SetContentAlignment(5)
+		firstTitle:SetTextColor(Color(0, 225, 255))
+		firstTitle:SetFont("craft.item.title")
+		firstTitle:SetText("ИНВЕНТАРЬ")
+
+		local panel = inv:Add('ui.inv')
+		panel:SetSlotSize(64, 64)
+		panel:SetInventoryID(LocalPlayer():GetInventory('main').id)
+		panel:Rebuild()
+		panel:SizeToContents()
+		panel:Center()
+
+		LocalPlayer():GetInventory('main').panel = panel
 	end
-
-	local firstTitle = inv:Add("DLabel")
-	firstTitle:Dock(TOP)
-	firstTitle:DockMargin(0, 10, 0, 0)
-	firstTitle:SetContentAlignment(5)
-	firstTitle:SetFont("craft.item.title")
-	firstTitle:SetText("ИНВЕНТАРЬ")
-
-	local panel = inv:Add('ui.inv')
-	panel:SetSlotSize(64, 64)
-	panel:SetInventoryID(LocalPlayer():GetInventory('main').id)
-	panel:Rebuild()
-	panel:SizeToContents()
-	panel:Center()
-
-	LocalPlayer():GetInventory('main').panel = panel
 
 	local button = second:Add('ui.craft.button')
 	button:Dock(BOTTOM)
@@ -331,6 +344,7 @@ function PANEL:Setup(isMini, inventoryID)
 		stationTitle:Dock(TOP)
 		stationTitle:DockMargin(0, 10, 0, 0)
 		stationTitle:SetContentAlignment(5)
+		stationTitle:SetTextColor(Color(0, 225, 255))
 		stationTitle:SetFont("craft.item.title")
 		stationTitle:SetText("РАБОЧЕЕ МЕСТО")
 

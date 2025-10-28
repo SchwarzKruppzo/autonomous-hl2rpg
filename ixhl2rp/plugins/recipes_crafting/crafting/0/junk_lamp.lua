@@ -9,5 +9,5 @@ RECIPE.results = {
 	mat_cloth = 2,
 }
 RECIPE.skill = {"crafting", 0}
-RECIPE.tools = {"tool_screw"}
+RECIPE.station = "station_tokar"
 RECIPE.xp = 35

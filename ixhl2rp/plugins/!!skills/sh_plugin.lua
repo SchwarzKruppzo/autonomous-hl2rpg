@@ -238,6 +238,8 @@ do
 					if (count > defaulSpecialPoints) then
 						return false, "unknownError"
 					end
+
+					return value
 				else
 					return false, "unknownError"
 				end

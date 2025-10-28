@@ -7,15 +7,15 @@ PLUGIN.description = ""
 local exitKeys = {IN_FORWARD, IN_BACK, IN_MOVELEFT, IN_MOVERIGHT}
 
 function PLUGIN:SetupMove(client, move, usercmd)
-	if !client.ixAutoWalk then 
-		return 
-	end
+	local value = client:GetNW2Bool("Arcade")
 
-	move:SetForwardSpeed(move:GetMaxSpeed())
+	if !value and client.ixAutoWalk then 
+		move:SetForwardSpeed(move:GetMaxSpeed())
 
-	for _, v in ipairs(exitKeys) do
-		if usercmd:KeyDown(v) then
-			client.ixAutoWalk = nil
+		for _, v in ipairs(exitKeys) do
+			if usercmd:KeyDown(v) then
+				client.ixAutoWalk = nil
+			end
 		end
 	end
 end

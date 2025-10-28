@@ -457,20 +457,19 @@ a:link, a:visited, a:hover, a:active {
 ]]
 
 PANEL.patch = [[
-<strong>04.07.2024:</strong>
+<strong>Патч 28.6:</strong>
+<ul style="list-style: none;">
+</ul>
+<strong>ЯДРО:</strong>
+<ul style="list-style: none;">
+	<li>— Подготовка ядра к запланированным изменениям интерфейса.</li>
+</ul>
+<strong>22.09.2024:</strong>
 <ul style="list-style: none;">
 </ul>
 <strong>НОВОЕ:</strong>
 <ul style="list-style: none;">
-	<li>— Добавлены источники воды на карте. Пустые банки можно наполнять грязной водой.</li>
-</ul>
-<strong>ИЗМЕНЕНИЯ:</strong>
-<ul style="list-style: none;">
-	<li>— Грязная вода: теперь оставляет пустую банку и наносит некоторый урон радиацией.</li>
-</ul>
-<strong>ИСПРАВЛЕНИЯ:</strong>
-<ul style="list-style: none;">
-	<li>— Исправлена ошибка, из-за которой раздатчик рационов мог зависнуть от взаимодействия вортигонта.</li>
+	<li>— Добавлены предметы: Черные брюки, Белые брюки, Черные брюки с ремнем, Черный пиджак, Белый пиджак, Черный пиджак с пальто.</li>
 </ul>
 ]]
 
@@ -773,7 +772,7 @@ function PANEL:MenuClick(id)
 	elseif id == 3 then
 		gui.OpenURL("https://steamcommunity.com/sharedfiles/filedetails/?id=2425908945")
 	elseif id == 4 then
-		gui.OpenURL("https://discord.gg/cellarproject")
+		gui.OpenURL("https://discord.gg/yySMv9ZMRU")
 	elseif id == 5 then
 		if self.bUsingCharacter then
 			parent:Close()

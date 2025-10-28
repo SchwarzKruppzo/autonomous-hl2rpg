@@ -8,3 +8,12 @@ ix.config.Add("rationInterval", 300, "How long a person needs to wait in seconds
 	data = {min = 0, max = 86400},
 	category = "economy"
 })
+
+ix.option.Add("ColorModify", ix.type.bool, true, {
+    category = "general"
+})
+
+ix.option.Add("ColorSaturation", ix.type.number, 0, {
+	category = "general",
+	min = -3, max = 3, decimals = 2
+})

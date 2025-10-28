@@ -8,10 +8,10 @@ ITEM.uniform = 2
 ITEM.primaryVisor = Vector(1, 5, 1)
 ITEM.secondaryVisor = Vector(0.1, 0.5, 0.1)
 ITEM.bodyGroups = {
-	[2] = 1,
-	[3] = 1,
-	[4] = 1,
-	[6] = 2
+	[1] = 1, -- coat
+	[2] = 1, -- neck
+	[3] = 4, -- mask
+	[4] = 1, -- vest
 }
 ITEM.armor = {
 	class = 2,

@@ -21,7 +21,7 @@ function ItemCloth:OnEquipped(client)
 	local char = client:GetCharacter()
 
 	if isfunction(self.OnGetReplacement) then
-		model = self:OnGetReplacement()
+		model = self:OnGetReplacement(client, char)
 	elseif (self.replacement or self.replacements) then
 		if (istable(self.replacements)) then
 			if (#self.replacements == 2 and isstring(self.replacements[1])) then

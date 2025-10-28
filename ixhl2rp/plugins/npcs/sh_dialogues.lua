@@ -251,7 +251,7 @@ ix.dialogues.Add("mark_pootis", {
 		response = {
 			[1] = {
 				text = {
-					"Неплохо, такие работники мне нравятся! Вот, твои десять токенов за работу.",
+					"Неплохо, такие работники мне нравятся! Вот, твои десять токенов за работу и наградной купон! Купон можно обменять на дополнительные очки лояльности и премию в временных пунктах выдачи поощрений. О таких пунктах обычно оповещают.",
 					"Хорошая работа. Вот твоя награда.",
 					"Достойная плата за достойную работу.",
 				},
@@ -278,7 +278,14 @@ ix.dialogues.Add("mark_pootis", {
 				net.Start("ixUpdateQuests")
 				net.Send(client)
 
-				client:NotifyLocalized("Вы получили 10 токенов.")
+				local new_item = ix.Item:Instance("coupon_workforce")
+				local success = client:AddItem(new_item)
+
+				if !success then
+					ix.Item:Spawn(client, nil, new_item)
+				end
+
+				client:NotifyLocalized("Вы получили 10 токенов и 1х Купон \"Работник\".")
 			end
 
 			self.data.haswork = false
@@ -294,7 +301,7 @@ ix.dialogues.Add("mark_pootis", {
 		data = {
 			haswork = true,
 		},
-		response = "Бери перчатки, пакет и шуруй на улицу. Уберешь 4 куч, которых тут довольно много, после чего можешь возвращаться. И не смей мухлевать - мы следим.",
+		response = "Бери перчатки, пакет и шуруй на улицу. Уберешь 4 куч, которых тут довольно много, после чего можешь возвращаться.",
 		choices = {"GOODBYE"}
 	},
 	["WhereIam"] = {

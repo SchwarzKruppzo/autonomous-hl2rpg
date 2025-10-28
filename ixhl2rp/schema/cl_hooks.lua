@@ -231,3 +231,20 @@ function Schema:PopulateHelpMenu(tabs)
 		end
 	end
 end
+
+function Schema:RenderScreenspaceEffects()
+
+	if (ix.option.Get("ColorModify", true)) then
+		local colorModify = {}
+		colorModify["$pp_colour_colour"] = 0.77 + ix.option.Get("ColorSaturation", 0)
+
+		if (system.IsWindows()) then
+			colorModify["$pp_colour_brightness"] = -0.02
+			colorModify["$pp_colour_contrast"] = 1.2
+		else
+			colorModify["$pp_colour_brightness"] = 0
+			colorModify["$pp_colour_contrast"] = 1
+		end
+		DrawColorModify(colorModify)
+	end
+end

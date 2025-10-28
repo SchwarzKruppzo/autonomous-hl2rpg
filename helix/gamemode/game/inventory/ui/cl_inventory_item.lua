@@ -22,6 +22,8 @@ local RARITY_CLR2 = {
 	[3] = Color(150, 64, 255, 225),
 	[4] = Color(230, 188, 22, 255),
 }
+local shadow = Material('cellar/slot_shadow.png')
+
 function PANEL:Paint(w, h)
 	local draw_color
 	local drop_slot = ix.inventory_drop_slot
@@ -105,11 +107,11 @@ function PANEL:Paint(w, h)
 			draw.RoundedBox(0, 0, 0, w, h, draw_color)
 		render.OverrideBlend(false)
 	end
-/*
+
 	surface.SetDrawColor(255, 255, 255, 255 * 0.75)
 	surface.SetMaterial(shadow)
 	surface.DrawTexturedRect(1, 1, w, h)
-	*/
+	
 end
 
 surface.CreateFont("item.count", {

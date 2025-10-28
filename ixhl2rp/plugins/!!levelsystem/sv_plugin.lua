@@ -53,6 +53,12 @@ do
 	function charMeta:AddLevelXP(xp, reasonType)
 		xp = xp or 1
 
+		local client = self:GetPlayer()
+
+		if IsValid(client) and client:IsDonator() then
+			xp = xp + (xp * 0.15)
+		end
+
 		local max = PLUGIN:GetRequiredLevelXP(self:GetLevel())
 		local cur = (self:GetLevelXP() + xp)
 		

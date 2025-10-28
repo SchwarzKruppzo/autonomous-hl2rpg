@@ -61,7 +61,7 @@ function PANEL:Init()
 
 		self.experienceText = self:Add("DLabel")
 		self.experienceText:SetFont("ui.craft.xp")
-		self.experienceText:SetText(result.." ОПЫТ")
+		self.experienceText:SetText(result.." XP")
 		self.experienceText:SizeToContents()
 		self.experienceText:SetPos(self:GetWide() - self.experienceText:GetWide() - 15, self:GetTall() * 0.5 - self.experienceText:GetTall() * 0.5)
 	end
@@ -69,16 +69,17 @@ function PANEL:Init()
 	if skillLevel > character:GetSkillModified(skillName) then
 		self.levelRequirement = self:Add("DLabel")
 		self.levelRequirement:SetFont("ui.craft.xp")
-		self.levelRequirement:SetText(skillLevel.." УРОВЕНЬ")
+		self.levelRequirement:SetText(skillLevel.." УР")
 		self.levelRequirement:SizeToContents()
 		self.levelRequirement:SetPos(self:GetWide() - self.levelRequirement:GetWide() - 15, self:GetTall() * 0.5 - self.levelRequirement:GetTall() * 0.5)
 	end
 end
 
 local skill_scale_colors = {
+	Color(0, 255, 120, 255),
 	Color(32, 240, 255, 255),
-	Color(255, 255, 128, 255),
-	Color(100, 200, 100, 255),
+	Color(233, 210, 85, 255),
+	Color(70, 208, 135, 255),
 	Color(200, 200, 200, 255),
 	Color(255, 72, 72, 255)
 }
@@ -86,18 +87,18 @@ local skill_scale_colors = {
 function PANEL:GetSkillScale(skill, level)
 	local character = LocalPlayer():GetCharacter()
 	local currentLevel = character:GetSkillModified(skill)
-	local int = math.Remap(level, currentLevel - 2, currentLevel, 0, 1)
+	local int = math.Remap(level, currentLevel - 4, currentLevel, 0, 1)
 	
 	if int > 1 then
-		return int, skill_scale_colors[5]
+		return int, skill_scale_colors[6]
 	elseif int == 1 then
 		return int, skill_scale_colors[1]
-	elseif int >= 0.5 then
-		return int, skill_scale_colors[2]
-	elseif int >= 0 and int < 0.5 then
+	elseif int >= 0.75 and int < 1 then
 		return int, skill_scale_colors[3]
-	else
+	elseif int >= 0.5 and int < 0.75 then
 		return int, skill_scale_colors[4]
+	else
+		return int, skill_scale_colors[5]
 	end
 end
 
@@ -329,7 +330,7 @@ function PANEL:SetupCraft()
 		end
 	end
 
-	parent.components:SizeToChildren(true, true)
+	parent.components:InvalidateLayout(true)
 	parent.top:InvalidateLayout(true)
 	parent.top:SizeToChildren(true, true)
 end

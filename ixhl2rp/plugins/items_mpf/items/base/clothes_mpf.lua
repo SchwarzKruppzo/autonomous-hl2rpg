@@ -11,6 +11,10 @@ ItemClothMPF.iconCam = {
 	fov = 3.2292894524527,
 }
 ItemClothMPF.isMPF = true
+ItemClothMPF.rebelReplacement = {
+	[GENDER_MALE] = "models/cellar/characters/metropolice/male_rebel.mdl",
+	[GENDER_FEMALE] = "models/cellar/characters/metropolice/female_rebel.mdl"
+}
 
 local vector_origin = vector_origin or Vector()
 
@@ -30,6 +34,26 @@ function ItemClothMPF:Init()
 	self:AddData("armband", {
 		Transmit = ix.transmit.owner,
 	})
+
+	self:AddData("captured", {
+		Transmit = ix.transmit.owner,
+	})
+
+	self.functions.devEdit = {
+		name = "Сделать Захваченной",
+		icon = "icon16/wrench.png",
+		OnClick = function(item)
+			
+		end,
+		OnRun = function(item)
+			item:SetData("captured", true)
+
+			return false
+		end,
+		OnCanRun = function(item)
+			return item:GetData("captured", false) != true and (!item.player:IsCombine() or item.player:IsAdmin())
+		end
+	}
 end
 
 function ItemClothMPF:OnInstanced(isCreated)
@@ -37,6 +61,15 @@ function ItemClothMPF:OnInstanced(isCreated)
 
 	if isCreated then
 		self:SetData("armband", 0)
+		self:SetData("captured", false)
+	end
+end
+
+function ItemClothMPF:OnGetReplacement(client, char)
+	if self:GetData("captured") == true then
+		return self.rebelReplacement[char:GetGender()] or self.rebelReplacement[GENDER_MALE]
+	else
+		return self.genderReplacement[char:GetGender()] or self.genderReplacement[GENDER_MALE]
 	end
 end
 
@@ -55,6 +88,9 @@ local armbandRank = {
 
 function ItemClothMPF:UpdateMPF(client, armband)
 	if client:Team() == FACTION_MPF then
+		client:SetPrimaryVisorColor(self.primaryVisor)
+		client:SetSecondaryVisorColor(self.secondaryVisor)
+
 		local name = client:GetName()
 		local format = "(CCA%:.*%.).*(%.%d+)"
 		local ranks = string.match(name, "CCA%:.*%.(.*)%.%d+") or string.match(name, "CCA%:.*%:(.*)%.%d+")
@@ -77,6 +113,12 @@ function ItemClothMPF:UpdateMPF(client, armband)
 
 		client:GetCharacter():SetVar("oldName", name, true)
 		client:GetCharacter():SetName(newName)
+	elseif client:IsCombine() and client:Team() != FACTION_MPF then
+		client:SetPrimaryVisorColor(self.primaryVisor)
+		client:SetSecondaryVisorColor(self.secondaryVisor)
+	else
+		client:SetPrimaryVisorColor(vector_origin)
+		client:SetSecondaryVisorColor(vector_origin)
 	end
 end
 
@@ -88,9 +130,6 @@ function ItemClothMPF:OnEquipped(client)
 	client:SetNWInt("sg_uniform", self.uniform)
 	client:SetNWInt("sg_armband", armband)
 
-	client:SetPrimaryVisorColor(self.primaryVisor)
-	client:SetSecondaryVisorColor(self.secondaryVisor)
-	
 	self:UpdateMPF(client, armband)
 end
 
@@ -102,6 +141,23 @@ function ItemClothMPF:OnUnequipped(client)
 
 	client:SetPrimaryVisorColor(vector_origin)
 	client:SetSecondaryVisorColor(vector_origin)
+end
+local yellowClr = Color(255, 200, 50)
+function ItemClothMPF:PopulateTooltip(tooltip)
+	if self:GetData("captured") == true then
+		local clr = ColorAlpha(yellowClr, 16)
+		local s = tooltip:AddRowAfter("name", "captured")
+		s:SetTextColor(yellowClr)
+		s:SetFont("item.stats.bold2")
+	    s:SetText("На униформе присутствуют опозновательные знаки Сопротивления.")
+		s:SizeToContents()
+		s.Paint = function(_, w, h)
+			surface.SetDrawColor(clr)
+			surface.DrawRect(0, 0, w, h)
+		end
+	end
+
+	ix.meta.ItemClothArmor.PopulateTooltip(self, tooltip)
 end
 
 return ItemClothMPF

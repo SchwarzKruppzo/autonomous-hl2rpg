@@ -37,3 +37,34 @@ function ITEM:CustomEffect(client, uses)
 		character:SetRadLevel(character:GetRadLevel() + rad)
 	end
 end
+
+ITEM.functions.zod = {
+	name = "Вылить содержимое",
+	OnRun = function(item)
+		local client = item.player
+		local junk = item.junk
+		local class = item.uniqueID
+
+		if IsValid(item.entity) then
+			local pos, ang = item.entity:GetPos(), item.entity:GetAngles()
+
+			item.entity:Remove()
+
+			if junk then
+				local new_item = ix.Item:Instance(junk)
+				new_item:SetData("class", class)
+
+				ix.Item:Spawn(pos, ang, new_item)
+			end
+		else
+			item:Remove()
+
+			if junk then
+				local new_item = ix.Item:Instance(junk)
+				new_item:SetData("class", class)
+				client:AddItem(new_item)
+			end
+		end
+	end,
+	OnCanRun = function(item) return !item:IsClosed() end
+}

@@ -96,7 +96,10 @@ ix.util.Include("core/sh_networking.lua")
 
 ix.util.Include("game/cl_ui_utils.lua")
 ix.util.Include("game/ui/generic.menu.lua", "client")
+ix.util.Include("game/ui/generic.panels.lua", "client")
 ix.util.Include("game/ui/mainmenu.title.lua", "client")
+ix.util.Include("game/ui/tabmenu.frame.lua", "client")
+ix.util.Include("game/ui/tabmenu.lua", "client")
 ix.util.Include("core/libs/sh_character.lua")
 
 

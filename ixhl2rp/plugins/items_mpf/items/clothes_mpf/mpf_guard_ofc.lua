@@ -1,18 +1,17 @@
 ITEM.name = "Униформа офицера-охраны ГО"
 ITEM.description = "Стандартная униформа офицера-охраны Гражданской Обороны с улучшенным шлемом с визором."
 ITEM.genderReplacement = {
-	[GENDER_MALE] = "models/cellar/custom/metropolice/guard.mdl",
-	[GENDER_FEMALE] = "models/cellar/custom/metropolice/guard.mdl"
+	[GENDER_MALE] = "models/cellar/characters/metropolice/male.mdl",
+	[GENDER_FEMALE] = "models/cellar/characters/metropolice/female.mdl"
 }
-ITEM.uniform = 0
+ITEM.uniform = 6
 ITEM.primaryVisor = Vector(1, 1, 1)
 ITEM.secondaryVisor = Vector(0.5, 0.5, 0.5)
 ITEM.specialization = "g"
 ITEM.bodyGroups = {
-	[1] = 1,
-	[2] = 1,
-	[6] = 5,
-	[8] = 2
+	[1] = 1, -- coat
+	[3] = 3, -- mask
+	[4] = 2, -- vest
 }
 ITEM.armor = {
 	class = 3,

@@ -16,6 +16,8 @@ do
 		end
 
 		self.inventories = inventories
+		self:SyncInventories()
+		
 		self:LoadInventories(function()
 			self:SyncInventories()
 		end)
@@ -107,12 +109,17 @@ do
 			return success, error
 		else
 			for k, v in pairs(self:GetInventories()) do
-				if v:HasItem(id) then
-					local success, error = v:TakeItem(id)
+				local found, item = v:HasItem(id)
 
-					v:Sync()
+				if found then
+					local inv = ix.Inventory:Get(item.inventory_id)
 
-					return success, error
+					if inv then
+						local success, error = inv:TakeItem(id)
+						inv:Sync()
+
+						return success, error
+					end
 				end
 			end
 
@@ -133,11 +140,17 @@ do
 				return false, 'notEnoughItems'
 			else
 				for k, v in pairs(self:GetInventories()) do
-					if amount > 0 and v:HasItem(id) then
-						v:TakeItem(id)
-						v:Sync()
+					local found, item = v:HasItem(id)
 
-						amount = amount - 1
+					if amount > 0 and found then
+						local inv = ix.Inventory:Get(item.inventory_id)
+
+						if inv then
+							inv:TakeItem(id)
+							inv:Sync()
+
+							amount = amount - 1
+						end
 					end
 				end
 

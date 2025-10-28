@@ -52,6 +52,9 @@ function LootTemplate:Process(loot, seed, mul)
 		elseif info.count then
 			amount = math.max(info.count * mul, 0)
 		end
+
+		//amount = amount * 2
+		
 		local v = 0
 		for i = 1, amount do
 			local class = entry[1]:Roll(client)

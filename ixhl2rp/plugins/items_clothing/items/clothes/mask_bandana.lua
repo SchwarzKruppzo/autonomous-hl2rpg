@@ -17,4 +17,3 @@ ITEM.iconCam = {
 
 ITEM.BreakDown = true
 ITEM.BreakDownType = "cloth"
-ITEM.contraband = true

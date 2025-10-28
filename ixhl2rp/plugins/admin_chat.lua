@@ -6,7 +6,7 @@ if SERVER then
 	util.AddNetworkString("ixOpenURL")
 else
 	local urls = {
-		[0] = "https://discord.gg/cellarproject",
+		[0] = "https://discord.gg/yySMv9ZMRU",
 		[1] = "https://steamcommunity.com/sharedfiles/filedetails/?id=2425908945",
 		[2] = "https://docs.google.com/document/d/1J34cFyrmMnBwXt3WyMWTB1Jmi5KHU0imTK_tlSErw6k",
 		[3] = "https://docs.google.com/document/d/1kXwYo3sBgtdsuVu1y8ucaJvTJu2PRtKsmhL2FGdziBo",

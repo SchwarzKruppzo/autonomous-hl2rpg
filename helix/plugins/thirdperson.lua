@@ -64,10 +64,6 @@ if (CLIENT) then
 			return false
 		end
 
-		if (IsValid(ix.gui.menu) and ix.gui.menu:GetCharacterOverview()) then
-			return false
-		end
-
 		if (ix.option.Get("thirdpersonEnabled", false) and
 			!IsValid(self:GetVehicle()) and
 			isAllowed() and

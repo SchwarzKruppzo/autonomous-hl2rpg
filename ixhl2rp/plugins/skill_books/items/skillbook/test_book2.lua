@@ -7,6 +7,7 @@ ITEM.iconCam = {
 	ang = Angle(30.566345214844, 180.11782836914, 0),
 	fov = 10.598704422945,
 }
+ITEM.bookTime = 5 * 60
 ITEM.book = {
 	skill = {"guns", 2},
 	level = 2,

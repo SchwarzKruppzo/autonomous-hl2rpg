@@ -230,6 +230,7 @@ function PLUGIN:AddDonateSubscription(steamid64, timeLeft, callback)
 			if istable(result) and #result > 0 then
 				local data = util.JSONToTable(result[1].data or "[]")
 
+				local last = data.donateTime
 				data.donateTime = data.donateTime + timeLeft
 
 				local updateQuery = mysql:Update("ix_players")
@@ -238,7 +239,7 @@ function PLUGIN:AddDonateSubscription(steamid64, timeLeft, callback)
 				updateQuery:Execute()
 
 				if callback then
-					callback(true)
+					callback(true, data.donateTime, last)
 				end
 
 				for _, v in ipairs(player.GetAll()) do

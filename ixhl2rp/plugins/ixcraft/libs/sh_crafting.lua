@@ -172,7 +172,7 @@ if SERVER then
 		local character = client:GetCharacter()
 		local currentLevel = character:GetSkillModified(skill)
 
-		return math.Clamp(math.Remap(level, currentLevel - 2, currentLevel, 0, 1), 0, 1)
+		return math.Clamp(math.Remap(level, currentLevel - 4, currentLevel, 0, 1), 0, 1)
 	end
 
 	function Craft:OnCraft(recipe, client)
@@ -191,13 +191,18 @@ if SERVER then
 
 		local inventory = client:GetInventory("main")
 
+		local resync = {}
+
 		if recipe.isBreakdown then
 			local hasItem
 
 			for k, v in ipairs(inventory:GetItems()) do
 				if v.uniqueID == recipe.requirements then
+					local inv = v.inventory_id
 					hasItem = true
-					v:Remove()
+					v:Remove(nil, true)
+
+					resync[inv] = true
 					break
 				end
 			end
@@ -205,8 +210,11 @@ if SERVER then
 			if IsValid(client.ixStation) and !hasItem then
 				for k, v in ipairs(client.ixStation.inventory:GetItems()) do
 					if v.uniqueID == recipe.requirements then
+						local inv = v.inventory_id
 						hasItem = true
-						v:Remove()
+						v:Remove(nil, true)
+
+						resync[inv] = true
 						break
 					end
 				end
@@ -250,7 +258,9 @@ if SERVER then
 							if (countRemoved + 1) > amount then continue end
 
 							countRemoved = countRemoved + 1
-							v:Remove()
+							local inv = v.inventory_id
+							v:Remove(nil, true)
+							resync[inv] = true
 						end
 					end
 
@@ -264,7 +274,9 @@ if SERVER then
 								if (countRemoved + 1) > amount then continue end
 
 								countRemoved = countRemoved + 1
-								v:Remove()
+								local inv = v.inventory_id
+								v:Remove(nil, true)
+								resync[inv] = true
 							end
 						end
 					end
@@ -359,7 +371,8 @@ if SERVER then
 							item.rotated = need_rotation
 
 							inventory:AddItem(item, x, y)
-							inventory:Sync()
+
+							resync[inventory.id] = true
 						else
 							ix.Item:Spawn(client, nil, item)
 						end
@@ -387,11 +400,20 @@ if SERVER then
 						item.rotated = need_rotation
 
 						inventory:AddItem(item, x, y)
-						inventory:Sync()
+
+						resync[inventory.id] = true
 					else
 						ix.Item:Spawn(client, nil, item)
 					end
 				end
+			end
+		end
+
+		for k, v in pairs(resync) do
+			local inventory = ix.Inventory.stored[k]
+
+			if inventory then
+				inventory:Sync()
 			end
 		end
 

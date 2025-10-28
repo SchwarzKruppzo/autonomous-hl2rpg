@@ -111,6 +111,20 @@ HOLSTER_DRAWINFO["arccw_stunstick"] = {
 	model = "models/weapons/w_stunbaton.mdl"
 }
 
+HOLSTER_DRAWINFO["riff_m4"] = {
+    pos = Vector(3, 1, 2),
+    ang = Angle(10, 180, -10),
+    bone = "ValveBiped.Bip01_Spine1",
+    model = "models/tnb/trpweapons/w_tc_syndicate.mdl"
+}
+
+HOLSTER_DRAWINFO["riff_357"] = {
+    pos = Vector(-1, -7, -1),
+    ang = Angle(0, 70, 0),
+    bone = "ValveBiped.Bip01_Pelvis",
+    model = "models/weapons/w_azn_trigund.mdl"
+}
+
 function PLUGIN:PostPlayerDraw(client)
 	if (!client:GetCharacter()) then return end
 

@@ -55,6 +55,7 @@ do
 	command.permissions = {"Manage Donator Subscriptions"}
 
 	function command:Execute(player, silent, arguments)
+		local isConsole = !IsValid(player)
 		local steamid = arguments[1]
 		local months = tonumber(arguments[2] or 1)
 
@@ -67,11 +68,48 @@ do
 				steamid = util.SteamIDTo64(steamid)
 			end
 
-			PLUGIN:SetDonateSubscription(steamid, os.time() + (2592000 * months), function(found)
-				if found then
-					player:Notify("Подписка для указанного игрока была успешно активирована.")
+			local timestamp = os.time() + (2592000 * months)
+			PLUGIN:SetDonateSubscription(steamid, timestamp, function(found)
+				local msg = found and "Подписка для указанного игрока была успешно активирована." or "Игрок с указанным SteamID не найден."
+
+				if isConsole then
+					if found then
+
+						DiscordMessage({
+							content = "",
+							embeds = {
+								{
+									title = "Подписка активирована",
+									color = 0x00CBFF,
+									fields = {
+										{
+											name = "Игрок",
+											value = "https://steamcommunity.com/profiles/"..steamid,
+											inline = true
+										},
+										{
+											name = "Дата завершения",
+											value = string.format("<t:%s>", timestamp),
+											inline = true
+										}
+									}
+								}
+							}
+						})
+					else
+						DiscordMessage({
+							content = "",
+							embeds = {
+								{
+									title = "Ошибка",
+									description = "Игрок с указанным SteamID не найден.",
+									color = 0xFF0037
+								}
+							}
+						})
+					end
 				else
-					player:Notify("Игрок с указанным SteamID не найден.")
+					player:Notify(msg)
 				end
 			end)
 		end
@@ -85,6 +123,7 @@ do
 	command.permissions = {"Manage Donator Subscriptions"}
 
 	function command:Execute(player, silent, arguments)
+		local isConsole = !IsValid(player)
 		local steamid = arguments[1]
 		local addMonths = tonumber(arguments[2] or 1)
 
@@ -97,11 +136,51 @@ do
 				steamid = util.SteamIDTo64(steamid)
 			end
 
-			PLUGIN:AddDonateSubscription(steamid, (2592000 * months), function(found)
-				if found then
-					player:Notify("Подписка для указанного игрока была успешно изменена.")
+			PLUGIN:AddDonateSubscription(steamid, (2592000 * addMonths), function(found, newTimestamp, oldTimestamp)
+				local msg = found and "Подписка для указанного игрока была успешно изменена." or "Игрок с указанным SteamID не найден."
+
+				if isConsole then
+					if found then
+						DiscordMessage({
+							content = "",
+							embeds = {
+								{
+									title = "Подписка была продлена",
+									color = 0x00CBFF,
+									fields = {
+										{
+											name = "Игрок",
+											value = "https://steamcommunity.com/profiles/"..steamid,
+											inline = true
+										},
+										{
+											name = "Прежняя дата",
+											value = string.format("<t:%s>", oldTimestamp),
+											inline = true
+										},
+										{
+											name = "Новая дата",
+											value = string.format("<t:%s>", newTimestamp),
+											inline = true
+										}
+									}
+								}
+							}
+						})
+					else
+						DiscordMessage({
+							content = "",
+							embeds = {
+								{
+									title = "Ошибка",
+									description = "Игрок с указанным SteamID не найден.",
+									color = 0xFF0037
+								}
+							}
+						})
+					end
 				else
-					player:Notify("Игрок с указанным SteamID не найден.")
+					player:Notify(msg)
 				end
 			end)
 		end
@@ -116,6 +195,7 @@ do
 	command.permissions = {"Manage Donator Subscriptions"}
 
 	function command:Execute(player, silent, arguments)
+		local isConsole = !IsValid(player)
 		local steamid = arguments[1]
 
 		if steamid then
@@ -128,10 +208,40 @@ do
 			end
 
 			PLUGIN:ResetDonateSubscription(steamid, function(found)
-				if found then
-					player:Notify("Подписка для указанного игрока была успешно аннулирована.")
+				local msg = found and "Подписка для указанного игрока была успешно аннулирована." or "Игрок с указанным SteamID не найден."
+
+				if isConsole then
+					if found then
+						DiscordMessage({
+							content = "",
+							embeds = {
+								{
+									title = "Подписка была аннулирована",
+									color = 0x00CBFF,
+									fields = {
+										{
+											name = "Игрок",
+											value = "https://steamcommunity.com/profiles/"..steamid,
+											inline = true
+										}
+									}
+								}
+							}
+						})
+					else
+						DiscordMessage({
+							content = "",
+							embeds = {
+								{
+									title = "Ошибка",
+									description = "Игрок с указанным SteamID не найден.",
+									color = 0xFF0037
+								}
+							}
+						})
+					end
 				else
-					player:Notify("Игрок с указанным SteamID не найден.")
+					player:Notify(msg)
 				end
 			end)
 		end

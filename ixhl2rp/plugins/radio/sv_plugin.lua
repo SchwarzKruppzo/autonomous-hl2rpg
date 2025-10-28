@@ -238,6 +238,8 @@ function ix.radio:SayRadio(client, text, data, bNoErrors)
 	-- Should we not allow eavesdropping?
 	data.bNoEavesdrop = data.bNoEavesdrop or hook.Run("NoEavesdrop", client, channelTable, data)
 
+	data.lang = client:GetLanguage()
+
 	local info = {
 		player = client,
 		text = text,

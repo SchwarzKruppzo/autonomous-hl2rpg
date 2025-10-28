@@ -200,6 +200,5 @@ do
 	ix.flag.Add("r", "Access to spawn ragdolls.")
 	ix.flag.Add("e", "Access to spawn props.")
 	ix.flag.Add("n", "Access to spawn NPCs.")
-	ix.flag.Add("z", "Cannot be perma-killed (robots only).")
 	ix.flag.Add("s", "Access to nude mode.")
 end

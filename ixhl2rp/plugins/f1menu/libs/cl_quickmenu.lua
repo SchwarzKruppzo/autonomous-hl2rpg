@@ -13,6 +13,10 @@ function ix.quickmenu:AddCallback(name, icon, callback, shouldShow)
 	};
 end;
 
+ix.quickmenu:AddCallback("Личные Записи", "icon16/note_edit.png", function()
+	ix.command.Send("MyNotes")
+end)
+
 ix.quickmenu:AddCallback("Изменить описание", "icon16/note_edit.png", function()
 	ix.command.Send("CharDesc")
 end)

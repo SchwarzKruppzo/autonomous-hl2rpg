@@ -75,7 +75,7 @@ if (SERVER) then
 		if table.HasValue(Schema.banned_doors, door:MapCreationID()) then
 			client:ConCommand("play beams/beamstart5.wav")
 			
-			return client:Notify("жопу себе на замок поставь")
+			return client:Notify("Замок невозможно поставить в этом месте: ограничено правилами игрового мира.")
 		end
 
 		if IsValid(door.ixLock) then

@@ -325,7 +325,7 @@ function GM:PlayerSay(client, text)
 		end
 	end
 
-	text = ix.chat.Send(client, chatType, message, anonymous)
+	text = ix.chat.Send(client, chatType, message, anonymous, nil, {lang = (IsValid(client) and client:GetLanguage())})
 
 	if (isstring(text) and chatType != "ic") then
 		ix.log.Add(client, "chat", chatType and chatType:utf8upper() or "??", text)
@@ -726,7 +726,7 @@ function GM:ShutDown()
 end
 
 function GM:GetGameDescription()
-	return "IX: "..(Schema and Schema.name or "Unknown")
+	return "AUTONOMOUS: HL2 RPG"
 end
 
 function GM:PlayerDeathSound()

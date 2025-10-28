@@ -49,7 +49,7 @@ ix.config.Add("chatRange", 280, "The maximum distance a person's IC chat message
 	category = "chat"
 })
 ix.config.Add("chatMax", 256, "The maximum amount of characters that can be sent in chat.", nil, {
-	data = {min = 32, max = 1024},
+	data = {min = 32, max = 2048},
 	category = "chat"
 })
 ix.config.Add("chatColor", Color(255, 255, 150), "The default color for IC chat.", nil, {category = "chat"})
@@ -130,6 +130,11 @@ ix.config.Add("communityText", "@community",
 })
 ix.config.Add("vignette", true, "Whether or not the vignette is shown.", nil, {
 	category = "appearance"
+})
+ix.config.Add("descriptionDisplayLength", 512,
+	"The amount of characters of a description that will be displayed when someone look at the player.", nil, {
+	data = {min = 64, max = 2048},
+	category = "characters"
 })
 ix.config.Add("scoreboardRecognition", false, "Whether or not recognition is used in the scoreboard.", nil, {
 	category = "characters"

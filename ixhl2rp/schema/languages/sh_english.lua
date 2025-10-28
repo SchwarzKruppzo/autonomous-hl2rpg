@@ -1,5 +1,5 @@
 LANGUAGE = {
-	schemaName = "Half-Life 2 Roleplay",
+	schemaName = "AUTONOMOUS",
 	tying = "Tying...",
 	unTying = "Untying...",
 	isTied = "Tied",
@@ -23,6 +23,8 @@ LANGUAGE = {
 	radioRequired = "You need a radio to do this.",
 	radioAlreadyOn = "You already have a radio that is turned on!",
 	economy = "Economy",
+	optColorSaturation = "Color Saturation",
+	optdColorSaturation = "The screen's color saturation. Does nothing if 'Draw Color Modify' is disabled.",
 
 	chatRDevice = "Calling in request device...",
 	chatRadioning = "Radios in...",
@@ -56,6 +58,8 @@ LANGUAGE = {
 	cmdItC = "Make something around you perform an action in close range.",
 	cmdItL = "Make something around you perform an action in long range.",
 	cmdItD = "Make something around you perform an action directly.",
+
+	readingBook = "Reading...",
 
 	voices = "Voices",
 	rRarityText = "Quality: %s",

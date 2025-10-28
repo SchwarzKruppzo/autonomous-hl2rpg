@@ -53,10 +53,16 @@ function PLUGIN:InitializedChatClasses()
 
 	ix.chat.Register("radio", {
 		color = Color(75, 150, 50),
-		format = "[%s] %s %s по рации \"%s\"",
+		format = "[%s] %s %s по рации%s \"%s\"",
 		bReceiveVoices = true,
 		indicator = "chatRadioing",
 		OnChatAdd = function(class, speaker, text, bAnonymous, data)
+			local langIcon, langPrefix
+
+			if data.lang then
+				langIcon, langPrefix, text = ix.languages.OnChatAdd(speaker, text, data.lang)
+			end
+
 			local name = hook.Run("GetCharacterName", speaker, class.uniqueID) or IsValid(speaker) and speaker:Name()
 
 			if (table.Count(data.transmitTable) == 1) then
@@ -85,31 +91,41 @@ function PLUGIN:InitializedChatClasses()
 				channel = "???.?"
 			end
 
-			chat.AddText(data.color or class.color, icon, string.format(class.format,
-				channel, name, typeTexts[data.typeText] or typeTexts[1], text))
+			chat.AddText(langIcon or "", data.color or class.color, icon, string.format(class.format,
+				channel, name, typeTexts[data.typeText] or typeTexts[1], langPrefix or "", text))
 
 			if (data.useSound and isstring(data.sound)) then
 				surface.PlaySound(data.sound)
 			end
+
+			return text
 		end
 	})
 
 	-- radio eavesdrop
 	ix.chat.Register("radio_eavesdrop", {
 		color = Color(255, 255, 150),
-		format = "%s %s по рации \"%s\"",
+		format = "%s %s по рации%s \"%s\"",
 		OnChatAdd = function(class, speaker, text, bAnonymous, data)
+			local langIcon, langPrefix
+
+			if data.lang then
+				langIcon, langPrefix, text = ix.languages.OnChatAdd(speaker, text, data.lang)
+			end
+
 			local name = hook.Run("GetCharacterName", speaker, class.uniqueID) or IsValid(speaker) and speaker:Name()
 
 			data.useSound = false
 			hook.Run("AdjustRadioEavesdrop", data)
 
-			chat.AddText(class.color, ix.util.GetMaterial("cellar/chat/eaves_radiohand.png"), string.format(class.format,
-				name, typeTexts[data.typeText] or typeTexts[1], text))
+			chat.AddText(langIcon or "", class.color, ix.util.GetMaterial("cellar/chat/eaves_radiohand.png"), string.format(class.format,
+				name, typeTexts[data.typeText] or typeTexts[1], langPrefix or "", text))
 
 			if (data.useSound and isstring(data.sound)) then
 				surface.PlaySound(data.sound)
 			end
+
+			return text
 		end
 	})
 end

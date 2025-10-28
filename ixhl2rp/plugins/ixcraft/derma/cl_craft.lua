@@ -124,6 +124,7 @@ function PANEL:BuildCraftPanel()
 	itemTitle:Dock(TOP)
 	itemTitle:DockMargin(0, 10, 0, 0)
 	itemTitle:SetContentAlignment(5)
+	itemTitle:SetTextColor(Color(0, 225, 255))
 	itemTitle:SetFont("craft.item.title")
 	itemTitle:SetText("USP MATCH")
 	itemTitle:SetVisible(false)
@@ -225,7 +226,8 @@ function PANEL:BuildCraftPanel()
 
 	self.componentsTitle = componentsTitle
 
-	self.components = top:Add("DIconLayout")
+	self.components = top:Add("DTileLayout")
+	self.components:SetBaseSize(32)
 	self.components:Dock(TOP)
 	self.components:DockMargin(15, 5, 0, 0)
 	self.components:SetSpaceY(0)

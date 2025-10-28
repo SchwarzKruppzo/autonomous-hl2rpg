@@ -270,6 +270,8 @@ function ITEM:Init(uniqueID)
 		OnRun = ITEM_TAKE_ACTION.OnRun,
 		OnCanRun = ITEM_TAKE_ACTION.OnCanRun
 	}
+
+	self.mark_as_save = false
 end
 
 function ITEM:__tostring() return "item["..self.uniqueID.."]["..self.id.."]" end
@@ -536,7 +538,7 @@ function ITEM:GetData(key, default)
 	return self.data[key] or default
 end
 
-function ITEM:Remove(bNoDelete)
+function ITEM:Remove(bNoDelete, dontSync)
 	if SERVER then
 		if self.OnRemoved then
 			self:OnRemoved()
@@ -547,7 +549,10 @@ function ITEM:Remove(bNoDelete)
 
 			if inventory then
 				inventory:TakeItemTable(self)
-				inventory:Sync()
+
+				if !dontSync then
+					inventory:Sync()
+				end
 			end
 		end
 
@@ -604,6 +609,11 @@ if SERVER then
 	end
 
 	function ITEM:Save()
+		/*
+		if !self.mark_as_save then
+			return
+		end*/
+
 		if self.OnSave then
 			self:OnSave()
 		end
@@ -613,8 +623,8 @@ if SERVER then
 			query:Update("y", self.y)
 			query:Update("rotated", self.rotated)
 			query:Update("inventory_type", self.inventory_type)
-			query:Update("character_id", self.character_id)
-			query:Update("player_id", self.player_id)
+			query:Update("character_id", tonumber(self.character_id))
+			query:Update("player_id", tonumber(self.player_id))
 			
 			if istable(self.items) then
 				query:Update("items", util.TableToJSON(self.items or {}))
@@ -640,6 +650,8 @@ if SERVER then
 
 			query:Where("item_id", self:GetID())
 		query:Execute()
+
+		self.mark_as_save = false
 	end
 		
 	function ITEM:Sync(receiver, transmit)

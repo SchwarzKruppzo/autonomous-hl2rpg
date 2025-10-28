@@ -9,7 +9,8 @@ ITEM.primaryVisor = Vector(0.1, 0.5, 0.1)
 ITEM.secondaryVisor = Vector(0.1, 0.5, 0.1)
 ITEM.specialization = "s"
 ITEM.bodyGroups = {
-	[6] = 3
+	[3] = 1, -- mask
+	[4] = 1, -- vest
 }
 ITEM.armor = {
 	class = 2,

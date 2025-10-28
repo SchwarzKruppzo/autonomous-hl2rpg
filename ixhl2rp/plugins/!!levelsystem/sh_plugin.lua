@@ -59,7 +59,7 @@ ix.chat.Register("level", {
 })
 
 function PLUGIN:GetRequiredLevelXP(currentLevel)
-	return 50 * (currentLevel - 1) ^ 2.25 + (75 + (currentLevel * 25))
+	return 50 * (currentLevel - 1) ^ 2.125 + (75 + (currentLevel * 50))
 end
 
 ix.util.Include("cl_hooks.lua")

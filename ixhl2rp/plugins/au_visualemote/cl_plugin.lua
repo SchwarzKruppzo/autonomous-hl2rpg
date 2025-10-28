@@ -1,0 +1,4 @@
+CHAT_RECOGNIZED = CHAT_RECOGNIZED or {}
+CHAT_RECOGNIZED["mev"] = true
+CHAT_RECOGNIZED["sv"] = true
+

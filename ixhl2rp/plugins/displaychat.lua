@@ -52,7 +52,9 @@ local whitelist = {
 	["me"] = true,
 	["w"] = true,
 	["y"] = true,
-	["roll"] = true
+	["roll"] = true,
+	["sv"] = true,
+	["mev"] = true
 }
 
 hook.Add("ShouldChatMessageDisplay2", "displaychat", function(client, messageInfo)
@@ -67,6 +69,12 @@ hook.Add("ShouldChatMessageDisplay2", "displaychat", function(client, messageInf
 	if (LocalPlayer():EyePos():DistToSqr(client:EyePos()) >= 300 * 300) then
 		return false
 	end
+/*
+	if messageInfo.data and messageInfo.data.lang and messageInfo.data.lang != "" then
+		local a, b, c = ix.languages.OnChatAdd(client, messageInfo.text, messageInfo.data.lang, "")
+
+		messageInfo.text = c
+	end*/
 end)
 
 function PLUGIN:HUDPaint()

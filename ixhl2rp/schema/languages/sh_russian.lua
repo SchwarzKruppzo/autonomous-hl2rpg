@@ -1,5 +1,5 @@
 LANGUAGE = {
-	schemaName = "CELLAR PROJECT",
+	schemaName = "AUTONOMOUS",
 	tying = "Связываю...",
 	unTying = "Развязываю...",
 	isTied = "Связан",
@@ -23,6 +23,11 @@ LANGUAGE = {
 	radioRequired = "You need a radio to do this.",
 	radioAlreadyOn = "You already have a radio that is turned on!",
 	economy = "Economy",
+	optColorSaturation = "Насыщенность цвета",
+	optdColorSaturation = "Насыщенность цвета экрана.",
+	optColorModify = "Изменить цвет",
+	optdColorModify = "Включает или отключает изменение цвета при прорисовке.",
+
 
 	chatRDevice = "Использует устройство запроса...",
 	chatRadioning = "Говорит по рации...",
@@ -56,6 +61,8 @@ LANGUAGE = {
 	cmdItC = "Совершить какое-либо действие вокруг себя в близком радиусе.",
 	cmdItL = "Совершить какое-либо действие вокруг себя в большом радиусе.",
 	cmdItD = "Совершить какое-либо действие вокруг себя напрямую.",
+
+	readingBook = "Читаю книгу...",
 
 	rRarityText = "Качество: %s",
 	rCommon = "Обычное",

@@ -5,7 +5,11 @@ end
 
 function GM:ScoreboardShow()
 	if (LocalPlayer():GetCharacter()) then
-		vgui.Create("ixMenu")
+		if IsValid(ix.gui.menu) then
+			ix.gui.menu:Close()
+		else
+			vgui.Create("ui.tabmenu")
+		end
 	end
 end
 
@@ -481,20 +485,6 @@ function GM:CalcView(client, origin, angles, fov)
 		end
 	end
 
-	local menu = ix.gui.menu
-	local entityMenu = ix.menu.panel
-
-	if (IsValid(menu) and menu:IsVisible() and menu:GetCharacterOverview()) then
-		local newOrigin, newAngles, newFOV, bDrawPlayer = menu:GetOverviewInfo(origin, angles, fov)
-
-		view.drawviewer = bDrawPlayer
-		view.fov = newFOV
-		view.origin = newOrigin
-		view.angles = newAngles
-	elseif (IsValid(entityMenu)) then
-		view.angles = entityMenu:GetOverviewInfo(origin, angles)
-	end
-
 	return view
 end
 
@@ -534,8 +524,7 @@ do
 		end
 
 		local panel = ix.gui.entityInfo
-		local bShouldShow = time >= aimTime and (!IsValid(ix.gui.menu) or ix.gui.menu.bClosing) and
-			(!IsValid(ix.gui.characterMenu) or ix.gui.characterMenu.bClosing)
+		local bShouldShow = time >= aimTime and (!IsValid(ix.gui.characterMenu) or ix.gui.characterMenu.bClosing)
 		local bShouldPopulate = lastEntity.OnShouldPopulateEntityInfo and lastEntity:OnShouldPopulateEntityInfo() or true
 
 		if (bShouldShow and IsValid(lastEntity) and hookRun("ShouldPopulateEntityInfo", lastEntity) != false and
@@ -731,9 +720,10 @@ end
 
 function GM:PopulateCharacterInfo(client, character, container)
 	-- description
+	local maxLen = ix.config.Get("descriptionDisplayLength", 256)
 	local descriptionText = character:GetDescription()
-	descriptionText = (descriptionText:utf8len() > 128 and
-		string.format("%s...", descriptionText:utf8sub(1, 125)) or
+	descriptionText = (descriptionText:utf8len() > maxLen and
+		string.format("%s...", descriptionText:utf8sub(1, maxLen - 3)) or
 		descriptionText)
 
 	if (descriptionText != "") then
@@ -808,8 +798,7 @@ function GM:PlayerBindPress(client, bind, pressed)
 end
 
 function GM:CreateMove(command)
-	if ((IsValid(ix.gui.characterMenu) and !ix.gui.characterMenu.bClosing) or
-		(IsValid(ix.gui.menu) and !ix.gui.menu.bClosing and ix.gui.menu:GetActiveTab() == "you")) then
+	if ((IsValid(ix.gui.characterMenu) and !ix.gui.characterMenu.bClosing)) then
 		command:ClearButtons()
 		command:ClearMovement()
 	end
@@ -854,51 +843,7 @@ function GM:PostProcessPermitted(class)
 end
 
 function GM:RenderScreenspaceEffects()
-	local menu = ix.gui.menu
 
-	if (IsValid(menu) and menu:GetCharacterOverview()) then
-		local client = LocalPlayer()
-		local target = client:GetObserverTarget()
-		local weapon = client:GetActiveWeapon()
-
-		cam.Start3D()
-			ix.util.ResetStencilValues()
-			render.SetStencilEnable(true)
-			render.SuppressEngineLighting(true)
-			cam.IgnoreZ(true)
-				render.SetColorModulation(1, 1, 1)
-				render.SetStencilWriteMask(28)
-				render.SetStencilTestMask(28)
-				render.SetStencilReferenceValue(28)
-
-				render.SetStencilCompareFunction(STENCIL_ALWAYS)
-				render.SetStencilPassOperation(STENCIL_REPLACE)
-				render.SetStencilFailOperation(STENCIL_KEEP)
-				render.SetStencilZFailOperation(STENCIL_KEEP)
-
-				if (IsValid(target)) then
-					target:DrawModel()
-				else
-					client:DrawModel()
-				end
-
-				if (IsValid(weapon)) then
-					weapon:DrawModel()
-				end
-
-				hook.Run("DrawCharacterOverview")
-
-				render.SetStencilCompareFunction(STENCIL_NOTEQUAL)
-				render.SetStencilPassOperation(STENCIL_KEEP)
-
-				cam.Start2D()
-					derma.SkinFunc("DrawCharacterStatusBackground", menu, menu.overviewFraction)
-				cam.End2D()
-			cam.IgnoreZ(false)
-			render.SuppressEngineLighting(false)
-			render.SetStencilEnable(false)
-		cam.End3D()
-	end
 end
 
 function GM:ShowPlayerOptions(client, options)

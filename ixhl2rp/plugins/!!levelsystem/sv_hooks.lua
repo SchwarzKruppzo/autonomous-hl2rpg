@@ -9,7 +9,7 @@ function PLUGIN:PostPlayerLoadout(client)
 	local uniqueID = "ixLeveling" .. client:SteamID()
 	timer.Remove(uniqueID)
 
-	if character and character:GetLevel() < self.MaxPassiveLevel then
+	if character and character:GetLevel() < 10 then
 		timer.Create(uniqueID, self.PassiveXPRate, 0, function()
 			if !IsValid(client) then
 				timer.Remove(uniqueID)
@@ -17,13 +17,16 @@ function PLUGIN:PostPlayerLoadout(client)
 			end
 
 			local character = client:GetCharacter()
+			local lvl = character:GetLevel()
 
-			if !character or character:GetLevel() >= self.MaxPassiveLevel then
+			if !character or lvl >= 10 then
 				timer.Remove(uniqueID)
 				return
 			end
 
-			character:AddLevelXP(self.PassiveXPGain, 1)
+			local xpGain = math.max(self:GetRequiredLevelXP(lvl) * 0.0002, 1)
+
+			character:AddLevelXP(xpGain, 1)
 		end)
 	end
 end
@@ -36,7 +39,7 @@ function PLUGIN:OnCharacterCreated(client, character)
 	end
 end
 
-local xpPerSymbol = 0.008
+local xpPerSymbol = 0.016
 
 local function GetTextXP(text, level)
 	local length = string.utf8len(text)

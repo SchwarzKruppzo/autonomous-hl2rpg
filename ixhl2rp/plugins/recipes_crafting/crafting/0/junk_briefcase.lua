@@ -7,5 +7,4 @@ RECIPE.results = {
 	mat_leather = 2,
 }
 RECIPE.skill = {"crafting", 0}
-RECIPE.tools = {"tool_scissors"}
 RECIPE.xp = 15

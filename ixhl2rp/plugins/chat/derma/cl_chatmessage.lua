@@ -81,8 +81,6 @@ function PANEL:Paint(width, height)
 	-- we'll want to hide the chat while some important menus are open
 	if (IsValid(ix.gui.characterMenu)) then
 		newAlpha = math.min(255 - ix.gui.characterMenu.currentAlpha, self.alpha)
-	elseif (IsValid(ix.gui.menu)) then
-		newAlpha = math.min(255 - ix.gui.menu.currentAlpha, self.alpha)
 	elseif (ix.gui.chat:GetActive()) then
 		newAlpha = math.max(ix.gui.chat.alpha, self.alpha)
 	else

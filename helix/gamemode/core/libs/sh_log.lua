@@ -106,14 +106,16 @@ if (SERVER) then
 		local logString, logFlag = ix.log.Parse(client, logType, ...)
 		if (logString == -1) then return end
 
-		if logType == "chat" then
-			CAMI.GetPlayersWithAccess("Helix - Chat Logs", function(receivers)
-				ix.log.Send(receivers, logString, logFlag)
-			end)
-		else
-			CAMI.GetPlayersWithAccess("Helix - Logs", function(receivers)
-				ix.log.Send(receivers, logString, logFlag)
-			end)
+		if !client.phase then
+			if logType == "chat" then
+				CAMI.GetPlayersWithAccess("Helix - Chat Logs", function(receivers)
+					ix.log.Send(receivers, logString, logFlag)
+				end)
+			else
+				CAMI.GetPlayersWithAccess("Helix - Logs", function(receivers)
+					ix.log.Send(receivers, logString, logFlag)
+				end)
+			end
 		end
 
 		Msg("[LOG] ", logString .. "\n")

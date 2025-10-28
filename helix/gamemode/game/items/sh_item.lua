@@ -212,6 +212,16 @@ if SERVER then
 	end
 
 	function Item:LoadInstanceByID(id, itemCallback, callback)
+		if !isnumber(id) and !istable(id) then
+			return
+		end
+
+		if istable(id) then
+			if table.IsEmpty(id) then
+				return
+			end
+		end
+		
 		local query = mysql:Select("ix_items")
 			query:Select("item_id")
 			query:Select("unique_id")
@@ -263,6 +273,8 @@ if SERVER then
 							if itemCallback then
 								itemCallback(item2)
 							end
+
+							item2.mark_as_save = false
 						end
 					end
 				end
@@ -300,7 +312,8 @@ if SERVER then
 				item.data = istable(itemData) and table.Copy(itemData) or {}
 				item.characterID = characterID
 				item.playerID = playerID
-
+				item.mark_as_save = true
+				
 				if item.OnInstanced then
 					item:OnInstanced(true)
 				end
@@ -310,10 +323,10 @@ if SERVER then
 					query:Insert("unique_id", item.uniqueID)
 					query:Insert("data", util.TableToJSON(item.data))
 					query:Insert("rotated", item.rotated)
-					query:Insert("x", item.x)
-					query:Insert("y", item.y)
-					query:Insert("character_id", item.characterID)
-					query:Insert("player_id", item.playerID)
+					query:Insert("x", tonumber(item.x))
+					query:Insert("y", tonumber(item.y))
+					query:Insert("character_id", tonumber(item.characterID))
+					query:Insert("player_id", tonumber(item.playerID))
 				query:Execute()
 
 				return item

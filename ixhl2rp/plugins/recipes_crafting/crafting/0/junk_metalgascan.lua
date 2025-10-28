@@ -8,5 +8,4 @@ RECIPE.results = {
 	mat_oil = 1
 }
 RECIPE.skill = {"crafting", 0}
-RECIPE.tools = {"tool_hacksaw"}
 RECIPE.xp = 20

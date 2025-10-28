@@ -25,7 +25,7 @@ ix.Net:AddPlayerVar("tying", false, nil, ix.Net.Type.Bool)
 ix.Net:AddPlayerVar("untying", false, nil, ix.Net.Type.Bool)
 
 Schema.banned_doors = {
-	3333, 1263
+	3333, 1263, 1254, 1255, 3732, 3733, 1259, 1264
 }
 
 function Schema:ZeroNumber(number, length)

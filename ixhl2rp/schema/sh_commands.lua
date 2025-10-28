@@ -159,6 +159,10 @@ ix.command.Add("DoorKick", {
 			return false, "Вы не смотрите на дверь!"
 		end
 
+		if entity:MapCreationID() == 5334 then
+			return false, "Вы не смотрите на дверь!"
+		end
+
 		if (client:GetPos():DistToSqr(entity:GetPos()) > 10000) then
 			return false, "Вы слишком далеко!"
 		end

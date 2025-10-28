@@ -7,5 +7,4 @@ RECIPE.results = {
 	metal_scrap = {1, 2}
 }
 RECIPE.skill = {"crafting", 0}
-RECIPE.tools = {"tool_hacksaw"}
 RECIPE.xp = 15

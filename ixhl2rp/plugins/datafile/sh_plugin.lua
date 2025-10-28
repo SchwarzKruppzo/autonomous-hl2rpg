@@ -163,6 +163,7 @@ PLUGIN.CivilStatus = {
 	["Citizen"] = 0,
 	["Black"] = 5,
 	["Brown"] = 15,
+	["Orange"] = 18,
 	["Red"] = 20,
 	["Green"] = 30,
 	["Blue"] = 45,

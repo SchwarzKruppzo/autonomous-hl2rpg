@@ -26,7 +26,7 @@ do
 		end
 
 		if state then
-			local flag = character:HasFlags("z")
+			local flag = false //character:HasFlags("z")
 			local inOutlands = IsValid(self.ixRagdoll) and self.ixRagdoll.inOutlands
 
 			if inOutlands then
@@ -119,7 +119,7 @@ function PLUGIN:PlayerDisconnected(client)
 	
 
 	if character then
-		local flag = character:HasFlags("z")
+		local flag = false //character:HasFlags("z")
 
 		if !flag then
 			if client:InCriticalState() then
@@ -201,7 +201,7 @@ end
 
 function PLUGIN:DoPlayerDeath(client)
 	local character = client:GetCharacter()
-	local flag = character:HasFlags("z")
+	local flag = false //character:HasFlags("z")
 
 	if character then
 		if !flag then
@@ -1058,6 +1058,14 @@ function PLUGIN:CalculatePlayerDamage(client, lastHitGroup, dmgInfo, multiplier)
 
 	multiplier = inflictor.IsVortibeam and 1 or multiplier
 
+	local isSF = false
+	for item, value in pairs(client.char_outfit.armor) do
+		if item.uniqueID == "mpf_sf" then
+			isSF = false
+			break
+		end
+	end
+
 	if dmgInfo:IsDamageType(DMG_ACID) then
 		character:TakeOverallLimbDamage(baseDamage * 2)
 		character:SetRadLevel(character:GetRadLevel() + (baseDamage * 10))
@@ -1072,7 +1080,12 @@ function PLUGIN:CalculatePlayerDamage(client, lastHitGroup, dmgInfo, multiplier)
 
 		self:PlayerAdvancedHurt(client, client, baseDamage, 0, 0, "ALL")
 	elseif dmgInfo:IsExplosionDamage() then
+		
 		baseDamage = baseDamage * 2
+
+		if isSF then
+			baseDamage = 5
+		end
 
 		local mul = baseDamage / 100
 
@@ -1088,7 +1101,9 @@ function PLUGIN:CalculatePlayerDamage(client, lastHitGroup, dmgInfo, multiplier)
 
 		self:PlayerAdvancedHurt(client, client, baseDamage, bloodDmg, shockDmg, "ALL")
 
-		client:SetStopModifier(0.25)
+		if !isSF then
+			client:SetStopModifier(0.25)
+		end
 	elseif dmgInfo:IsFallDamage() then
 		local dmg = (baseDamage * 1.5)
 		
@@ -1165,7 +1180,7 @@ function PLUGIN:CalculatePlayerDamage(client, lastHitGroup, dmgInfo, multiplier)
 		local dmgReduction = 1
 
 		if client:Team() == FACTION_VORTIGAUNT then
-			dmgReduction = 2.5
+			//dmgReduction = 2
 		end
 
 		baseDamage = baseDamage / dmgReduction
@@ -1186,12 +1201,16 @@ function PLUGIN:CalculatePlayerDamage(client, lastHitGroup, dmgInfo, multiplier)
 					bloodDmg = bloodDmg * 0.25
 				end
 			end
+		else
+			if isSF then
+				shockDmg = shockDmg * 0.25
+			end
 		end
 
 		shockDmg = shockDmg / dmgReduction
 		bloodDmg = bloodDmg / dmgReduction
 
-		local flag = character:HasFlags("z")
+		local flag = false //character:HasFlags("z")
 
 
 
@@ -1418,7 +1437,7 @@ net.Receive("ixCritUse", function(len, client)
 		return
 	end
 
-	local flag = target.ixPlayer:GetCharacter():HasFlags("z")
+	local flag = false //target.ixPlayer:GetCharacter():HasFlags("z")
 
 	if flag then
 		client:Notify("Вы не можете добить этого персонажа!")

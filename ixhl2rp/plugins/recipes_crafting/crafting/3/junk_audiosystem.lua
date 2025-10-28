@@ -10,6 +10,5 @@ RECIPE.results = {
 	mat_screws = 2,
 }
 RECIPE.skill = {"crafting", 3}
-RECIPE.tools = {"tool_screw"}
 RECIPE.station = "station_tokar"
 RECIPE.xp = 60

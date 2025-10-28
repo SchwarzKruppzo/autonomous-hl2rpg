@@ -8,6 +8,18 @@ PLUGIN.description = "Adds web panels that can be placed on the map."
 -- List of available panel dislays.
 PLUGIN.list = PLUGIN.list or {}
 
+ix.option.Add("show3DPanels", ix.type.bool, true, {
+	category = "general"
+})
+
+ix.lang.AddTable("english", {
+	optShow3DPanels = "Show custom 3D panels",
+})
+
+ix.lang.AddTable("russian", {
+	optShow3DPanels = "Показывать пользовательские изображения",
+})
+
 if (SERVER) then
 	util.AddNetworkString("ixPanelList")
 	util.AddNetworkString("ixPanelAdd")
@@ -203,6 +215,12 @@ else
 
 	-- Receives new panel objects that need to be drawn.
 	net.Receive("ixPanelAdd", function()
+		local show = ix.option.Get("show3DPanels", true)
+
+		if !show then
+			return
+		end
+
 		local index = net.ReadUInt(32)
 		local position = net.ReadVector()
 		local angles = net.ReadAngle()
@@ -226,6 +244,12 @@ else
 	end)
 
 	net.Receive("ixPanelRemove", function()
+		local show = ix.option.Get("show3DPanels", true)
+
+		if !show then
+			return
+		end
+
 		local index = net.ReadUInt(32)
 
 		table.remove(PLUGIN.list, index)
@@ -235,6 +259,12 @@ else
 
 	-- Receives a full update on ALL panels.
 	net.Receive("ixPanelList", function()
+		local show = ix.option.Get("show3DPanels", true)
+
+		if !show then
+			return
+		end
+
 		local length = net.ReadUInt(32)
 		local data = net.ReadData(length)
 		local uncompressed = util.Decompress(data)
@@ -279,6 +309,12 @@ else
 	-- Called after all translucent objects are drawn.
 	function PLUGIN:PostDrawTranslucentRenderables(bDrawingDepth, bDrawingSkybox)
 		if (bDrawingDepth or bDrawingSkybox) then
+			return
+		end
+
+		local show = ix.option.Get("show3DPanels", true)
+		
+		if !show then
 			return
 		end
 

@@ -268,7 +268,7 @@ function ix.chat.Parse(client, message, bNoSend)
 	-- Only send if needed.
 	if (SERVER and !bNoSend) then
 		-- Send the correct chat type out so other player see the message.
-		ix.chat.Send(client, chatType, hook.Run("PlayerMessageSend", client, chatType, message, anonymous) or message, anonymous)
+		ix.chat.Send(client, chatType, hook.Run("PlayerMessageSend", client, chatType, message, anonymous) or message, anonymous, nil, {lang = client:GetLanguage()})
 	end
 
 	-- Return the chosen chat type and the message that was sent if needed for some reason.
@@ -397,8 +397,19 @@ else
 		if (class) then
 			-- luacheck: globals CHAT_CLASS
 			CHAT_CLASS = class
-				class:OnChatAdd(speaker, text, anonymous, data)
+				local modified_text = class:OnChatAdd(speaker, text, anonymous, data)
 			CHAT_CLASS = nil
+
+			if IsValid(speaker) then
+				local info = {
+					chatType = chatType,
+					text = modified_text or text,
+					anonymous = anonymous,
+					data = data
+				}
+
+				hook.Run("MessageReceived", speaker, info)
+			end
 		end
 	end
 
@@ -411,15 +422,7 @@ else
 		local data = net.ReadTable()
 
 		if (IsValid(client)) then
-			local info = {
-				chatType = chatType,
-				text = text,
-				anonymous = anonymous,
-				data = data
-			}
-
-			hook.Run("MessageReceived", client, info)
-			ix.chat.Send(client, info.chatType or chatType, info.text or text, info.anonymous or anonymous, info.data)
+			ix.chat.Send(client, chatType, text, anonymous, data)
 		else
 			ix.chat.Send(nil, chatType, text, anonymous, data)
 		end

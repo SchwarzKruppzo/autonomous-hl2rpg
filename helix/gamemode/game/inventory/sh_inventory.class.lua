@@ -344,6 +344,7 @@ if SERVER then
 			item.inventory_type = self.type
 			item.x = x
 			item.y = y
+			item.mark_as_save = true
 
 			if need_rotation then
 				w, h = h, w
@@ -405,6 +406,7 @@ if SERVER then
 		item.x = nil
 		item.y = nil
 		item.rotated = false
+		item.mark_as_save = true
 
 		for i = y, y + h - 1 do
 			for k = x, x + w - 1 do
@@ -489,6 +491,7 @@ if SERVER then
 
 		item.x = x
 		item.y = y
+		item.mark_as_save = true
 
 		if need_rotation then
 			w, h = h, w
@@ -569,6 +572,7 @@ if SERVER then
 		item.inventory_type = inventory.type
 		item.x = x
 		item.y = y
+		item.mark_as_save = true
 
 		if need_rotation then
 			w, h = h, w
@@ -635,21 +639,21 @@ if SERVER then
 	end
 
 	function Inventory:GetReceivers()
-		return self.receivers
+		return table.GetKeys(self.receivers)
 	end
 
 	function Inventory:AddReceiver(client)
-		table.insert(self.receivers, client)
+		self.receivers[client] = true
 	end
 
 	function Inventory:RemoveReceiver(client)
-		table.RemoveByValue(self.receivers, client)
+		self.receivers[client] = nil
 	end
 
 	function Inventory:OnCheckAccess(client)
 		local bAccess = false
 
-		for _, v in ipairs(self:GetReceivers()) do
+		for _, v in pairs(self:GetReceivers()) do
 			if v == client then
 				bAccess = true
 				break
@@ -661,12 +665,11 @@ if SERVER then
 
 	function Inventory:Sync()
 		for k, v in ipairs(self:GetReceivers()) do
-			if IsValid(v) then continue end
+			if !IsValid(v) then 
+				self:RemoveReceiver(v)
+				continue 
+			end
 			
-			self:RemoveReceiver(v)
-		end
-
-		for k, v in ipairs(self:GetReceivers()) do
 			for _, item in ipairs(self:GetItems()) do
 				item:Sync(v)
 			end
@@ -686,6 +689,14 @@ if SERVER then
 	end
 
 	function Inventory:CheckSize()
+		if self.instance_id then
+			local item = ix.Item.instances[self.instance_id]
+
+			if item then
+				item.mark_as_save = true
+			end
+		end
+
 		if !self:IsHeightInfinite() and !self:IsWidthInfinite() then return end
 
 		local max_x, max_y = 0, 0

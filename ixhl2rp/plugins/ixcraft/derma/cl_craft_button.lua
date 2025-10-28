@@ -1,15 +1,50 @@
 local PANEL = {}
-
-local BG_COLOR = Color(255, 190, 32)
-local BG_DETAIL = Color(0, 200, 255, 255)
-local TEXT_COLOR = Color(72, 64, 0, 255)
+local style = {
+	bg = Color(64, 255, 100, 32),
+	corners = Color(72, 255, 72),
+	outline = Color(64, 255, 100, 96),
+	outline2 = Color(64, 255, 64, 16),
+	text = Color(64, 225, 96, 255)
+}
 
 function PANEL:Init()
 	self:SetText('')
 	self:SetFont("craft.button")
-	self:SetTextColor(TEXT_COLOR)
+	self:SetTextColor(style.text)
 
 	self:SetContentAlignment(5)
+end
+
+function PANEL:DrawCorners(x, y, w, h, size)
+	surface.SetDrawColor(style.bg)
+	surface.DrawRect(x, y, w, h)
+
+	surface.SetDrawColor(style.outline)
+	surface.DrawOutlinedRect(x, y, w, h)
+
+	local offset = 2
+	surface.SetDrawColor(style.outline2)
+	surface.DrawOutlinedRect(x + offset, y + offset, w - offset * 2, h - offset * 2)
+
+	surface.SetDrawColor(style.corners)
+
+	surface.DrawLine(x, y, x + size, y)
+	surface.DrawLine(x, y, x, y + size)
+
+	x, y = w - 1, y
+
+	surface.DrawLine(x, y, x - size, y)
+	surface.DrawLine(x, y, x, y + size)
+
+	x, y = 0, h - 1
+
+	surface.DrawLine(x, y, x + size, y)
+	surface.DrawLine(x, y, x, y - size)
+
+	x, y = w - 1, h - 1
+
+	surface.DrawLine(x, y, x - size, y)
+	surface.DrawLine(x, y, x, y - size)
 end
 
 function PANEL:Paint(w, h)
@@ -23,16 +58,16 @@ function PANEL:Paint(w, h)
 	local b = (self.m_MenuClicking and 2 or a)
 	local c = 250 + (5 * b)
 
-	self:SetTextColor(ColorAlpha(TEXT_COLOR, c))
+	style.text.a = c
+	
+	self:SetTextColor(style.text)
 
-	surface.SetDrawColor(BG_COLOR)
-	surface.DrawRect(0, 0, w, h)
-
+	self:DrawCorners(0, 0, w, h, h * 0.25)
 
 
 	render.OverrideBlend(true, 4, 1, BLENDFUNC_ADD, 4, 1, BLENDFUNC_ADD)
 		if (self.stateAlpha or 0) > 0 then
-			surface.SetDrawColor(255, 200, 64, 64 * b)
+			surface.SetDrawColor(64, 200, 150, 64 * b)
 			surface.DrawRect(0, 0, w, h)
 		end
 	render.OverrideBlend(false)

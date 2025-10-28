@@ -7,59 +7,107 @@ ix.Net:AddPlayerVar("book_end", true, nil, ix.Net.Type.All)
 
 function PLUGIN:PlayerLoadedCharacter(client, character, lastChar)
 	if client.read_character and client.read_character == lastChar:GetID() then
-		local info = lastChar:GetBookInfo()
-		local skill = client.read_skill
+		local uniqueID = "ixReading"..client:UniqueID()
+		timer.Remove(uniqueID)
+		
+		local item = client.read_item
 
-		local bookInfo = info[skill] or {}
-		bookInfo.time = ((client:GetLocalVar("book_start", 0) + client:GetLocalVar("book_end", 0)) - os.time())
-
-		if bookInfo.time <= 0 then
-			print("you read book", skill, bookInfo.lvl)
-			bookInfo.read = true
-			bookInfo.start = nil
-			bookInfo.time = nil
+		if !item then
+			return
 		end
-
-		info[skill] = bookInfo
-
-		lastChar:SetBookInfo(info)
-
-		client.read_character = nil
-		client.read_skill = nil
-		client.read_end = nil
-
-		client:SetLocalVar("reading", nil)
-		client:SetLocalVar("book_end", nil)
-		client:SetLocalVar("book_start", nil)
-
-		PrintTable(info)
+		
+		item:Interrupt(client, lastChar)
 	end
+end
 
-	local info = character:GetBookInfo()
+function PLUGIN:PlayerDisconnected(client)
+	if client.read_character then
+		local uniqueID = "ixReading"..client:UniqueID()
+		timer.Remove(uniqueID)
 
-	if info then
-		local currentTime = os.time()
-		local wasChanged = false
+		local item = client.read_item
 
-		for skill, bookInfo in pairs(info) do
-			if bookInfo.read then continue end
+		if !item then
+			return
+		end
+		
+		item:Interrupt(client)
+	end
+end
 
-			if currentTime >= (bookInfo.start + bookInfo.time) then
-				print("you read book", skill, bookInfo.lvl)
-				bookInfo.read = true
-				bookInfo.start = nil
-				bookInfo.time = nil
+do
+	local PLAYER = FindMetaTable("Player")
+
+	function PLAYER:SaveBookProgress(character)
+		character = character or self:GetCharacter()
+		local id = self:GetLocalVar("reading")
+
+		if character and id then
+			local info = character:GetBookInfo()
+			local item = ix.Item.stored[id]
+
+			if item then
+				local remainingTime = (item.bookTime - (self:GetLocalVar("book_end", 0) - os.time()))
+
+				info[id] = remainingTime
+
+				--print("Time: ", remainingTime)
+
+				character:SetBookInfo(info)
 			end
-
-			info[skill] = bookInfo
-			wasChanged = true
-		end
-
-		if wasChanged then
-			character:SetBookInfo(info)
 		end
 	end
-	
+
+	function PLAYER:BookCondition(character)
+		if self:KeyDown(IN_RELOAD) or self:GetVelocity():LengthSqr() > 300 then
+			return false
+		end
+
+		if self:Alive() and !IsValid(self.ixRagdoll) and self:GetCharacter() == character and !self:IsUnconscious() then
+			return true
+		end
+	end
+
+	function PLAYER:StartBookAction(time, character, callback)
+		self:SetAction("@readingBook", time)
+
+		local uniqueID = "ixReading"..self:UniqueID()
+		timer.Create(uniqueID, 1, time, function()
+			if IsValid(self) then
+				if !self:BookCondition(character) then
+					timer.Remove(uniqueID)
+
+					callback(false)
+				elseif (callback and timer.RepsLeft(uniqueID) == 0) then
+					callback(true)
+				end
+			else
+				timer.Remove(uniqueID)
+
+				callback(false)
+			end
+		end)
+	end
+end
+
+function ItemSkillBook:Interrupt(client, character)
+	self.reading_by = nil
+
+	if !IsValid(client) then
+		return
+	end
+
+	client:SaveBookProgress(character)
+	client:SetAction()
+
+	client.read_item = nil
+	client.read_character = nil
+
+	client:SetLocalVar("reading", nil)
+	client:SetLocalVar("book_start", nil)
+	client:SetLocalVar("book_end", nil)
+
+	--print("Debug interrupt", client, character)
 end
 
 function ItemSkillBook:Init()
@@ -68,60 +116,66 @@ function ItemSkillBook:Init()
 	self.functions.read = {
 		name = "Читать",
 		OnRun = function(item)
+			local id = item.uniqueID
 			local client, character = item.player, item.player:GetCharacter()
-			
 			local info = character:GetBookInfo()
-			local skill = item.book.skill[1]
-			local bookInfo = info[skill] or {}
-
-			bookInfo.lvl = bookInfo.lvl or 1
 			
-			local delta = (item.book.level - bookInfo.lvl)
-
-			if delta == 1 and !bookInfo.read then
-				print("not read previous")
-				return
-			elseif delta == 0 and bookInfo.read then
-				print("already known")
-				return
-			elseif delta > 1 then
-				print("too high")
-				return
-			elseif delta < 0 then
-				print("too low")
+			if item.bookRequire and (info[item.bookRequire] != true) then
+				-- cannot read
+				client:Notify("Вам необходимо изучить предыдущую часть книги!")
 				return
 			end
 
-			if character:GetID() == client.read_character and client:GetLocalVar("reading") == item.uniqueID then
-				bookInfo.time = ((client:GetLocalVar("book_start", 0) + client:GetLocalVar("book_end", 0)) - os.time())
-
-				if bookInfo.time < 0 then
-					bookInfo.time = item.book.time
-				end
+			if info[id] == true then
+				-- this book was read
+				client:Notify("Вы уже читали эту книгу!")
+				return
+			end
+			
+			if character:GetID() == client.read_character and client:GetLocalVar("reading") == id then
+				client:SaveBookProgress()
 			end
 
 			local startTime = os.time()
-			bookInfo.lvl = item.book.level
-			bookInfo.read = nil
-			bookInfo.start = startTime
-			bookInfo.time = bookInfo.time or item.book.time
 
-			info[skill] = bookInfo
+			info[id] = info[id] or 0
 
 			character:SetBookInfo(info)
 
-			client.read_character = character:GetID()
-			client.read_skill = skill
-			client.read_end = startTime + bookInfo.time
+			local time = math.max(item.bookTime - info[id], 1)
 
-			client:SetLocalVar("reading", item.uniqueID)
-			client:SetLocalVar("book_end", bookInfo.time)
+			item.reading_by = character
+			client.read_item = item
+			client.read_character = character:GetID()
+			client:SetLocalVar("reading", id)
 			client:SetLocalVar("book_start", startTime)
+			client:SetLocalVar("book_end", startTime + time)
+
+			client:StartBookAction(time, character, function(result)
+				if result then
+					local info = character:GetBookInfo()
+					info[id] = true
+					character:SetBookInfo(info)
+
+					--print("Book Read!", time, character:GetBookInfo()[id])
+					if self.OnRead then
+						self:OnRead(client)
+					end
+
+					item:Remove()
+					return
+				end
+
+				item:Interrupt(client)
+			end)
 
 			return true
 		end,
-		OnCanRun = function(item) return true end
+		OnCanRun = function(item) 
+			return item.reading_by == nil 
+		end
 	}
+	/*
 	self.functions.reset = {
 		name = "reset",
 		OnRun = function(item)
@@ -140,8 +194,30 @@ function ItemSkillBook:Init()
 			return true
 		end,
 		OnCanRun = function(item) return true end
-	}
+	}*/
 end
+
+if CLIENT then
+	function ItemSkillBook:PopulateTooltip(tooltip)
+		local client = LocalPlayer()
+		local character = client:GetCharacter()
+		local info = character:GetBookInfo()
+
+		local text = "Вы ещё не читали эту книгу."
+		local result = info[self.uniqueID]
+
+		if result and isnumber(result) then
+			text = string.format("Прогресс изучения: %s%%", math.Round(100 * (result / self.bookTime)))
+		elseif result and result == true then
+			text = "Вы изучили эту книгу."
+		end
+
+		local size = tooltip:AddRowAfter("name")
+		size:SetBackgroundColor(derma.GetColor("Success", tooltip))
+		size:SetText(text)
+	end
+end
+
 
 return ItemSkillBook
 

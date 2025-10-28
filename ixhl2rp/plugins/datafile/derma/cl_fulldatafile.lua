@@ -215,10 +215,10 @@ function PANEL:PopulateGenericData()
 		[1] = "Citizen",
 		[2] = "Black",
 		[3] = "Brown",
-		[4] = "Red",
-		[5] = "Blue",
-		[6] = "Green",
-		[7] = "Orange",
+		[4] = "Orange",
+		[5] = "Red",
+		[6] = "Blue",
+		[7] = "Green",
 		[8] = "Gold",
 		[9] = "Platinum"
 	}

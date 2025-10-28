@@ -7,5 +7,4 @@ RECIPE.results = {
 	mat_resine = {2, 3}
 }
 RECIPE.skill = {"crafting", 0}
-RECIPE.tools = {"tool_hacksaw"}
 RECIPE.xp = 15

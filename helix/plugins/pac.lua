@@ -318,18 +318,7 @@ else
 			end
 		end)
 	end
-
-	function PLUGIN:DrawCharacterOverview()
-		if (!pac) then
-			return
-		end
-
-		if (LocalPlayer().pac_outfits) then
-			pac.RenderOverride(LocalPlayer(), "opaque")
-			pac.RenderOverride(LocalPlayer(), "translucent", true)
-		end
-	end
-
+	
 	function PLUGIN:DrawHelixModelView(panel, ent)
 		if (!pac) then
 			return
