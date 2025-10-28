@@ -224,13 +224,47 @@ else
 		net.Broadcast()
 	end
 
+	local type_callback = {
+		["@chatRadioning"] = function(client)
+			if client:IsCombine() then
+				return
+			end
+
+			if !client:HasItem("radio_handheld", "radio") then
+				return
+			end
+
+			if !client.lastCommEmote or CurTime() >= client.lastCommEmote then
+				ix.chat.Send(client, "me", "тянется рукой к рации, собираясь что-то сказать.")
+
+				client.lastCommEmote = CurTime() + 15
+			end
+		end,
+		["@chatRDevice"] = function(client)
+			if !client:HasItem("request_device", "ears") then
+				return
+			end
+
+			if !client.lastCommEmote or CurTime() >= client.lastCommEmote then
+				ix.chat.Send(client, "me", "тянется рукой к устройству запроса.")
+
+				client.lastCommEmote = CurTime() + 15
+			end
+		end,
+	}
+
 	net.Receive("ixTypeClass", function(length, client)
 		if ((client.ixNextTypeClass or 0) > RealTime()) then
 			return
 		end
 
 		local newClass = net.ReadString()
+		local callback = type_callback[newClass]
 
+		if callback then
+			callback(client)
+		end
+		
 		-- send message to players in pvs only since they're the only ones who can see the indicator
 		-- we'll broadcast if the type class is empty because they might move out of pvs before the ending net message is sent
 		net.Start("ixTypeClass")

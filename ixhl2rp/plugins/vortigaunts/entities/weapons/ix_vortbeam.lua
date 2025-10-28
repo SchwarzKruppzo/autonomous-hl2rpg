@@ -1,4 +1,6 @@
-AddCSLuaFile()
+if ( SERVER ) then
+	AddCSLuaFile()
+end
 
 if (CLIENT) then
 	SWEP.Slot = 0
@@ -176,6 +178,20 @@ end
 
 -- Called when the player attempts to primary fire.
 function SWEP:PrimaryAttack()
+	if (!self.Owner:Alive()) then return false end
+
+	local character = self.Owner:GetCharacter()
+	local v_thirst = (character:GetThirst() - 4)
+	local v_hunger = (character:GetHunger() - 4)
+
+	if v_thirst < 0 or v_hunger < 0 then
+		if SERVER then
+			self.Owner:NotifyLocalized("Вы слишком слабы, чтобы использовать свои силы!")
+		end
+
+		return
+	end
+
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 
 	if (self.bIsFiring or !self:CanPrimaryAttack()) then return end
@@ -238,11 +254,14 @@ function SWEP:PrimaryAttack()
 			damageInfo:SetDamagePosition(tr.HitPos)
 			damageInfo:SetDamageType(DMG_SHOCK)
 
-			for k, v in ipairs(ents.FindInSphere(tr.HitPos, 64)) do
+			character:SetHunger(math.Clamp(character:GetHunger() - 4, 0, 100))
+			character:SetThirst(math.Clamp(character:GetThirst() - 4, 0, 100))
+
+			for k, v in ipairs(ents.FindInSphere(tr.HitPos, 32)) do
 				local target = IsValid(v.ixPlayer) and v.ixPlayer or v
 
 				if target and (target:IsNPC() or target:IsPlayer()) then
-					if target:Team() == FACTION_VORTIGAUNT then continue end
+					if target:Team() == FACTION_VORTIGAUNT or target:GetMoveType() == 8 then continue end
 					
 					target:TakeDamageInfo(damageInfo)
 				end
@@ -274,5 +293,3 @@ end
 function SWEP:SecondaryAttack()
 	return false
 end
-
-weapons.Register(SWEP, "ix_vortbeam")

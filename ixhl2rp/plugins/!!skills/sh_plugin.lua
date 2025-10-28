@@ -54,9 +54,11 @@ do
 		field = "specials",
 		fieldType = ix.type.text,
 		default = {},
-		index = 6,
 		category = "skills",
 		isLocal = true,
+		Net = {
+			Transmit = ix.transmit.owner
+		},
 		OnDisplay = function(self, container, payload)
 			local faction = ix.faction.indices[payload.faction]
 			local pointsmax = hook.Run("GetDefaultSpecialPoints", LocalPlayer(), payload)
@@ -216,13 +218,24 @@ do
 		OnValidate = function(self, value, data, client)
 			if (value != nil) then
 				if (istable(value)) then
+					local faction = ix.faction.indices[data.faction]
 					local count = 0
 
 					for _, v in pairs(value) do
 						count = count + v + -1
 					end
 
-					if (count < hook.Run("GetDefaultSpecialPoints", client, count)) then
+					local defaulSpecialPoints = hook.Run("GetDefaultSpecialPoints", client, data)
+
+					if faction.defaultLevel then
+						defaulSpecialPoints = 5 + (5 * math.min(faction.defaultLevel, 5)) + (1 * math.max(faction.defaultLevel - 5, 0))
+					end
+
+					if (count < defaulSpecialPoints) then
+						return false, "Вы должны потратить все очки SPECIAL!"
+					end
+
+					if (count > defaulSpecialPoints) then
 						return false, "unknownError"
 					end
 				else
@@ -241,6 +254,9 @@ do
 		default = {},
 		category = "skills",
 		isLocal = true,
+		Net = {
+			Transmit = ix.transmit.owner
+		},
 		OnDisplay = function(self, container, payload)
 		end,
 		OnValidate = function(self, value, data, client)
@@ -428,9 +444,13 @@ else
 		stats.attributes.offset = w1 * 1.75
 		stats.attributes:SetWide(w1 * 2.75)
 
+		local values = {}
+		local oldValues = {}
 		for k, v in SortedPairsByMemberValue(ix.specials.list, "weight") do
 			specials[k] = default and 1 or LocalPlayer():GetCharacter():GetSpecial(k)
-
+			oldValues[k] = specials[k]
+			values[k] = values[k] or 0
+			
 			local bar = stats.attributes:Add("ixStatBar")
 			bar:Dock(TOP)
 
@@ -448,26 +468,26 @@ else
 			bar:SetText(L(v.name), Format("%i/%i", specials[k], maximum))
 			bar:SetDesc(L(v.description))
 			bar.OnChanged = function(this, difference)
-				if ((specials[k] + difference) <= 0) then
-					return false
+				total = 0
+				for k, v in pairs(values) do
+					total = total + v
 				end
 
-				for z, x in pairs(specials) do
-					if (specials[z] - (specials[k] + difference)) < -3 then
-						return false
+				if (values[k] + difference) >= 0 and (total + difference) <= pointsmax and (total + difference) >= 0 then
+					values[k] = values[k] + difference
+
+					total = 0
+					for k, v in pairs(values) do
+						total = total + v
 					end
-				end
-
-				if ((total + difference) > pointsmax) then
+				else
 					return false
 				end
 
-				total = total + difference
-
-				specials[k] = specials[k] + difference
+				specials[k] = oldValues[k] + values[k]
 
 				this:SetText(L(v.name), Format("%i/%i", specials[k], maximum))
-				totalBar:SetValue(totalBar.value - difference)
+				totalBar:SetValue(pointsmax - total)
 			end
 		end
 

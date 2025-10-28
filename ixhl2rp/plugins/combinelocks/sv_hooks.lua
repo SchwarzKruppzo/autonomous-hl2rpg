@@ -7,7 +7,7 @@ function PLUGIN:SaveData()
 end
 
 netstream.Hook("ixCombineLockPlace", function(client, id, access)
-	local itemTable = client:GetCharacter():GetInventory():GetItemByID(id)
+	local has, itemTable = client:HasItemByID(id)
 
 	if itemTable then
 		local data = {}

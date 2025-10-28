@@ -54,12 +54,6 @@ function PANEL:RemoveLine(id)
 	end
 end
 
-function PANEL:Think()
-	local x, _ = self:GetPos()
-
-	self:SetPos(x, 160)
-end
-
 function PANEL:Paint(width, height)
 	local textHeight = draw.GetFontHeight(self.font)
 	local y = 0

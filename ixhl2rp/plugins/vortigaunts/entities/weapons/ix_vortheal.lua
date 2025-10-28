@@ -1,4 +1,6 @@
-AddCSLuaFile()
+if ( SERVER ) then
+	AddCSLuaFile()
+end
 
 if (CLIENT) then
 	SWEP.Slot = 5

@@ -2,54 +2,63 @@
 local PLUGIN = PLUGIN
 
 local icons = {
-	["Ammunition"] = "briefcase",
-	["Clothing"] = "user_suit",
-	["Communication"] = "telephone",
-	["Consumables"] = "cake",
-	["Crafting Resource"] = "cog",
-	["Crafting Station"] = "cog",
-	["Crafting"] = "cog",
-	["Deployables"] = "arrow_down",
-	["Filters"] = "weather_clouds",
-	["Junk"] = "box",
-	["Lights"] = "lightbulb",
-	["Literature"] = "book",
-	["Medical"] = "heart",
-	["Melee Weapons"] = "bomb",
+	["Инструменты"] = "wrench",
+	["Одежда"] = "suit",
+	["Одежда (MPF)"] = "user_gray",
+	["Одежда (Броня)"] = "user_green",
+	["Одежда (OTA)"] = "user_red",
+	["Напитки"] = "drink",
+	["Оружие"] = "gun",
 	["Other"] = "brick",
-	["Promotional"] = "coins",
-	["Reusables"] = "arrow_rotate_clockwise",
-	["Storage"] = "package",
-	["Tools"] = "wrench",
-	["Turret"] = "gun",
-	["UU-Branded Items"] = "asterisk_yellow",
-	["Weapons"] = "gun",
-	["Workstations"] = "page",
+	["Базовые компоненты"] = "cog",
+	["Уникальное"] = "shield",
+	["Еда"] = "cake",
+	["Citizen ID"] = "vcard",
+	["Патроны"] = "find",
+	["Производные компоненты"] = "cog_add",
+	["Радиация"] = "error",
+	["Коммуникация"] = "feed",
+	["Рационы"] = "page",
+	["Купоны Альянса"] = "coins",
+	["Книги"] = "book_addresses",
+	["Книги (навыки)"] = "book_open",
+	["Кулинарные компоненты"] = "cup",
+	["Хлам"] = "bin",
+	["Части оружия"] = "text_list_bullets",
+	["Химические компоненты"] = "asterisk_orange",
+	["Фильтры"] = "help",
+	["Медицина"] = "pill",
+	["Строительство - контейнеры"] = "box",
+	["Части оружия"] = "link",
+	["Повязки (MPF)"] = "status_busy",
+	["Повязки (Лояльность)"] = "status_online",
 }
 
 spawnmenu.AddContentType("ixItem", function(container, data)
 	if (!data.name) then return end
 
+	local custom = data.checksum and true or false
 	local icon = vgui.Create("ContentIcon", container)
 
 	icon:SetContentType("ixItem")
 	icon:SetSpawnName(data.uniqueID)
 	icon:SetName(data.name)
 
-	local mdl = data:GetModel()
+	local mdl = data.GetModel and data:GetModel() or data.model
 
 	if mdl then
 		icon.model = vgui.Create("ModelImage", icon)
 		icon.model:SetMouseInputEnabled(false)
 		icon.model:SetKeyboardInputEnabled(false)
 		icon.model:StretchToParent(16, 16, 16, 16)
-		icon.model:SetModel(data:GetModel(), data:GetSkin(), "000000000")
+		icon.model:SetModel(mdl, data.GetSkin and data:GetSkin() or (data.skin or 0), "000000000")
 		icon.model:MoveToBefore(icon.Image)
 	end
 
 	function icon:DoClick()
 		net.Start("MenuItemSpawn")
-			net.WriteString(data.uniqueID)
+			net.WriteString(custom and data.checksum or data.uniqueID)
+			net.WriteBool(custom)
 		net.SendToServer()
 		
 		surface.PlaySound("ui/buttonclickrelease.wav")
@@ -63,7 +72,8 @@ spawnmenu.AddContentType("ixItem", function(container, data)
 
 		menu:AddOption("Выдать себе", function()
 			net.Start("MenuItemGive")
-				net.WriteString(data.uniqueID)
+				net.WriteString(custom and data.checksum or data.uniqueID)
+				net.WriteBool(custom)
 			net.SendToServer()
 		end)
 
@@ -82,8 +92,10 @@ local function CreateItemsPanel()
 
 	vgui.Create("ItemSearchBar", base.ContentNavBar)
 
-	for k, v in SortedPairsByMemberValue(ix.item.list, "category") do
-		if (!categories[v.category] and not string.match( v.name, "Base" )) then
+	local items = ix.Item:All()
+
+	for k, v in SortedPairsByMemberValue(items, "category") do
+		if (!categories[v.category] and !string.match(v.name, "Base")) then
 			categories[v.category] = true
 
 			local category = tree:AddNode(L(v.category), icons[v.category] and ("icon16/" .. icons[v.category] .. ".png") or "icon16/brick.png")
@@ -96,7 +108,7 @@ local function CreateItemsPanel()
 				self.Container:SetTriggerSpawnlistChange(false)
 
 
-				for uniqueID, itemTable in SortedPairsByMemberValue(ix.item.list, "name") do
+				for uniqueID, itemTable in SortedPairsByMemberValue(items, "name") do
 					if (itemTable.category == v.category and not string.match( itemTable.name, "Base" )) then
 						spawnmenu.CreateContentIcon("ixItem", self.Container, itemTable)
 					end
@@ -109,6 +121,27 @@ local function CreateItemsPanel()
 			end
 		end
 	end
+
+	local category = tree:AddNode("Кастомные Предметы", "icon16/heart.png")
+	function category:DoPopulate()
+		if (self.Container) then return end
+
+		self.Container = vgui.Create("ContentContainer", base)
+		self.Container:SetVisible(false)
+		self.Container:SetTriggerSpawnlistChange(false)
+
+
+		for checksum, itemTable in SortedPairsByMemberValue(ix.CustomItem.stored, "name") do
+			spawnmenu.CreateContentIcon("ixItem", self.Container, itemTable, true)
+		end
+	end
+
+	function category:DoClick()
+		self:DoPopulate()
+		base:SwitchPanel(self.Container)
+	end
+
+
 
 	local FirstNode = tree:Root():GetChildNode(0)
 

@@ -30,6 +30,9 @@ ix.char.RegisterVar("knownTopics", {
 	fieldType = ix.type.string,
 	default = {},
 	isLocal = true,
+	Net = {
+		Transmit = ix.transmit.owner
+	},
 	bNoDisplay = true
 })
 
@@ -38,6 +41,9 @@ ix.char.RegisterVar("dialogData", {
 	fieldType = ix.type.string,
 	default = {},
 	isLocal = true,
+	Net = {
+		Transmit = ix.transmit.owner
+	},
 	bNoDisplay = true
 })
 

@@ -16,6 +16,6 @@ function PLUGIN:PlayerInitialSpawn(client)
 	local steamid64 = client:SteamID64()
 	
 	if !client:IsBot() and client:OwnerSteamID64() != steamid64 and !whitelist[steamid64] then
-		client:Kick("Аккаунты с семейным доступом запрещены!")
+		//client:Kick("Аккаунты с семейным доступом запрещены!")
 	end
 end

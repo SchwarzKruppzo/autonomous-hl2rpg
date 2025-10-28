@@ -1,3 +1,20 @@
+do
+	local CHAR = ix.meta.character
+
+	function CHAR:UpdateNeeds(thirst, hunger)
+		thirst = (thirst or 0) * 0.6
+		hunger = (hunger or 0) * 0.6
+
+		if hunger and hunger != 0 then
+			self:SetHunger(math.Clamp(self:GetHunger() + hunger, 0, 100))
+		end
+		
+		if thirst and thirst != 0 then
+			self:SetThirst(math.Clamp(self:GetThirst() + thirst, 0, 100))
+		end
+	end
+end
+
 local BASE_RATE_H = 140
 local BASE_RATE_T = 120
 

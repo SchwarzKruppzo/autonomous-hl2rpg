@@ -72,6 +72,8 @@ if (SERVER) then
 				money = entity.money,
 				scale = entity.scale,
 				anim = entity.anim,
+				card_access = entity.card_access,
+				password = entity.password
 			}
 		end
 
@@ -117,6 +119,11 @@ if (SERVER) then
 			entity.classes = v.classes or {}
 			entity.money = v.money
 			entity.scale = v.scale or 0.5
+
+			entity.card_access = v.card_access or ""
+			entity.password = v.password or ""
+
+			entity:InitOrders()
 
 			if v.anim and isstring(v.anim) then
 				entity:OnChangedAnim(v.anim)
@@ -302,6 +309,8 @@ if (SERVER) then
 			UpdateEditReceivers(entity.receivers, key, data)
 		end
 
+		entity:InitOrders(true)
+		
 		PLUGIN:SaveData()
 
 		if (feedback) then
@@ -356,8 +365,16 @@ if (SERVER) then
 
 				local invOkay = true
 
-				for _, v in pairs(client:GetCharacter():GetInventory():GetItems()) do
-					if (v.uniqueID == uniqueID and v:GetID() != 0 and ix.item.instances[v:GetID()] and v:GetData("equip", false) == false) then
+				for _, v in pairs(client:GetItems()) do
+					if (v.uniqueID == uniqueID and v:GetID() != 0 and ix.Item.instances[v:GetID()] and v:GetData("equip", false) == false) then
+						if v.DurabilityPercentage then
+							price = price * v:DurabilityPercentage()
+						end
+
+						if v.default_stack and v.stackable_legacy then
+							price = price * math.min(v:GetValue() / v.default_stack, 1)
+						end
+
 						invOkay = v:Remove()
 						found = true
 						name = L(v.name, client)
@@ -371,7 +388,6 @@ if (SERVER) then
 				end
 
 				if (!invOkay) then
-					client:GetCharacter():GetInventory():Sync(client, true)
 					return client:NotifyLocalized("tellAdmin", "trd!iid")
 				end
 
@@ -393,15 +409,17 @@ if (SERVER) then
 					return client:NotifyLocalized("canNotAfford")
 				end
 
-				local name = L(ix.item.list[uniqueID].name, client)
+				local name = L(ix.Item:Get(uniqueID).name, client)
 
 				client:GetCharacter():TakeMoney(price)
 				client:NotifyLocalized("businessPurchase", name, ix.currency.Get(price))
 
 				entity:GiveMoney(price)
 
-				if (!client:GetCharacter():GetInventory():Add(uniqueID)) then
-					ix.item.Spawn(uniqueID, client)
+				if !client:GiveItem(uniqueID) then
+					local instance = ix.Item:Instance(uniqueID)
+
+					ix.Item:Spawn(client, nil, instance)
 				else
 					net.Start("ixVendorAddItem")
 						net.WriteString(uniqueID)
@@ -447,6 +465,8 @@ else
 		end
 
 		entity.money = net.ReadUInt(16)
+		entity.password = net.ReadString()
+		entity.card_access = net.ReadString()
 		entity.items = net.ReadTable()
 		entity.scale = net.ReadFloat()
 		entity.messages = net.ReadTable()
@@ -537,6 +557,9 @@ else
 		local key = net.ReadString()
 		local data = net.ReadType()
 
+		editor.card_access:SetText(entity.card_access)
+		editor.password:SetText(entity.password)
+
 		if (key == "name") then
 			editor.name:SetText(data)
 		elseif (key == "description") then
@@ -551,7 +574,7 @@ else
 				editor.lines[data[1]]:SetValue(3, L(VENDOR_TEXT[data[2]]))
 			end
 		elseif (key == "price") then
-			editor.lines[data]:SetValue(4, entity:GetPrice(data))
+			editor.lines[data]:SetValue(4, entity:GetPrice(data, nil, true))
 		elseif (key == "stockDisable") then
 			editor.lines[data]:SetValue(5, "-")
 		elseif (key == "stockMax" or key == "stock") then
@@ -609,6 +632,8 @@ else
 		local editor = ix.gui.vendorEditor
 
 		if (IsValid(editor)) then
+			editor.card_access:SetText(entity.card_access)
+			editor.password:SetText(entity.password)
 			local useMoney = tonumber(value) != nil
 
 			editor.money:SetDisabled(!useMoney)
@@ -639,6 +664,8 @@ else
 		local editor = ix.gui.vendorEditor
 
 		if (IsValid(editor)) then
+			editor.card_access:SetText(entity.card_access)
+			editor.password:SetText(entity.password)
 			local _, max = entity:GetStock(uniqueID)
 
 			editor.lines[uniqueID]:SetValue(4, amount .. "/" .. max)
@@ -694,6 +721,8 @@ properties.Add("vendor_edit", {
 		net.Start("ixVendorEditor")
 			net.WriteEntity(entity)
 			net.WriteUInt(entity.money or 0, 16)
+			net.WriteString(entity.password)
+			net.WriteString(entity.card_access)
 			net.WriteTable(itemsTable)
 			net.WriteFloat(entity.scale or 0.5)
 			net.WriteTable(entity.messages)

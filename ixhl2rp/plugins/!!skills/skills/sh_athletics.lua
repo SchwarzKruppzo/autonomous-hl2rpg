@@ -15,7 +15,9 @@ local function CalcAthleticsSpeed(athletics)
 end
 
 function SKILL:OnLevelUp(client, character)
+	client.recalculateSpeed = true
+	/*
 	if !client:GetNetVar("brth", false) then
 		client:SetRunSpeed(ix.config.Get("runSpeed") * CalcAthleticsSpeed(character:GetSkillModified("athletics")))
-	end
+	end*/
 end

@@ -43,7 +43,7 @@ do
 
 			local blood = self:GetBlood()
 
-			if blood >= 3000 then
+			if blood >= 750 then
 				if player:IsUnconscious() and !player.ixUnconsciousOut then
 					player:SetAction("@wakingUp", 100, function(player)
 						player.ixUnconsciousOut = nil
@@ -58,18 +58,18 @@ do
 			end
 
 			if !player:IsUnconscious() then
-				local ratio = math.Clamp(blood / 3000, 0, 1)
+				local ratio = math.Clamp(blood / 750, 0, 1)
 				local chance = 1 + (74 * (1 - ratio))
 
 				if math.random(1, 100) <= chance and player:GetMoveType() != MOVETYPE_NOCLIP then
-					player:DropActiveWeaponItem()
+					//player:DropActiveWeaponItem()
 
 					player:SetRagdolled(true)
 					player.ixRagdoll.ixGrace = nil
 					player:SetLocalVar("knocked", true)
 				end
 			else
-				local ratio = math.Clamp(blood / 3000, 0, 1)
+				local ratio = math.Clamp(blood / 750, 0, 1)
 				local chanceSuccess = 1 + (74 * ratio)
 				local chanceFail = 1 + (74 * (1 - ratio))
 
@@ -92,6 +92,10 @@ do
 	end
 
 	function CHAR:SetupBleeding(status)
+		if self:GetFaction() == FACTION_VORTIGAUNT then
+			return
+		end
+		
 		status = status or self:IsBleeding()
 
 		local player = self:GetPlayer()
@@ -121,6 +125,10 @@ do
 	end
 
 	function CHAR:SetupFeelPain(status)
+		if self:GetFaction() == FACTION_VORTIGAUNT then
+			return
+		end
+		
 		status = status or self:IsFeelPain()
 
 		local player = self:GetPlayer()
@@ -192,14 +200,9 @@ do
 
 		if player:Alive() then
 			if delta >= 5000 then
-				--death
-				--player:Kill()--Silent()
-				--hook.Run("DoPlayerDeath", player)
 				player:SetCriticalState(true)
 			elseif delta > 500 then
 				if !IsValid(player.ixRagdoll) and !player:IsUnconscious() then
-					player:DropActiveWeaponItem()
-
 					local time = math.Round(30 + (30 * (delta / 5000)))
 					player:SetRagdolled(true, time, time)
 				end
@@ -219,9 +222,6 @@ do
 		self:SetBlood(math.max(delta, -1))
 
 		if delta <= 0 and player:Alive() then
-			--death
-			--player:Kill() --Silent()
-			--hook.Run("DoPlayerDeath", self:GetPlayer())
 			player:SetCriticalState(true)
 		end
 	end
@@ -483,6 +483,18 @@ do
 			self:SetLocalVar("ragdoll", entity:EntIndex())
 			self:SetNetVar("doll", entity:EntIndex())
 			hook.Run("OnCharacterFallover", self, entity, true)
+
+			local flag = self:GetCharacter():HasFlags("z")
+
+			if self:InOutlands() then
+				entity.inOutlands = true
+			end
+
+			if !flag then
+				net.Start('rp.ragdoll.menu')
+					net.WriteEntity(entity)
+				net.Broadcast()
+			end
 		elseif (IsValid(self.ixRagdoll)) then
 			self.ixRagdoll:Remove()
 

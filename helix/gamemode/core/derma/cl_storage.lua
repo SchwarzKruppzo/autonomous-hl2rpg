@@ -1,4 +1,10 @@
 
+if true then
+	return
+end
+
+-- DEPRECATED
+
 local PANEL = {}
 
 AccessorFunc(PANEL, "money", "Money", FORCE_NUMBER)

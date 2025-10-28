@@ -148,6 +148,10 @@ function PANEL:Init()
 end
 
 function PANEL:AddEntry(entry, color)
+	if !ix.option.Get("showArea") then
+		return
+	end
+	
 	color = color or ix.config.Get("color")
 
 	local id = #self.entries + 1

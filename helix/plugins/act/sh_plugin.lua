@@ -19,6 +19,8 @@ CAMI.RegisterPrivilege({
 	MinAccess = "user"
 })
 
+ix.Net:AddPlayerVar("actEnterAngle", false, nil, ix.Net.Type.Angle)
+
 --- Registers a sequence as a performable animation.
 -- @realm shared
 -- @string name Name of the animation (in CamelCase)

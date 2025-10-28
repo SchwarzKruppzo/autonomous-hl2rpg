@@ -56,17 +56,21 @@ if SERVER then
 	end
 
 	function ENT:OnSuccess(client)
-		if math.Rand(0, 100) <= 50 then
+		local chance = ((math.Clamp(#player.GetAll(), 1, 90) / 90) * 100)
+		
+		if math.Rand(0, 100) < chance then
 			local character = client:GetCharacter()
 			local loot = {}
 			loot = ix.loot.Get("garbage_common"):Process(loot, true, client)
 
 			if loot[1] then
-				local item = ix.item.Get(loot[1])
+				local item = ix.Item:Get(loot[1])
 
 				if item then
-					if !character:GetInventory():Add(loot[1]) then
-						ix.item.Spawn(loot[1], client)
+					local instance = ix.Item:Instance(loot[1])
+
+					if !client:AddItem(instance) then
+						ix.Item:Spawn(client, nil, instance)
 					end
 
 					ix.chat.Send(client, "it", L("garbageNotify", client, L(item:GetName(), client)), false, {client})

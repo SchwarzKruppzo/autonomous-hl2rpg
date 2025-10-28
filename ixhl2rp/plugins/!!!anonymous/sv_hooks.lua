@@ -56,7 +56,7 @@ function PLUGIN:PrePlayerLoadedCharacter(client, character, oldcharacter)
 end
 
 require("statusx")
-require("query")
+require("quax")
 
 query.EnableInfoDetour(true)
 
@@ -106,3 +106,25 @@ function PLUGIN:A2S_PLAYER(ip, port, info)
 
     return ourinfo
 end
+
+function PLUGIN:A2S_INFO(ip, port, info) 
+	info.tags = " gm:ixhl2rp gmc:rp loc:ru"
+
+	return info 
+end
+
+
+/*
+function PLUGIN:STATUS_INFO(client, info)
+	info.players = self:GetOnline()
+
+	return info
+end
+
+
+function PLUGIN:SERVER_INFO(info)
+	info.players = self:GetOnline()
+
+	return info
+end
+*/

@@ -20,12 +20,12 @@ do
 
 	function CHAR:IsCityAdmin()
 		local faction = self:GetFaction()
-		return faction == FACTION_ADMIN or faction == FACTION_ADMIN_HEAD
+		return faction == FACTION_SECADMIN or faction == FACTION_ADMIN or faction == FACTION_ADMIN_HEAD
 	end
 
 	function PLAYER:IsCityAdmin()
 		local faction = self:Team()
-		return faction == FACTION_ADMIN or faction == FACTION_ADMIN_HEAD
+		return faction == FACTION_SECADMIN or faction == FACTION_ADMIN or faction == FACTION_ADMIN_HEAD
 	end
 
 	function CHAR:IsCombine()

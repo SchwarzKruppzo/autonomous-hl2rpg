@@ -8,7 +8,7 @@ function Schema:CreateCharacterInfo(panel)
 end
 
 function Schema:UpdateCharacterInfo(panel)
-	local card = LocalPlayer():GetCharacter():GetIDCard()
+	local card = LocalPlayer():GetIDCard()
 
 	if IsValid(panel) and panel.cid then
 		panel.cid:SetLabelText(L("citizenid"))

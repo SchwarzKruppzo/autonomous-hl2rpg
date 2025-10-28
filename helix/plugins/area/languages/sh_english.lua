@@ -12,5 +12,7 @@ LANGUAGE = {
 	areaDeleteConfirm = "Are you sure you want to delete the area \"%s\"?",
 	areaDelete = "Delete Area",
 
-	cmdAreaEdit = "Enters area edit mode."
+	cmdAreaEdit = "Enters area edit mode.",
+
+	optShowArea = "Show Area Notification"
 }

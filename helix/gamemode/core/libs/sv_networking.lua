@@ -1,4 +1,4 @@
-
+/*
 -- @module ix.net
 
 local entityMeta = FindMetaTable("Entity")
@@ -197,3 +197,4 @@ function entityMeta:ClearNetVars(receiver)
 		net.Send(receiver)
 	end
 end
+*/

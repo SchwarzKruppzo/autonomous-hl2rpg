@@ -99,6 +99,9 @@ function ENT:SpawnItem(activator)
 	entity:SetPos(self.tube:GetPos() + self.tube:GetUp() * 20)
 	entity:SetAngles(self:GetAngles())
 	entity:Spawn()
+
+	entity.workers = {}
+	entity.workers[activator:GetCharacter():GetID()] = true
 end
 
 function ENT:CanTool(player, trace, tool)

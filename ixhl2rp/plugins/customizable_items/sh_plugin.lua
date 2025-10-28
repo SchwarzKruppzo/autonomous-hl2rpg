@@ -21,3 +21,14 @@ do
 
 	ix.command.Add("CreateCustomItem", COMMAND)
 end
+
+function PLUGIN:OnLoaded()
+	ix.CustomItem:Load()
+end
+
+
+if SERVER then
+	function PLUGIN:SaveData()
+		ix.CustomItem:Save()
+	end
+end

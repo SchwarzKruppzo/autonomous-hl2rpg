@@ -1,12 +1,14 @@
-
 local PLUGIN = PLUGIN
 
-function PLUGIN:OnLoaded()
-	for _, path in ipairs(self.paths or {}) do
-		self.craft.LoadFromDir(path.."/recipes", "recipe")
-		self.craft.LoadFromDir(path.."/stations", "station")
+function PLUGIN:CreateMenuButtons(tabs)
+	tabs["СОЗДАНИЕ ВЕЩЕЙ"] = function(container)
+		local x = container:Add("ui.craft")
+		x:Setup()
 	end
 end
+
+ix.Craft:LoadFromDir(PLUGIN.folder.."/recipes", "recipe")
+ix.Craft:LoadFromDir(PLUGIN.folder.."/stations", "station")
 
 function PLUGIN:LoadData()
 	timer.Simple(1, function()
@@ -43,6 +45,13 @@ function PLUGIN:SaveStations()
 	local data = {}
 
 	for _, v in ipairs(ents.FindByClass("ix_station_*")) do
+		
+		if v.inventory then
+			for z, x in pairs(v.inventory:GetItems() or {}) do
+				x:Save()
+			end
+		end
+
 		data[#data + 1] = {
 			v.uniqueID,
 			v:GetPos(),
@@ -52,4 +61,3 @@ function PLUGIN:SaveStations()
 
 	self:SetData(data)
 end
-

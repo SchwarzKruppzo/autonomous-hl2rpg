@@ -1,4 +1,3 @@
-
 -- Civil Record panel.
 local PANEL = {};
 
@@ -16,10 +15,10 @@ function PANEL:Init()
 	self.Entry:SetMultiline(true);
 	self.Entry:DockMargin(0, 0, 0, 2.5);
 
-	//self.Number = vgui.Create("DNumberWang", self)
-	//self.Number:Dock(BOTTOM);
-	//self.Number:DockMargin(0, 2.5, 0, 2.5);
-	//self.Number:SetMinMax(-10, 10);
+	self.Number = vgui.Create("DNumberWang", self)
+	self.Number:Dock(BOTTOM);
+	self.Number:DockMargin(0, 2.5, 0, 2.5);
+	self.Number:SetMinMax(-10, 10);
 
 	self.Submit = vgui.Create("cwDfButton", self);
 	self.Submit:SetText("Submit")
@@ -33,9 +32,9 @@ function PANEL:SendInformation(target)
 	self.Submit.DoClick = function()
 		local category = "civil";
 		local text = self.Entry:GetText();
-		//local points = self.Number:GetValue();
+		local points = self.Number:GetValue();
 
-		netstream.Start("AddDatafileEntry", target, category, text, 0); //points);
+		netstream.Start("AddDatafileEntry", target, category, text, points);
 
 		self:Close();
 	end;

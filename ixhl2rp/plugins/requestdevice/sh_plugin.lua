@@ -65,18 +65,24 @@ do
 		end
 
 		if item and item:GetOwner() == client then
-			item = ix.item.instances[item:GetData("id")]
+			local name, citizenID = "UNKNOWN", "?????"
+			local cidItemID = client:GetFirstAtSlot(1, 1, 'cid')
+			local cid
 
-			if !item then
-				return
+			if cidItemID then
+				cid = ix.Item.instances[cidItemID]
+
+				if cid then
+					name = cid:GetData("name") or name
+					citizenID = cid:GetData("cid") or citizenID
+				end
 			end
-
-			local name, cid = item:GetData("name"), item:GetData("cid")
 
 			ix.chat.Send(client, "request", text, nil, nil, {
 				name = name,
-				cid = cid
+				cid = citizenID
 			})
+
 			ix.chat.Send(client, "request_eavesdrop", text)
 
 			client.lastRequestTime = CurTime() + 5
@@ -90,11 +96,15 @@ do
 	ix.command.Add("Request", {
 		arguments = ix.type.text,
 		alias = "запрос",
+		indicator = "chatRDevice",
 		OnRun = function(self, client, message)
-			local character = client:GetCharacter()
-			local equipment = character:GetEquipment()
+			local itemID = client:GetFirstAtSlot(1, 1, 'ears')
+			local device
 
-			local device = equipment:HasItem("request_device")
+			if itemID then
+				device = ix.Item.instances[itemID]
+			end
+
 			if device then
 				if !client:IsRestricted() then
 					client.ixRequestDevice = device
@@ -127,32 +137,25 @@ do
 				local character = ply:GetCharacter()
 				if !character then continue end
 
-				for _, item in ipairs(character:GetInventory():GetItemsByUniqueID("request_device", true)) do
-					table.insert(devices, item)
-				end
+				local itemID = ply:GetFirstAtSlot(1, 1, 'ears')
 
-				local device = character:GetEquipment():HasItem("request_device")
-
-				if device then 
-					table.insert(devices, device)
+				if itemID then
+					table.insert(devices, ply)
 				end
 			end
 
-			for _, device in ipairs(devices) do
-				local card = ix.item.instances[device:GetData("id")]
+			for _, ply in ipairs(devices) do
+				local itemID = ply:GetFirstAtSlot(1, 1, 'cid')
+				local card = ix.Item.instances[itemID]
 
 				if card and card:GetData("cid") == cid then
-					found = device
+					found = ply
 					break
 				end
 			end
 
-			if found then
-				local target = found:GetOwner()
-
-				if IsValid(target) then
-					ix.chat.Send(client, "request_loopback", message, false, {client, target}, {target = target})
-				end
+			if IsValid(found) then
+				ix.chat.Send(client, "request_loopback", message, false, {client, found}, {target = found})
 			else
 				return "@rdNotFound"
 			end

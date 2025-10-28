@@ -69,7 +69,7 @@ elseif (CLIENT) then
 			light.dir = self:GetForward()
 			light.outerangle = 0
 			light.innerangle = 2
-			light.r = 180
+			light.r = 32
 			light.g = 187
 			light.b = 190
 			light.size = 120

@@ -155,11 +155,24 @@ ix.command.Add("CharSetModel", {
 		target:SetModel(model)
 		target:GetPlayer():SetupHands()
 
-		for _, v in ipairs(player.GetAll()) do
-			if (self:OnCheckAccess(v) or v == target:GetPlayer()) then
-				v:NotifyLocalized("cChangeModel", client:GetName(), target:GetName(), model)
-			end
-		end
+		client:NotifyLocalized("cChangeModel", client:GetName(), target:GetName(), model)
+	end
+})
+
+ix.command.Add("CharSetModelOverride", {
+	description = "@cmdCharSetModel",
+	superAdminOnly = true,
+	arguments = {
+		ix.type.character,
+		ix.type.string
+	},
+	OnRun = function(self, client, target, model)
+		target:SetData("model_override", model)
+
+		target:GetPlayer().char_outfit:Update()
+		target:GetPlayer():SetupHands()
+
+		client:NotifyLocalized("cChangeModel", client:GetName(), target:GetName(), model)
 	end
 })
 
@@ -174,11 +187,7 @@ ix.command.Add("CharSetSkin", {
 		target:SetData("skin", skin)
 		target:GetPlayer():SetSkin(skin or 0)
 
-		for _, v in ipairs(player.GetAll()) do
-			if (self:OnCheckAccess(v) or v == target:GetPlayer()) then
-				v:NotifyLocalized("cChangeSkin", client:GetName(), target:GetName(), skin or 0)
-			end
-		end
+		client:NotifyLocalized("cChangeSkin", client:GetName(), target:GetName(), skin or 0)
 	end
 })
 
@@ -209,7 +218,7 @@ ix.command.Add("CharSetBodygroup", {
 		end
 	end
 })
-
+/*
 ix.command.Add("CharSetAttribute", {
 	description = "@cmdCharSetAttribute",
 	privilege = "Manage Character Attributes",
@@ -251,6 +260,7 @@ ix.command.Add("CharAddAttribute", {
 		return "@attributeNotFound"
 	end
 })
+*/
 
 ix.command.Add("CharSetName", {
 	description = "@cmdCharSetName",
@@ -288,9 +298,13 @@ ix.command.Add("CharGiveItem", {
 	OnRun = function(self, client, target, item, amount)
 		local uniqueID = item:lower()
 
-		if (!ix.item.list[uniqueID]) then
-			for k, v in SortedPairs(ix.item.list) do
+		if !ix.Item:Get(uniqueID) then
+			for k, v in SortedPairs(ix.Item.stored) do
 				if (ix.util.StringMatches(v.name, uniqueID)) then
+					if v.NoSpawn then
+						return
+					end
+					
 					uniqueID = k
 
 					break
@@ -299,7 +313,7 @@ ix.command.Add("CharGiveItem", {
 		end
 
 		amount = amount or 1
-		local bSuccess, error = target:GetInventory():Add(uniqueID, amount)
+		local bSuccess, error = target:GetPlayer():GiveItem(uniqueID, amount)
 
 		if (bSuccess) then
 			target:GetPlayer():NotifyLocalized("itemCreated")
@@ -349,6 +363,89 @@ ix.command.Add("CharBan", {
 		for _, v in ipairs(player.GetAll()) do
 			if (self:OnCheckAccess(v) or v == target:GetPlayer()) then
 				v:NotifyLocalized("charBan", client:GetName(), target:GetName())
+			end
+		end
+	end
+})
+
+ix.command.Add("CharDelete", {
+	description = "",
+	privilege = "Delete Character",
+	arguments = ix.type.text,
+	superAdminOnly = true,
+	OnRun = function(self, client, name)
+		if ((client.ixNextSearch or 0) >= CurTime()) then
+			return L("charSearching", client)
+		end
+
+		local id
+
+		for x, v in pairs(ix.char.loaded) do
+			if ix.util.StringMatches(v:GetName(), name) then
+				id = x
+				break
+			end
+		end
+
+		client.ixNextSearch = CurTime() + 15
+
+		if !id then
+			local query = mysql:Select("ix_characters")
+				query:Select("id")
+				query:Select("name")
+				query:Select("data")
+				query:WhereLike("name", name)
+				query:Limit(1)
+				query:Callback(function(result)
+					if istable(result) and #result > 0 then
+						local characterID = tonumber(result[1].id)
+						local character = ix.char.loaded[characterID]
+						
+						ix.log.Add(client, "charDelete", character:GetName())
+						ix.char.loaded[characterID] = nil
+
+						net.Start("ixCharacterDelete")
+							net.WriteUInt(characterID, 32)
+						net.Broadcast()
+
+						local query = mysql:Delete("ix_characters")
+							query:Where("id", characterID)
+						query:Execute()
+
+						client:Notify(string.format("Персонаж %s был удален!", character:GetName()))
+					end
+				end)
+			query:Execute()
+		else
+			local character = ix.char.loaded[id]
+			local owner = character:GetPlayer()
+			local isCurrentChar = owner:GetCharacter() and owner:GetCharacter():GetID() == id
+
+			if IsValid(owner) then
+				for k, v in ipairs(owner.ixCharList or {}) do
+					if (v == id) then
+						table.remove(owner.ixCharList, k)
+					end
+				end
+			end
+
+			ix.log.Add(client, "charDelete", character:GetName())
+			ix.char.loaded[id] = nil
+
+			net.Start("ixCharacterDelete")
+				net.WriteUInt(id, 32)
+			net.Broadcast()
+
+			local query = mysql:Delete("ix_characters")
+				query:Where("id", id)
+			query:Execute()
+
+			client:Notify(string.format("Персонаж %s был удален!", character:GetName()))
+
+			if isCurrentChar then
+				owner:SetNetVar("char", nil)
+				owner:KillSilent()
+				owner:StripAmmo()
 			end
 		end
 	end

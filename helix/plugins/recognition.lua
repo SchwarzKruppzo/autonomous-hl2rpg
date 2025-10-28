@@ -3,26 +3,10 @@ PLUGIN.name = "Recognition"
 PLUGIN.author = "Chessnut"
 PLUGIN.description = "Adds the ability to recognize people."
 
+ix.Net:AddPlayerVar("hide", false, nil, ix.Net.Type.CharacterID)
+
 do
 	local character = ix.meta.character
-
-	if (SERVER) then
-		function character:Recognize(id)
-			if (!isnumber(id) and id.GetID) then
-				id = id:GetID()
-			end
-
-			local recognized = self:GetData("rgn", "")
-
-			if (recognized != "" and recognized:find(","..id..",")) then
-				return false
-			end
-
-			self:SetData("rgn", recognized..","..id..",")
-
-			return true
-		end
-	end
 
 	function character:DoesRecognize(id)
 		if (!isnumber(id) and id.GetID) then
@@ -40,22 +24,37 @@ do
 		local other = ix.char.loaded[id]
 
 		if (other) then
+			local client = other:GetPlayer()
+			
+			if client then
+				if client:GetNetVar("hide", 0) == id then
+					return false
+				end
+			end
+			
 			local faction = ix.faction.indices[other:GetFaction()]
 
 			if (faction and faction.isGloballyRecognized) then
-				return true
+				if client and client:IsCityAdmin() then
+					return true
+				end
+
+				return char:IsCityAdmin() or char:IsCombine() or (Schema:GetFactionGroup(char:GetFaction()) == Schema:GetFactionGroup(other:GetFaction()))
 			end
 		end
 
-		local recognized = char:GetData("rgn", "")
+		local owner = LocalPlayer()
 
-		if (recognized != "" and recognized:find(","..id..",")) then
+		if owner.recognize[id] and owner.recognize[id] != "" then
 			return true
 		end
 	end
 end
 
 if (CLIENT) then
+	ix.recognize = ix.recognize or {}
+	ix.recognize_init = ix.recognize_init or false
+
 	CHAT_RECOGNIZED = CHAT_RECOGNIZED or {}
 	CHAT_RECOGNIZED["ic"] = true
 	CHAT_RECOGNIZED["y"] = true
@@ -82,7 +81,10 @@ if (CLIENT) then
 	end
 
 	function PLUGIN:GetCharacterName(client, chatType)
-		if (client != LocalPlayer()) then
+		local owner = LocalPlayer()
+		owner.recognize = owner.recognize or {}
+
+		if (client != owner) then
 			local character = client:GetCharacter()
 			local ourCharacter = LocalPlayer():GetCharacter()
 
@@ -98,102 +100,88 @@ if (CLIENT) then
 				elseif (!chatType) then
 					return L"unknown"
 				end
+			else
+				local faction = ix.faction.indices[client:Team()]
+
+				if (faction and faction.isGloballyRecognized) then
+					if client and client:IsCityAdmin() then
+						return character:GetName()
+					end
+
+					return (owner:IsCityAdmin() or owner:IsCombine() or (Schema:GetFactionGroup(owner:Team()) == Schema:GetFactionGroup(client:Team()))) and character:GetName()
+				end
+
+				return owner.recognize[character:GetID()]
 			end
+		else
+			return owner:Name()
 		end
 	end
 
-	local function Recognize(level)
-		net.Start("ixRecognize")
-			net.WriteUInt(level, 2)
-		net.SendToServer()
+	function PLUGIN:CharacterLoaded()
+		local client = LocalPlayer()
+		local character = client:GetCharacter()
+		local id = character:GetID()
+
+		if !ix.recognize_init then
+			ix.recognize = ix.data.Get("recognition", {}, false, true)
+
+			ix.recognize_init = true
+		end
+		
+		if ix.recognize[id] then
+			client.recognize = table.Copy(ix.recognize[id])
+		else
+			client.recognize = {}
+		end
 	end
 
-	net.Receive("ixRecognizeMenu", function(length)
-		local menu = DermaMenu()
-			menu:AddOption(L"rgnLookingAt", function()
-				Recognize(0)
-			end)
-			menu:AddOption(L"rgnWhisper", function()
-				Recognize(1)
-			end)
-			menu:AddOption(L"rgnTalk", function()
-				Recognize(2)
-			end)
-			menu:AddOption(L"rgnYell", function()
-				Recognize(3)
-			end)
-		menu:Open()
-		menu:MakePopup()
-		menu:Center()
-	end)
+	net.Receive("recognize.menu", function()
+		if ix.gui.recognize then
+			return
+		end
 
-	net.Receive("ixRecognizeDone", function(length)
-		hook.Run("CharacterRecognized")
-	end)
+		local client = LocalPlayer()
+		local character = client:GetCharacter()
 
-	function PLUGIN:CharacterRecognized(client, recogCharID)
-		surface.PlaySound("buttons/button17.wav")
-	end
+		if !character then return end
+		local target = client:GetEyeTraceNoCursor().Entity
+
+		if !target:IsPlayer() or (target:GetPos():Distance(client:GetShootPos()) > 128) then return end
+
+		local targetCharacter = target:GetCharacter()
+
+		if target:GetNetVar("hide", 0) == targetCharacter:GetID() then return end
+		if target:Team() == FACTION_MPF or target:Team() == FACTION_OTA then return end
+
+		ix.gui.recognize = true
+
+		local name = hook.Run("GetCharacterName", target, "ic")
+
+		Derma_StringRequest("Запомнить персонажа", "Как вы хотите запомнить персонажа "..name.."?", "", function(text)
+			ix.gui.recognize = nil
+
+			client.recognize = client.recognize or {}
+			client.recognize[targetCharacter:GetID()] = text
+
+			local id = character:GetID()
+			ix.recognize[id] = ix.recognize[id] or {}
+			ix.recognize[id] = table.Copy(client.recognize)
+
+			ix.data.Set("recognition", ix.recognize, false, true)
+
+			surface.PlaySound("buttons/button17.wav")
+		end, function() 
+			ix.gui.recognize = nil
+		end)
+	end)
 else
-	util.AddNetworkString("ixRecognize")
-	util.AddNetworkString("ixRecognizeMenu")
-	util.AddNetworkString("ixRecognizeDone")
+	util.AddNetworkString("recognize.menu")
 
 	function PLUGIN:ShowSpare1(client)
 		if (client:GetCharacter()) then
-			net.Start("ixRecognizeMenu")
+			net.Start("recognize.menu")
 			net.Send(client)
 		end
 	end
-
-	net.Receive("ixRecognize", function(length, client)
-		local level = net.ReadUInt(2)
-
-		if (isnumber(level)) then
-			local targets = {}
-
-			if (level < 1) then
-				local entity = client:GetEyeTraceNoCursor().Entity
-
-				if (IsValid(entity) and entity:IsPlayer() and entity:GetCharacter()
-				and ix.chat.classes.ic:CanHear(client, entity)) then
-					targets[1] = entity
-				end
-			else
-				local class = "w"
-
-				if (level == 2) then
-					class = "ic"
-				elseif (level == 3) then
-					class = "y"
-				end
-
-				class = ix.chat.classes[class]
-
-				for _, v in ipairs(player.GetAll()) do
-					if (client != v and v:GetCharacter() and class:CanHear(client, v)) then
-						targets[#targets + 1] = v
-					end
-				end
-			end
-
-			if (#targets > 0) then
-				local id = client:GetCharacter():GetID()
-				local i = 0
-
-				for _, v in ipairs(targets) do
-					if (v:GetCharacter():Recognize(id)) then
-						i = i + 1
-					end
-				end
-
-				if (i > 0) then
-					net.Start("ixRecognizeDone")
-					net.Send(client)
-
-					hook.Run("CharacterRecognized", client, id)
-				end
-			end
-		end
-	end)
 end

@@ -236,8 +236,10 @@ local function BuildSelectQuery(queryObj)
 	return table.concat(queryString)
 end
 
-local function BuildInsertQuery(queryObj, bIgnore)
+local function BuildInsertQuery(queryObj, bIgnore, bReplace)
 	local suffix = (bIgnore and (mysql.module == "sqlite" and "INSERT OR IGNORE INTO" or "INSERT IGNORE INTO") or "INSERT INTO")
+	suffix = bReplace and (mysql.module == "sqlite" and "INSERT OR REPLACE INTO" or "INSERT INTO") or suffix
+
 	local queryString = {suffix}
 	local keyList = {}
 	local valueList = {}
@@ -261,6 +263,10 @@ local function BuildInsertQuery(queryObj, bIgnore)
 	queryString[#queryString + 1] = " ("..table.concat(keyList, ", ")..")"
 	queryString[#queryString + 1] = " VALUES ("..table.concat(valueList, ", ")..")"
 
+	if bReplace and mysql.module != "sqlite" then
+		queryString[#queryString + 1] = " ON DUPLICATE KEY UPDATE"
+	end
+	
 	return table.concat(queryString)
 end
 
@@ -418,6 +424,8 @@ function QUERY_CLASS:Execute(bQueueQuery)
 		queryString = BuildInsertQuery(self)
 	elseif (queryType == "insert ignore") then
 		queryString = BuildInsertQuery(self, true)
+	elseif (queryType == "insert replace") then
+		queryString = BuildInsertQuery(self, nil, true)
 	elseif (queryType == "update") then
 		queryString = BuildUpdateQuery(self)
 	elseif (queryType == "delete") then
@@ -451,6 +459,10 @@ end
 
 function mysql:Insert(tableName)
 	return QUERY_CLASS:New(tableName, "INSERT")
+end
+
+function mysql:InsertReplace(tableName)
+	return QUERY_CLASS:New(tableName, "INSERT REPLACE")
 end
 
 function mysql:InsertIgnore(tableName)

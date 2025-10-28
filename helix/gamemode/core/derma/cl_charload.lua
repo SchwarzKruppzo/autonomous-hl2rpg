@@ -279,7 +279,10 @@ function PANEL:Init()
 	back:SetText("return")
 	back:SizeToContents()
 	back.DoClick = function()
-		self:SlideDown()
+		if BRANCH != "x86-64" then
+			self:SlideDown()
+		end
+
 		parent.mainPanel:Undim()
 	end
 
@@ -301,12 +304,20 @@ function PANEL:Init()
 	continueButton:SetContentAlignment(6)
 	continueButton:SizeToContents()
 	continueButton.DoClick = function()
-		self:SetMouseInputEnabled(false)
-		self:Slide("down", self.animationTime, function()
+		if BRANCH == "x86-64" then
+			parent.mainPanel:Undim()
+
 			net.Start("ixCharacterChoose")
 				net.WriteUInt(self.character:GetID(), 32)
 			net.SendToServer()
-		end, true)
+		else
+			self:SetMouseInputEnabled(false)
+			self:Slide("down", self.animationTime, function()
+				net.Start("ixCharacterChoose")
+					net.WriteUInt(self.character:GetID(), 32)
+				net.SendToServer()
+			end, true)
+		end
 	end
 
 	local deleteButton = infoButtons:Add("ixMenuButton")
@@ -315,9 +326,10 @@ function PANEL:Init()
 	deleteButton:SetContentAlignment(5)
 	deleteButton:SetTextInset(0, 0)
 	deleteButton:SizeToContents()
+	deleteButton:SetVisible(false)
 	deleteButton:SetTextColor(derma.GetColor("Error", deleteButton))
 	deleteButton.DoClick = function()
-		self:SetActiveSubpanel("delete")
+		//self:SetActiveSubpanel("delete")
 	end
 
 	self.carousel = infoPanel:Add("ixCharMenuCarousel")
@@ -359,10 +371,10 @@ function PANEL:Init()
 		parent:ShowNotice(1, L("deleteComplete", self.character:GetName()))
 		self:Populate(id)
 		self:SetActiveSubpanel("main")
-
+/*
 		net.Start("ixCharacterDelete")
 			net.WriteUInt(id, 32)
-		net.SendToServer()
+		net.SendToServer()*/
 	end
 
 	self.deleteModel = deleteInfo:Add("ixModelPanel")
@@ -395,7 +407,11 @@ end
 
 function PANEL:OnCharacterDeleted(character)
 	if (self.bActive and #ix.characters == 0) then
-		self:SlideDown()
+		if BRANCH == "x86-64" then
+			self:GetParent().mainPanel:Undim()
+		else
+			self:SlideDown()
+		end
 	end
 end
 

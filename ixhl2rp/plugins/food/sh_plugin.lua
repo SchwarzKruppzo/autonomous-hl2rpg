@@ -39,6 +39,15 @@ ix.char.RegisterVar("thirst", {
 	fieldType = ix.type.number,
 	default = 100,
 	isLocal = true,
+	Net = {
+		Transmit = ix.transmit.owner,
+		Write = function(character, value)
+			net.WriteFloat(value)
+		end,
+		Read = function(character)
+			return net.ReadFloat()
+		end
+	},
 	bNoDisplay = true
 })
 
@@ -47,10 +56,18 @@ ix.char.RegisterVar("hunger", {
 	fieldType = ix.type.number,
 	default = 100,
 	isLocal = true,
+	Net = {
+		Transmit = ix.transmit.owner,
+		Write = function(character, value)
+			net.WriteFloat(value)
+		end,
+		Read = function(character)
+			return net.ReadFloat()
+		end
+	},
 	bNoDisplay = true
 })
 
 ix.util.Include("sh_commands.lua")
 ix.util.Include("sh_config.lua")
-ix.util.Include("cl_hooks.lua")
 ix.util.Include("sv_hooks.lua")

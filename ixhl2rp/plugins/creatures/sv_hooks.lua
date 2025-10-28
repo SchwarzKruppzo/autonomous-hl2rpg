@@ -1,3 +1,27 @@
+
+local headcrabClasses = {
+	[CLASS_REGULARHEADCRAB] = true,
+	[CLASS_FASTHEADCRAB] = true,
+	[CLASS_POISONHEADCRAB] = true
+}
+
+local zombieClasses = {
+	[CLASS_REGULARZOMBIE] = true,
+	[CLASS_FASTZOMBIE] = true,
+	[CLASS_ZOMBINE] = true
+}
+
+function PLUGIN:OnEntityWaterLevelChanged(entity, _, level)
+	if (entity:IsPlayer() and entity:Alive()) then
+		local character = entity:GetCharacter()
+		local class = character and character:GetClass()
+
+		if ((headcrabClasses[class] and level > 0) or (zombieClasses[class] and level > 1)) then
+			entity:Kill()
+		end
+	end
+end
+
 function PLUGIN:PlayerJoinedClass(client, class)
 	local classTable = ix.class.list[class]
 	
@@ -106,7 +130,7 @@ function PLUGIN:DoAnimationEvent(client, event, data)
 end
 
 function PLUGIN:PlayerTick(client)
-	if client:IsBot() then
+	if !client.infoTable or client:IsBot() or !client:Alive() then
 		return
 	end
 
@@ -121,14 +145,6 @@ function PLUGIN:PlayerTick(client)
 			if info.glideThink then
 				info.glideThink(client, info)
 			end
-		end
-	end
-end
-
-function PLUGIN:ModifyCharacterRunSpeed(client)
-	if client.infoTable then
-		if (client.infoTable.moveData or {}).run then
-			return (client.infoTable.moveData or {}).run
 		end
 	end
 end

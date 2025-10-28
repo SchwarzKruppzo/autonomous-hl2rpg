@@ -7,7 +7,7 @@ PLUGIN.description = ""
 ix.util.Include("cl_hooks.lua")
 ix.util.Include("sv_hooks.lua")
 
-ix.inventory.Register("vault", 3, 5, true)
+ix.Net:AddPlayerVar("donator", false, nil, ix.Net.Type.Bool)
 
 do
 	local PLAYER = FindMetaTable("Player")
@@ -28,24 +28,20 @@ do
 			return
 		end
 
-		local index = client:GetData("vault")
+		local vault = client.vault
 
-		if !index or index == 0 then
+		if !vault then
 			return
 		end
 
-		ix.inventory.Restore(index, 3, 5, function(inventory)
-			inventory.vars.isBag = true
-
-			ix.storage.Open(client, inventory, {
-				name = "Хранилище",
-				entity = client,
-				searchText = "Открываю...",
-				OnPlayerClose = function()
-					ix.item.inventories[index] = nil
-				end
-			})
-		end)
+		ix.storage.Open(client, vault, {
+			name = "Хранилище",
+			entity = client,
+			searchText = "Открываю...",
+			OnPlayerClose = function(client)
+				PLUGIN:SaveVault(client)
+			end
+		})
 	end
 
 	ix.command.Add("vault", COMMAND)

@@ -129,6 +129,10 @@ if (CLIENT) then
 			return
 		end
 
+		if ix.gui.preventSelection then
+			return
+		end
+
 		local currentWeapon = client:GetActiveWeapon()
 		local bValid = IsValid(currentWeapon)
 		local bTool

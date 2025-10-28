@@ -18,6 +18,7 @@ local CHAR = ix.meta.character or {}
 CHAR.__index = CHAR
 CHAR.id = CHAR.id or 0
 CHAR.vars = CHAR.vars or {}
+CHAR.meta_vars = CHAR.meta_vars or {}
 
 -- @todo not this
 if (!ix.db) then
@@ -73,7 +74,7 @@ if (SERVER) then
 				-- update all character vars
 				for k, v in pairs(ix.char.vars) do
 					if (v.field and self.vars[k] != nil and !v.bSaveLoadInitialOnly) then
-						local value = self.vars[k]
+						local value = v.Meta and self.meta_vars[k]:ToSaveable() or self.vars[k]
 
 						query:Update(v.field, istable(value) and util.TableToJSON(value) or tostring(value))
 					end
@@ -108,9 +109,12 @@ if (SERVER) then
 			local data = {}
 
 			for k, v in pairs(self.vars) do
-				if (ix.char.vars[k] != nil and !ix.char.vars[k].bNoNetworking) then
-					data[k] = v
-				end
+				local info = ix.char.vars[k]
+
+				if !info or bit.band(info.Net.Transmit, ix.transmit.none) == ix.transmit.none then continue end
+				if ix.char.meta_vars[k] then continue end
+
+				data[k] = v
 			end
 
 			net.Start("ixCharacterInfo")
@@ -118,13 +122,22 @@ if (SERVER) then
 				net.WriteUInt(self:GetID(), 32)
 				net.WriteUInt(self.player:EntIndex(), 8)
 			net.Send(self.player)
+
+			for k, meta in pairs(self.meta_vars) do
+				local info = ix.char.vars[k]
+
+				if !info[k] or bit.band(info.Net.Transmit, ix.transmit.none) == ix.transmit.none then continue end
+
+				meta:Sync(self.player, ix.transmit.owner)
+			end
 		else
 			local data = {}
 
 			for k, v in pairs(ix.char.vars) do
-				if (!v.bNoNetworking and !v.isLocal) then
-					data[k] = self.vars[k]
-				end
+				if bit.band(v.Net.Transmit, ix.transmit.all) != ix.transmit.all then continue end
+				if v.Meta then continue end
+
+				data[k] = self.vars[k]
 			end
 
 			net.Start("ixCharacterInfo")
@@ -132,6 +145,12 @@ if (SERVER) then
 				net.WriteUInt(self:GetID(), 32)
 				net.WriteUInt(self.player:EntIndex(), 8)
 			net.Send(receiver)
+
+			for k, v in pairs(ix.char.meta_vars) do
+				if bit.band(v.Net.Transmit, ix.transmit.all) != ix.transmit.all then continue end
+
+				self.meta_vars[k]:Sync(receiver, ix.transmit.all)
+			end
 		end
 	end
 
@@ -167,13 +186,6 @@ if (SERVER) then
 					end)
 				else
 					self:Sync()
-				end
-
-				for _, v in ipairs(self:GetInventory(true)) do
-					if (istable(v)) then
-						v:AddReceiver(client)
-						v:Sync(client)
-					end
 				end
 			end
 
@@ -260,77 +272,169 @@ function CHAR:GetPlayer()
 	end
 end
 
+do
+	local self = ix.char
+
+	if SERVER then
+		function net.WriteCharVar(character, key, value)
+			value = value or character.vars[key]
+
+			local data = self.vars[key]
+
+			net.WriteUInt(data.index, self.var_max_bits)
+
+			if isfunction(data.Net.Write) then 
+				data.Net.Write(character, value)
+			else
+				net.WriteType(value)
+			end
+		end
+	end
+
+	function net.ReadCharVar(character)
+		local index = net.ReadUInt(self.var_max_bits)
+		local key = self.vars_id[index]
+		local data = self.vars[key]
+		local value
+
+		if data then
+			if isfunction(data.Net.Read) then 
+				value = data.Net.Read(character)
+			else
+				value = net.ReadType()
+			end
+
+			return key, value
+		end
+	end
+end
+
+-- metas instanced in OnInstanced
+function ix.char.NewMetaVar(name, key, data)
+	ix.char.meta_vars[key] = data
+
+	if SERVER then
+		if data.field then
+			ix.db.AddToSchema("ix_characters", data.field, data.fieldType or ix.type.string)
+		end
+	end
+
+	ix.char.vars[key].Net.Write = function(character, value)
+		character.meta_vars[key]:NetWrite(value)
+	end
+
+	ix.char.vars[key].Net.Read = function(character)
+		return character.meta_vars[key]:NetRead()
+	end
+
+	CHAR[name] = function(character, default)
+		return character.meta_vars[key]
+	end
+end
+
 -- Sets up a new character variable.
 function ix.char.RegisterVar(key, data)
 	-- Store information for the variable.
 	ix.char.vars[key] = data
-	data.index = data.index or table.Count(ix.char.vars)
+	ix.char.var_max = table.Count(ix.char.vars)
+	ix.char.var_max_bits = net.ChooseOptimalBits(ix.char.var_max)
+
+	data.index = data.index or ix.char.var_max
+	data.Net = data.Net or {
+		Transmit = ix.transmit.none
+	}
+
+	ix.char.vars_id[data.index] = key
 
 	local upperName = key:sub(1, 1):upper() .. key:sub(2)
+
+	if data.Meta then
+		ix.char.NewMetaVar(upperName, key, data)
+
+		return
+	end
 
 	if (SERVER) then
 		if (data.field) then
 			ix.db.AddToSchema("ix_characters", data.field, data.fieldType or ix.type.string)
 		end
 
-		-- Provide functions to change the variable if allowed.
-		if (!data.bNotModifiable) then
-			-- Overwrite the set function if desired.
-			if (data.OnSet) then
-				CHAR["Set"..upperName] = data.OnSet
-			-- Have the set function only set on the server if no networking.
-			elseif (data.bNoNetworking) then
-				CHAR["Set"..upperName] = function(self, value)
-					self.vars[key] = value
-				end
-			-- If the variable is a local one, only send the variable to the local player.
-			elseif (data.isLocal) then
-				CHAR["Set"..upperName] = function(self, value)
-					local oldVar = self.vars[key]
-					self.vars[key] = value
+		if !data.ReadOnly then
+			local funcName = "Set"..upperName
+			local transmit = data.Net.Transmit
 
-					net.Start("ixCharacterVarChanged")
-						net.WriteUInt(self:GetID(), 32)
-						net.WriteString(key)
-						net.WriteType(value)
-					net.Send(self.player)
+			if istable(transmit) then
+				local var = transmit[1]
 
-					hook.Run("CharacterVarChanged", self, key, oldVar, value)
+				for k, v in ipairs(transmit) do
+					var = bit.bor(var, v)
 				end
-			-- Otherwise network the variable to everyone.
+
+				transmit = var
+				data.Net.Transmit = var
+			end
+
+			if bit.band(transmit, ix.transmit.none) != ix.transmit.none then
+				if bit.band(transmit, ix.transmit.all) == ix.transmit.all then
+					data.Sync = function(self, receiver)
+						net.Start("CharacterVarChanged")
+							net.WriteUInt(self:GetID(), 32)
+							net.WriteCharVar(self, key)
+						if receiver then
+							net.Send(receiver)
+						else
+							net.Broadcast()
+						end
+					end
+				elseif bit.band(transmit, ix.transmit.owner) == ix.transmit.owner then
+					data.Sync = function(self, receiver)
+						net.Start("CharacterVarChanged")
+							net.WriteUInt(self:GetID(), 32)
+							net.WriteCharVar(self, key)
+						if receiver then
+							net.Send(receiver)
+						else
+							net.Send(self.player)
+						end
+					end
+				end
+			end
+
+			if data.OnSet then
+				CHAR[funcName] = data.OnSet
 			else
-				CHAR["Set"..upperName] = function(self, value)
-					local oldVar = self.vars[key]
-					self.vars[key] = value
+				if transmit != ix.transmit.none then
+					CHAR[funcName] = function(self, value)
+						local oldVar = self.vars[key]
+						self.vars[key] = value
 
-					net.Start("ixCharacterVarChanged")
-						net.WriteUInt(self:GetID(), 32)
-						net.WriteString(key)
-						net.WriteType(value)
-					net.Broadcast()
+						data.Sync(self)
 
-					hook.Run("CharacterVarChanged", self, key, oldVar, value)
+						hook.Run("CharacterVarChanged", self, key, oldVar, value)
+					end
+				else
+					CHAR[funcName] = function(self, value)
+						self.vars[key] = value
+					end
 				end
 			end
 		end
 	end
 
-	-- The get functions are shared.
-	-- Overwrite the get function if desired.
-	if (data.OnGet) then
-		CHAR["Get"..upperName] = data.OnGet
-	-- Otherwise return the character variable or default if it does not exist.
-	else
-		CHAR["Get"..upperName] = function(self, default)
-			local value = self.vars[key]
+	local funcName = "Get"..upperName
 
-			if (value != nil) then
+	if data.OnGet then
+		CHAR[funcName] = data.OnGet
+	else
+		CHAR[funcName] = function(character, default)
+			local value = character.vars[key]
+
+			if value != nil then
 				return value
 			end
 
-			if (default == nil) then
-				return ix.char.vars[key] and (istable(ix.char.vars[key].default) and table.Copy(ix.char.vars[key].default)
-					or ix.char.vars[key].default)
+			if default == nil then
+				return ix.char.vars[key] and (istable(ix.char.vars[key].default) and table.Copy(ix.char.vars[key].default) or ix.char.vars[key].default)
 			end
 
 			return default
@@ -339,15 +443,15 @@ function ix.char.RegisterVar(key, data)
 
 	local alias = data.alias
 
-	if (alias) then
-		if (istable(alias)) then
+	if alias then
+		if istable(alias) then
 			for _, v in ipairs(alias) do
 				local aliasName = v:sub(1, 1):upper()..v:sub(2)
 
 				CHAR["Get"..aliasName] = CHAR["Get"..upperName]
 				CHAR["Set"..aliasName] = CHAR["Set"..upperName]
 			end
-		elseif (isstring(alias)) then
+		elseif isstring(alias) then
 			local aliasName = alias:sub(1, 1):upper()..alias:sub(2)
 
 			CHAR["Get"..aliasName] = CHAR["Get"..upperName]
@@ -355,7 +459,6 @@ function ix.char.RegisterVar(key, data)
 		end
 	end
 
-	-- Add the variable default to the character object.
 	CHAR.vars[key] = data.default
 end
 

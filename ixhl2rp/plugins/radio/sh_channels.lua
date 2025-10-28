@@ -58,6 +58,19 @@ do
 	CHANNEL.icon = ix.util.GetMaterial("cellar/chat/radio_union.png")
 	CHANNEL:Register()
 
+
+	-- cwu main
+	CHANNEL = ix.radio:New()
+	CHANNEL.name = "cwu"
+	CHANNEL.uniqueID = "cwu_main"
+	CHANNEL.subChannels = 1
+	CHANNEL.global = false
+	CHANNEL.defaultPriority = 8
+	CHANNEL.stationaryCanAccess = false
+	CHANNEL.color = Color(50, 180, 215, 255)
+	CHANNEL.icon = ix.util.GetMaterial("cellar/chat/radio_union.png")
+	CHANNEL:Register()
+
 	-- intercom um
 	CHANNEL = ix.radio:New()
 	CHANNEL.name = "medical intercom"

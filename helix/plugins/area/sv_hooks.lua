@@ -87,6 +87,10 @@ net.Receive("ixAreaAdd", function(length, client)
 	local startPosition, endPosition = net.ReadVector(), net.ReadVector()
 	local properties = net.ReadTable()
 
+	if hook.Run("AreaEditAdd", id, type, startPosition, endPosition, properties) == true then
+		return
+	end
+
 	if (!ix.area.types[type]) then
 		client:NotifyLocalized("areaInvalidType")
 		return

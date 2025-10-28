@@ -18,29 +18,32 @@ net.Receive("ixTerminalRetrieveInfo", function(len, player)
 	if !IsValid(terminal) then 
 		return
 	end
+	
+	local item = player:GetIDCard()
 
-	local dID, datafile, genericdata = ix.plugin.list["datafile"]:ReturnDatafileByID(player.ixDatafile)
+	if item then
+		local dID, datafile, genericdata = Schema:GetDatafile(item:GetData("cid") or "", item:GetData("number") or "")
 
-	if genericdata and datafile then
-		local notes, civics, meds = 0, 0, 0
+		if genericdata and datafile then
+			local notes, civics, meds = 0, 0, 0
 
-		for k, v in pairs(datafile) do
-			if v.category == "union" then
-				notes = notes + 1
-			elseif v.category == "civil" then
-				civics = civics + 1
-			elseif v.category == "med" then
-				meds = meds + 1
+			for k, v in pairs(datafile) do
+				if v.category == "union" then
+					notes = notes + 1
+				elseif v.category == "civil" then
+					civics = civics + 1
+				elseif v.category == "med" then
+					meds = meds + 1
+				end
 			end
-		end
 
-		net.Start("ixTerminalResponse")
-			net.WriteUInt(notes, 10)
-			net.WriteUInt(civics, 10)
-			net.WriteUInt(meds, 10)
-			net.WriteString(genericdata.aparts or "N/A")
-			net.WriteString(genericdata.status or "N/A")
-		net.Send(player)
+			net.Start("ixTerminalResponse")
+				net.WriteString(item:GetData("name") or "N/A")
+				net.WriteString(genericdata.aparts or "N/A")
+				net.WriteString(genericdata.status or "N/A")
+				net.WriteInt(genericdata.points or 0, 16)
+			net.Send(player)
+		end
 	end
 end)
 
@@ -61,12 +64,12 @@ net.Receive("ixTerminalRequest", function(len, player)
 	
 	if CurTime() < (player.nextTerminalRequest or 0) then return; end
 
-	local b = player:GetCharacter():GetIDCard()
+	local b = player:GetIDCard()
 	Schema:AddCombineDisplayMessage(Format("NOTICE: %s (#%s) is requesting officer at information terminal.", player:Name(), b:GetData("cid", 0)), Color(255, 180, 0));
 
 	local waypoint = {
 		pos = terminal:GetPos() + terminal:GetUp() * 20 + terminal:GetForward() * 10,
-		text = string.format("Вызов [%s #%s]", player:Name(), b:GetData("cid", 0)),
+		text = string.format("Вызов [%s #%s]", b:GetData("name", "UNKNOWN"), b:GetData("cid", 0)),
 		color = Color(255, 180, 0),
 		addedBy = player,
 		time = CurTime() + 300

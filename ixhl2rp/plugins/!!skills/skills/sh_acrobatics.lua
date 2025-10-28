@@ -12,5 +12,6 @@ ix.action:Register("jump", "acrobatics", {
 })
 
 function SKILL:OnLevelUp(client, character)
-	client:SetJumpPower(160 * (1 + math.min(math.Remap(character:GetSkillModified("acrobatics"), 0, 10, 0, 0.75), 0.75)))
+	client.recalculateSpeed = true
+	//client:SetJumpPower(160 * (1 + math.min(math.Remap(character:GetSkillModified("acrobatics"), 0, 10, 0, 0.75), 0.75)))
 end

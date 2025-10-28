@@ -43,12 +43,14 @@ function Schema:GetPlayerEntityMenu(client, options)
 		options["Untie"] = true
 		options["Search"] = true
 	elseif (!callingPlayer:IsRestricted() and !client:IsRestricted() and !client:GetNetVar("tying") and
-		callingPlayer:GetCharacter():GetInventory():HasItem("zip_tie")) then
+		callingPlayer:HasItem("ziptie")) then
 			options["Ziptie"] = true
 	end
 end
 
 function Schema:CharacterLoaded(character)
+	RunConsoleCommand('r_eyemove', 0)
+
 	if (character:IsCombine()) then
 		vgui.Create("ixCombineDisplay")
 
@@ -88,7 +90,7 @@ local colorModify = {
 	["$pp_colour_addb"] = 0,
 	["$pp_colour_brightness"] = -0.015,
 	["$pp_colour_contrast"] = 1.2,
-	["$pp_colour_colour"] = 0.5,
+	["$pp_colour_colour"] = 1,
 	["$pp_colour_mulr"] = 0,
 	["$pp_colour_mulg"] = 0,
 	["$pp_colour_mulb"] = 0
@@ -97,7 +99,7 @@ local colorModify = {
 local combineOverlay = ix.util.GetMaterial("effects/combine_binocoverlay")
 
 function Schema:RenderScreenspaceEffects()
-	DrawColorModify(colorModify)
+	//DrawColorModify(colorModify)
 
 	if (LocalPlayer():IsCombine()) then
 		render.UpdateScreenEffectTexture()
@@ -122,17 +124,7 @@ end
 function Schema:CanDrawAmmoHUD(weapon) end
 
 function Schema:IsPlayerRecognized(target)
-	if !IsValid(target) then
-		return
-	end
 
-	if target:IsCityAdmin() or target:IsCombine() then
-		return true
-	end
-
-	--if target:GetNetVar("IsConcealed", false) then
-	--	return false
-	--end
 end
 
 function Schema:IsRecognizedChatType(chatType)
@@ -142,17 +134,7 @@ function Schema:IsRecognizedChatType(chatType)
 end
 
 function Schema:BuildBusinessMenu(panel)
-	local bHasItems = false
-
-	for k, _ in pairs(ix.item.list) do
-		if (hook.Run("CanPlayerUseBusiness", LocalPlayer(), k) != false) then
-			bHasItems = true
-
-			break
-		end
-	end
-
-	return bHasItems
+	return false
 end
 
 netstream.Hook("CombineDisplayMessage", function(text, color, arguments)

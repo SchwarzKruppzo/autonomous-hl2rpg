@@ -14,120 +14,116 @@ function ENT:SetupDataTables()
 	self:NetworkVar("String", 0, "ItemID")
 end
 
-if (SERVER) then
+function ENT:GetItem()
+	return ix.Item.instances[self.ixItemID] or ix.Item.instances[self:GetItemID()]// ix.Item:Get(self:GetItemID())
+end
+
+if SERVER then
 	local invalidBoundsMin = Vector(-8, -8, -8)
 	local invalidBoundsMax = Vector(8, 8, 8)
 
-	util.AddNetworkString("ixItemEntityAction")
-
 	function ENT:Initialize()
-		self:SetModel("models/props_junk/watermelon01.mdl")
 		self:SetSolid(SOLID_VPHYSICS)
 		self:PhysicsInit(SOLID_VPHYSICS)
 		self:SetUseType(SIMPLE_USE)
-		self.health = 50
+		self:SetHealth(50)
 
 		local physObj = self:GetPhysicsObject()
 
-		if (IsValid(physObj)) then
+		if IsValid(physObj) then
 			physObj:EnableMotion(true)
 			physObj:Wake()
 		end
 	end
 
 	function ENT:Use(activator, caller)
-		local itemTable = self:GetItemTable()
+		local item = self:GetItem()
 
-		if (IsValid(caller) and caller:IsPlayer() and caller:GetCharacter() and itemTable) then
-			itemTable.player = caller
-			itemTable.entity = self
+		if item then
+			if IsValid(caller) and caller:IsPlayer() and caller:GetCharacter() and item then
+				item.player = caller
 
-			if (itemTable.functions.take.OnCanRun(itemTable)) then
-				caller:PerformInteraction(ix.config.Get("itemPickupTime", 0.5), self, function(client)
-					if (!ix.item.PerformInventoryAction(client, "take", self)) then
-						return false -- do not mark dirty if interaction fails
-					end
-				end)
-			end
+				if item.functions.take.OnCanRun(item) then
+					caller:PerformInteraction(ix.config.Get("itemPickupTime", 0.5), self, function(client)
+						if !ix.Item:PerformItemEntityAction(client, item, self, "take") then
+							return false
+						end
+					end)
+				end
 
-			itemTable.player = nil
-			itemTable.entity = nil
-		end
-	end
-
-	function ENT:SetItem(itemID)
-		local itemTable = ix.item.instances[itemID]
-
-		if (itemTable) then
-			local material = itemTable:GetMaterial(self)
-
-			self:SetSkin(itemTable:GetSkin())
-			self:SetModel(itemTable:GetModel())
-
-			if (material) then
-				self:SetMaterial(material)
-			end
-
-			self:PhysicsInit(SOLID_VPHYSICS)
-			self:SetSolid(SOLID_VPHYSICS)
-			self:SetItemID(itemTable.uniqueID)
-			self.ixItemID = itemID
-
-			if (!table.IsEmpty(itemTable.data)) then
-				self:SetNetVar("data", itemTable.data)
-			end
-
-			local physObj = self:GetPhysicsObject()
-
-			if (!IsValid(physObj)) then
-				self:PhysicsInitBox(invalidBoundsMin, invalidBoundsMax)
-				self:SetCollisionBounds(invalidBoundsMin, invalidBoundsMax)
-			end
-
-			if (IsValid(physObj)) then
-				physObj:EnableMotion(true)
-				physObj:Wake()
-			end
-
-			if (itemTable.OnEntityCreated) then
-				itemTable:OnEntityCreated(self)
+				item.player = nil
 			end
 		end
 	end
 
-	function ENT:OnDuplicated(entTable)
-		local itemID = entTable.ixItemID
-		local itemTable = ix.item.instances[itemID]
+	function ENT:Delete()
+		local item = self:GetItem()
 
-		ix.item.Instance(0, itemTable.uniqueID, itemTable.data, 1, 1, function(item)
-			self:SetItem(item:GetID())
-		end)
+		if item then
+			item:SetEntity(nil)
+		end
+
+		self.ixIsSafe = true
+		self:Remove()
 	end
 
 	function ENT:OnTakeDamage(damageInfo)
-		local itemTable = ix.item.instances[self.ixItemID]
+		local item = self:GetItem()
 
-		if (itemTable.OnEntityTakeDamage
-		and itemTable:OnEntityTakeDamage(self, damageInfo) == false) then
+		if item.OnEntityTakeDamage and item:OnEntityTakeDamage(self, damageInfo) == false then
 			return
 		end
 
 		local damage = damageInfo:GetDamage()
 		self:SetHealth(self:Health() - damage)
 
-		if (self:Health() <= 0 and !self.ixIsDestroying) then
+		if self:Health() <= 0 and !self.ixIsDestroying then
 			self.ixIsDestroying = true
 			self.ixDamageInfo = {damageInfo:GetAttacker(), damage, damageInfo:GetInflictor()}
 			self:Remove()
 		end
 	end
 
-	function ENT:OnRemove()
-		if (!ix.shuttingDown and !self.ixIsSafe and self.ixItemID) then
-			local itemTable = ix.item.instances[self.ixItemID]
+	function ENT:SetItem(itemID)
+		local itemTable = ix.Item.instances[itemID]
 
-			if (itemTable) then
-				if (self.ixIsDestroying) then
+		if itemTable then
+			local material = itemTable:GetMaterial(self)
+
+			self:SetSkin(itemTable:GetSkin())
+			self:SetModel(itemTable:GetModel())
+
+			if material then
+				self:SetMaterial(material)
+			end
+
+			self:PhysicsInit(SOLID_VPHYSICS)
+			self:SetSolid(SOLID_VPHYSICS)
+			self:SetItemID(itemID)
+			self.ixItemID = itemID
+
+			local physObj = self:GetPhysicsObject()
+
+			if !IsValid(physObj) then
+				self:PhysicsInitBox(invalidBoundsMin, invalidBoundsMax)
+				self:SetCollisionBounds(invalidBoundsMin, invalidBoundsMax)
+			elseif IsValid(physObj) then
+				physObj:EnableMotion(true)
+				physObj:Wake()
+			end
+
+			if itemTable.OnEntityCreated then
+				itemTable:OnEntityCreated(self)
+			end
+		end
+	end
+
+	function ENT:OnRemove()
+		if !ix.shuttingDown and !self.ixIsSafe and self.ixItemID then
+			local item = self:GetItem()
+
+			if item then
+				if self.ixIsDestroying then
 					self:EmitSound("physics/cardboard/cardboard_box_break"..math.random(1, 3)..".wav")
 					local position = self:LocalToWorld(self:OBBCenter())
 
@@ -137,33 +133,27 @@ if (SERVER) then
 						effect:SetScale(3)
 					util.Effect("GlassImpact", effect)
 
-					if (itemTable.OnDestroyed) then
-						itemTable:OnDestroyed(self)
+					if item.OnDestroyed then
+						item:OnDestroyed(self)
 					end
 
-					ix.log.Add(self.ixDamageInfo[1], "itemDestroy", itemTable:GetName(), itemTable:GetID())
+					ix.log.Add(self.ixDamageInfo[1], "itemDestroy", item:GetName(), item:GetID())
 				end
-
-				if (itemTable.OnRemoved) then
-					itemTable:OnRemoved()
-				end
-
-				local query = mysql:Delete("ix_items")
-					query:Where("item_id", self.ixItemID)
-				query:Execute()
+				
+				item:Remove()
 			end
 		end
 	end
 
 	function ENT:Think()
-		local itemTable = self:GetItemTable()
+		local item = self:GetItem()
 
-		if (!itemTable) then
+		if !item then
 			self:Remove()
 		end
 
-		if (itemTable.Think) then
-			itemTable:Think(self)
+		if item.Think then
+			item:Think(self)
 		end
 
 		return true
@@ -173,8 +163,11 @@ if (SERVER) then
 		return TRANSMIT_PVS
 	end
 
-	net.Receive("ixItemEntityAction", function(length, client)
-		ix.item.PerformInventoryAction(client, net.ReadString(), net.ReadEntity())
+	net.Receive('item.entity.action', function(len, client)
+		local entity = net.ReadEntity()
+		local item = entity:GetItem()
+
+		ix.Item:PerformItemEntityAction(client, item, entity, net.ReadUInt(item.functions_bits))
 	end)
 else
 	ENT.PopulateEntityInfo = true
@@ -184,16 +177,11 @@ else
 	local blockSpacing = 2
 
 	function ENT:OnPopulateEntityInfo(tooltip)
-		local item = self:GetItemTable()
+		local item = self:GetItem()
 
-		if (!item) then
+		if !item then
 			return
 		end
-
-		local oldData = item.data
-
-		item.data = self:GetNetVar("data", {})
-		item.entity = self
 
 		ix.hud.PopulateItemTooltip(tooltip, item)
 
@@ -203,14 +191,12 @@ else
 		-- set the arrow to be the same colour as the title/name row
 		tooltip:SetArrowColor(color)
 
-		if ((item.width > 1 or item.height > 1) and
-			hook.Run("ShouldDrawItemSize", item) != false) then
-
+		if (item.width > 1 or item.height > 1) and hook.Run("ShouldDrawItemSize", item) != false then
 			local sizeHeight = item.height * blockSize + item.height * blockSpacing
 			local size = tooltip:Add("Panel")
 			size:SetWide(tooltip:GetWide())
 
-			if (tooltip:IsMinimal()) then
+			if tooltip:IsMinimal() then
 				size:SetTall(sizeHeight)
 				size:Dock(TOP)
 				size:SetZPos(-999)
@@ -220,7 +206,7 @@ else
 			end
 
 			size.Paint = function(sizePanel, width, height)
-				if (!tooltip:IsMinimal()) then
+				if !tooltip:IsMinimal() then
 					surface.SetDrawColor(ColorAlpha(shadeColor, 60))
 					surface.DrawRect(0, 0, width, height)
 				end
@@ -248,15 +234,12 @@ else
 
 			tooltip:SizeToContents()
 		end
-
-		item.entity = nil
-		item.data = oldData
 	end
 
 	function ENT:DrawTranslucent()
-		local itemTable = self:GetItemTable()
+		local itemTable = self:GetItem()
 
-		if (itemTable and itemTable.DrawEntity) then
+		if itemTable and itemTable.DrawEntity then
 			itemTable:DrawEntity(self)
 		end
 	end
@@ -267,22 +250,17 @@ else
 end
 
 function ENT:GetEntityMenu(client)
-	local itemTable = self:GetItemTable()
+	local item = self:GetItem()
 	local options = {}
 
-	if (!itemTable) then
+	if !item then
 		return false
 	end
 
-	itemTable.player = client
-	itemTable.entity = self
+	item.player = client
 
-	for k, v in SortedPairs(itemTable.functions) do
-		if (k == "take" or k == "combine") then
-			continue
-		end
-
-		if (v.OnCanRun and v.OnCanRun(itemTable) == false) then
+	for k, v in SortedPairs(item.functions) do
+		if v.OnCanRun and v.OnCanRun(item) == false then
 			continue
 		end
 
@@ -290,18 +268,18 @@ function ENT:GetEntityMenu(client)
 		options[L(v.name or k)] = function()
 			local send = true
 
-			if (v.OnClick) then
-				send = v.OnClick(itemTable)
+			if v.OnClick then
+				send = v.OnClick(item)
 			end
 
-			if (v.sound) then
+			if v.sound then
 				surface.PlaySound(v.sound)
 			end
 
-			if (send != false) then
-				net.Start("ixItemEntityAction")
-					net.WriteString(k)
+			if send != false then
+				net.Start('item.entity.action')
 					net.WriteEntity(self)
+					net.WriteUInt(v.index, item.functions_bits)
 				net.SendToServer()
 			end
 
@@ -310,18 +288,13 @@ function ENT:GetEntityMenu(client)
 		end
 	end
 
-	itemTable.player = nil
-	itemTable.entity = nil
+	item.player = nil
 
 	return options
 end
 
-function ENT:GetItemTable()
-	return ix.item.list[self:GetItemID()]
-end
-
 function ENT:GetData(key, default)
-	local data = self:GetNetVar("data", {})
+	local item = self:GetItem()
 
-	return data[key] or default
+	return item:GetData(key, default)
 end

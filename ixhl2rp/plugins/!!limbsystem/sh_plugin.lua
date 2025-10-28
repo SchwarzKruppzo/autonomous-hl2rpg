@@ -15,6 +15,9 @@ ix.char.RegisterVar("limbData", {
 	fieldType = ix.type.text,
 	default = {},
 	isLocal = true,
+	Net = {
+		Transmit = ix.transmit.owner
+	},
 	bNoDisplay = true
 })
 

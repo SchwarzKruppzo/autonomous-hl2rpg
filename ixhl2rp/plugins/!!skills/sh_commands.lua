@@ -9,6 +9,15 @@ ix.command.Add("CharSetSkill", {
 	},
 	OnRun = function(self, client, target, skillName, targetValue)
 		for k, v in pairs(ix.skills.list) do
+			if k == skillName or L(v.name, client) == skillName then
+				local value = math.Clamp(targetValue, 0, v:GetMaximum(target))
+
+				target:SetSkill(k, value)
+				return "@skillSet", target:GetName(), L(v.name, client), value
+			end
+		end
+
+		for k, v in pairs(ix.skills.list) do
 			if (ix.util.StringMatches(L(v.name, client), skillName) or ix.util.StringMatches(k, skillName)) then
 				local value = math.Clamp(targetValue, 0, v:GetMaximum(target))
 
@@ -16,6 +25,7 @@ ix.command.Add("CharSetSkill", {
 				return "@skillSet", target:GetName(), L(v.name, client), value
 			end
 		end
+
 
 		return "@skillNotFound"
 	end
@@ -33,6 +43,28 @@ ix.command.Add("lvl", {
 	end
 })
 
+ix.command.Add("lvlreset", {
+	description = "Сбросить очки характеристик (стоимость - 1000 токенов)",
+	OnRun = function(self, client)
+		local char = client:GetCharacter()
+
+		if char:HasMoney(1000) then
+			char:TakeMoney(1000)
+
+			for k, v in pairs(ix.specials.list) do
+				char:SetSpecial(k, 1)
+			end
+
+			char:SetData("levelup", true)
+
+			timer.Simple(0.1, function()
+				net.Start("ixLevelUp")
+				net.Send(client)
+			end)
+		end
+	end
+})
+
 ix.command.Add("CharAddSkill", {
 	description = "@cmdCharAddSkill",
 	privilege = "Manage Character Skills",
@@ -44,6 +76,15 @@ ix.command.Add("CharAddSkill", {
 	},
 	OnRun = function(self, client, target, skillName, level)
 		local skills = target:GetSkills()
+
+		for k, v in pairs(ix.skills.list) do
+			if k == skillName or L(v.name, client) == skillName then
+				local value = (skills[k][1] or 0) + math.abs(math.floor(level))
+
+				target:SetSkill(k, value)
+				return "@skillAdd", target:GetName(), L(v.name, client), value
+			end
+		end
 
 		for k, v in pairs(ix.skills.list) do
 			if (ix.util.StringMatches(L(v.name, client), skillName) or ix.util.StringMatches(k, skillName)) then
@@ -68,6 +109,14 @@ ix.command.Add("CharAddSkillXP", {
 		ix.type.number
 	},
 	OnRun = function(self, client, target, skillName, xp)
+		for k, v in pairs(ix.skills.list) do
+			if k == skillName or L(v.name, client) == skillName then
+				target:UpdateSkillProgress(k, xp)
+
+				return "@skillAddXP", target:GetName(), L(v.name, client), xp
+			end
+		end
+
 		for k, v in pairs(ix.skills.list) do
 			if (ix.util.StringMatches(L(v.name, client), skillName) or ix.util.StringMatches(k, skillName)) then
 				target:UpdateSkillProgress(k, xp)

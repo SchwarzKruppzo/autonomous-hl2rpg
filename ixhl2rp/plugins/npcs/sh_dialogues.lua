@@ -343,3 +343,87 @@ ix.dialogues.Add("cp", {
 		flags = DFLAG_GOODBYE
 	}
 })
+
+ix.dialogues.Add("snektil", {
+	["GREETINGS"] = {
+		response = "Привет.",
+		choices = {"RationSell", "GOODBYE"}
+	},
+	["RationSell"] = {
+		response = {
+			[1] = {
+				text = "...",
+			},
+		},
+		topic = {
+			[1] = {
+				text = "[СДАТЬ ПРОДУКЦИЮ]",
+			}
+		},
+		select = function(client, npc, self)
+			if SERVER then
+				local rations = 0
+				local work_points = {}
+
+				local unique_crates = {}
+
+				for k, v in ipairs(ents.FindByClass("ix_ration_palette")) do
+					for z, x in pairs(v.crates or {}) do
+						if !IsValid(x) then continue end
+						
+						unique_crates[x:EntIndex()] = x
+					end
+
+					v.crates = {}
+				end
+
+				for z, x in pairs(unique_crates) do
+					for _, charID in pairs(x.workers or {}) do
+						work_points[charID] = math.min((work_points[charID] or 0) + 1, 75)
+					end
+
+					rations = rations + (x:GetCount() * 11)
+					x:Remove()
+				end
+
+				for charID, points in pairs(work_points) do
+					local new = (rations - points)
+
+					if new < 0 then
+						points = (points + new)
+						new = (rations - points)
+					end
+					
+					if points > 0 then
+						local character = ix.char.loaded[charID]
+						
+						if character then
+							character:GiveMoney(points)
+
+							local owner = character:GetPlayer()
+							if owner then
+								owner:NotifyLocalized("Вы получили "..points.." токенов за работу на заводе рационов.")
+							end
+						end
+					end
+
+					rations = new
+				end
+
+				if rations > 0 then
+					local character = client:GetCharacter()
+					character:GiveMoney(rations)
+
+					client:NotifyLocalized("Вы получили "..rations.." токенов за производство.")
+				end
+			end
+		end,
+		condition = function(client, npc, self)
+			return client:IsCWU()
+		end
+	},
+	["GOODBYE"] = {
+		topic = "До встречи.",
+		flags = DFLAG_GOODBYE
+	}
+})

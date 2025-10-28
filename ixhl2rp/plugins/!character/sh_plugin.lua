@@ -13,6 +13,9 @@ do
 		fieldType = ix.type.text,
 		default = "",
 		index = 2,
+		Net = {
+			Transmit = ix.transmit.all
+		},
 		OnValidate = function(self, value, payload)
 			value = string.Trim((tostring(value):gsub("\r\n", ""):gsub("\n", "")))
 			local minLength = ix.config.Get("minDescriptionLength", 16)
@@ -43,6 +46,9 @@ do
 		fieldType = ix.type.number,
 		default = 0,
 		index = 3,
+		Net = {
+			Transmit = ix.transmit.all
+		},
 		OnValidate = function(self, value, payload, client) 
 			if value <= 0 or value > 2 then
 				return false
@@ -89,6 +95,9 @@ do
 		fieldType = ix.type.string,
 		default = "models/error.mdl",
 		index = 4,
+		Net = {
+			Transmit = ix.transmit.all
+		},
 		OnSet = function(character, value)
 			local client = character:GetPlayer()
 
@@ -196,6 +205,7 @@ do
 		end
 	})
 
+	/*
 	ix.char.RegisterVar("attributes", {
 		field = "attributes",
 		fieldType = ix.type.text,
@@ -203,6 +213,9 @@ do
 		index = 6,
 		category = "attributes",
 		isLocal = true,
+		Net = {
+			Transmit = ix.transmit.owner
+		},
 		OnDisplay = function(self, container, payload)
 			local maximum = hook.Run("GetDefaultAttributePoints", LocalPlayer(), payload) or ix.config.Get("maxAttributes", 30)
 
@@ -280,6 +293,7 @@ do
 			return false //!table.IsEmpty(ix.attributes.list)
 		end
 	})
+	*/
 end
 
 if CLIENT then

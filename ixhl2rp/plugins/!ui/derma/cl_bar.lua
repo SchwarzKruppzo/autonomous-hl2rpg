@@ -9,7 +9,7 @@ AccessorFunc(PANEL, "padding", "Padding", FORCE_NUMBER)
 
 function PANEL:Init()
 	self:SetSize(ScrW() * 0.35, ScrH())
-	self:SetPos(ICON_SIZE * 1.5, ICON_SIZE * 1.5)
+	self:SetPos(ICON_SIZE * 3, ICON_SIZE * 7)
 	self:ParentToHUD()
 
 	self.bars = {}

@@ -4,6 +4,8 @@ NAME = "Русский"
 LANGUAGE = {
 	helix = "Helix",
 
+	hasBag = "Вы не можете нести больше одной сумки.",
+
 	introTextOne = "Fist Industries представляет",
 	introTextTwo = "В сотрудничестве с %s",
 	introContinue = "Чтобы продолжить, нажмите Пробел",

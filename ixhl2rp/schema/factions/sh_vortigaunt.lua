@@ -9,7 +9,7 @@ FACTION.bAllowDatafile = true
 FACTION.weapons = {"ix_vortbroom"}
 
 function FACTION:GetRationType(client)
-	return "ration_biotic"
+	return "ration_tier_0"
 end
 
 function FACTION:GetModels(client, gender)

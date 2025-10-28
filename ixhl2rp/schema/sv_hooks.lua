@@ -13,12 +13,16 @@ function Schema:LoadData()
 	self:LoadRationDispensers()
 	self:LoadVendingMachines()
 	self:LoadCombineMonitors()
+	self:LoadSinkTriggers()
+	self:LoadCombineFields()
 end
 
 function Schema:SaveData()
 	self:SaveRationDispensers()
 	self:SaveVendingMachines()
 	self:SaveCombineMonitors()
+	self:SaveSinkTriggers()
+	self:SaveCombineFields()
 end
 
 function Schema:PlayerSwitchFlashlight(client, enabled)
@@ -52,11 +56,11 @@ function Schema:OnPlayerOptionSelected(target, client, option)
 	elseif option == "Search" then
 		ix.command.Run(client, "CharSearch")
 	elseif option == "Ziptie" then
-		local inv = client:GetCharacter():GetInventory()
-		local item = inv:HasItem("ziptie")
+		local inv = client:GetInventory("main")
+		local has, item = inv:HasItem("ziptie")
 
-		if item then
-			ix.item.PerformInventoryAction(client, "Use", item:GetID(), inv:GetID())
+		if has then
+			ix.Item:PerformInventoryAction(client, item, inv.id, "Use", nil, 1)
 		end
 	end
 end

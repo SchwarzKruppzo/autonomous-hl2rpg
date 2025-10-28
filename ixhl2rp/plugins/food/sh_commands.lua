@@ -1,7 +1,7 @@
 do
 	local COMMAND = {}
 	COMMAND.description = "@cmdCharSetHunger"
-	COMMAND.superAdminOnly = true
+	COMMAND.adminOnly = true
 	COMMAND.arguments = {
 		ix.type.character,
 		ix.type.number
@@ -23,7 +23,7 @@ do
 
 	COMMAND = {}
 	COMMAND.description = "@cmdCharSetThirst"
-	COMMAND.superAdminOnly = true
+	COMMAND.adminOnly = true
 	COMMAND.arguments = {
 		ix.type.character,
 		ix.type.number
@@ -45,7 +45,7 @@ do
 
 	COMMAND = {}
 	COMMAND.description = "@cmdCharSetNeeds"
-	COMMAND.superAdminOnly = true
+	COMMAND.adminOnly = true
 	COMMAND.arguments = {
 		ix.type.character,
 		ix.type.number

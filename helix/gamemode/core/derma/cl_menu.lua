@@ -1,5 +1,5 @@
 
-local animationTime = 1
+local animationTime = 0.1
 local matrixZScale = Vector(1, 1, 0.0001)
 
 DEFINE_BASECLASS("ixSubpanelParent")
@@ -390,44 +390,15 @@ function PANEL:Think()
 end
 
 function PANEL:Paint(width, height)
-	derma.SkinFunc("PaintMenuBackground", self, width, height, self.currentBlur)
-
-	local bShouldScale = self.currentAlpha != 255
-
-	if (bShouldScale) then
-		local currentScale = Lerp(self.currentAlpha / 255, 0.9, 1)
-		local matrix = Matrix()
-
-		matrix:Scale(matrixZScale * currentScale)
-		matrix:Translate(Vector(
-			ScrW() * 0.5 - (ScrW() * currentScale * 0.5),
-			ScrH() * 0.5 - (ScrH() * currentScale * 0.5),
-			1
-		))
-
-		cam.PushModelMatrix(matrix)
-	end
+	Derma_DrawBackgroundBlur( self, self.startTime )
 
 	BaseClass.Paint(self, width, height)
+
 	self:PaintSubpanels(width, height)
 	self.buttons:PaintManual()
 
 	for i = 1, #self.manualChildren do
 		self.manualChildren[i]:PaintManual()
-	end
-
-	if (IsValid(ix.gui.inv1) and ix.gui.inv1.childPanels) then
-		for i = 1, #ix.gui.inv1.childPanels do
-			local panel = ix.gui.inv1.childPanels[i]
-
-			if (IsValid(panel)) then
-				panel:PaintManual()
-			end
-		end
-	end
-
-	if (bShouldScale) then
-		cam.PopModelMatrix()
 	end
 end
 

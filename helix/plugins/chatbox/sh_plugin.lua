@@ -26,7 +26,7 @@ if (CLIENT) then
 		end
 	})
 
-	ix.option.Add("chatOutline", ix.type.bool, false, {
+	ix.option.Add("chatOutline", ix.type.bool, true, {
 		category = "chat"
 	})
 

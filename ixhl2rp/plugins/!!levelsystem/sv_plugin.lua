@@ -37,6 +37,17 @@ do
 		if deltaXP then
 			self:AddLevelXP(deltaXP)
 		end
+
+		for k, v in pairs(ix.specials.list) do
+			self:SetSpecial(k, 1)
+		end
+
+		self:SetData("levelup", true)
+
+		timer.Simple(0.1, function()
+			net.Start("ixLevelUp")
+			net.Send(self:GetPlayer())
+		end)
 	end
 
 	function charMeta:AddLevelXP(xp, reasonType)

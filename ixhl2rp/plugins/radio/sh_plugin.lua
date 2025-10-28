@@ -8,12 +8,30 @@ ix.char.RegisterVar("radioChannels", {
 	fieldType = ix.type.text,
 	default = {},
 	isLocal = true,
+	Net = {
+		Transmit = ix.transmit.owner
+	},
 	bNoDisplay = true
 })
 
 ix.config.Add("radioNoclipEavesdrop", false, "Whether or not players in observer can eavesdrop radio conversations.", nil, {
 	category = "Chat"
 })
+
+ix.option.Add("radioHideFreq", ix.type.bool, false, {
+	category = "рация",
+})
+
+ix.lang.AddTable("russian", {
+	radioHideFreq = "Скрыть частоту рации в чате",
+})
+
+ix.Net:AddEntityVar("on", nil, ix.Net.Type.All)
+ix.Net:AddEntityVar("freq", nil, ix.Net.Type.All)
+ix.Net:AddEntityVar("tuningEnabled", nil, ix.Net.Type.All)
+ix.Net:AddEntityVar("item", nil, ix.Net.Type.All)
+ix.Net:AddPlayerVar("radioChannel", false, nil, ix.Net.Type.String)
+
 
 --[[
 	-- radio
@@ -60,8 +78,15 @@ function PLUGIN:InitializedChatClasses()
 			data.useSound = true
 			hook.Run("AdjustRadioTransmit", data)
 
+			local hideFreq = ix.option.Get("radioHideFreq", false)
+			local channel = string.upper(data.channel)
+
+			if hideFreq then
+				channel = "???.?"
+			end
+
 			chat.AddText(data.color or class.color, icon, string.format(class.format,
-				string.upper(data.channel), name, typeTexts[data.typeText] or typeTexts[1], text))
+				channel, name, typeTexts[data.typeText] or typeTexts[1], text))
 
 			if (data.useSound and isstring(data.sound)) then
 				surface.PlaySound(data.sound)

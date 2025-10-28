@@ -24,6 +24,9 @@ LANGUAGE = {
 	radioAlreadyOn = "You already have a radio that is turned on!",
 	economy = "Economy",
 
+	chatRDevice = "Calling in request device...",
+	chatRadioning = "Radios in...",
+
 	-- combine display messages
 	cViewData = "Downloading citizen profile data...",
 	cViewDataExpired = "ERROR! Failed to upload revised citizen profile data...",

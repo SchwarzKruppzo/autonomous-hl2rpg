@@ -56,19 +56,7 @@ do
 
 		return false
 	end
-
-	function playerMeta:GetItems()
-		local char = self:GetCharacter()
-
-		if (char) then
-			local inv = char:GetInventory()
-
-			if (inv) then
-				return inv:GetItems()
-			end
-		end
-	end
-
+	
 	function playerMeta:GetClassData()
 		local char = self:GetCharacter()
 

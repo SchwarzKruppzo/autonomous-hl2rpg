@@ -24,7 +24,7 @@ end
 function PLUGIN:SetInfoMenuData(character, faction)
 	ix.infoMenu.Add("Уровень: " .. character:GetLevel())
 
-	local card = character:GetIDCard()
+	local card = LocalPlayer():GetIDCard()
 
 	if card then
 		ix.infoMenu.Add("CID: #" .. card:GetData("cid", 0))

@@ -42,6 +42,16 @@ PLUGIN.MoodAnimTable = {
 	}
 }
 
+local function WriteMood(value)
+	net.WriteUInt(value, 2)
+end
+
+local function ReadMood()
+	return net.ReadUInt(2)
+end
+	
+ix.Net:AddPlayerVar("mood", false, nil, {WriteMood, ReadMood})
+
 do
 	local PLAYER = FindMetaTable("Player")
 	

@@ -1,9 +1,3 @@
--- 1
-
-function PLUGIN:EntityFireBullets(entity, bulletInfo)
-
-end
-
 do
 	local modify = {
 	["$pp_colour_addr"] = 0, 
@@ -64,6 +58,10 @@ do
 
 		if shockLevel <= 1 and !character:IsFeelPain() then
 			return
+		end
+
+		if client:Team() == FACTION_VORTIGAUNT then
+			shockLevel = shockLevel * 0.25
 		end
 
 		local delta
@@ -242,7 +240,7 @@ do
 	local critPlayers = {}
 
 	net.Receive("ixCritUse", function()
-		Derma_Query("Добивая этого персонажа, Вы безвозвратно заблокируете его, получив весь инвентарь погибшего. Этот процесс займет 15 секунд. Вы точно уверены в этом?", "Добить персонажа", "Добить", function() 
+		Derma_Query("Убивая этого персонажа, Вы отправите его на точку появления в рамках правила NLR, получив некоторый инвентарь погибшего. Этот процесс займет 15 секунд. Вы точно уверены в этом?", "Добить персонажа", "Добить", function() 
 			net.Start("ixCritApply")
 				net.WriteBool(true)
 			net.SendToServer()
@@ -354,7 +352,7 @@ do
 				focused_ent = focus_ent
 				focus_stick = CurTime() + 0.1
 
-				local text = string.format("НАЖМИТЕ [%s] ЧТОБЫ ДОБИТЬ", use)
+				local text = string.format("НАЖМИТЕ [%s] ЧТОБЫ УБИТЬ", use)
 				local x = scrpos.x
 				local y = scrpos.y + 16
 				surface.SetFont("ixCrit")

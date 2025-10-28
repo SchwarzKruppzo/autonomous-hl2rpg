@@ -8,9 +8,9 @@ function Schema:CharacterVarChanged(character, key, oldVar, value)
 				for k, v in ipairs(result) do
 					v.item_id = tonumber(v.item_id)
 
-					ix.item.instances[v.item_id]:SetData("name", value)
+					ix.Item.instances[v.item_id]:SetData("name", value)
 					
-					hook.Run("OnIDCardUpdated", ix.item.instances[v.item_id])
+					hook.Run("OnIDCardUpdated", ix.Item.instances[v.item_id])
 				end
 			end
 		end)
@@ -19,9 +19,9 @@ function Schema:CharacterVarChanged(character, key, oldVar, value)
 end
 
 netstream.Hook("ixCitizenIDEdit", function(client, itemID, newData)
-	if !client:IsSuperAdmin() then return end
+	if !client:IsSuperAdmin() and !client:IsAdmin() then return end
 
-	local item = ix.item.instances[itemID]
+	local item = ix.Item.instances[itemID]
 	
 	if !item then return end
 	
@@ -47,23 +47,16 @@ do
 
 	function CHAR:CreateIDCard(type)
 		if type then
-			local inventory = self:GetEquipment()
+			local client = self:GetPlayer()
 
-			if !inventory then
-				timer.Simple(1, function()
-					self:CreateIDCard(type)
-				end)
-			else
-				local x, y, invID = inventory:Add(type, 1, {
-					equip = true,
-				}, 1, EQUIP_CID)
+			local instance = ix.Item:Instance(type)
+			instance:CreateDatafile(client)
 
-				if !self:IsOTA() then
-					timer.Simple(1, function()
-						self:GetPlayer().ixDatafile = self:GetIDCard():GetData("datafileID", 0)
-					end)
-				end
-			end
+			timer.Simple(1, function()
+				client.ixDatafile = instance:GetData("datafileID", 0)
+
+				client:AddItem(instance, "cid")
+			end)
 		end
 	end
 end

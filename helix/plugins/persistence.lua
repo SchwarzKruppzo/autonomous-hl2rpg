@@ -6,6 +6,8 @@ PLUGIN.description = "Define entities to persist through restarts."
 PLUGIN.author = "alexgrist"
 PLUGIN.stored = PLUGIN.stored or {}
 
+ix.Net:AddEntityVar("Persistent", nil, ix.Net.Type.Bool)
+
 local function GetRealModel(entity)
 	return entity:GetClass() == "prop_effect" and entity.AttachedEntity:GetModel() or entity:GetModel()
 end

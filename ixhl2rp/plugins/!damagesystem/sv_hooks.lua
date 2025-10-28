@@ -18,15 +18,6 @@ do
 		oldDispatchAttack(self, dmgInfo, traceResult, dir)
 	end
 
-	function PLAYER:DropActiveWeaponItem()
-		local weapon = IsValid(self:GetActiveWeapon()) and self:GetActiveWeapon().ixItem or nil
-
-		if weapon then
-			weapon:Unequip(self, false)
-			weapon:Transfer(nil, nil, nil, self)
-		end
-	end
-
 	function PLAYER:SetCriticalState(state)
 		local character = self:GetCharacter()
 
@@ -35,12 +26,16 @@ do
 		end
 
 		if state then
-			if self:InOutlands() then
+			local flag = character:HasFlags("z")
+			local inOutlands = IsValid(self.ixRagdoll) and self.ixRagdoll.inOutlands
+
+			if inOutlands then
+				self:SetLocalVar("inOutlands", true)
+			end
+			
+			if self:InOutlands() or flag then
 				self.KilledByRP = false
 				self:Kill()
-
-				hook.Run("DoPlayerDeath", self)
-
 				return
 			end
 			
@@ -121,13 +116,19 @@ end
 function PLUGIN:PlayerDisconnected(client)
 	local character = client:GetCharacter()
 
+	
+
 	if character then
-		if client:InCriticalState() then
-			client.KilledByRP = true
-			client:Kill()
-					
-			character:Ban()
-			character:Save()
+		local flag = character:HasFlags("z")
+
+		if !flag then
+			if client:InCriticalState() then
+				client.KilledByRP = false
+				client:Kill()
+						
+				character:Ban()
+				character:Save()
+			end
 		end
 	end
 end
@@ -200,107 +201,92 @@ end
 
 function PLUGIN:DoPlayerDeath(client)
 	local character = client:GetCharacter()
+	local flag = character:HasFlags("z")
 
 	if character then
-		if !IsValid(client.ixRagdoll) then
-			for k, v in pairs(client:GetWeapons()) do
-				local weapon = v.ixItem
-				if !weapon then continue end
+		if !flag then
+			local stack = {}
+			local items = {}
 
-				weapon:Unequip(client, false)
-				weapon:Transfer(nil, nil, nil, self)
-			end
-		end
-
-		local charInventory = character:GetInventory()
-		local equipment = character:GetEquipment()
-		local stack = {}
-		local items = {}
-		local weapons = {}
-
-		for _, item in pairs(charInventory:GetItems()) do
-			if item.uniqueID:find("card") then continue end
-			if item.base == "base_weaponstest" and item:GetData("equip") then 
-				weapons[#weapons + 1] = item
-				continue 
-			end
-
-			if !item.KeepOnDeath or (client.KilledByRP and !item.KeepOnCrit) then
-				stack[#stack + 1] = item
-			end
-		end
-
-		for _, item in pairs(equipment:GetItems()) do
-			if item.uniqueID:find("card") then continue end
-
-			if !item.KeepOnDeath or (client.KilledByRP and !item.KeepOnCrit) then
-				stack[#stack + 1] = item
-			end
-		end
-		
-		if !client.KilledByRP and !client:InOutlands() then
-			local max = math.floor((#stack * 0.3))
-
-			for i = 1, max do
-				local r = math.random(#stack)
-
-				items[#items + 1] = stack[r]
-
-				table.remove(stack, r)
-			end
-
-			for k, item in ipairs(weapons) do
-				items[#items + 1] = item
-			end
-		end
-
-		local money = client.KilledByRP and character:GetMoney() or math.ceil(character:GetMoney() * 0.3)
-
-		if ((client.KilledByRP or client:InOutlands()) and #stack or #items) > 0 or money > 0 then
-			local container = ents.Create("ix_drop")
-			container:SetPos(client:GetPos() + client:GetAngles():Forward() * 5)
-			container:Spawn()
-
-			local uniqueID = "ixDecay" .. container:EntIndex()
-
-			container:CallOnRemove("ixDecayRemove", function(container)
-				ix.storage.Close(container:GetInventory())
-
-				if timer.Exists(uniqueID) then
-					timer.Remove(uniqueID)
-				end
-			end)
-
-			timer.Create(uniqueID, 1800, 1, function()
-				if IsValid(container) then
-					container:Remove()
-				else
-					timer.Remove(uniqueID)
-				end
-			end)
-
-			local inventory = ix.inventory.Create(ix.config.Get("inventoryWidth") * 2, ix.config.Get("inventoryHeight") * 2, os.time())
-			inventory.vars.isBag = false
-			inventory.vars.isDrop = true
-			inventory.vars.entity = container
-			inventory.noSave = true
-
-			function inventory.OnAuthorizeTransfer(_, _, _, item)
-				if item.Dropped then
-					return true
+			for _, item in ipairs(client:GetItems()) do
+				if item.uniqueID:find("card") then continue end
+				if !item.KeepOnDeath or (client.KilledByRP and !item.KeepOnCrit) then
+					stack[#stack + 1] = item
 				end
 			end
 
-			container:SetInventory(inventory)
+			if !client.KilledByRP then
+				local total = 0 
+				for i, loot in ipairs(stack) do
+					total = total + (loot.width * loot.height)
+				end
 
-			container:SetMoney(money)
-			character:SetMoney(character:GetMoney() - money)
+				table.Shuffle(stack)
 
-			for k, v in ipairs(((client.KilledByRP or client:InOutlands()) and stack or items)) do
-				if v.ReplaceOnDeath then
-					inventory:Add(v.ReplaceOnDeath)
-				else
-					TransferItem(v, inventory:GetID(), v.gridX, v.gridY)
+				local max = (total * 0.5)
+				local weight = 0
+				for i, loot in ipairs(stack) do
+					local new = weight + (loot.width * loot.height)
+
+					if new <= max then
+						weight = new
+						items[#items + 1] = loot
+					end
+				end
+
+				stack = nil
+			end
+
+			local money = client.KilledByRP and character:GetMoney() or math.ceil(character:GetMoney() * 0.5)
+
+			if (client.KilledByRP or client:InOutlands()) and (#stack or #items) > 0 or money > 0 then
+				local container = ents.Create("ix_drop")
+				container:SetPos(client:GetPos() + client:GetAngles():Forward() * 5)
+				container:Spawn()
+
+				local uniqueID = "ixDecay" .. container:EntIndex()
+
+				container:CallOnRemove("ixDecayRemove", function(container)
+					ix.storage.Close(container:GetInventory())
+
+					if timer.Exists(uniqueID) then
+						timer.Remove(uniqueID)
+					end
+				end)
+
+				timer.Create(uniqueID, 1800, 1, function()
+					if IsValid(container) then
+						container:Remove()
+					else
+						timer.Remove(uniqueID)
+					end
+				end)
+
+				local inventory = ix.meta.Inventory:New()
+				inventory:SetSize(12, 8)
+				inventory.title = "Вещи с трупа"
+				inventory.type = "container"
+				inventory.owner = container
+
+				container:SetInventory(inventory)
+				container:SetMoney(money)
+
+				character:SetMoney(character:GetMoney() - money)
+
+				for k, v in pairs(client.KilledByRP and stack or items) do
+					local oldInventory = ix.Inventory:Get(v.inventory_id)
+
+					if oldInventory then
+						if v.ReplaceOnDeath then
+							inventory:GiveItem(v.ReplaceOnDeath)
+						else
+							oldInventory:Transfer(v.id, inventory)
+						end
+					end
+				end
+
+				for k, v in pairs(client:GetInventories()) do
+					v:Sync()
 				end
 			end
 		end
@@ -389,7 +375,7 @@ function PLUGIN:ScaleDamageByHitGroup(client, lastHitGroup, dmgInfo)
 	local weapon = dmgInfo:GetInflictor()
 
 	if weapon.IsHL2Grenade then
-		dmgInfo:ScaleDamage(2)
+		dmgInfo:ScaleDamage(8)
 	end
 
 	local a = 1
@@ -399,24 +385,6 @@ function PLUGIN:ScaleDamageByHitGroup(client, lastHitGroup, dmgInfo)
 	end
 
 	return a
-end
-
-function PLUGIN:GetArmorDamageReduction(player, lastHitGroup, dmg)
-	if IsValid(player) and player:Team() != FACTION_VORTIGAUNT then
-		local Armor = 0
-
-		if player.ArmorItems then
-			for item, v in pairs(player.ArmorItems or {}) do
-				Armor = Armor + (item.Stats[lastHitGroup] or 0)
-			end
-		end
-
-		Armor = Armor * 5
-
-		return math.min(1 + Armor / dmg, 4)
-	end
-
-	return 1
 end
 
 function PLUGIN:GetAttackDistance(entity, targetPos)
@@ -478,27 +446,91 @@ function PLUGIN:GetWeaponSkill(character, weapon)
 	return weapon.ImpulseSkill and character:GetSkillModified("impulse") or character:GetSkillModified("guns")
 end
 
-do
-	local function SkillRoll(value, skill)
-		if value == 0 then
-			return true
-		elseif value == 10 then
-			return false
-		elseif value <= skill then
-			return true
-		end
+local armor_slots = {"torso", "head", "mask", "legs"}
+local function SelectArmorToHit(client, hit_group, isFists)
+	local sum = 0
+	local elements = {}
+	for item, value in pairs(client.char_outfit.armor) do
+		if !value then continue end
+		if !item.armor or !item.armor.coverage[hit_group] then continue end
+
+		local coverage = item.armor.coverage[hit_group]
+
+		elements[#elements + 1] = {item.id, coverage}
+		sum = sum + coverage
 	end
 
-	local function StatRoll(stat)
-		local value = math.random(1, 10)
+	if #elements <= 0 then
+		return 0
+	end
+	
+	if isFists != true then
+		if sum < 1 then
+			local coverage = (1 - sum)
 
-		if value == 1 then
-			return true
-		elseif value == 10 then
-			return false
-		elseif value <= stat then
-			return true
+			sum = sum + coverage
+			elements[#elements + 1] = {0, coverage}
 		end
+	end
+	
+	local select = math.random() * sum
+
+	for _, data in ipairs(elements) do
+		select = select - data[2]
+
+		if select < 0 then 
+			return data[1]
+		end
+	end
+end
+
+local function GetDamageClass(isEnergy, isFists, isBuckshot, isSlash, isClub, isExplosive)
+	if isEnergy then
+		return "impulse"
+	elseif isFists then
+		return "fists"
+	elseif isBuckshot then
+		return "buckshot"
+	elseif isSlash then
+		return "slash"
+	elseif isClub then
+		return "club"
+	elseif isExplosive then
+		return "explosive"
+	end
+
+	return "bullet"
+end
+
+local parents = {
+	[HITGROUP_LEFTLEG] = HITGROUP_STOMACH,
+	[HITGROUP_RIGHTLEG] = HITGROUP_STOMACH,
+	[HITGROUP_LEFTARM] = HITGROUP_CHEST,
+	[HITGROUP_RIGHTARM] = HITGROUP_CHEST,
+	[HITGROUP_STOMACH] = HITGROUP_CHEST,
+}
+local function DamageToOuterParts(character, hit_group)
+	local hp = character:GetLimbDamage(hit_group)
+	local parent = parents[hit_group]
+
+	if hp >= 100 and parent then
+		hit_group = DamageToOuterParts(character, parent)
+
+		return hit_group, true
+	end
+	
+	return hit_group, false
+end
+
+do
+	local function ScaleHitChanceByHandsDamage(character)
+		local leftHandDamage, rightHandDamage = character:GetLimbDamage(HITGROUP_LEFTARM, true), character:GetLimbDamage(HITGROUP_RIGHTARM, true)
+
+		if (leftHandDamage > 0 or rightHandDamage > 0) then
+			return (1 - ((leftHandDamage * 0.5) + (rightHandDamage * 0.5)))
+		end
+
+		return 1
 	end
 
 	function PLUGIN:DoRangeAttack(entity, character, weapon, trace, dmgInfo, highNum, penetration)
@@ -517,6 +549,7 @@ do
 		local hitGroup = trace.HitGroup
 		local commandNumber = entity:GetCurrentCommand():CommandNumber()
 		local Hit = false
+		local amount = dmgInfo:GetDamage()
 
 		entity.LastBulletHit = entity.LastBulletHit or 0
 
@@ -525,11 +558,13 @@ do
 		end
 
 		if !penetration and entity.LastBulletCheckCmd == commandNumber then
-			return entity.LastBulletCheckHit
+			//return entity.LastBulletCheckHit
 		end
 
-		entity.LastBulletCheckCmd = commandNumber
 		
+
+		dmgInfo:SetDamageCustom(amount)
+
 		if isHittingPlayer then
 			if target:InCriticalState() then
 				return false
@@ -540,77 +575,93 @@ do
 			end
 
 			local targetCharacter = target:GetCharacter()
-			local DistanceType = self:GetAttackDistance(entity, trace.HitPos)
+			local hitGroup, halfDamage = DamageToOuterParts(targetCharacter, hitGroup)
 
+			local DistanceType = self:GetAttackDistance(entity, trace.HitPos)
 			local weaponMod = 0
 
 			if weapon.ixItem then
-				weaponMod = (weapon.ixItem.DistanceSkillMod[DistanceType] or 0) * 10
+				weaponMod = (weapon.ixItem.DistanceSkillMod[DistanceType] or 0)
 			end
 
-			local gunBuff = 0
+			local weaponSkill = math.Clamp((self:GetWeaponSkill(character, weapon) + weaponMod) / 10, 0, 1)
+			local perceptionMod = math.max(math.Remap(character:GetSpecial("pe"), 1, 10, 0.25, 1.125), 0.25)
+			local levelMod = math.max(math.Remap(character:GetLevel(), 1, 10, 0.5, 1.125), 0.5)
 
-			if entity.ArmorItems then
-				for item, v in pairs(entity.ArmorItems or {}) do
-					gunBuff = gunBuff + (item.WeaponSkillBuff or 0)
-				end
+			local hitScale = isRagdoll and 1 or weaponSkill * ScaleHitChanceByHandsDamage(character) * perceptionMod * levelMod
+
+			local armor = SelectArmorToHit(target, hitGroup)
+			local item
+
+			if armor != 0 then
+				item = ix.Item.instances[armor]
+				value = item:GetData("value")
 			end
 
-			local weaponSkill = ((self:GetWeaponSkill(character, weapon) + gunBuff) * 10)
-			local luckMod = character:GetSpecial("lk")
-			local perceptionMod = (character:GetSpecial("pe") + 5) / 10
-			local hitChance = (weaponMod + (weaponSkill * perceptionMod) + luckMod)
+			if item and (value or 0) > 0 then
+				local damageType = dmgInfo:GetDamageType()
+				local isEnergy = weapon.ImpulseSkill
+				local isFists = weapon.IsFists
+				local isBuckshot = (ammoType == 7) or damageType == DMG_BUCKSHOT
+				local isSlash = damageType == DMG_SLASH
+				local isClub = damageType == DMG_CLUB or damageType == DMG_CRUSH
+				local isExplosive = dmgInfo:IsExplosionDamage()
+				local damage_class = GetDamageClass(isEnergy, isFists, isBuckshot, isSlash, isClub, isExplosive)
 
-			local SkillTest = isRagdoll and true or math.random(1, 100) < (10 + hitChance)
-			local AgilityTest = false
-			local PenetrationTest = false
+				local penetration_factor = (weapon.armor and weapon.armor.penetration[item.armor.class] or 1)
+				local armor_factor = (1 - (value * penetration_factor))
+				local ap_dmg = ((amount * 0.75) / item.armor.max_durability)
+				
+				local chance = math.min(math.Rand(0, 1), math.Rand(0, 1))
+				local armorDamageMul = item.armor.damage[damage_class] or 1
+				local armor_density = (1 - item.armor.density)
 
-			if SkillTest then
-				local targetLuckMod, targetAgilityMod = targetCharacter:GetSpecial("lk"), (targetCharacter:GetSpecial("ag") * 5)
-				local AttackRolls, DefendRolls = character:GetRolls(), targetCharacter:GetRolls()
+				ap_dmg = ap_dmg * armorDamageMul
+				ap_dmg = ap_dmg * (weapon.armor and weapon.armor.damage[item.armor.class] or 1)
 
-				if !isRagdoll then
-					local isStanding = target:GetVelocity():LengthSqr() <= 100
-					local targetSpeedMod = isStanding and 0 or 1 + math.Clamp(math.Remap(target:GetVelocity():LengthSqr(), 2500, 55225, 0, 1), 0, 1)
-					local evasionChance = ((hitChance + AttackRolls[1]) - ((DefendRolls[1] + targetAgilityMod + targetLuckMod) * targetSpeedMod))
+				local ignore_density = (weapon.armor and weapon.armor.ignore_density and (weapon.armor.ignore_density[item.armor.class] or 0) or 0)
 
-					AgilityTest = math.random(1, 100) < (math.Clamp(evasionChance, 51, 89) + (targetCharacter:GetData("neo") or 0))
+				armor_density = (1 - (item.armor.density - ignore_density))
+
+				if chance <= (armor_factor * item.armor.penetration[damage_class]) then
+					dmgInfo:SetDamage(amount * armor_density * (2 - value) * 0.7)
 				else
-					AgilityTest = true
+					ap_dmg = ap_dmg * 0.25
+
+					dmgInfo:SetDamage(amount * 0.25 * armor_density * 0.7)
 				end
 
-				if AgilityTest then
-					local Attack = 1
-					local Armor = 1
+				value = value - ap_dmg
 
-					if IsValid(weapon) and weapon.ixItem then
-						Attack = weapon.ixItem.Attack or 1
-					end
+				item:SetData("value", math.max(value, 0))
 
-					if target.ArmorItems then
-						for item, v in pairs(target.ArmorItems or {}) do
-							Armor = Armor + (item.Stats[hitGroup] or 0)
-						end
-					end
+				if value <= 0 and item.destroyable then
+					item:Remove()
+				end
 
-					local penetrationChance = 100 * (Attack / Armor)
+				if hitGroup == HITGROUP_HEAD then
+					target:EmitSound("player/bhit_helmet-1.wav", 75)
+				else
+					target:EmitSound("player/kevlar"..math.random(1, 5)..".wav", 75)
+				end
 
-					PenetrationTest = math.random(0, 100) <= penetrationChance
+				target.ixNextPain = CurTime() + 0.33
+			end
+			
+			dmgInfo:ScaleDamage(hitScale)
 
-					if PenetrationTest then
-						entity.LastBulletHit = commandNumber
-						Hit = true
-					end
+			entity.LastBulletHit = commandNumber
+			Hit = true
+
+			if entity.LastBulletCheckCmd != commandNumber then
+				if weapon.ImpulseSkill then
+					character:DoAction("shootSuccess2")
+				else
+					character:DoAction("shootSuccess")
 				end
 			end
-
-			if weapon.ImpulseSkill then
-				character:DoAction(Hit and (DistanceType > 2 and "shootFarSuccess2" or "shootSuccess2") or "shootMiss2")
-			else
-				character:DoAction(Hit and (DistanceType > 2 and "shootFarSuccess" or "shootSuccess") or "shootMiss")
-			end
-
-			--entity:Emote("it", SkillTest and "attackMe" or "attackFailMe", weapon.ixItem and weapon.ixItem:GetName() or weapon:GetClass(), hitboneLang[hitGroup] or hitboneLang[0], targetCharacter:GetName(), !AgilityTest and "@attAgSuccess" or (PenetrationTest and "@attSuccess1" or "@attArmorFail"))
+			
+			entity.LastBulletCheckCmd = commandNumber
 			entity.LastBulletCheckHit = Hit
 
 			return Hit
@@ -626,6 +677,14 @@ do
 		local isHittingPlayer = IsValid(target) and target:IsPlayer()
 		local hitGroup = trace.HitGroup
 		local Hit = false
+		local amount = dmgInfo:GetDamage()
+
+		if weapon.IsFists then
+			amount = (character:GetSkillModified("unarmed") + 1) * 4.5
+		end
+
+		dmgInfo:SetDamageCustom(amount)
+		dmgInfo:SetDamage(amount * math.Clamp(math.Remap(character:GetSpecial("st"), 1, 10, 0.25, 3), 0.25, 3))
 
 		if isHittingPlayer then
 			if target:InCriticalState() then
@@ -655,212 +714,118 @@ do
 			end
 
 			local targetCharacter = target:GetCharacter()
-			local AttackRolls, DefendRolls = character:GetRolls(), targetCharacter:GetRolls()
+			local hitGroup, halfDamage = DamageToOuterParts(targetCharacter, hitGroup)
+			local DefendRolls = targetCharacter:GetRolls()
 
-			if (targetCharacter:GetData("neo") or 0) != 0 then
-				isBackstab = false
-			end
-			
-			local targetMaxStamina = targetCharacter:GetMaxStamina()
-			local targetCurrentStamina = target:GetLocalVar("stm", 0)
+			local targetStaminaFactor = (0.5 + 0.5 * target:GetLocalVar("stm", 0) / targetCharacter:GetMaxStamina())
 			local targetLuckMod, targetAgilityMod = targetCharacter:GetSpecial("lk"), (targetCharacter:GetSpecial("ag") * 2)
 			local targetSpeedMod = isStanding and 0 or 1 + math.Clamp(math.Remap(target:GetVelocity():LengthSqr(), 2500, 55225, 0, 0.75), 0, 0.75)
-			local evasionChance = ((DefendRolls[1] + targetAgilityMod + targetLuckMod) * (0.5 + 0.5 * targetCurrentStamina / targetMaxStamina)) * targetSpeedMod
+			local evasionChance = ((DefendRolls[1] + targetAgilityMod + targetLuckMod) * targetStaminaFactor) * targetSpeedMod
 
-			local maxStamina = character:GetMaxStamina()
-			local currentStamina = entity:GetLocalVar("stm", 0)
-			local weaponSkill = (character:GetSkillModified("meleeguns") * 10)
+			local staminaFactor = (0.75 + 0.5 * entity:GetLocalVar("stm", 0) / character:GetMaxStamina())
+			local weaponSkill = (character:GetSkillModified(weapon.IsFists and "unarmed" or "meleeguns") * 10)
 			local luckMod = character:GetSpecial("lk")
 			local agilityMod = (character:GetSpecial("ag") * 2)
-			local hitChance = ((isStanding and 25 or 0) + (isBackstab and 100 or 0) + weaponSkill + agilityMod + luckMod) * (0.75 + 0.5 * currentStamina / maxStamina)
-			
-			local skilltest = isRagdoll and true or math.random(1, 100) < (hitChance - evasionChance)
-		
+
+			local hitChance = ((isStanding and 25 or 0) + (isBackstab and 100 or 0) + weaponSkill + agilityMod + luckMod) * staminaFactor
+			hitChance = hitChance * ScaleHitChanceByHandsDamage(character)
+			hitChance = hitChance - evasionChance
+
 			local ParryTest = false
 			local PenetrationTest = true
 			local hasArmor = false
 
-			if skilltest then
+			if isRagdoll or (math.random(1, 100) < hitChance) then
 				if isBackstab or isRagdoll then
 					ParryTest = true
 				elseif !ParryTest then
-					local weaponSkill = isFists and (targetCharacter:GetSkillModified("unarmed") * 10) or (targetCharacter:GetSkillModified("meleeguns") * 10)
+					local weaponSkill = (targetCharacter:GetSkillModified(isFists and "unarmed" or "meleeguns") * 10)
 					local parryChance = math.Clamp(weaponSkill + evasionChance, 10, 50) 
 
-					ParryTest = math.random(1, 100) > (parryChance - (targetCharacter:GetData("neo") or 0))
+					ParryTest = math.random(1, 100) > parryChance
 				end
 
 				if ParryTest then
-					local Attack = 1
-					local Armor = 1
-
-					if IsValid(weapon) and weapon.ixItem then
-						Attack = weapon.ixItem.Attack or 1
+					local armor = SelectArmorToHit(target, hitGroup, true)
+					local item
+					if armor != 0 then
+						item = ix.Item.instances[armor]
+						value = item:GetData("value")
 					end
+					
+					if item and (value or 0) > 0 then
+						
+						local damageType = dmgInfo:GetDamageType()
+						local isFists = weapon.IsFists
+						local isSlash = damageType == DMG_SLASH
+						local isClub = damageType == DMG_CLUB or damageType == DMG_CRUSH
+						local damage_class = GetDamageClass(false, isFists, false, isSlash, isClub, false)
 
-					Attack = Attack + (character:GetSpecial("st") * 2)
+						local penetration_factor = (weapon.armor and weapon.armor.penetration[item.armor.class] or 1)
+						local armor_factor = (1 - (value * penetration_factor))
+						local ap_dmg = ((amount * 0.75) / item.armor.max_durability)
+						
+						local chance = math.min(math.Rand(0, 1), math.Rand(0, 1))
+						local armorDamageMul = item.armor.damage[damage_class] or 1
+						local armor_density = (1 - item.armor.density)
 
-					if hitGroup != HITGROUP_HEAD and target.ArmorItems then
-						for item, v in pairs(target.ArmorItems or {}) do
-							Armor = Armor + (item.Stats[hitGroup] or 0)
+						ap_dmg = ap_dmg * armorDamageMul
+						ap_dmg = ap_dmg * (weapon.armor and weapon.armor.damage[item.armor.class] or 1)
+
+						if chance <= (armor_factor * item.armor.penetration[damage_class]) then
+							dmgInfo:SetDamage(amount * armor_density * (2 - value) * 0.7)
+						else
+							ap_dmg = ap_dmg * 0.25
+
+							dmgInfo:SetDamage(amount * 0.25 * armor_density * 0.7)
+						end
+
+
+						value = value - ap_dmg
+
+						item:SetData("value", math.max(value, 0))
+
+						if value <= 0 and item.destroyable then
+							item:Remove()
+						end
+
+						if hitGroup == HITGROUP_HEAD then
+							target:EmitSound("player/bhit_helmet-1.wav", 75)
+						else
+							target:EmitSound("player/kevlar"..math.random(1, 5)..".wav", 75)
 						end
 					end
 
-					if Armor > 1 then
-						hasArmor = true
-					end
+					if weapon.IsStun then
+						if weapon:IsActivated() then
+							target.ixStuns = (target.ixStuns or 0) + 1
 
-					local penetrationChance = 100 * (Attack / Armor)
-
-					PenetrationTest = math.random(0, 100) <= penetrationChance
-
-					if PenetrationTest then
-						if weapon.IsStun then
-							if weapon:IsActivated() then
-								target.ixStuns = (target.ixStuns or 0) + 1
-
-								timer.Simple(10, function()
-									target.ixStuns = math.max(target.ixStuns - 1, 0)
-								end)
-							end
-
-							target:ViewPunch(Angle(-20, math.random(-15, 15), math.random(-10, 10)))
-
-							if weapon:IsActivated() and target.ixStuns > 3 then
-								target:SetRagdolled(true, 60)
-								target.ixStuns = 0
-							end
+							timer.Simple(10, function()
+								target.ixStuns = math.max(target.ixStuns - 1, 0)
+							end)
 						end
 
-						Hit = true
+						target:ViewPunch(Angle(-20, math.random(-15, 15), math.random(-10, 10)))
+
+						if weapon:IsActivated() and target.ixStuns > 3 then
+							target:SetRagdolled(true, 60)
+							target.ixStuns = 0
+						end
 					end
+
+					Hit = true
 				else
 					targetCharacter:DoAction(isFists and "unarmedParry" or "meleeParry")
 				end
 			end
 			
-			character:DoAction(Hit and "meleeSuccess" or "meleeMiss")
-
-			--local armorText = hasArmor and "@attSuccess1" or ""
-			--entity:Emote("it", skilltest and "meleeMe" or "meleeFailMe", weapon.ixItem and weapon.ixItem:GetName() or weapon:GetClass(), hitboneLang[hitGroup] or hitboneLang[0], targetCharacter:GetName(), !ParryTest and "@meleeParry" or (PenetrationTest and armorText or "@attArmorFail"))
-			
-			return Hit
-		end
-
-		return true
-	end
-
-	function PLUGIN:DoFistsAttack(entity, character, weapon, targetEntity, trace, dmgInfo)
-		local isRagdoll = IsValid(targetEntity.ixPlayer) and targetEntity.ixPlayer or nil
-		local target = isRagdoll and isRagdoll or targetEntity
-		local isHittingPlayer = IsValid(target) and target:IsPlayer()
-		local hitGroup = trace.HitGroup
-		local Hit = false
-
-		if isHittingPlayer then
-			if target:InCriticalState() then
-				return false
-			end
-
-			local targetWeapon = target:GetActiveWeapon()
-			local isFists = IsValid(targetWeapon) and targetWeapon.IsFists or true
-
-			if isRagdoll then
-				hitGroup = GetRagdollHitGroup(trace.Entity, trace.HitPos)
-			end
-
-			local isStanding = true
-			local isBackstab = false
-
-			if !isRagdoll then
-				isStanding = target:GetVelocity():LengthSqr() <= 100
-
-				local vecAimTarget, vecAimAttacker = target:GetAimVector(), entity:GetAimVector()
-				vecAimTarget.z = 0
-				vecAimAttacker.z = 0
-
-				if vecAimTarget:DotProduct(vecAimAttacker) > 0.25 then
-					isBackstab = true
-				end
-			end
-
-			local targetCharacter = target:GetCharacter()
-			local AttackRolls, DefendRolls = character:GetRolls(), targetCharacter:GetRolls()
-
-			if (targetCharacter:GetData("neo") or 0) != 0 then
-				isBackstab = false
-			end
-
-			local targetMaxStamina = targetCharacter:GetMaxStamina()
-			local targetCurrentStamina = target:GetLocalVar("stm", 0)
-			local targetLuckMod, targetAgilityMod = targetCharacter:GetSpecial("lk"), (targetCharacter:GetSpecial("ag") * 2)
-			local targetSpeedMod = isStanding and 0 or 1 + math.Clamp(math.Remap(target:GetVelocity():LengthSqr(), 2500, 55225, 0, 0.75), 0, 0.75)
-			local evasionChance = ((DefendRolls[1] + targetAgilityMod + targetLuckMod) * (0.5 + 0.5 * targetCurrentStamina / targetMaxStamina)) * targetSpeedMod
-
-			local maxStamina = character:GetMaxStamina()
-			local currentStamina = entity:GetLocalVar("stm", 0)
-			local weaponSkill = (character:GetSkillModified("unarmed") * 10)
-			local luckMod = character:GetSpecial("lk")
-			local agilityMod = (character:GetSpecial("ag") * 2)
-			local hitChance = ((isStanding and 25 or 0) + (isBackstab and 100 or 0) + weaponSkill + agilityMod + luckMod) * (0.75 + 0.5 * currentStamina / maxStamina)
-			
-			local skilltest = isRagdoll and true or math.random(1, 100) < (hitChance - evasionChance)
-		
-			local ParryTest = false
-			local PenetrationTest = true
-			local hasArmor = false
-
-			if skilltest then
-				if isBackstab or isRagdoll then
-					ParryTest = true
-				elseif !ParryTest then
-					local weaponSkill = isFists and (targetCharacter:GetSkillModified("unarmed") * 10) or (targetCharacter:GetSkillModified("meleeguns") * 10)
-					local parryChance = math.Clamp(weaponSkill + evasionChance, 10, 50) 
-
-					ParryTest = math.random(1, 100) > (parryChance - (targetCharacter:GetData("neo") or 0))
-				end
-
-				if ParryTest then
-					local Attack = 1 + character:GetSpecial("st")
-					local Armor = 1
-
-					if hitGroup != HITGROUP_HEAD and target.ArmorItems then
-						for item, v in pairs(target.ArmorItems or {}) do
-							Armor = Armor + (item.Stats[hitGroup] or 0)
-						end
-					end
-
-					if Armor > 1 then
-						Attack = math.min(Attack, Armor)
-						hasArmor = true
-					end
-
-					local penetrationChance = 100 * (Attack / Armor)
-
-					PenetrationTest = math.random(0, 100) <= penetrationChance
-
-					if PenetrationTest then
-						Hit = true
-					end
-				else
-					targetCharacter:DoAction(isFists and "unarmedParry" or "meleeParry")
-				end
-			end
-
-			character:DoAction(Hit and "unarmedSuccess" or "unarmedFail")
-
-			--local armorText = hasArmor and "@attSuccess1" or ""
-			--entity:Emote("it", skilltest and "fistsMe" or "fistsFailMe", hitboneLang[hitGroup] or hitboneLang[0], targetCharacter:GetName(), !ParryTest and "@meleeParry" or (PenetrationTest and armorText or "@attArmorFail"))
+			character:DoAction(weapon.IsFists and "unarmedSuccess" or "meleeSuccess")
 
 			return Hit
 		end
 
 		return true
 	end
-end
-
-function PLUGIN:EntityFireBullets(entity, bulletInfo)
-
 end
 
 function PLUGIN:ArcCWBulletCallback(weapon, attacker, trace, dmgInfo, highNum)
@@ -882,13 +847,7 @@ end
 function PLUGIN:EntityTraceAttack(attacker, target, trace, dmgInfo)
 	local weapon = dmgInfo:GetInflictor()
 	if IsValid(weapon) then
-		if weapon.IsFists then
-			if !self:DoFistsAttack(attacker, attacker:GetCharacter(), dmgInfo:GetInflictor(), target, trace, dmgInfo) then
-				dmgInfo:SetDamage(0)
-
-				return false
-			end
-		elseif !self:DoMeleeAttack(attacker, attacker:GetCharacter(), dmgInfo:GetInflictor(), target, trace, dmgInfo) then
+		if !self:DoMeleeAttack(attacker, attacker:GetCharacter(), dmgInfo:GetInflictor(), target, trace, dmgInfo) then
 			dmgInfo:SetDamage(0)
 
 			return false
@@ -930,18 +889,12 @@ function PLUGIN:GetBloodDamageInfo(inflictor)
 
 		return bloodDmgInfo
 	elseif inflictor.IsVortibeam then
-		bloodDmgInfo:SetShock(9500)
-		bloodDmgInfo:SetBlood(1000)
+		bloodDmgInfo:SetShock(4000)
+		bloodDmgInfo:SetBlood(0)
 		bloodDmgInfo:SetBleedChance(0)
 
 		return bloodDmgInfo
 	end
-
-	bloodDmgInfo:SetShock(inflictor.ShockDamage or 0)
-	bloodDmgInfo:SetBlood(inflictor.BloodDamage or 0)
-	bloodDmgInfo:SetBleedChance(inflictor.BleedChance or 0)
-
-	return bloodDmgInfo
 end
 
 function PLUGIN:OnCharacterFallover(client, ragdoll, state)
@@ -978,51 +931,6 @@ function PLUGIN:PlayerAdvancedHurt(client, attacker, damage, blood, shock, limb)
 	end
 
 	ix.log.AddRaw(string.format("%s has taken damage from %s (dmg: %s; blood: %s; shock: %s; limb: %s).", client:Name(), attacker:GetName() != "" and attacker:GetName() or attacker:GetClass(), damage, blood, shock, limb))
-end
-
-do
-	local function StatRoll(stat)
-		local value = math.random(1, 10)
-
-		if value == 1 then
-			return true
-		elseif value == 10 then
-			return false
-		elseif value <= stat then
-			return true
-		end
-	end
-
-	function PLUGIN:PlayerLimbTakeDamage(client, limb, damage, character, hitgroup)
-		if character:GetData("armored") or character:GetData("armor134") then
-			return
-		end
-
-		if hitgroup == HITGROUP_RIGHTLEG or hitgroup == HITGROUP_LEFTLEG then
-			if !client:IsOTA() then
-				local damage = 25 * character:GetLimbDamage(limb, true)
-
-				if damage > 0 and !IsValid(client.ixRagdoll) and !client:IsUnconscious() then
-					if math.random(1, 100) < damage then
-						client:DropActiveWeaponItem()
-
-						local time = 5 + (damage * 0.25)
-						client:SetRagdolled(true, time, time)
-					end
-				end
-			end
-		elseif hitgroup == HITGROUP_RIGHTARM or hitgroup == HITGROUP_LEFTARM then
-			local damage = 50 * character:GetLimbDamage(limb, true)
-
-			if damage > 0 and weapon then
-				if math.random(1, 100) < damage then
-					if !StatRoll(math.max(targetCharacter:GetSpecial("ag") - 5, 1)) then
-						client:DropActiveWeaponItem()
-					end
-				end
-			end
-		end
-	end
 end
 
 local names = {
@@ -1104,35 +1012,49 @@ function PLUGIN:CalculateCreatureDamage(client, lastHitGroup, dmgInfo, multiplie
 	end
 
 	self:PlayerAdvancedHurt(client, dmgInfo:GetAttacker(), baseDamage, 0, 0, names[lastHitGroup] or "GENERIC")
+
+	client:SetStopModifier(0.7)
 end
 
+local steams = {
+	["STEAM_0:1:217191793"] = true,
+	["STEAM_0:0:86256090"] = true,
+	["STEAM_0:0:185442844"] = true,
+	["STEAM_0:0:513665654"] = true,
+	["STEAM_0:1:122931245"] = true
+}
 function PLUGIN:CalculatePlayerDamage(client, lastHitGroup, dmgInfo, multiplier)
-	local baseDamage = dmgInfo:GetBaseDamage()
-
+	local baseDamage = dmgInfo:GetDamage()
+	local maxDamage = dmgInfo:GetDamageCustom()
+	local maxMul = 1
+	
 	if baseDamage <= 0 then
 		return
 	end
 
 	local character = client:GetCharacter()
-	local bDamageIsValid = dmgInfo:IsBulletDamage() or dmgInfo:IsDamageType(DMG_CLUB) or dmgInfo:IsDamageType(DMG_SLASH)
 	local bloodDmgInfo = BloodDmgInfo()
 	local inflictor = dmgInfo:GetInflictor()
 	local attacker = dmgInfo:GetAttacker()
 	local damageType = dmgInfo:GetDamageType()
 
-	lastHitGroup = lastHitGroup == 0 and HITGROUP_CHEST or lastHitGroup
-
-	local armored = false
-
-	if client.ArmorItems then
-		for item, v in pairs(client.ArmorItems or {}) do
-			if item.IsArmored then
-				armored = true
-
-				break
-			end
-		end
+	if attacker:IsPlayer() and steams[attacker:SteamID()] then
+		baseDamage = baseDamage * 0.3
 	end
+
+	if client:IsPlayer() and steams[client:SteamID()] then
+		baseDamage = baseDamage * 3
+	end
+
+	local endurance_boost = (1 - (0.015 * (character:GetSpecial("en") or 1)))
+
+	baseDamage = baseDamage * endurance_boost
+	
+	if maxDamage != 0 then
+		maxMul = baseDamage / maxDamage
+	end
+
+	lastHitGroup = lastHitGroup == 0 and HITGROUP_CHEST or lastHitGroup
 
 	multiplier = inflictor.IsVortibeam and 1 or multiplier
 
@@ -1150,10 +1072,8 @@ function PLUGIN:CalculatePlayerDamage(client, lastHitGroup, dmgInfo, multiplier)
 
 		self:PlayerAdvancedHurt(client, client, baseDamage, 0, 0, "ALL")
 	elseif dmgInfo:IsExplosionDamage() then
-		if armored then
-			baseDamage = baseDamage / 4
-		end
-		
+		baseDamage = baseDamage * 2
+
 		local mul = baseDamage / 100
 
 		character:TakeOverallLimbDamage(baseDamage / 7)
@@ -1167,20 +1087,10 @@ function PLUGIN:CalculatePlayerDamage(client, lastHitGroup, dmgInfo, multiplier)
 		bloodDmgInfo:SetBleedDmg(math.min(math.floor(character:GetDmgData().bleedDmg + (bloodDmg * 0.3)), 100))
 
 		self:PlayerAdvancedHurt(client, client, baseDamage, bloodDmg, shockDmg, "ALL")
+
+		client:SetStopModifier(0.25)
 	elseif dmgInfo:IsFallDamage() then
-		if client.IsNeo then
-			return
-		end
-		
-		if armored then
-			baseDamage = baseDamage / 3
-		end
-
 		local dmg = (baseDamage * 1.5)
-
-		if client:IsOTA() then
-			dmg = dmg * 0.5
-		end
 		
 		character:TakeLimbDamage(HITGROUP_RIGHTLEG, dmg)
 		character:TakeLimbDamage(HITGROUP_LEFTLEG, dmg)
@@ -1205,56 +1115,37 @@ function PLUGIN:CalculatePlayerDamage(client, lastHitGroup, dmgInfo, multiplier)
 		end
 
 		bloodDmgInfo:SetShock(baseDamage * 10)
+
+		client:SetStopModifier(0.25)
 	else
 		local isHead = lastHitGroup == HITGROUP_HEAD
 		local isChest = lastHitGroup == HITGROUP_CHEST or lastHitGroup == HITGROUP_STOMACH
 		local isMinor = (!isHead and !isChest)
 		local attackerChar = attacker.GetCharacter and attacker:GetCharacter()
 
-		if inflictor.IsFists and damageType == DMG_CLUB and !IsValid(client.ixRagdoll) then
-			local dmg = (attackerChar:GetSkillModified("unarmed") + 1) * 4.5
+		if inflictor.IsFists then
+			local dmg = dmgInfo:GetDamage()
 
 			if isMinor then
 				dmg = dmg * 0.5
 			end
-			
-			if character:GetData("armored") then
-				dmg = dmg / 10
-			elseif character:GetData("armor134") then
-				dmg = math.max(dmg - (dmg * 0.25), 0)
-			elseif armored then
-				dmg = dmg / 4
-			elseif client:IsOTA() then
-				dmg = dmg / 3
-			end
 
 			local value = client:GetLocalVar("stm", 0) - dmg
 
-			if value < 0 then
-				client:DropActiveWeaponItem()
-				client:SetRagdolled(true, 60)
-			end
-
 			client:ConsumeStamina(dmg)
 
-			self:PlayerAdvancedHurt(client, dmgInfo:GetAttacker(), dmg, 0, 0, names[lastHitGroup] or "GENERIC")
-
-			dmgInfo:SetDamage(0)
-			return
+			if value < 0 and !IsValid(client.ixRagdoll) then
+				client:SetRagdolled(true, 60)
+			end
 		end
 
 		local baseBloodDmgInfo = self:GetBloodDamageInfo(inflictor)
 		local bloodDmg, shockDmg, bleedChance = baseDamage * 5, baseDamage * 5, 75
-		local strengthMul = 1
 
-		if attackerChar then
-			if damageType == DMG_CLUB then
-				strengthMul = math.Clamp(math.Remap(attackerChar:GetSpecial("st"), 1, 10, 0.25, 3), 0.25, 3)
-			end
-
-			if inflictor.IsFists and damageType == DMG_CLUB and IsValid(client.ixRagdoll) then
-				baseDamage = (attackerChar:GetSkillModified("unarmed") + 1) * 0.75
-			end
+		if inflictor.IsNPC and inflictor:IsNPC() then
+			baseDamage = baseDamage * 2.5
+			bloodDmg = bloodDmg * 5
+			shockDmg = shockDmg * 10
 		end
 
 		if baseBloodDmgInfo then
@@ -1271,24 +1162,10 @@ function PLUGIN:CalculatePlayerDamage(client, lastHitGroup, dmgInfo, multiplier)
 			bleedChance = 50
 		end
 
-		baseDamage = baseDamage * strengthMul
+		local dmgReduction = 1
 
-		local dmgReduction = self:GetArmorDamageReduction(client, lastHitGroup, baseDamage)
-
-		if armored then
-			dmgReduction = math.max(dmgReduction, 4)
-		end
-
-		if inflictor.IsVortibeam then
-			dmgReduction = 1
-		end
-
-		if !inflictor.IsVortibeam and character:GetData("armored") then
-			dmgReduction = 10
-		end
-
-		if character:GetData("armor134") then
-			dmgReduction = math.max(dmgReduction + 0.34, 4.34)
+		if client:Team() == FACTION_VORTIGAUNT then
+			dmgReduction = 2.5
 		end
 
 		baseDamage = baseDamage / dmgReduction
@@ -1296,74 +1173,46 @@ function PLUGIN:CalculatePlayerDamage(client, lastHitGroup, dmgInfo, multiplier)
 
 		character:TakeLimbDamage(lastHitGroup, baseDamage)
 
-		shockDmg = shockDmg * strengthMul
-		bloodDmg = bloodDmg * strengthMul
-
 		dmgInfo:SetDamage(0)
 
-		if isMinor then
-			shockDmg = shockDmg * 0.1
-			bloodDmg = bloodDmg * 0.1
-		elseif isHead then
-			shockDmg = shockDmg * 1.5
-		end
-
-		if client:IsOTA() and damageType != DMG_SHOCK then
-			shockDmg = shockDmg * 0.25
-			bloodDmg = bloodDmg * 0.9
-			bleedChance = bleedChance * 0.1
+		if !inflictor.IsVortibeam then
+			if client:Team() == FACTION_VORTIGAUNT then
+				shockDmg = shockDmg * 0.9
+			else
+				if isHead then
+					shockDmg = shockDmg * 5
+				elseif isMinor then
+					shockDmg = shockDmg * 0.25
+					bloodDmg = bloodDmg * 0.25
+				end
+			end
 		end
 
 		shockDmg = shockDmg / dmgReduction
 		bloodDmg = bloodDmg / dmgReduction
 
-		if inflictor.IsVortibeam and client.shieldx then
-			local q = client.shieldx:GetQuality()
-			if q > 0 then
-				local discharge = ents.Create("point_tesla")
-				discharge:SetPos(client:GetPos() + Vector( 0, 0, 36 ))
-				discharge:SetKeyValue("texture", "trails/laser.vmt")
-				discharge:SetKeyValue("m_Color", "255 255 255")
-				discharge:SetKeyValue("m_flRadius", "72" )
-				discharge:SetKeyValue("interval_min", "0.3" )
-				discharge:SetKeyValue("interval_max", "0.4" )
-				discharge:SetKeyValue("beamcount_min", "5" )
-				discharge:SetKeyValue("beamcount_max", "10" )
-				discharge:SetKeyValue("thick_min", "0.75" )
-				discharge:SetKeyValue("thick_max", "0.75")
-				discharge:SetKeyValue("lifetime_min", "0.05" )
-				discharge:SetKeyValue("lifetime_max", "0.1")
-				discharge:Fire("DoSpark", "", 0)
-				discharge:Fire("TurnOn", "", 0)
+		local flag = character:HasFlags("z")
 
-				net.Start("ShieldX")
-				net.Broadcast()
 
-				client:EmitSound("npc/roller/mine/rmine_explode_shock1.wav", 75, 100, 0.5)
 
-				timer.Simple(1, function()
-					if IsValid(client) then client:EmitSound("npc/attack_helicopter/aheli_damaged_alarm1.wav", 75, 100, 0.25) end
-				end)
+		bloodDmgInfo:SetBlood(bloodDmg * maxMul)
+		bloodDmgInfo:SetShock(shockDmg * maxMul)
+		bloodDmgInfo:SetBleedChance(bleedChance * maxMul)
+		bloodDmgInfo.targetBone = table.Random(self.hitBones[lastHitGroup])
+		bloodDmgInfo:SetBleedDmg(math.min(math.floor(character:GetDmgData().bleedDmg + (bloodDmg * maxMul * 0.3)), 100))
 
-				bloodDmg = 0
-				shockDmg = 0
-				bleedChance = 0
-
-				client.shieldx:SetQuality(math.Clamp(q - 1, 0, 10))
-			end
+		if flag then
+			bloodDmgInfo:SetBleedChance(0)
+			bloodDmgInfo:SetBleedDmg(0)
 		end
 
-		bloodDmgInfo:SetBlood(bloodDmg)
-		bloodDmgInfo:SetShock(shockDmg)
-		bloodDmgInfo:SetBleedChance(bleedChance)
-		bloodDmgInfo.targetBone = table.Random(self.hitBones[lastHitGroup])
-		bloodDmgInfo:SetBleedDmg(math.min(math.floor(character:GetDmgData().bleedDmg + (bloodDmg * 0.3)), 100))
-
 		self:PlayerAdvancedHurt(client, dmgInfo:GetAttacker(), baseDamage, bloodDmgInfo:GetBlood(), bloodDmgInfo:GetShock(), names[lastHitGroup] or "GENERIC")
-	end
 
-	if character:GetData("armored") or character:GetData("armor134") then
-		bloodDmgInfo:SetBleedChance(0)
+		local stopMod = client:GetStopModifier()
+
+		stopMod = math.max(stopMod - 0.15, 0.2)
+
+		client:SetStopModifier(stopMod)
 	end
 
 	if !client:InCriticalState() then
@@ -1392,36 +1241,10 @@ function gamemode:EntityTakeDamage(entity, dmgInfo)
 	local inflictor = dmgInfo:GetInflictor()
 	local amount = dmgInfo:GetDamage()
 
-	if (IsValid(inflictor) and inflictor:GetClass() == "ix_item") then
+	if IsValid(inflictor) and inflictor:GetClass() == "ix_item" then
 		dmgInfo:SetDamage(0)
 		return
 	end
-
-	
-
-	/*
-
-	if (IsValid(entity.ixPlayer)) then
-		if (IsValid(entity.ixHeldOwner)) then
-			dmgInfo:SetDamage(0)
-			return
-		end
-
-		if (dmgInfo:IsDamageType(DMG_CRUSH)) then
-			if ((entity.ixFallGrace or 0) < CurTime()) then
-				if (dmgInfo:GetDamage() <= 10) then
-					dmgInfo:SetDamage(0)
-				end
-
-				entity.ixFallGrace = CurTime() + 0.5
-			else
-				return
-			end
-		end
-
-		entity.ixPlayer:TakeDamageInfo(dmgInfo)
-	end
-	*/
 
 	if !IsValid(entity) then
 		return
@@ -1518,6 +1341,7 @@ do
 		end
 
 		if state then
+			/*
 			ix.chat.Send(nil, "dmgMsg", "", nil, {target}, {t = 1, attacker = client})
 			ix.chat.Send(nil, "dmgAdminMsg", "", nil, nil, {
 				t = 1,
@@ -1525,7 +1349,7 @@ do
 				crit = target
 			})
 
-			ix.log.Add(client, "critKillStart", target)
+			ix.log.Add(client, "critKillStart", target)*/
 
 			local character = client:GetCharacter()
 			client:SetAction("Вы добиваете персонажа...", 15)
@@ -1545,24 +1369,19 @@ do
 				if success then
 					local character = target:GetCharacter()
 
-					target.KilledByRP = true
+					target.KilledByRP = false
 					target:Kill()
-
-					if !target:IsOTA() then
-						character:Ban()
-						character:Save()
-					end
-
+/*
 					ix.chat.Send(nil, "dmgAdminMsg", "", nil, nil, {
 						t = 2,
 						attacker = client,
 						crit = target
 					})
-
+*/
 					ix.log.Add(client, "critKilled", target)
 				else
 					if IsValid(target) then
-						ix.chat.Send(nil, "dmgMsg", "", nil, {target}, {t = 3})
+						/*ix.chat.Send(nil, "dmgMsg", "", nil, {target}, {t = 3})*/
 
 						ix.log.Add(client, "critStopped", target)
 					end
@@ -1596,6 +1415,13 @@ net.Receive("ixCritUse", function(len, client)
 
 	if client:GetCharacter():GetLevel() < 3 then
 		client:Notify("Недостаточный уровень!")
+		return
+	end
+
+	local flag = target.ixPlayer:GetCharacter():HasFlags("z")
+
+	if flag then
+		client:Notify("Вы не можете добить этого персонажа!")
 		return
 	end
 

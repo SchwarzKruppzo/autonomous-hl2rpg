@@ -331,6 +331,17 @@ function ENT:Die(dmgInfo)
 		effect:SetEntity(self)
 	util.Effect("Explosion", effect, true, true)
 
+	if self.isCombine then
+		local pos = self:GetPos()
+
+		timer.Simple(0, function()
+			if math.random(1, 100) < 51 then
+				local instance = ix.Item:Instance("combine_resine")
+				ix.Item:Spawn(pos, nil, instance)
+			end
+		end)
+	end
+
 	self:EmitSound("NPC_SScanner.Die")
 	self:Remove()
 end

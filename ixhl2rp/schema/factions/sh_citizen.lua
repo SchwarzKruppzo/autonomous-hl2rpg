@@ -60,8 +60,12 @@ function FACTION:GetRationType(character)
 	return Schema:GetCitizenRationTypes(character)
 end
 
-function FACTION:OnCharacterCreated(client, character)
-	character:CreateIDCard("card")
+function FACTION:OnSpawn(client, firstTime)
+	if firstTime then
+		local character = client:GetCharacter()
+		
+		character:CreateIDCard("card")
+	end
 end
 
 function FACTION:GenerateName(gender)

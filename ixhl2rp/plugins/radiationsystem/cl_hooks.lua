@@ -23,13 +23,14 @@ do
 	local highsound = 0
 
 	function PLUGIN:GeigerThink(character)
-		local radDmg = LocalPlayer():GetNetVar("radDmg")
+		local client = LocalPlayer()
+		local radDmg = client:GetNetVar("radDmg")
 
 		if !radDmg then
 			return
 		end
 
-		if !character:HasGeigerCounter() then
+		if !client:HasGeigerCounter() then
 			return
 		end
 

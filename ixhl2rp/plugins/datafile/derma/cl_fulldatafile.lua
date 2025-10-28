@@ -218,8 +218,9 @@ function PANEL:PopulateGenericData()
 		[4] = "Red",
 		[5] = "Blue",
 		[6] = "Green",
-		[7] = "Gold",
-		[8] = "Platinum"
+		[7] = "Orange",
+		[8] = "Gold",
+		[9] = "Platinum"
 	}
 
 	self.dMiddleButton.DoClick = function()
@@ -488,16 +489,16 @@ function PANEL:SetEntryText(noteText, dateText, posterText, pointsText, posterCo
 	self.Text:SetText(noteText);
 	self.Date:SetText(dateText);
 	self.Poster:SetText(posterText);
-	//self.Points:SetText(pointsText);
+	self.Points:SetText(pointsText);
 
-	//if (pointsText < 0) then
-	//	self.Points:SetTextColor(Color(255, 100, 100, 255))
-	//elseif (pointsText > 0) then
-	//	self.Points:SetTextColor(Color(150, 255, 50, 255))
-	//else
+	if (pointsText < 0) then
+		self.Points:SetTextColor(Color(255, 100, 100, 255))
+	elseif (pointsText > 0) then
+		self.Points:SetTextColor(Color(150, 255, 50, 255))
+	else
 		self.Points:SetText("");
 		self.Points:SetTextColor(Color(220, 220, 220, 255))
-	//end;
+	end;
 
 	self:SetTall(60 + (string.len(self.Text:GetText()) / 28) * 11);
 end;
@@ -520,7 +521,7 @@ function PANEL:Init()
 	self.LeftHeaderLabel:DockMargin(5, 5, 0, 0);
 
 	self.MiddleHeaderLabel = vgui.Create("DLabel", self);
-	self.MiddleHeaderLabel:SetText(""); //("POINTS");
+	self.MiddleHeaderLabel:SetText("POINTS");
 	self.MiddleHeaderLabel:SetContentAlignment(5)
 	self.MiddleHeaderLabel:SetTextColor(Color(231, 76, 60, 255));
 	self.MiddleHeaderLabel:SetFont("TopBoldLabel");

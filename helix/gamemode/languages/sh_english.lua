@@ -4,6 +4,8 @@ NAME = "English"
 LANGUAGE = {
 	helix = "Helix",
 
+	hasBag = "Вы не можете нести больше одной сумки.",
+	
 	introTextOne = "fist industries presents",
 	introTextTwo = "in collaboration with %s",
 	introContinue = "press space to continue",

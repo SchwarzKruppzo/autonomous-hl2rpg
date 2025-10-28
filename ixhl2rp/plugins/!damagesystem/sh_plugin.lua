@@ -14,6 +14,9 @@ ix.char.RegisterVar("shock", {
 	fieldType = ix.type.number,
 	default = 0,
 	isLocal = true,
+	Net = {
+		Transmit = ix.transmit.owner
+	},
 	bNoDisplay = true
 })
 
@@ -22,6 +25,9 @@ ix.char.RegisterVar("blood", {
 	fieldType = ix.type.number,
 	default = -1,
 	isLocal = true,
+	Net = {
+		Transmit = ix.transmit.owner
+	},
 	bNoDisplay = true
 })
 
@@ -35,8 +41,17 @@ ix.char.RegisterVar("dmgData", {
 		bleedDmg = 0
 	},
 	isLocal = true,
+	Net = {
+		Transmit = ix.transmit.owner
+	},
 	bNoDisplay = true
 })
+
+ix.Net:AddPlayerVar("knocked", true, nil, ix.Net.Type.Bool)
+ix.Net:AddPlayerVar("doll", false, nil, ix.Net.Type.EntityIndex)
+ix.Net:AddPlayerVar("crit", false, nil, ix.Net.Type.Bool)
+ix.Net:AddPlayerVar("isBleeding", false, nil, ix.Net.Type.Bool)
+ix.Net:AddPlayerVar("bleedingBone", false, nil, ix.Net.Type.EntityIndex)
 
 do
 	local PLAYER = FindMetaTable("Player")
@@ -110,7 +125,7 @@ do
 			if data.t == 1 then
 				chat.AddText(clrRed, string.format("Вас добивает игрок %s (%s)!", data.attacker:Name(), data.attacker:GetAnonID()))
 			elseif data.t == 2 then
-				chat.AddText(color_white, "После игровой смерти, Вы потеряли 30% своих вещей и жетонов.")
+				chat.AddText(color_white, "После игровой смерти, Вы потеряли 50% своих вещей и жетонов.")
 			elseif data.t == 3 then
 				chat.AddText(color_white, "Вас прекратили добивать!")
 			end
@@ -142,32 +157,6 @@ do
 	})
 end
 
-function PLUGIN:CanTransferItem(itemTable, curInv, inventory)
-	if !itemTable.Dropped then
-		if curInv.vars and curInv.vars.isDrop and inventory:GetID() == curInv:GetID() then
-			return false
-		end
-		
-		if inventory.vars and inventory.vars.isDrop then
-			return false
-		end
-	else
-		return true
-	end
-end
-
-function PLUGIN:OnItemTransferred(itemTable, curInv, inventory)
-	if curInv.vars and curInv.vars.isDrop and table.IsEmpty(curInv:GetItems()) then
-		itemTable.Dropped = nil
-
-		local container = curInv.vars.entity
-
-		if IsValid(container) then
-			container:Remove()
-		end
-	end
-end
-
 function PLUGIN:PlayerTraceAttack(client, dmgInfo, dir, trace)
 	if dmgInfo:GetDamage() <= 0 then
 		return true
@@ -184,3 +173,193 @@ ix.util.Include("cl_plugin.lua")
 ix.util.Include("sv_plugin.lua")
 ix.util.Include("sv_hooks.lua")
 
+do
+	local PLAYER = FindMetaTable("Player")
+
+	function PLAYER:SetupDataTables()
+		self:NetworkVar("Float", 0, "StopModifier")
+		self:NetworkVar("Float", 1, "SprintSpeed")
+		self:NetworkVar("Bool", 0, "RunFading")
+		self:NetworkVar("Bool", 1, "SprintMove")
+	end
+
+	hook.Add("OnEntityCreated", "rp.damage.speed", function(ent)
+	    if ent:IsPlayer() then
+	        ent:InstallDataTable()
+	        ent:SetupDataTables()
+	    end
+	end)
+
+	hook.Add("NetworkEntityCreated", "rp.damage.speed", function(ent)
+		if ent:IsPlayer() then
+	        ent:InstallDataTable()
+	        ent:SetupDataTables()
+	    end
+	end)
+	
+	hook.Add("StartCommand", "rp.damage.speed", function(ply, cmd)
+		if cmd:KeyDown(IN_JUMP) and ply:GetMoveType() != MOVETYPE_NOCLIP and ply:GetNetVar("brth", false) then
+			cmd:ClearButtons()
+		end
+	end)
+
+	hook.Add("OnPlayerHitGround", "rp.damage.speed", function(ply, inWater, onFloater, speed)
+		if inWater then
+			return
+		end
+
+		ply:SetStopModifier(math.max(ply:GetStopModifier() - (speed * 0.0012), 0.2))
+	end)
+
+	local function CalcAthleticsSpeed(athletics)
+		return 1 + (athletics * 0.1) * 0.15
+	end
+
+	local function CalcAthletics(ply)
+		local character = ply:GetCharacter()
+
+		if character then
+			local id = character:GetID()
+
+			if ply.speedCharID != id or ply.recalculateSpeed then
+				ply.runSpeed = ix.config.Get("runSpeed") * CalcAthleticsSpeed(character:GetSkillModified("athletics"))
+				ply.jumpPower = 130 * (1 + math.min(math.Remap(character:GetSkillModified("acrobatics"), 1, 10, 0, 0.7), 0.7))
+				ply.speedCharID = id
+				ply.recalculateSpeed = false
+				ply:SetRunSpeed(ply.runSpeed)
+				ply:SetJumpPower(ply.jumpPower)
+			end
+		end
+	end
+
+	local function CheckJump(ply, mv)
+		local worldspawn = SERVER and game.GetWorld() or Entity(0)
+		
+		if !IsValid(ply:GetGroundEntity()) and ply:GetGroundEntity() != worldspawn then
+			local buttons = bit.bor(mv:GetOldButtons(), IN_JUMP)
+			mv:SetOldButtons(buttons)
+			return
+		end
+
+		if bit.band(mv:GetOldButtons(), IN_JUMP) != 0 then
+			return
+		end
+
+		if bit.band(ply:GetFlags(), FL_DUCKING) > 0 then
+			return
+		end
+
+		if SERVER then
+			if ply:OnGround() then
+				local power = ply:GetJumpPower()
+
+				ply:ConsumeStamina(power / 12)
+
+
+				local ct = CurTime()
+				if !ply.nextJumpTick or ct > ply.nextJumpTick then
+					ply:GetCharacter():DoAction("jump")
+
+					ply.nextJumpTick = ct + 0.24
+				end
+			end
+		end
+	end
+
+	hook.Add("Move", "rp.damage.speed2", function(ply, mv, cmd)
+		local mod = ply:GetStopModifier()
+		local speedFactor = 1
+		local speedx = ply:GetNWFloat("speed_debuff")
+
+		if speedx <= 1 then
+			speedFactor = speedx
+		end
+
+		if ply:OnGround() then
+			if mod < 1 then
+				mod = mod + 0.01
+
+				ply:SetStopModifier(mod)
+
+				local velocity = mv:GetVelocity()
+				mv:SetVelocity(velocity * mod)
+			elseif mod > 1 and mod != 1 then
+				ply:SetStopModifier(1)
+			end
+		end
+		
+		speedFactor = speedFactor * mod
+
+
+		
+		local velLength = ply:GetVelocity():Length2DSqr()
+
+		CalcAthletics(ply)
+
+		if bit.band(mv:GetButtons(), IN_JUMP) != 0 then
+			CheckJump(ply, mv )
+		else
+			local buttons = bit.band(mv:GetOldButtons(), bit.bnot(IN_JUMP))
+			mv:SetOldButtons(buttons)
+		end
+
+		local faction = ply:Team()
+		
+		if (faction == FACTION_ZOMBIE or faction == FACTION_SYNTH) then
+			mv:SetMaxClientSpeed(mv:GetMaxClientSpeed() * speedFactor)
+			return
+		end
+
+		if ply:GetNetVar("brth", false) or bit.band(mv:GetButtons(), IN_DUCK) != 0 or ply:IsProne() then
+			if ply:GetSprintMove() then
+				ply:SetSprintMove(false)
+				ply:SetSprintSpeed(0)
+			end
+
+			mv:SetMaxClientSpeed(ply:GetWalkSpeed())
+			return
+		end
+
+
+		if mv:KeyReleased(IN_SPEED) or mv:KeyDown(IN_SPEED) and velLength < .25 then
+			ply:SetRunFading(true)
+		end
+
+		if mv:KeyDown(IN_MOVELEFT) or mv:KeyDown(IN_MOVERIGHT) then
+			ply:SetRunFading(true)
+			mv:SetSideSpeed(mv:GetSideSpeed() * .35)
+		end
+
+		local speedx = FrameTime() * 128
+
+		if mv:KeyDown(IN_SPEED) and velLength > .25 or ply:GetSprintMove() and !ply:GetRunFading() then
+			if !ply:GetSprintMove() then
+				ply:SetRunFading(false)
+				ply:SetSprintMove(true)
+				ply:SetSprintSpeed(ply:GetWalkSpeed())
+			end
+
+			ply:SetSprintSpeed(math.Approach(ply:GetSprintSpeed(), ply.runSpeed, speedx))
+
+			local speed = ply:GetSprintSpeed()
+			mv:SetMaxClientSpeed(speed)
+			mv:SetMaxSpeed(speed)
+		elseif ply:GetSprintMove() and ply:GetRunFading() then
+			local walk_Speed = ply:GetWalkSpeed()
+
+			ply:SetSprintSpeed(math.Approach(ply:GetSprintSpeed(), walk_Speed, speedx))
+
+			local speed = ply:GetSprintSpeed()
+			mv:SetMaxClientSpeed(speed)
+			mv:SetMaxSpeed(speed)
+
+			if speed == walk_Speed then
+				ply:SetRunFading(false)
+				ply:SetSprintMove(false)
+				ply:SetSprintSpeed(0)
+			end
+		end
+
+		mv:SetMaxClientSpeed(mv:GetMaxClientSpeed() * speedFactor)
+	end)
+end

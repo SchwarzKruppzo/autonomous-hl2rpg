@@ -10,35 +10,35 @@ end
 
 local timerID = "ixAmbient"
 local ambients = {
-	[1] = {"cellar/music/01.mp3", 612},
-	[2] = {"cellar/music/02.mp3", 157},
-	[3] = {"cellar/music/03.mp3", 344},
-	[4] = {"cellar/music/04.mp3", 310},
-	[5] = {"cellar/music/05.mp3", 194},
-	[6] = {"cellar/music/06.mp3", 104},
-	[7] = {"cellar/music/07.mp3", 173},
-	[8] = {"cellar/music/08.mp3", 306},
-	[9] = {"cellar/music/09.mp3", 327},
-	[10] = {"cellar/music/10.mp3", 80},
-	[11] = {"cellar/music/11.mp3", 240},
-	[12] = {"cellar/music/12.mp3", 350},
-	[13] = {"cellar/music/13.mp3", 262},
-	[14] = {"cellar/music/14.mp3", 305},
-	[15] = {"cellar/music/15.mp3", 197},
-	[16] = {"cellar/music/16.mp3", 252},
-	[17] = {"cellar/music/17.mp3", 349},
-	[18] = {"cellar/music/18.mp3", 295},
-	[19] = {"cellar/music/19.mp3", 154},
-	[20] = {"cellar/music/20.mp3", 306},
-	[21] = {"cellar/music/21.mp3", 205},
-	[22] = {"cellar/music/22.mp3", 129},
-	[23] = {"cellar/music/23.mp3", 565},
-	[24] = {"cellar/music/24.mp3", 292},
-	[25] = {"cellar/music/25.mp3", 406},
-	[26] = {"cellar/music/26.mp3", 255},
-	[27] = {"cellar/music/27v.mp3", 64},
-	[28] = {"cellar/music/28v.mp3", 189},
-	[29] = {"cellar/music/29v.mp3", 79}
+	[1] = {"autonomous/ambient/ambient_1.ogg", 95},
+	//[2] = {"autonomous/ambient/ambient_2.ogg", 447},
+	[2] = {"autonomous/ambient/ambient_3.ogg", 185},
+	[3] = {"autonomous/ambient/ambient_4.ogg", 190},
+	[4] = {"autonomous/ambient/ambient_5.ogg", 162},
+	[5] = {"autonomous/ambient/ambient_6.ogg", 252},
+	[6] = {"autonomous/ambient/ambient_7.ogg", 198},
+	[7] = {"autonomous/ambient/ambient_8.ogg", 169},
+	[8] = {"autonomous/ambient/ambient_9.ogg", 286},
+	[9] = {"autonomous/ambient/ambient_10.ogg", 264},
+	[10] = {"autonomous/ambient/ambient_11.mp3"},
+	//[12] = {"autonomous/ambient/ambient_12.mp3"},
+	[11] = {"autonomous/ambient/ambient_13.ogg", 198},
+	[12] = {"autonomous/ambient/ambient_14.ogg", 268},
+	[13] = {"autonomous/ambient/ambient_30.mp3"},
+	[14] = {"autonomous/ambient/ambient_16.ogg", 179},
+	//[17] = {"autonomous/ambient/ambient_17.ogg", 411},
+	[15] = {"autonomous/ambient/ambient_18.mp3"},
+	//[19] = {"autonomous/ambient/ambient_19.mp3"},
+	[16] = {"autonomous/ambient/ambient_20.mp3"},
+	//[17] = {"autonomous/ambient/ambient_21.mp3"},
+	[17] = {"autonomous/ambient/ambient_22.ogg", 351},
+	[18] = {"autonomous/ambient/ambient_23.ogg", 437},
+	//[24] = {"autonomous/ambient/ambient_24.ogg", 505},
+	[19] = {"autonomous/ambient/ambient_25.ogg", 286},
+	[20] = {"autonomous/ambient/ambient_26.ogg", 328},
+	[21] = {"autonomous/ambient/ambient_27.mp3"},
+	[22] = {"autonomous/ambient/ambient_28.mp3"},
+	[23] = {"autonomous/ambient/ambient_29.mp3"},
 }
 
 local function SetVolume(volume)
@@ -59,13 +59,6 @@ local function StopAmbient()
 end
 
 local function PlayAmbient(ambientData)
-	if LocalPlayer():InOutlands() then
-		ambientData = {
-			"cellar_event/music_tno.mp3",
-			223
-		}
-	end
-
 	StopAmbient()
 
 	PLUGIN.snd = CreateSound(LocalPlayer(), ambientData[1])
@@ -75,7 +68,13 @@ local function PlayAmbient(ambientData)
 		PLUGIN.snd:ChangeVolume(ix.option.Get("ambientVol"), 0)
 	end)
 
-	timer.Create(timerID, ambientData[2] + ix.option.Get("ambientTime", 0), 1, function()
+	local time = ambientData[2]
+
+	if !time then
+		time = SoundDuration(ambientData[1])
+	end
+	
+	timer.Create(timerID, time + ix.option.Get("ambientTime", 0), 1, function()
 		PlayAmbient(ambients[math.random(1, #ambients)])
 	end)
 end

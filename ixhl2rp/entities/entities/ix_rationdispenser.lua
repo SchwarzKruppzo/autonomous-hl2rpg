@@ -86,7 +86,7 @@ if (SERVER) then
 		ration = faction.GetRationType and faction:GetRationType(character) or ration
 
 		local entity = self:CreateDummyRation()
-		entity:SetModel((ix.item.list[ration] or {}).model)
+		entity:SetModel((ix.Item:Get(ration) or {}).model)
 		entity:SetNotSolid(true)
 		entity:SetParent(self.dispenser)
 
@@ -103,9 +103,9 @@ if (SERVER) then
 			local angles = entity:GetAngles()
 			
 			entity:CallOnRemove("CreateRation", function()
-				ix.item.Spawn(ration, position, function(itemTable, entity)
-					
-				end, angles)
+				local instance = ix.Item:Instance(ration)
+				
+				ix.Item:Spawn(position, angles, instance)
 			end)
 			
 			entity:SetNoDraw(true)
@@ -150,7 +150,7 @@ if (SERVER) then
 		if (!self.canUse or self.nextUseTime > CurTime()) then
 			return
 		end
-		if (client:IsCombine()) then
+		if (client:IsCombine() and client:KeyDown(IN_SPEED)) then
 			self:SetEnabled(!self:GetEnabled())
 			self:EmitSound(self:GetEnabled() and "buttons/combine_button1.wav" or "buttons/combine_button2.wav")
 
@@ -162,7 +162,7 @@ if (SERVER) then
 				return
 			end
 
-			local cid = client:GetCharacter():GetEquipment():HasItemOfBase("base_cards", {equip = true})
+			local cid = client:GetIDCard()
 
 			if (!cid) or (client.isUsingRDispenser and client.isUsingRDispenser != self) then
 				self:DisplayError(7)

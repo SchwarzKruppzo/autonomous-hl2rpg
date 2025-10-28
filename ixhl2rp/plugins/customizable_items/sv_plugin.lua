@@ -1,15 +1,24 @@
 util.AddNetworkString("ixCreateCustomItem")
 
-function PLUGIN:CreateCustomItem(base, properties, pos, ang)
-	local item = ix.item.list[base]
+function PLUGIN:CreateCustomItem(base, properties, owner)
+	local item = ix.Item:Get(base)
 
 	if !isstring(base) or !istable(properties) then
 		return
 	end
 
-	if !item or !item.hasProperties then
+	local checksum = ix.CustomItem:Register(base, properties, owner)
+
+	if !checksum then
+		return
+	end
+	
+	if !item then
 		return
 	end
 
-	ix.item.Spawn(base, pos, nil, ang, properties)
+	local instance = ix.Item:Instance(base, {checksum = checksum})
+	instance:SetData("checksum", checksum)
+
+	ix.Item:Spawn(owner, nil, instance)
 end

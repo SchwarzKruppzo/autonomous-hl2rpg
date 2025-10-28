@@ -79,14 +79,15 @@ else
 		self:SetPhysDesc(desc)
 		self:SetDialogue(dialogID)
 		
-		timer.Simple(0.2, function()
+		self.anim = anim or ""
+		self.bgs = bodygroups or ""
+
+		timer.Simple(1, function()
 			if IsValid(self) then
 				if anim then 
-					self.anim = anim
 					self:ResetSequence(self:LookupSequence(anim))
 				end
 
-				self.bgs = bodygroups
 				for i = 0, 9 do
 					local number = string.sub(bodygroups or "", i, i)
 

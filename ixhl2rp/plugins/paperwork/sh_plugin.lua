@@ -131,3 +131,7 @@ PLUGIN.BBCodes = {
 ix.util.Include("libs/thirdparty/cl_gxml.lua")
 ix.util.Include("cl_plugin.lua")
 ix.util.Include("sv_plugin.lua")
+
+function PLUGIN:OnLoaded()
+	ix.Books:Load()
+end

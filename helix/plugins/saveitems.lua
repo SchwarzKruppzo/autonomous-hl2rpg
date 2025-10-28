@@ -44,50 +44,44 @@ function PLUGIN:LoadData()
 					query:Select("data")
 					query:WhereIn("item_id", idRange)
 					query:Callback(function(result)
+						
 						if (istable(result)) then
 							local loadedItems = {}
-							local bagInventories = {}
 
 							for _, v in ipairs(result) do
 								local itemID = tonumber(v.item_id)
 								local data = util.JSONToTable(v.data or "[]")
 								local uniqueID = v.unique_id
-								local itemTable = ix.item.list[uniqueID]
+								local itemTable = ix.Item:Get(uniqueID)
 
-								if (itemTable and itemID) then
-									local item = ix.item.New(uniqueID, itemID)
-									item.data = data or {}
+								if itemTable and itemID then
+									
+									local item = ix.Item:New(uniqueID, itemID)
+									item.data = istable(data) and table.Copy(data) or {}
 
 									local itemInfo = info[itemID]
 									local position, angles, bMovable = itemInfo[1], itemInfo[2], true
 
-									if (isbool(itemInfo[3])) then
+									if isbool(itemInfo[3]) then
 										bMovable = itemInfo[3]
 									end
 
-									local itemEntity = item:Spawn(position, angles)
+									if item.OnInstanced then
+										item:OnInstanced()
+									end
+
+									local itemEntity = ix.Item:Spawn(position, angles, item)
 									itemEntity.ixItemID = itemID
 
 									local physicsObject = itemEntity:GetPhysicsObject()
 
-									if (IsValid(physicsObject)) then
+									if IsValid(physicsObject) then
 										physicsObject:EnableMotion(bMovable)
 									end
 
-									item.invID = 0
 									loadedItems[#loadedItems + 1] = item
-
-									if (item.isBag) then
-										local invType = ix.item.inventoryTypes[uniqueID]
-										bagInventories[item:GetData("id")] = {invType.w, invType.h}
-									end
+									
 								end
-							end
-
-							-- we need to manually restore bag inventories in the world since they don't have a current owner
-							-- that it can automatically restore along with the character when it's loaded
-							if (!table.IsEmpty(bagInventories)) then
-								ix.inventory.Restore(bagInventories)
 							end
 
 							hook.Run("OnSavedItemLoaded", loadedItems) -- when you have something in the dropped item.

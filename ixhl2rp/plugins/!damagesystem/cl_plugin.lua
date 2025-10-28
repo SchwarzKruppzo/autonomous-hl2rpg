@@ -1,9 +1,14 @@
--- 1
-
 local owner, w, h, ceil, ft, clmp
 ceil = math.ceil
 clmp = math.Clamp
 local aprg, aprg2 = 0, 0
+
+surface.CreateFont("unconscious.font", {
+	font = "Blender Pro Bold",
+	size = ix.UI.Scale(49),
+	extended = true,
+	weight = 100
+})
 
 local function DrawUnconscious()
 	owner = LocalPlayer()
@@ -35,9 +40,7 @@ local function DrawUnconscious()
 	surface.SetDrawColor(0, 0, 0, ceil((aprg^.5) * 255))
 	surface.DrawRect(-1, -1, w+2, h+2)
 
-	ix.util.DrawText(
-		string.utf8upper("You are unconscious"), w/2, h/2, ColorAlpha(color_white, aprg2 * 255), 1, 1, "ixMenuButtonHugeFont", aprg2 * 255
-	)
+	draw.DrawText(string.utf8upper("You are unconscious"),  "unconscious.font", w/2, h/2, ColorAlpha(color_white, aprg2 * 255), TEXT_ALIGN_CENTER)
 end
 
 function PLUGIN:PostDrawHUD()

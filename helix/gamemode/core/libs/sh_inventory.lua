@@ -51,7 +51,7 @@ function ix.inventory.Restore(invID, width, height, callback)
 			ix.inventory.Create(v[1], v[2], k)
 		end
 	end
-
+/*
 	local query = mysql:Select("ix_items")
 		query:Select("item_id")
 		query:Select("inventory_id")
@@ -128,6 +128,14 @@ function ix.inventory.Restore(invID, width, height, callback)
 			end
 		end)
 	query:Execute()
+*/
+
+
+	if (callback) then
+		for k, _ in pairs(inventories) do
+			callback(ix.item.inventories[k])
+		end
+	end
 end
 
 function ix.inventory.New(owner, invType, callback)

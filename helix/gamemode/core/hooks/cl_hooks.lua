@@ -158,18 +158,18 @@ function GM:LoadFonts(font, genericFont)
 	})
 
 	surface.CreateFont("ixChatFont", {
-		font = font,
+		font = "Roboto",
 		size = math.max(ScreenScale(7), 17) * ix.option.Get("chatFontScale", 1),
 		extended = true,
-		weight = 600,
+		//weight = 600,
 		antialias = true
 	})
 
 	surface.CreateFont("ixChatFontItalics", {
-		font = font,
+		font = "Roboto",
 		size = math.max(ScreenScale(7), 17) * ix.option.Get("chatFontScale", 1),
 		extended = true,
-		weight = 600,
+		//weight = 600,
 		antialias = true,
 		italic = true
 	})
@@ -284,6 +284,13 @@ function GM:LoadFonts(font, genericFont)
 		size = 48,
 		weight = 500
 	})
+
+	surface.CreateFont("item.contraband", {
+		font = "Blender Pro Bold",
+		size = math.max(ix.UI.Scale(15), 14),
+		extended = true,
+		weight = 500
+	})
 end
 
 function GM:OnCharacterMenuCreated(panel)
@@ -341,6 +348,12 @@ function GM:CharacterLoaded()
 	if (IsValid(menu)) then
 		menu:Close((LocalPlayer().GetCharacter and LocalPlayer():GetCharacter()) and true or nil)
 	end
+
+	local character = LocalPlayer():GetCharacter()
+	
+	for var, data in pairs(ix.char.meta_vars) do
+		character.meta_vars[var]:Load(character.vars)
+	end
 end
 
 function GM:InitializedConfig()
@@ -367,7 +380,7 @@ function GM:InitializedConfig()
 
 		timer.Simple(5, function()
 			if (IsValid(ix.gui.loading)) then
-				local fault = GetNetVar("dbError")
+				local fault = ix.Net:GetVar("dbError")
 
 				if (fault) then
 					statusLabel:SetText(fault and L"dbError" or L"loading")
@@ -419,13 +432,13 @@ function GM:NetworkEntityCreated(entity)
 	end
 end
 
-local vignette = ix.util.GetMaterial("clockwork/vignette.png")
+local vignette = ix.util.GetMaterial("helix/gui/vignette.png")
 local vignetteAlphaGoal = 0
 local vignetteAlphaDelta = 0
 local vignetteTraceHeight = Vector(0, 0, 768)
 local blurGoal = 0
 local blurDelta = 0
-local hasVignetteMaterial = vignette != "___error"
+local hasVignetteMaterial = !vignette:IsError()
 
 timer.Create("ixVignetteChecker", 1, 0, function()
 	local client = LocalPlayer()
@@ -439,7 +452,7 @@ timer.Create("ixVignetteChecker", 1, 0, function()
 
 		-- this timer could run before InitPostEntity is called, so we have to check for the validity of the trace table
 		if (trace and trace.Hit) then
-			vignetteAlphaGoal = 80
+			vignetteAlphaGoal = 25
 		else
 			vignetteAlphaGoal = 0
 		end
@@ -568,7 +581,7 @@ function GM:HUDPaintBackground()
 	if (hasVignetteMaterial and ix.config.Get("vignette")) then
 		vignetteAlphaDelta = mathApproach(vignetteAlphaDelta, vignetteAlphaGoal, frameTime * 30)
 
-		surface.SetDrawColor(0, 0, 0, 175 + vignetteAlphaDelta)
+		surface.SetDrawColor(0, 0, 0, 230 + vignetteAlphaDelta)
 		surface.SetMaterial(vignette)
 		surface.DrawTexturedRect(0, 0, scrW, scrH)
 	end
@@ -659,11 +672,13 @@ function GM:PostDrawOpaqueRenderables(bDepth, bSkybox)
 end
 
 function GM:PostDrawHUD()
-	ix.hud.DrawAll(true)
+	cam.Start2D()
+		ix.hud.DrawAll(true)
 
-	if (!IsValid(ix.gui.characterMenu) or ix.gui.characterMenu:IsClosing()) then
-		ix.bar.DrawAction()
-	end
+		if (!IsValid(ix.gui.characterMenu) or ix.gui.characterMenu:IsClosing()) then
+			ix.bar.DrawAction()
+		end
+	cam.End2D()
 end
 
 function GM:ShouldPopulateEntityInfo(entity)
@@ -691,15 +706,15 @@ function GM:GetInjuredText(client)
 	end
 end
 
+local gray_color = Color(160, 160, 160)
 function GM:PopulateImportantCharacterInfo(client, character, container)
-	local color = team.GetColor(client:Team())
-	container:SetArrowColor(color)
+	container:SetArrowColor(gray_color)
 
 	-- name
 	local name = container:AddRow("name")
 	name:SetImportant()
 	name:SetText(hookRun("GetCharacterName", client) or character:GetName())
-	name:SetBackgroundColor(color)
+	name:SetBackgroundColor(gray_color)
 	name:SizeToContents()
 
 	-- injured text
@@ -854,7 +869,7 @@ function GM:RenderScreenspaceEffects()
 				render.SetColorModulation(1, 1, 1)
 				render.SetStencilWriteMask(28)
 				render.SetStencilTestMask(28)
-				render.SetStencilReferenceValue(35)
+				render.SetStencilReferenceValue(28)
 
 				render.SetStencilCompareFunction(STENCIL_ALWAYS)
 				render.SetStencilPassOperation(STENCIL_REPLACE)
@@ -932,6 +947,8 @@ function GM:Think()
 	if (IsValid(client) and client:Alive() and client.ixRaisedTween) then
 		client.ixRaisedTween:update(FrameTime())
 	end
+
+	hook.Run("SlowThink")
 end
 
 function GM:ScreenResolutionChanged(oldW, oldH)

@@ -169,7 +169,7 @@ if CLIENT then
 
 		if ix.option.Get("observerShowItemESP", true) then
 			for k, v in ipairs(ents.FindByClass("ix_item")) do 
-				local itemTable = v:GetItemTable()
+				local itemTable = v:GetItem()
 
 				if itemTable then
 					local itemName = itemTable:GetName()

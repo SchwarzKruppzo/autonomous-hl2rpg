@@ -183,7 +183,7 @@ function PANEL:Update()
 	local client = self.player
 	local model = client:GetModel()
 	local skin = client:GetSkin()
-	local name = client:GetName()
+	local name = hook.Run("GetCharacterName", client)
 	local description = hook.Run("GetCharacterDescription", client) or
 		(client:GetCharacter() and client:GetCharacter():GetDescription()) or ""
 

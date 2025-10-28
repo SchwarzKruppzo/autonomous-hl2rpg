@@ -36,8 +36,12 @@ function FACTION:GetDefaultName(client)
 	return "OW:c08.OVERWATCH-"..math.random(1, 99), true
 end
 
-function FACTION:OnCharacterCreated(client, character)
-	character:CreateIDCard("ota_access")
+function FACTION:OnSpawn(client, firstTime)
+	if firstTime then
+		local character = client:GetCharacter()
+		
+		character:CreateIDCard("ota_access")
+	end
 end
 
 function FACTION:OnTransfered(client)

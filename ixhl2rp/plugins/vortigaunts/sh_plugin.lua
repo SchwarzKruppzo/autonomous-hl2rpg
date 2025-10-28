@@ -68,6 +68,10 @@ ix.anim.SetModelClass("models/vortigaunt.mdl", "cellarVort")
 ix.anim.SetModelClass("models/vortigaunt_slave.mdl", "cellarVort")
 ix.anim.SetModelClass("models/vortigaunt_blue.mdl", "cellarVort")
 ix.anim.SetModelClass("models/vortigaunt_doctor.mdl", "cellarVort")
+ix.anim.SetModelClass("models/cellar/earl_roleplay/joe.mdl", "cellarVort")
+ix.anim.SetModelClass("models/cellar/customvort/vort.mdl", "cellarVort")
+ix.anim.SetModelClass("models/vortigaunt_anhl2.mdl", "cellarVort")
+ix.anim.SetModelClass("models/willardnetworks/kubiqvort.mdl", "cellarVort")
 
 if SERVER then
 	function PLUGIN:PlayerModelChanged(client, model, oldModel)

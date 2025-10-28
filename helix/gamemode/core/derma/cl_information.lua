@@ -134,59 +134,6 @@ function PANEL:Init()
 		self.characterInfo:SizeToContents()
 	end
 
-	-- no need to update since we aren't showing the attributes panel
-	if (!suppress.attributes) then
-		local character = LocalPlayer().GetCharacter and LocalPlayer():GetCharacter()
-
-		if (character) then
-			self.attributes = self:Add("ixCategoryPanel")
-			self.attributes:SetText(L("attributes"))
-			self.attributes:Dock(TOP)
-			self.attributes:DockMargin(0, 0, 0, 8)
-
-			local boost = character:GetBoosts()
-			local bFirst = true
-
-			for k, v in SortedPairsByMemberValue(ix.attributes.list, "name") do
-				local attributeBoost = 0
-
-				if (boost[k]) then
-					for _, bValue in pairs(boost[k]) do
-						attributeBoost = attributeBoost + bValue
-					end
-				end
-
-				local bar = self.attributes:Add("ixAttributeBar")
-				bar:Dock(TOP)
-
-				if (!bFirst) then
-					bar:DockMargin(0, 3, 0, 0)
-				else
-					bFirst = false
-				end
-
-				local value = character:GetAttribute(k, 0)
-
-				if (attributeBoost) then
-					bar:SetValue(value - attributeBoost or 0)
-				else
-					bar:SetValue(value)
-				end
-
-				local maximum = v.maxValue or ix.config.Get("maxAttributes", 100)
-				bar:SetMax(maximum)
-				bar:SetReadOnly()
-				bar:SetText(Format("%s [%.1f/%.1f] (%.1f%%)", L(v.name), value, maximum, value / maximum * 100))
-
-				if (attributeBoost) then
-					bar:SetBoost(attributeBoost)
-				end
-			end
-
-			self.attributes:SizeToContents()
-		end
-	end
-
 	hook.Run("CreateCharacterInfoCategory", self)
 end
 

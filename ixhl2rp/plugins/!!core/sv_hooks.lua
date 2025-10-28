@@ -97,7 +97,6 @@ function GM:PlayerInitialSpawn(client)
 	client:SetNoDraw(true)
 	client:SetNotSolid(true)
 	client:Lock()
-	client:SyncVars()
 
 	timer.Simple(1, function()
 		if (!IsValid(client)) then

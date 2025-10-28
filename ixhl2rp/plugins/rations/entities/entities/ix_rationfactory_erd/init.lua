@@ -88,9 +88,11 @@ function ENT:Dispense(activator, dispenseType)
 					local angles = entity:GetAngles()
 					
 					entity:CallOnRemove("CreateRation", function()
-						ix.item.Spawn(dispenseType, position, function(item, ent)
-							item:SetData("T", true)
-						end, angles)
+						local instance = ix.Item:Instance(dispenseType)
+						instance.worker = activator:GetCharacter():GetID()
+						instance:SetData("T", true)
+
+						ix.Item:Spawn(position, angles, instance)
 
 						self:SetText("Ready")
 					end)

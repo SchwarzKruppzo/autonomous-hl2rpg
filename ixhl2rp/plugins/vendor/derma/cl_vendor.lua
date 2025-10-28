@@ -99,7 +99,7 @@ function PANEL:addItem(uniqueID, listID)
 	local data = items[uniqueID]
 
 	if ((!listID or listID == "selling") and !IsValid(self.sellingList[uniqueID])
-	and ix.item.list[uniqueID]) then
+	and ix.Item.stored[uniqueID]) then
 		if (data and data[VENDOR_MODE] and data[VENDOR_MODE] != VENDOR_BUYONLY) then
 			local item = self.sellingItems:Add("ixVendorItem")
 			item:Setup(uniqueID)
@@ -110,7 +110,7 @@ function PANEL:addItem(uniqueID, listID)
 	end
 
 	if ((!listID or listID == "buying") and !IsValid(self.buyingList[uniqueID])
-	and LocalPlayer():GetCharacter():GetInventory():HasItem(uniqueID)) then
+	and LocalPlayer():HasItem(uniqueID)) then
 		if (data and data[VENDOR_MODE] and data[VENDOR_MODE] != VENDOR_SELLONLY) then
 			local item = self.buyingItems:Add("ixVendorItem")
 			item:Setup(uniqueID)
@@ -150,7 +150,7 @@ function PANEL:Setup(entity)
 		self:addItem(k, "selling")
 	end
 
-	for _, v in SortedPairs(LocalPlayer():GetCharacter():GetInventory():GetItems()) do
+	for _, v in SortedPairs(LocalPlayer():GetItems()) do
 		self:addItem(v.uniqueID, "buying")
 	end
 end
@@ -235,7 +235,7 @@ function PANEL:SetCallback(callback)
 end
 
 function PANEL:Setup(uniqueID)
-	local item = ix.item.list[uniqueID]
+	local item = ix.Item.stored[uniqueID]
 
 	if (item) then
 		self.item = uniqueID
@@ -263,7 +263,7 @@ function PANEL:Think()
 		local entity = ix.gui.vendor.entity
 
 		if (entity and self.isLocal) then
-			local count = LocalPlayer():GetCharacter():GetInventory():GetItemCount(self.item)
+			local count = LocalPlayer():GetItemsCount(self.item)
 
 			if (count == 0) then
 				self:Remove()

@@ -110,25 +110,25 @@ else
 	end
 
 	function ENT:OnPopulateEntityInfo(tooltip)
-		local item = ix.item.list[self:GetRadioItem()]
-
-		if (!item) then
-			return
-		end
-
-		ix.hud.PopulateItemTooltip(tooltip, item)
-
 		local color = derma.GetColor(self:IsOn() and "Success" or "Error", tooltip)
 		tooltip:SetArrowColor(color)
 
-		local name = tooltip:GetRow("name")
+		local name = tooltip:AddRow("name")
+		name:SetImportant()
+		name:SetText("Радио")
 		name:SetBackgroundColor(color)
+		name:SizeToContents()
 
-		local channelTable = ix.radio:FindByID(self:GetFrequency())
-		local freq = tooltip:AddRowAfter("name")
-		freq:SetBackgroundColor(derma.GetColor("Warning", tooltip))
-		freq:SetText("Frequency: " .. (channelTable and channelTable.name or "none"))
-		freq:SizeToContents()
+		local frequence = self:GetFrequency()
+
+		if isstring(frequence) then
+			local first, second = string.match(frequence, "freq_(%d%d%d)(%d)")
+
+			local freq = tooltip:AddRowAfter("name")
+			freq:SetBackgroundColor(derma.GetColor("Warning", tooltip))
+			freq:SetText("Частота: " .. first .. "." .. second)
+			freq:SizeToContents()
+		end
 	end
 
 	function ENT:Draw()

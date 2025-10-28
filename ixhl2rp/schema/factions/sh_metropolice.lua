@@ -64,8 +64,12 @@ FACTION.npcRelations = {
 	["npc_manhack"] = D_LI
 }
 
-function FACTION:OnCharacterCreated(client, character)
-	character:CreateIDCard("card_mpf")
+function FACTION:OnSpawn(client, firstTime)
+	if firstTime then
+		local character = client:GetCharacter()
+		
+		character:CreateIDCard("card_mpf")
+	end
 end
 
 function FACTION:GetModels(client, gender)

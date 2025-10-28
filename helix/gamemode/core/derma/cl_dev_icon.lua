@@ -1,4 +1,3 @@
-
 local bIconUpdating = false
 local ICON_INFO = {}
 ICON_INFO.camPos = ICON_INFO.camPos or Vector()
@@ -31,14 +30,15 @@ function PANEL:Init()
 	self:ShowCloseButton(false)
 	self:SetTitle("RENDER PREVIEW")
 
-	self.model = self:Add("DModelPanel")
+	self.model = self:Add("DAdjustableModelPanel")
 	self.model:SetPos(5, 22)
 	self.model.PaintOver = function(this, w, h)
 		surface.SetDrawColor(255, 255, 255)
 		surface.DrawOutlinedRect(0, 0, w, h)
 	end
 
-	self.model.LayoutEntity = function()
+	self.model.LayoutEntity = function(ent)
+		self:UpdateEntity( ent )
 	end
 
 	self:AdjustSize(ICON_INFO.w, ICON_INFO.h)
@@ -47,6 +47,20 @@ end
 function PANEL:Paint(w, h)
 	surface.SetDrawColor(255, 255, 255)
 	surface.DrawOutlinedRect(0, 0, w, h)
+end
+
+function PANEL:UpdateEntity( ent )
+	if ICON_INFO.camPos != self.model:GetCamPos() then
+		ICON_INFO.camPos = self.model:GetCamPos()
+	end
+
+	if ICON_INFO.camAng != self.model:GetLookAng() then
+		ICON_INFO.camAng = self.model:GetLookAng()
+	end
+
+	if ICON_INFO.FOV != self.model:GetFOV() then
+		ICON_INFO.FOV = self.model:GetFOV()
+	end
 end
 
 function PANEL:AdjustSize(x, y)

@@ -1,10 +1,10 @@
 function Schema:InitializedChatClasses()
 	ix.chat.Register("ic", {
-		format = "%s says \"%s\"",
+		format = " \"%s\"",
 		indicator = "chatTalking",
 		GetColor = function(self, speaker, text)
 			-- If you are looking at the speaker, make it greener to easier identify who is talking.
-			if (LocalPlayer():GetEyeTrace().Entity == speaker) then
+			if (speaker:GetEyeTraceNoCursor().Entity == LocalPlayer()) then
 				return ix.config.Get("chatListenColor")
 			end
 
@@ -13,39 +13,46 @@ function Schema:InitializedChatClasses()
 		end,
 		CanHear = ix.config.Get("chatRange", 280),
 		OnChatAdd = function(self, speaker, text, anonymous, info)
-			local color = self.color
+			local color = self:GetColor(speaker, text, info)
 			local name = anonymous and
 				L"someone" or hook.Run("GetCharacterName", speaker, "ic") or
 				(IsValid(speaker) and speaker:Name() or "Console")
 
-			if (self.GetColor) then
-				color = self:GetColor(speaker, text, info)
-			end
+			local bToYou = speaker:GetEyeTraceNoCursor().Entity == LocalPlayer()
 
-			local translated = L2("icFormat", name, text)
-
-			chat.AddText(color, ix.util.GetMaterial("cellar/chat/ic.png"), translated or string.format(self.format, name, text))
+			chat.AddText(color, ix.util.GetMaterial("cellar/chat/ic.png"), name, " говорит", bToYou and " (вам)" or "", color_white, string.format(self.format, text))
 		end
 	})
 
 	ix.chat.Register("w", {
-		format = "%s whispers \"%s\"",
-		color = Color(150, 170, 200, 255),
+		format = " \"%s\"",
+		GetColor = function(self, speaker, text)
+			-- If you are looking at the speaker, make it greener to easier identify who is talking.
+			if (speaker:GetEyeTraceNoCursor().Entity == LocalPlayer()) then
+				return Color(180, 200, 230, 255)
+			end
+
+			-- Otherwise, use the normal chat color.
+			return Color(150, 170, 200, 255)
+		end,
 		CanHear = ix.config.Get("chatRange", 280) * 0.25,
 		prefix = {"/W", "/Whisper", "/ш", "/шепот"},
 		description = "@cmdW",
 		indicator = "chatWhispering",
 		OnChatAdd = function(self, speaker, text, anonymous, info)
+			local color = self:GetColor(speaker, text, info)
 			local name = anonymous and
 				L"someone" or hook.Run("GetCharacterName", speaker, "w") or
 				(IsValid(speaker) and speaker:Name() or "Console")
 
-			chat.AddText(self.color, ix.util.GetMaterial("cellar/chat/whisper.png"), L2("wFormat", name, text))
+			local bToYou = speaker:GetEyeTraceNoCursor().Entity == LocalPlayer()
+
+			chat.AddText(color, ix.util.GetMaterial("cellar/chat/whisper.png"), name, " шепчет", bToYou and " (вам)" or "", color_white, string.format(self.format, text))
 		end
 	})
 
 	ix.chat.Register("y", {
-		format = "%s yells \"%s\"",
+		format = " \"%s\"",
 		color = Color(230, 100, 75, 255),
 		CanHear = ix.config.Get("chatRange", 280) * 2,
 		prefix = {"/Y", "/Yell", "/к", "/крик"},
@@ -56,7 +63,7 @@ function Schema:InitializedChatClasses()
 				L"someone" or hook.Run("GetCharacterName", speaker, "y") or
 				(IsValid(speaker) and speaker:Name() or "Console")
 
-			chat.AddText(self.color, ix.util.GetMaterial("cellar/chat/yell.png"), L2("yFormat", name, text))
+			chat.AddText(self.color, ix.util.GetMaterial("cellar/chat/yell.png"), name, " кричит", color_white, string.format(self.format, text))
 		end
 	})
 
@@ -122,7 +129,7 @@ function Schema:InitializedChatClasses()
 		color = Color(150, 125, 175),
 		format = "%s транслирует \"%s\"",
 		CanSay = function(class, speaker, text)
-			local cid = speaker:GetCharacter():GetIDCard()
+			local cid = speaker:GetIDCard()
 
 			if !cid then 
 				return false
@@ -261,6 +268,18 @@ function Schema:InitializedChatClasses()
 		end
 	})
 
+	ix.chat.Register("dice", {
+		format = "%s (%dd%d).",
+		color = Color(100, 185, 100),
+		CanHear = ix.config.Get("chatRange", 280),
+		deadCanChat = true,
+		OnChatAdd = function(self, speaker, text, bAnonymous, data)
+			chat.AddText(self.color, ix.util.GetMaterial("cellar/chat/roll.png"), string.format(self.format,
+				L("rollOutput", speaker:GetName(), text, data.max or 100), data.dices or 1, data.sides or 1
+			))
+		end
+	})
+
 	ix.chat.Register("chess", {
 		CanHear = ix.config.Get("chatRange", 280),
 		OnChatAdd = function(self, speaker, text)
@@ -363,5 +382,76 @@ function Schema:SetupMove(client, moveData, userCmd)
 	if (userCmd:KeyDown(IN_BACK)) then
 		moveData:SetForwardSpeed(-client:GetWalkSpeed())
 		moveData:SetSideSpeed(math.Clamp(moveData:GetSideSpeed(), -client:GetWalkSpeed(), client:GetWalkSpeed()))
+	end
+end
+
+local tWhitelistedEntities = {
+	[ "prop_combine_ball" ] = true,
+	[ "npc_grenade_frag" ] = true,
+	[ "rpg_missile" ] = true,
+	[ "grenade_ar2" ] = true,
+	[ "crossbow_bolt" ] = true,
+	[ "npc_combine_camera" ] = true,
+	[ "npc_turret_ceiling" ] = true,
+	[ "npc_cscanner" ] = true,
+	[ "npc_combinedropship" ] = true,
+	[ "npc_combine_s" ] = true,
+	[ "npc_combinegunship" ] = true,
+	[ "npc_hunter" ] = true,
+	[ "npc_helicopter" ] = true,
+	[ "npc_manhack" ] = true,
+	[ "npc_metropolice" ] = true,
+	[ "npc_rollermine" ] = true,
+	[ "npc_clawscanner" ] = true,
+	[ "npc_stalker" ] = true,
+	[ "npc_strider" ] = true,
+	[ "npc_turret_floor" ] = true,
+	[ "prop_vehicle_zapc" ] = true,
+	[ "prop_physics" ] = true,
+	[ "hunter_flechette" ] = true,
+	[ "npc_tripmine" ] = true
+}
+
+function Schema:ShouldCollide(eEnt1, eEnt2)
+	local pPlayer
+	local eEntity
+
+	if eEnt1:IsPlayer() then
+		pPlayer = eEnt1
+		eEntity = eEnt2
+	elseif eEnt2:IsPlayer() then
+		pPlayer = eEnt2
+		eEntity = eEnt1
+	elseif tWhitelistedEntities[eEnt1:GetClass()] and eEnt2:GetClass() == "ent_cmb_forcefield" then
+		return false
+	elseif tWhitelistedEntities[eEnt2:GetClass()] and eEnt1:GetClass() == "ent_cmb_forcefield" then
+		return false
+	end
+
+	if IsValid(eEntity) and eEntity:GetClass() == "ent_cmb_forcefield" then
+		if IsValid(pPlayer) then
+			if CLIENT then
+				if pPlayer == LocalPlayer() then
+					if (FrameNumber() % 120 == 0) then 
+						local hasWeapons
+
+						for k, v in pairs(pPlayer:GetItems()) do
+							if v.isWeapon then
+								hasWeapons = true
+								break
+							end
+						end
+
+						if pPlayer.hasWeapons != hasWeapons then
+							pPlayer.hasWeapons = hasWeapons
+
+							net.Start("forcefield.weapon")
+							net.SendToServer()
+						end
+					end
+				end
+			end
+			return ix.ForcefieldModes[eEntity:GetMode() or 1].Condition(pPlayer)
+		end
 	end
 end

@@ -82,8 +82,7 @@ function GM:PlayerInitialSpawn(client)
 	client:SetNoDraw(true)
 	client:SetNotSolid(true)
 	client:Lock()
-	client:SyncVars()
-
+	
 	timer.Simple(1, function()
 		if (!IsValid(client)) then
 			return
@@ -92,6 +91,52 @@ function GM:PlayerInitialSpawn(client)
 		client:KillSilent()
 		client:StripAmmo()
 	end)
+end
+
+local load_queue = {}
+hook.Add("PlayerInitialSpawn", "rp.activate.player", function(ply)
+	load_queue[ply] = true
+end)
+
+hook.Add("StartCommand", "rp.activate.player", function(ply, cmd)
+	if load_queue[ply] and not cmd:IsForced() then
+		load_queue[ply] = nil
+
+		ply:SyncVars()
+		
+		ix.Item:SyncAll(ply)
+	end
+end)
+
+local slots = {
+	"head", "mask", "torso", "legs", "hands", "radio", "cid", "ears", "arm", "backpack"
+}
+
+function GM:CreatePlayerInventories(client, inventories)
+	local main = ix.meta.Inventory:New()
+	main:SetSize(ix.config.Get("inventoryWidth"), ix.config.Get("inventoryHeight"))
+	main.type = "main"
+	main.default = true
+
+	inventories[main.type] = main
+
+	for k, v in ipairs(slots) do
+		local slot = ix.meta.Inventory:New()
+		slot.type = v
+		slot.multislot = false
+		slot:SetSize(1, 1)
+		slot.isEquipment = true
+
+		inventories[slot.type] = slot
+	end
+
+	local slot = ix.meta.Inventory:New()
+	slot.type = 'equipment'
+	slot:SetSize(1, 3)
+	slot.multislot = false
+	slot.isEquipment = true
+
+	inventories['equipment'] = slot
 end
 
 function GM:PlayerUse(client, entity)
@@ -164,14 +209,6 @@ function GM:CanPlayerInteractItem(client, action, item)
 	return client:Alive()
 end
 
-function GM:CanPlayerDropItem(client, item)
-
-end
-
-function GM:CanPlayerTakeItem(client, item)
-
-end
-
 function GM:PlayerShouldTakeDamage(client, attacker)
 	return client:GetCharacter() != nil
 end
@@ -216,6 +253,8 @@ function GM:PrePlayerLoadedCharacter(client, character, lastChar)
 
 	-- Remove all skins
 	client:SetSkin(0)
+
+	client:DeleteInventories()
 end
 
 function GM:PlayerLoadedCharacter(client, character, lastChar)
@@ -252,26 +291,6 @@ function GM:PlayerLoadedCharacter(client, character, lastChar)
 		client.ixRagdoll:Remove()
 	end
 
-	local faction = ix.faction.indices[character:GetFaction()]
-	local uniqueID = "ixSalary" .. client:UniqueID()
-
-	if (faction and faction.pay and faction.pay > 0) then
-		timer.Create(uniqueID, faction.payTime or 300, 0, function()
-			if (IsValid(client)) then
-				if (hook.Run("CanPlayerEarnSalary", client, faction) != false) then
-					local pay = hook.Run("GetSalaryAmount", client, faction) or faction.pay
-
-					character:GiveMoney(pay)
-					client:NotifyLocalized("salary", ix.currency.Get(pay))
-				end
-			else
-				timer.Remove(uniqueID)
-			end
-		end)
-	elseif (timer.Exists(uniqueID)) then
-		timer.Remove(uniqueID)
-	end
-
 	hook.Run("PlayerLoadout", client)
 end
 
@@ -279,6 +298,12 @@ function GM:CharacterLoaded(character)
 	local client = character:GetPlayer()
 
 	if (IsValid(client)) then
+		for var, data in pairs(ix.char.meta_vars) do
+			character.meta_vars[var]:Load(character.vars)
+		end
+
+		client:CreateInventories()
+
 		local uniqueID = "ixSaveChar"..client:SteamID()
 
 		timer.Create(uniqueID, ix.config.Get("saveInterval"), 0, function()
@@ -344,7 +369,11 @@ function GM:PlayerSpawnSWEP(client, weapon, info)
 	return client:IsAdmin()
 end
 
-function GM:PlayerSpawnProp(client)
+function GM:PlayerSpawnProp(client, mdl)
+	if ix.container.stored[mdl:lower()] or ix.bed.stored[mdl:lower()] then
+		return client:IsAdmin()
+	end
+
 	if (client:GetCharacter() and client:GetCharacter():HasFlags("e")) then
 		return true
 	end
@@ -416,46 +445,8 @@ function GM:CanPlayerHoldObject(client, entity)
 	end
 end
 
-local voiceDistance = 360000
-local function CalcPlayerCanHearPlayersVoice(listener)
-	if (!IsValid(listener)) then
-		return
-	end
-
-	listener.ixVoiceHear = listener.ixVoiceHear or {}
-
-	local eyePos = listener:EyePos()
-	for _, speaker in ipairs(player.GetAll()) do
-		local speakerEyePos = speaker:EyePos()
-		listener.ixVoiceHear[speaker] = eyePos:DistToSqr(speakerEyePos) < voiceDistance
-	end
-end
-
 function GM:InitializedConfig()
 	ix.date.Initialize()
-
-	voiceDistance = ix.config.Get("voiceDistance")
-	voiceDistance = voiceDistance * voiceDistance
-end
-
-function GM:VoiceToggled(bAllowVoice)
-	for _, v in ipairs(player.GetAll()) do
-		local uniqueID = v:SteamID64() .. "ixCanHearPlayersVoice"
-
-		if (bAllowVoice) then
-			timer.Create(uniqueID, 0.5, 0, function()
-				CalcPlayerCanHearPlayersVoice(v)
-			end)
-		else
-			timer.Remove(uniqueID)
-
-			v.ixVoiceHear = nil
-		end
-	end
-end
-
-function GM:VoiceDistanceChanged(distance)
-	voiceDistance = distance * distance
 end
 
 -- Called when weapons should be given to a player.
@@ -482,13 +473,16 @@ function GM:PlayerLoadout(client)
 		client:SetWalkSpeed(ix.config.Get("walkSpeed"))
 		client:SetRunSpeed(ix.config.Get("runSpeed"))
 		client:SetHealth(character:GetData("health", client:GetMaxHealth()))
+		local isFirstTime = character:GetVar("firstTime") or false
+		
+		character:SetVar("firstTime", nil)
 
 		local faction = ix.faction.indices[client:Team()]
 
 		if (faction) then
 			-- If their faction wants to do something when the player spawns, let it.
 			if (faction.OnSpawn) then
-				faction:OnSpawn(client)
+				faction:OnSpawn(client, isFirstTime)
 			end
 
 			-- @todo add docs for player:Give() failing if player already has weapon - which means if a player is given a weapon
@@ -509,7 +503,7 @@ function GM:PlayerLoadout(client)
 
 		if (class) then
 			if (class.OnSpawn) then
-				class:OnSpawn(client)
+				class:OnSpawn(client, isFirstTime)
 			end
 
 			if (class.weapons) then
@@ -521,9 +515,8 @@ function GM:PlayerLoadout(client)
 
 		-- Apply any flags as needed.
 		ix.flag.OnSpawn(client)
-		ix.attributes.Setup(client)
 
-		hook.Run("PostPlayerLoadout", client)
+		hook.Run("PostPlayerLoadout", client, isFirstTime)
 
 		client:SelectWeapon("ix_hands")
 	else
@@ -537,22 +530,10 @@ function GM:PostPlayerLoadout(client)
 	-- Reload All Attrib Boosts
 	local character = client:GetCharacter()
 
-	if (character:GetInventory()) then
-		for _, v in pairs(character:GetInventory():GetItems()) do
+	for _, v in pairs(client:GetItems()) do
+		if v.OnLoadout then
 			v:Call("OnLoadout", client)
-
-			if (v:GetData("equip") and v.attribBoosts) then
-				for attribKey, attribValue in pairs(v.attribBoosts) do
-					character:AddBoost(v.uniqueID, attribKey, attribValue)
-				end
-			end
 		end
-	end
-
-	if (ix.config.Get("allowVoice")) then
-		timer.Create(client:SteamID64() .. "ixCanHearPlayersVoice", 0.5, 0, function()
-			CalcPlayerCanHearPlayersVoice(client)
-		end)
 	end
 end
 
@@ -672,6 +653,12 @@ function GM:PlayerDisconnected(client)
 	local character = client:GetCharacter()
 
 	if (character) then
+		for var, data in pairs(ix.char.meta_vars) do
+			if data.Disconnect then
+				character.meta_vars[var]:Disconnect(client)
+			end
+		end
+
 		local charEnts = character:GetVar("charEnts") or {}
 
 		for _, v in ipairs(charEnts) do
@@ -690,20 +677,7 @@ function GM:PlayerDisconnected(client)
 	end
 
 	client:ClearNetVars()
-
-	if (!client.ixVoiceHear) then
-		return
-	end
-
-	for _, v in ipairs(player.GetAll()) do
-		if (!v.ixVoiceHear) then
-			continue
-		end
-
-		v.ixVoiceHear[client] = nil
-	end
-
-	timer.Remove(client:SteamID64() .. "ixCanHearPlayersVoice")
+	client:DeleteInventories()
 end
 
 function GM:InitPostEntity()
@@ -755,13 +729,6 @@ function GM:GetGameDescription()
 	return "IX: "..(Schema and Schema.name or "Unknown")
 end
 
-function GM:OnPlayerUseBusiness(client, item)
-	-- You can manipulate purchased items with this hook.
-	-- does not requires any kind of return.
-	-- ex) item:SetData("businessItem", true)
-	-- then every purchased item will be marked as Business Item.
-end
-
 function GM:PlayerDeathSound()
 	return true
 end
@@ -771,12 +738,7 @@ function GM:InitializedSchema()
 end
 
 function GM:PlayerCanHearPlayersVoice(listener, speaker)
-	if (!speaker:Alive()) then
-		return false
-	end
-
-	local bCanHear = listener.ixVoiceHear and listener.ixVoiceHear[speaker]
-	return bCanHear, true
+	return false
 end
 
 function GM:PlayerCanPickupWeapon(client, weapon)
@@ -837,12 +799,19 @@ end
 
 function GM:CharacterPreSave(character)
 	local client = character:GetPlayer()
+	local items = {}
 
-	for _, v in pairs(character:GetInventory():GetItems()) do
+	for _, v in pairs(client:GetItems()) do
+		v:Save()
+		
 		if (v.OnSave) then
 			v:Call("OnSave", client)
 		end
+
+		items[#items + 1] = v.id
 	end
+
+	character:SetSavedItems(items)
 
 	character:SetData("health", client:Alive() and client:Health() or nil)
 end
@@ -920,6 +889,8 @@ function GM:DatabaseConnected()
 	timer.Create("ixDatabaseThink", 0.5, 0, function()
 		mysql:Think()
 	end)
+
+	ix.Item:LoadInstanceCount()
 
 	ix.plugin.RunLoadData()
 end

@@ -1,6 +1,6 @@
 
 -- @module ix.attributes
-
+/*
 if (!ix.char) then
 	include("sh_character.lua")
 end
@@ -189,3 +189,4 @@ do
 		return att
 	end
 end
+*/

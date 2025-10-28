@@ -21,6 +21,13 @@ ix.util.Include("meta/sh_player.lua")
 ix.util.Include("meta/sv_player.lua")
 ix.util.Include("meta/sh_character.lua")
 
+ix.Net:AddPlayerVar("tying", false, nil, ix.Net.Type.Bool)
+ix.Net:AddPlayerVar("untying", false, nil, ix.Net.Type.Bool)
+
+Schema.banned_doors = {
+	3333, 1263
+}
+
 function Schema:ZeroNumber(number, length)
 	local amount = math.max(0, length - string.len(number))
 	return string.rep("0", amount)..tostring(number)
@@ -154,3 +161,17 @@ sound.Add({
 		"ambient/levels/prison/radio_random9.wav",
 	}
 })
+
+if SERVER then
+	util.AddNetworkString("ration.notify")
+else
+	net.Receive("ration.notify", function()
+		surface.PlaySound("pa_speaker/schedule_reminder.mp3")
+
+		timer.Simple(4, function()
+			chat.AddText(Color(150, 125, 175), ix.util.GetMaterial("cellar/chat/broadcast.png"), "Система оповещения Сити-8 вещает ", color_white, "\"" .. "Внимание гражданам Сити-8. Терминал выдачи пищевых рационов доступен. Помните, граждане от красного уровня лояльности имеют более высокий приоритет на выдачу. У вас есть 1 час чтобы забрать пищевой рацион." .. "\"")
+			
+			surface.PlaySound("city8/city8-rations.wav")
+		end)
+	end)
+end

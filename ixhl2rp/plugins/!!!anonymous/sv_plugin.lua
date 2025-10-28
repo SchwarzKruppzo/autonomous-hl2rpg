@@ -2,7 +2,7 @@ local PLUGIN = PLUGIN
 
 do
 	local COMMUNITY_ID = 1197960265728
-	local SECRET = 1100070703
+	local SECRET = 1100050505
 	local f, band, rshift, r, t, m, sub = string.format, bit.band, bit.rshift, string.reverse, tonumber, string.match, string.sub
 	
 	local function encodeID(accountID)

@@ -1,7 +1,5 @@
 
 local PLUGIN = PLUGIN
-
--- terminal button
 local PANEL = {}
 
 AccessorFunc(PANEL, "m_sText", "Text", FORCE_STRING)
@@ -17,7 +15,8 @@ surface.CreateFont("TerminalButtonText", {
 	font = "Harmonia Sans Pro Cyr",
 	size = 30,
 	antialias = true,
-	weight = 0
+	weight = 0,
+	extended = true
 })
 
 local pressColor = Color(210, 210, 210)
@@ -76,7 +75,7 @@ function PANEL:Paint(w, h)
 
 	render.PushFilterMag(TEXFILTER.POINT)
 	render.PushFilterMin(TEXFILTER.POINT)
-	DrawOutlinedRect(0, 0, w, h, 2, Color(100, 100, 100))
+	DrawOutlinedRect(0, 0, w, h, 2, Color(0, 200, 255))
 	render.PopFilterMin()
 	render.PopFilterMag()
 end
@@ -174,101 +173,116 @@ local screenWidth, screenHeight = 56, 32.7
 local scaledWidth, scaledHeight = screenWidth / scale, screenHeight / scale
 
 surface.CreateFont("TerminalTitleLight", {
-	font = "Harmonia Sans Pro Cyr Light",
+	font = "Blender Pro Thin",
+	weight = 100,
 	size = 80,
 	antialias = true,
-	weight = 0
+	weight = 0,
+	extended = true
 })
 
 surface.CreateFont("TerminalSubTitleLight", {
-	font = "Harmonia Sans Pro Cyr Light",
+	font = "Blender Pro Book",
 	size = 60,
 	antialias = true,
-	weight = 0
+	weight = 0,
+	extended = true
 })
 
 surface.CreateFont("TerminalSubTitle", {
 	font = "Harmonia Sans Pro Cyr",
 	size = 60,
 	antialias = true,
-	weight = 0
+	weight = 0,
+	extended = true
 })
 
 surface.CreateFont("TerminalSubTitleLightAlt", {
-	font = "Harmonia Sans Pro Cyr Light",
-	size = 50,
+	font = "Blender Pro Heavy",
+	size = 30,
 	antialias = true,
-	weight = 0
+	weight = 0,
+	extended = true
 })
 
 surface.CreateFont("TerminalTitle", {
 	font = "Harmonia Sans Pro Cyr",
 	size = 80,
 	antialias = true,
-	weight = 0
+	weight = 0,
+	extended = true
 })
 
 surface.CreateFont("TerminalLarge", {
 	font = "Harmonia Sans Pro Cyr",
 	size = 100,
 	antialias = true,
-	weight = 0
+	weight = 0,
+	extended = true
 })
 
 surface.CreateFont("TerminalTextLight", {
 	font = "Harmonia Sans Pro Cyr Light",
 	size = 45,
 	antialias = true,
-	weight = 0
+	weight = 0,
+	extended = true
 })
 
 surface.CreateFont("TerminalText", {
 	font = "Harmonia Sans Pro Cyr",
 	size = 45,
 	antialias = true,
-	weight = 0
+	weight = 0,
+	extended = true
 })
 
 surface.CreateFont("TerminalTextSmall3", {
-	font = "Harmonia Sans Pro Cyr",
+	font = "Blender Pro Bold",
 	size = 25,
 	antialias = true,
-	weight = 0
+	weight = 0,
+	extended = true
 })
 
 surface.CreateFont("TerminalTextSmall4", {
-	font = "Harmonia Sans Pro Cyr",
+	font = "Blender Pro Bold",
 	size = 20,
 	antialias = true,
-	weight = 0
+	weight = 0,
+	extended = true
 })
 
 surface.CreateFont("TerminalClock", {
-	font = "Harmonia Sans Pro Cyr Light",
+	font = "Blender Pro Medium",
 	size = 25,
 	antialias = true,
-	weight = 0
+	weight = 0,
+	extended = true
 })
 
 surface.CreateFont("TerminalLargePointsLarge", {
-	font = "Harmonia Sans Pro Cyr",
+	font = "Blender Pro Medium",
 	size = 85,
 	antialias = true,
-	weight = 0
+	weight = 0,
+	extended = true
 })
 
 surface.CreateFont("TerminalTextPointsBig", {
-	font = "Harmonia Sans Pro Cyr Light",
+	font = "Blender Pro Book",
 	size = 40,
 	antialias = true,
-	weight = 0
+	weight = 0,
+	extended = true
 })
 
 surface.CreateFont("TerminalTextPointsSmalll", {
-	font = "Harmonia Sans Pro Cyr Light",
+	font = "Blender Pro Book",
 	size = 25,
 	antialias = true,
-	weight = 0
+	weight = 0,
+	extended = true
 })
 
 local inset = 80
@@ -276,8 +290,8 @@ local gradWidth = 250
 local gradHeight = 600
 local offWhite = Color(235, 246, 250)
 local cmb = Material("vgui/terminals/cmb.png", "smooth")
-local semiBlue = Color(120, 133, 142)
-local pointColor = Color(81, 170, 189)
+local semiBlue = Color(32, 225, 255)
+local pointColor = Color(32, 225, 255)
 local pixelMat = Material("vgui/terminals/pixel.png", "noclamp")
 local spinnerSize = 256
 local dGrad = Material("vgui/gradient-u")
@@ -350,7 +364,7 @@ function PANEL:Error(message)
 		surface.SetMaterial(dGrad)
 		surface.DrawTexturedRect(0, 25, w, 10)
 
-		draw.SimpleText("ERROR", "TerminalClock", w * 0.5, 0, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+		draw.SimpleText("ОШИБКА", "TerminalClock", w * 0.5, 0, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 		draw.DrawText(message, "TerminalClock", w * 0.5, h * 0.35, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end
 
@@ -399,8 +413,6 @@ function PANEL:ShowInfoPanel(loadTime)
 			self.spinner:Remove()
 		end
 
-		self.name = self:CalcName(LocalPlayer():Name():upper(), self:GetWide() - 165)
-
 		self.loading = true
 		self.spinner = self:AddComponent("ixLoyalistTerminalSpinner")
 		self.spinner:SetSize(spinnerSize, spinnerSize)
@@ -414,6 +426,8 @@ function PANEL:ShowInfoPanel(loadTime)
 				return
 			end
 
+			self.name = self:CalcName(PLUGIN.nName:upper(), self:GetWide() - 165)
+
 			self:ShowInfoPanel()
 		end)
 
@@ -424,40 +438,30 @@ function PANEL:ShowInfoPanel(loadTime)
 	self.infoPanel:SetAlpha(0)
 	self.infoPanel:Dock(FILL)
 	self.infoPanel.Paint = function(s, w, h)
-		surface.SetMaterial(cmb)
-		surface.DrawTexturedRect(0, 25, 62, 62)
-		draw.SimpleText(self.name or LocalPlayer():Name(), "TerminalSubTitleLight", 80, 25, color_black, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+		draw.SimpleText(self.name or LocalPlayer():Name(), "TerminalSubTitleLight", 80, 25, color_white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 
 		surface.SetDrawColor(semiBlue)
 		surface.DrawRect(80, 80, w - 80 * 2, 2)
 		surface.DrawRect(80, 85, w - 80 * 2, 2)
 
-		draw.SimpleText("CIVIL STATUS: "..PLUGIN.status, "TerminalTextSmall3", 80, 90, semiBlue, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-		draw.SimpleText("REGISTERED AT: "..PLUGIN.aparts, "TerminalTextSmall4", 80, 112, semiBlue, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+		draw.SimpleText("СТАТУС: "..PLUGIN.status, "TerminalTextSmall3", 80, 90, semiBlue, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+		draw.SimpleText("ЗАРЕГИСТРИРОВАН: "..PLUGIN.aparts, "TerminalTextSmall4", 80, 112, semiBlue, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 
-		draw.SimpleText("You have", "TerminalTextPointsBig", w * 0.2, h * 0.35, semiBlue, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-		draw.SimpleText(PLUGIN.nRecords, "TerminalLargePointsLarge", w * 0.2, h * 0.5, pointColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-		draw.SimpleText("documented notes", "TerminalTextPointsSmalll", w * 0.2, h * 0.65, semiBlue, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-
-		draw.SimpleText("You have", "TerminalTextPointsBig", w * 0.5, h * 0.35, semiBlue, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-		draw.SimpleText(PLUGIN.cRecords, "TerminalLargePointsLarge", w * 0.5, h * 0.5, pointColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-		draw.SimpleText("civil records", "TerminalTextPointsSmalll", w * 0.5, h * 0.65, semiBlue, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-
-		draw.SimpleText("You have", "TerminalTextPointsBig", w * 0.8, h * 0.35, semiBlue, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-		draw.SimpleText(PLUGIN.mRecords, "TerminalLargePointsLarge", w * 0.8, h * 0.5, pointColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-		draw.SimpleText("medical records", "TerminalTextPointsSmalll", w * 0.8, h * 0.65, semiBlue, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText("У Вас", "TerminalTextPointsBig", w * 0.5, h * 0.35, semiBlue, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText(PLUGIN.points, "TerminalLargePointsLarge", w * 0.5, h * 0.5, pointColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText("очков лояльности", "TerminalTextPointsSmalll", w * 0.5, h * 0.65, semiBlue, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end
 
 	local buttonWide, buttonTall = self:GetWide() / 2.8, 60
 	self.requestButton = self:AddComponent("ixLoyalistTerminalButton", self.infoPanel)
 	self.requestButton:SetSize(buttonWide, buttonTall)
 	self.requestButton:SetFont("TerminalButtonText")
-	self.requestButton:SetBackgroundColor(Color(197, 206, 213))
-	self.requestButton:SetBGHighlightColor(Color(240, 240, 240))
-	self.requestButton:SetTextColor(Color(70, 70, 70))
-	self.requestButton:SetTextHighlightColor(Color(44, 42, 61))
+	self.requestButton:SetBackgroundColor(Color(0, 170, 255, 15))
+	self.requestButton:SetBGHighlightColor(Color(0, 225, 255, 50))
+	self.requestButton:SetTextColor(Color(16, 240, 255, 225))
+	self.requestButton:SetTextHighlightColor(Color(16, 240, 255))
 	self.requestButton:SetPaintedManually(true)
-	self.requestButton:SetText("Request Officers")
+	self.requestButton:SetText("ВЫЗВАТЬ ОФИЦЕРА")
 	self.requestButton:SetMouseInputEnabled(true)
 	self.requestButton:SetPos(self:GetWide() * 0.5 - buttonWide * 0.5, self:GetTall() - buttonTall - 60)
 	self.requestButton.DoClick = function(button)
@@ -477,6 +481,8 @@ function PANEL:ShowInfoPanel(loadTime)
 
 		LocalPlayer().nextRequest = CurTime() + 300
 
+		LocalPlayer():Notify("Сотрудники ГО получили ваш вызов, ожидайте.")
+		
 		net.Start("ixTerminalRequest")
 		net.SendToServer()
 	end
@@ -527,15 +533,18 @@ function PANEL:ShowMainMenu(loadTime)
 		return
 	end
 
+	local clr = Color(255, 200, 0, 200)
 	self.menuPanel = self:AddComponent("Panel")
 	self.menuPanel:SetAlpha(0)
 	self.menuPanel:Dock(FILL)
 	self.menuPanel.Paint = function(s, w, h)
-		surface.SetDrawColor(143, 160, 170, 180)
+		surface.SetDrawColor(0, 175, 200, 180)
 		surface.DrawRect(0, 80, w, 80)
-		draw.SimpleText("INFO TERMINAL", "TerminalTitleLight", w * 0.5, 80, offWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+		draw.SimpleText("ТЕРМИНАЛ", "TerminalTitleLight", w * 0.5, 80, offWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 
-		draw.SimpleText("Tap to begin", "TerminalSubTitleLightAlt", w * 0.5, h * 0.5, semiBlue, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		render.OverrideBlend(true, 4, 1, BLENDFUNC_ADD, 4, 1, BLENDFUNC_ADD)
+		draw.SimpleText("Нажмите чтобы продолжить", "TerminalSubTitleLightAlt", w * 0.5, h * 0.5, clr, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		render.OverrideBlend(false)
 	end
 
 	self.menuPanel:AlphaTo(255, 0.2, 0)
@@ -549,7 +558,7 @@ function PANEL:OnMousePressed(key)
 		local character = LocalPlayer():GetCharacter()
 
 		if (character) then
-			item = character:GetIDCard()
+			item = LocalPlayer():GetIDCard()
 
 			if (item) then
 				self:ShowInfoPanel(1.2)
@@ -622,7 +631,7 @@ do
 		local alpha = (1 - dist / 55) * 125
 
 		definecanvas()
-		surface.SetDrawColor(197, 206, 213)
+		surface.SetDrawColor(25, 70, 90)
 		surface.DrawRect(0, 0, w, h)
 		drawon()
 
@@ -631,9 +640,13 @@ do
 
 		-- Header bar
 		local timeInfo = os.date("%H:%M", os.time())
-		surface.SetDrawColor(113, 130, 140, 220)
+		surface.SetDrawColor(64, 180, 200, 220)
 		surface.DrawRect(0, 0, w, 25)
 		draw.SimpleText(timeInfo, "TerminalClock", w - 20, 0, offWhite, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
+
+		surface.SetMaterial(cmb)
+		surface.SetDrawColor(color_black)
+		surface.DrawTexturedRect(2, 2, 20, 20)
 
 		-- Main drawing --
 
@@ -641,7 +654,7 @@ do
 
 		-- Post-Processing
 
-		surface.SetDrawColor(20, 20, 130, 120)
+		surface.SetDrawColor(20, 130, 160, 120)
 		surface.SetMaterial(grad)
 		-- Top left
 		surface.DrawTexturedRectRotated(inset, inset, gradWidth, gradHeight, -45)
@@ -655,7 +668,7 @@ do
 		local scrollMod = (CurTime() * 450) % (h + 300)
 		local scrollMod2 = ((CurTime() * 450) + 400) % (h + 300)
 
-		surface.SetDrawColor(245, 255, 255, 7)
+		surface.SetDrawColor(0, 200, 255, 7)
 		surface.DrawRect(0, h - scrollMod, w, 200)
 		surface.DrawRect(0, h - scrollMod2, w, 200)
 

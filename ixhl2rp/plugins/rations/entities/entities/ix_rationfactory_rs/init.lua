@@ -27,24 +27,36 @@ function ENT:PhysicsUpdate(physicsObject)
 end
 
 function ENT:Touch(ent)
-	if !ent.GetItemID then
-		return
-	end
-
 	if self.nextUse > CurTime() then
 		return
 	end
 
-	local item = ent:GetItemTable()
+	self.nextUse = CurTime() + 1
+
+	if !ent.GetItem then
+		return
+	end
+
+	local item = ent:GetItem()
 
 	if !item or item.uniqueID != "filled_ration" then
 		return
 	end
 	
+	local workers = item.workers or {}
+	local held = ent.ixHeldOwner
+	local pos, angles = ent:GetPos(), ent:GetAngles()
 	ent:Remove()
 
-	ix.item.Spawn(SPAWN_ITEM, ent:GetPos(), nil, ent:GetAngles())
+	timer.Simple(0, function()
+		local instance = ix.Item:Instance(SPAWN_ITEM)
+		instance.workers = table.Copy(workers)
+		if IsValid(held) then
+			instance.workers[held:GetCharacter():GetID()] = true
+		end
+		
+		ix.Item:Spawn(pos, ang, instance)
+	end)
 
 	self:EmitSound("buttons/button4.wav")
-	self.nextUse = CurTime() + .75
 end

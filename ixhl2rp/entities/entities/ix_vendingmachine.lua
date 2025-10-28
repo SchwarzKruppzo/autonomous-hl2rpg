@@ -129,15 +129,17 @@ if (SERVER) then
 			end
 
 			if (self:GetStock(buttonID) > 0) then
-				ix.item.Spawn(itemInfo[2], self:GetPos() + self:GetForward() * 19 + self:GetRight() * 4 + self:GetUp() * -26, function(item, entity)
-					self:EmitSound("buttons/button4.wav", 60)
+				local new_item = ix.Item:Instance(itemInfo[2])
+				local angles = self:GetAngles()
+				local x = ix.Item:Spawn(self:GetPos() + self:GetForward() * 19 + self:GetRight() * 4 + self:GetUp() * -26, angles, new_item)
 
-					character:TakeMoney(price)
-					client:NotifyLocalized("vendingPurchased", ix.currency.Get(price))
+				self:EmitSound("buttons/button4.wav", 60)
 
-					self:RemoveStock(buttonID)
-					self.nextUseTime = CurTime() + 1
-				end)
+				character:TakeMoney(price)
+				client:NotifyLocalized("vendingPurchased", ix.currency.Get(price))
+
+				self:RemoveStock(buttonID)
+				self.nextUseTime = CurTime() + 1
 			else
 				self:EmitSound("buttons/button2.wav", 50)
 				self.nextUseTime = CurTime() + 1

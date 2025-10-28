@@ -50,7 +50,7 @@ netstream.Hook("ixWritePaper", function(client, itemID, title, text, pickup)
 
 	if !character then return end
 
-	local item = ix.item.instances[itemID]
+	local item = ix.Item.instances[itemID]
 
 	if !item then return end
 	if !item.user[client] then return end
@@ -77,7 +77,7 @@ netstream.Hook("ixEditPaper", function(client, itemID, fields)
 
 	if !character then return end
 
-	local item = ix.item.instances[itemID]
+	local item = ix.Item.instances[itemID]
 
 	if !item then return end
 
@@ -97,7 +97,7 @@ netstream.Hook("ixEditPaper", function(client, itemID, fields)
 end)
 
 netstream.Hook("ixWritePaperClosed", function(client, itemID)
-	local item = ix.item.instances[itemID]
+	local item = ix.Item.instances[itemID]
 
 	if !item then return end
 	if item.user[client] then

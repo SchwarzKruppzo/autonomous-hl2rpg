@@ -13,7 +13,7 @@ if SERVER then
 
 		client:SetPrimaryVisorColor(Vector(0, 0, 0))
 		client:SetSecondaryVisorColor(Vector(0, 0, 0))
-
+/*
 		local equipment = character:GetEquipment()
 
 		if equipment then
@@ -36,6 +36,6 @@ if SERVER then
 					client.ArmorItems[v] = true
 				end
 			end
-		end
+		end*/
 	end
 end

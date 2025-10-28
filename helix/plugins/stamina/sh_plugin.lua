@@ -7,6 +7,9 @@ ix.config.Add("punchStamina", 10, "How much stamina punches use up.", nil, {
 	category = "characters"
 })
 
+ix.Net:AddPlayerVar("stm", true, nil, ix.Net.Type.Float)
+ix.Net:AddPlayerVar("brth", false, nil, ix.Net.Type.Bool)
+
 do
 	local CHAR = ix.meta.character
 
@@ -23,21 +26,11 @@ local function CalcStaminaChange(client)
 	if (!character or client:GetMoveType() == MOVETYPE_NOCLIP) then
 		return 0
 	end
-
-	local runSpeed
-
-	if (SERVER) then
-		runSpeed = hook.Run("ModifyCharacterRunSpeed", client, character, ix.config.Get("runSpeed"))
-
-		if (client:WaterLevel() > 1) then
-			runSpeed = runSpeed * 0.775
-		end
-	end
-
+	
 	local walkSpeed = ix.config.Get("walkSpeed")
 	local offset = 0
 
-	if (client:KeyDown(IN_SPEED) and client:GetVelocity():LengthSqr() >= (walkSpeed * walkSpeed)) then
+	if (!client:GetNetVar("brth", false) and client:KeyDown(IN_SPEED) and client:GetVelocity():LengthSqr() >= (walkSpeed * walkSpeed)) then
 		-- characters could have attribute values greater than max if the config was changed
 		offset = -1
 		offset = hook.Run("AdjustStaminaOffsetRunning", client, offset) or -1
@@ -58,12 +51,10 @@ local function CalcStaminaChange(client)
 			client:SetLocalVar("stm", value)
 
 			if (value == 0 and !client:GetNetVar("brth", false)) then
-				client:SetRunSpeed(walkSpeed)
 				client:SetNetVar("brth", true)
 
 				hook.Run("PlayerStaminaLost", client)
 			elseif (value >= (maxStamina * 0.5) and client:GetNetVar("brth", false)) then
-				client:SetRunSpeed(runSpeed)
 				client:SetNetVar("brth", nil)
 
 				hook.Run("PlayerStaminaGained", client)
@@ -105,9 +96,16 @@ if (SERVER) then
 
 	function playerMeta:RestoreStamina(amount)
 		local current = self:GetLocalVar("stm", 0)
-		local value = math.Clamp(current + amount, 0, self:GetCharacter():GetMaxStamina())
+		local maxStamina = self:GetCharacter():GetMaxStamina()
+		local value = math.Clamp(current + amount, 0, maxStamina)
 
 		self:SetLocalVar("stm", value)
+
+		if (value >= (maxStamina * 0.5) and self:GetNetVar("brth", false)) then
+			self:SetNetVar("brth", nil)
+
+			hook.Run("PlayerStaminaGained", self)
+		end
 	end
 
 	function playerMeta:ConsumeStamina(amount)
@@ -115,6 +113,12 @@ if (SERVER) then
 		local value = math.Clamp(current - amount, 0, self:GetCharacter():GetMaxStamina())
 
 		self:SetLocalVar("stm", value)
+
+		if (value == 0 and !self:GetNetVar("brth", false)) then
+			self:SetNetVar("brth", true)
+
+			hook.Run("PlayerStaminaLost", self)
+		end
 	end
 else
 	PLUGIN.predictedStamina = 100

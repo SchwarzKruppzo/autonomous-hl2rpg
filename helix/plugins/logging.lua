@@ -111,17 +111,15 @@ if (SERVER) then
 	ix.log.AddType("storageMoneyTake", function(client, entity, amount, total)
 		local name = entity.GetDisplayName and entity:GetDisplayName() or entity:GetName()
 
-		return string.format("%s has taken %d %s from '%s' #%d (%d %s left).",
-			client:GetName(), amount, ix.currency.plural, name,
-			entity:GetInventory():GetID(), total, ix.currency.plural)
+		return string.format("%s has taken %d %s from '%s' (%d %s left).",
+			client:GetName(), amount, ix.currency.plural, name, total, ix.currency.plural)
 	end)
 
 	ix.log.AddType("storageMoneyGive", function(client, entity, amount, total)
 		local name = entity.GetDisplayName and entity:GetDisplayName() or entity:GetName()
 
-		return string.format("%s has given %d %s to '%s' #%d (%d %s left).",
-			client:GetName(), amount, ix.currency.plural, name,
-			entity:GetInventory():GetID(), total, ix.currency.plural)
+		return string.format("%s has given %d %s to '%s' (%d %s left).",
+			client:GetName(), amount, ix.currency.plural, name, total, ix.currency.plural)
 	end)
 
 	ix.log.AddType("roll", function(client, value, max)
@@ -170,18 +168,18 @@ if (SERVER) then
 	end
 
 	function PLUGIN:PlayerInteractItem(client, action, item)
-		if (isentity(item)) then
-			if (IsValid(item)) then
+		if isentity(item) then
+			if IsValid(item) then
 				local itemID = item.ixItemID
-				item = ix.item.instances[itemID]
+				item = ix.Item.instances[itemID]
 			else
 				return
 			end
-		elseif (isnumber(item)) then
-			item = ix.item.instances[item]
+		elseif isnumber(item) then
+			item = ix.Item.instances[item]
 		end
 
-		if (!item) then
+		if !item then
 			return
 		end
 
@@ -189,13 +187,17 @@ if (SERVER) then
 	end
 
 	function PLUGIN:InventoryItemAdded(oldInv, inventory, item)
-		if (!inventory.owner or (oldInv and oldInv.owner == inventory.owner)) then
+		if !IsValid(inventory.owner) or (oldInv and oldInv.owner == inventory.owner) then
 			return
 		end
 
-		local character = ix.char.loaded[inventory.owner]
+		if !inventory.owner:IsPlayer() then
+			return
+		end
+		
+		local character = inventory.owner:GetCharacter()
 
-		ix.log.Add(character:GetPlayer(), "inventoryAdd", character:GetName(), item:GetName(), item:GetID())
+		ix.log.Add(inventory.owner, "inventoryAdd", character:GetName(), item:GetName(), item:GetID())
 
 		if (item.isBag) then
 			local bagInventory = item:GetInventory()
@@ -205,23 +207,27 @@ if (SERVER) then
 			end
 
 			for _, v in pairs(bagInventory:GetItems()) do
-				ix.log.Add(character:GetPlayer(), "inventoryAdd", character:GetName(), v:GetName(), v:GetID())
+				ix.log.Add(inventory.owner, "inventoryAdd", character:GetName(), v:GetName(), v:GetID())
 			end
 		end
 	end
 
-	function PLUGIN:InventoryItemRemoved(inventory, item)
-		if (!inventory.owner) then
+	function PLUGIN:InventoryItemRemoved(inventory, item, newInventory)
+		if !IsValid(inventory.owner) or (newInventory and (inventory.owner == newInventory.owner)) then
 			return
 		end
 
-		local character = ix.char.loaded[inventory.owner]
+		if !inventory.owner:IsPlayer() then
+			return
+		end
 
-		ix.log.Add(character:GetPlayer(), "inventoryRemove", character:GetName(), item:GetName(), item:GetID())
+		local character = inventory.owner:GetCharacter()
+
+		ix.log.Add(inventory.owner, "inventoryRemove", character:GetName(), item:GetName(), item:GetID())
 
 		if (item.isBag) then
 			for _, v in pairs(item:GetInventory():GetItems()) do
-				ix.log.Add(character:GetPlayer(), "inventoryRemove", character:GetName(), v:GetName(), v:GetID())
+				ix.log.Add(inventory.owner, "inventoryRemove", character:GetName(), v:GetName(), v:GetID())
 			end
 		end
 	end

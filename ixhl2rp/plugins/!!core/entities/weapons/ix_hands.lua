@@ -283,7 +283,7 @@ function SWEP:DropObject(bThrow)
 	if (!IsValid(self.heldEntity) or self.heldEntity.ixHeldOwner != self:GetOwner()) then
 		return
 	end
-	print(self.Owner)
+	
 	self.lastPlayerAngles = nil
 	self:GetOwner():SetLocalVar("bIsHoldingObject", false)
 
@@ -475,7 +475,7 @@ function SWEP:SecondaryAttack()
 			self:SetNextSecondaryFire(CurTime() + 0.4)
 			self:SetNextPrimaryFire(CurTime() + 1)
 		elseif (entity:IsPlayer() and ix.config.Get("allowPush", true)) then
-			local direction = self:GetOwner():GetAimVector() * (300 + (self:GetOwner():GetCharacter():GetAttribute("str", 0) * 3))
+			local direction = self:GetOwner():GetAimVector() * 300
 				direction.z = 0
 			entity:SetVelocity(direction)
 

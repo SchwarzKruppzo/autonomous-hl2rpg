@@ -208,6 +208,12 @@ function ix.chat.Parse(client, message, bNoSend)
 	local anonymous = false
 	local chatType = "ic"
 
+	local succ, err = pcall(string.utf8len, message)
+
+	if !succ then
+		return
+	end
+
 	-- Loop through all chat classes and see if the message contains their prefix.
 	for k, v in pairs(ix.chat.classes) do
 		local isChosen = false
@@ -243,6 +249,7 @@ function ix.chat.Parse(client, message, bNoSend)
 		if (isChosen) then
 			-- Set the chat type to the chosen one.
 			chatType = k
+
 			-- Remove the prefix from the chat type so it does not show in the message.
 			message = message:utf8sub(chosenPrefix:utf8len() + 1)
 
@@ -292,6 +299,29 @@ end
 if (SERVER) then
 	util.AddNetworkString("ixChatMessage")
 
+	function net.SendChatType(client, chatType)
+		local class = ix.chat.classes[chatType]
+
+		if class then
+			local receivers
+
+			if class.CanHear and !receivers then
+				receivers = {}
+
+				for _, v in ipairs(player.GetAll()) do
+					if v:GetCharacter() and class:CanHear(client, v) != false then
+						receivers[#receivers + 1] = v
+					end
+				end
+
+				net.Send(receivers)
+				return
+			end
+		end
+
+		net.Broadcast()
+	end
+	
 	--- Send a chat message using the specified chat type.
 	-- @realm server
 	-- @player speaker Player who is speaking
@@ -333,7 +363,13 @@ if (SERVER) then
 			local rawText = text
 			local maxLength = ix.config.Get("chatMax")
 
-			if (text:utf8len() > maxLength) then
+			local succ, err = pcall(string.utf8len, text)
+
+			if !succ then
+				return
+			end
+			
+			if (err > maxLength) then
 				text = text:utf8sub(0, maxLength)
 			end
 

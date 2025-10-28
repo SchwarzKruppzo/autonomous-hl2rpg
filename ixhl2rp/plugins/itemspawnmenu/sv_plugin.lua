@@ -2,21 +2,28 @@ util.AddNetworkString("MenuItemSpawn")
 util.AddNetworkString("MenuItemGive")
 
 net.Receive("MenuItemSpawn", function(len, player)
-	if (!player:GetCharacter():HasFlags("G")) then
+	local hasCustomAccess = CAMI.PlayerHasAccess(player, "Helix - Create Custom Items", nil)
+	local hasFlag = player:GetCharacter():HasFlags("G")
+
+	if !hasCustomAccess and !hasFlag then
 		return
 	end
 
 	local data = net.ReadString()
+	local isCustom = net.ReadBool()
+
 	if #data <= 0 then return end
 
 	local uniqueID = data:lower()
-
-	if (!ix.item.list[uniqueID]) then
-		for k, v in SortedPairs(ix.item.list) do
-			if (ix.util.StringMatches(v.name, uniqueID)) then
-				uniqueID = k
-
-				break
+	local canSpawn = true
+	if !isCustom then
+		if !ix.Item:Get(uniqueID) then
+			for k, v in SortedPairs(ix.Item:All()) do
+				if ix.util.StringMatches(v.name, uniqueID) then
+					uniqueID = k
+					canSpawn = v.NoSpawn and false or true
+					break
+				end
 			end
 		end
 	end
@@ -34,32 +41,100 @@ net.Receive("MenuItemSpawn", function(len, player)
 	ang.roll = 0
 	ang.pitch = 0
 
-	local item = ix.item.Spawn(uniqueID, tr.HitPos, function(itemTable, entity)
+	local entity
+	if !isCustom then
+		if !hasFlag then
+			return
+		end
+
+		if !canSpawn then
+			return
+		end
+		
+		local new_item = ix.Item:Instance(uniqueID)
+		entity = ix.Item:Spawn(tr.HitPos, ang, new_item)
+
+		ix.log.AddRaw(string.format("%s has [G] spawned item %s (#%s).", player:Name(), new_item:GetName(), new_item.id))
+	else
+		if !hasCustomAccess then
+			return
+		end
+
+		local info = ix.CustomItem.stored[uniqueID]
+
+		info.custom = info.custom or "customize_base"
+		if info.custom then
+			local new_item = ix.Item:Instance(info.custom, {checksum = uniqueID})
+			new_item:SetData("checksum", uniqueID)
+
+			entity = ix.Item:Spawn(tr.HitPos, ang, new_item)
+		end
+	end
+
+	if IsValid(entity) then
 		player:NotifyLocalized("itemCreated")
-	end, ang)
+	end
 end)
 
 net.Receive("MenuItemGive", function(len, player)
-	if (!player:GetCharacter():HasFlags("G")) then
+	local hasCustomAccess = CAMI.PlayerHasAccess(player, "Helix - Create Custom Items", nil)
+	local hasFlag = player:GetCharacter():HasFlags("G")
+
+	if !hasCustomAccess and !hasFlag then
 		return
 	end
 
 	local data = net.ReadString()
+	local isCustom = net.ReadBool()
+
 	if #data <= 0 then return end
 
 	local uniqueID = data:lower()
+	local canSpawn = true
+	if !isCustom then
+		if !ix.Item:Get(uniqueID) then
+			for k, v in SortedPairs(ix.Item:All()) do
+				if ix.util.StringMatches(v.name, uniqueID) then
+					uniqueID = k
+					canSpawn = v.NoSpawn and false or true
 
-	if (!ix.item.list[uniqueID]) then
-		for k, v in SortedPairs(ix.item.list) do
-			if (ix.util.StringMatches(v.name, uniqueID)) then
-				uniqueID = k
-
-				break
+					break
+				end
 			end
 		end
 	end
 
-	local bSuccess, error = player:GetCharacter():GetInventory():Add(uniqueID, 1)
+	local bSuccess, error
+
+	if !isCustom then
+		if !hasFlag then
+			return
+		end
+
+		if !canSpawn then
+			return
+		end
+
+		local new_item = ix.Item:Instance(uniqueID)
+		bSuccess, error = player:AddItem(new_item)
+
+		ix.log.AddRaw(string.format("%s has [G] spawned item %s (#%s).", player:Name(), new_item:GetName(), new_item.id))
+	else
+		if !hasCustomAccess then
+			return
+		end
+
+		local info = ix.CustomItem.stored[uniqueID]
+
+		info.custom = info.custom or "customize_base"
+
+		if info.custom then
+			local new_item = ix.Item:Instance(info.custom, {checksum = uniqueID})
+			new_item:SetData("checksum", uniqueID)
+
+			bSuccesss, error = player:AddItem(new_item)
+		end
+	end
 
 	if (bSuccess) then
 		player:NotifyLocalized("itemCreated")

@@ -306,7 +306,7 @@ do
 			end
 		end
 
-		local cid = self:GetIDCard()
+		local cid = player:GetIDCard()
 
 		if cid then
 			local did = cid:GetData("datafileID")
@@ -323,7 +323,7 @@ do
 	end
 
 	function CHAR:ReturnDatafilePermission()
-		local cid = self:GetIDCard()
+		local cid = self:GetPlayer():GetIDCard()
 
 		if !cid then 
 			return 0 

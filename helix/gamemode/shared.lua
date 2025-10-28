@@ -91,13 +91,42 @@ end
 ix.util.Include("core/cl_skin.lua")
 ix.util.IncludeDir("core/libs/thirdparty")
 ix.util.Include("core/sh_config.lua")
+ix.util.Include("core/sh_meta.lua")
+ix.util.Include("core/sh_networking.lua")
+
+ix.util.Include("game/cl_ui_utils.lua")
+ix.util.Include("game/ui/generic.menu.lua", "client")
+ix.util.Include("game/ui/mainmenu.title.lua", "client")
+ix.util.Include("core/libs/sh_character.lua")
+
+
+ix.util.Include("game/items/sh_item.lua")
+ix.util.Include("game/inventory/sh_inventory.lua")
+
 ix.util.IncludeDir("core/libs")
 ix.util.IncludeDir("core/derma")
 ix.util.IncludeDir("core/hooks")
 
 -- Include language and default base items.
 ix.lang.LoadFromDir("helix/gamemode/languages")
-ix.item.LoadFromDir("helix/gamemode/items")
+ix.Item:LoadFromDir("helix/gamemode/items")
+
+
+ix.Net:AddPlayerVar("bIsHoldingObject", true, nil, ix.Net.Type.Bool)
+ix.Net:AddPlayerVar("restrictNoMsg", true, nil, ix.Net.Type.Bool)
+ix.Net:AddPlayerVar("blur", true, nil, ix.Net.Type.Float)
+ix.Net:AddPlayerVar("ragdoll", true, nil, ix.Net.Type.EntityIndex)
+ix.Net:AddPlayerVar("deathStartTime", false, nil, ix.Net.Type.Float)
+ix.Net:AddPlayerVar("deathTime", false, nil, ix.Net.Type.Float)
+ix.Net:AddPlayerVar("forcedSequence", false, nil, ix.Net.Type.EntityIndex)
+ix.Net:AddPlayerVar("canShoot", false, nil, ix.Net.Type.Bool)
+ix.Net:AddPlayerVar("raised", false, nil, ix.Net.Type.Bool)
+ix.Net:AddPlayerVar("restricted", false, nil, ix.Net.Type.Bool)
+ix.Net:AddPlayerVar("char", false, nil, ix.Net.Type.CharacterID)
+
+ix.Net:AddEntityVar("data", nil, ix.Net.Type.Table)
+ix.Net:AddEntityVar("owner", nil, ix.Net.Type.CharacterID)
+ix.Net:AddEntityVar("player", nil, ix.Net.Type.Entity)
 
 -- Called after the gamemode has loaded.
 function GM:Initialize()

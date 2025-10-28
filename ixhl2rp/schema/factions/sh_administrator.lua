@@ -18,31 +18,32 @@ function FACTION:GetModels(client, gender)
 end
 
 function FACTION:GetRationType(character)
-    return Schema:GetCitizenRationTypes(character)
+	return Schema:GetCitizenRationTypes(character)
 end
 
-function FACTION:OnCharacterCreated(client, character)
-    character:CreateIDCard("card_ca_head")
+function FACTION:OnSpawn(client, firstTime)
+	if firstTime then
+		local character = client:GetCharacter()
+		
+		character:CreateIDCard("card_ca_head")
+	end
 end
 
-function FACTION:OnCharacterCreated(client, character)
-
-end
 
 FACTION.npcRelations = {
-    ["npc_turret_floor"] = D_NU,
-    ["npc_combine_camera"] = D_NU,
-    ["npc_turret_ceiling"] = D_NU,
-    ["npc_rollermine"] = D_NU,
-    ["npc_helicopter"] = D_NU,
-    ["npc_combinegunship"] = D_NU,
-    ["npc_strider"] = D_NU,
-    ["npc_metropolice"] = D_LI,
-    ["npc_hunter"] = D_NU,
+	["npc_turret_floor"] = D_NU,
+	["npc_combine_camera"] = D_NU,
+	["npc_turret_ceiling"] = D_NU,
+	["npc_rollermine"] = D_NU,
+	["npc_helicopter"] = D_NU,
+	["npc_combinegunship"] = D_NU,
+	["npc_strider"] = D_NU,
+	["npc_metropolice"] = D_LI,
+	["npc_hunter"] = D_NU,
 	["npc_combine_s"] = D_NU,
 	["CombinePrison"] = D_NU,
 	["CombineElite"] = D_NU,
-    ["npc_manhack"] = D_LI
+	["npc_manhack"] = D_LI
 }
 
 FACTION_ADMIN_HEAD = FACTION.index

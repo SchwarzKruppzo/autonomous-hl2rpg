@@ -35,6 +35,11 @@ CAMI.RegisterPrivilege({
 	MinAccess = "admin"
 })
 
+CAMI.RegisterPrivilege({
+	Name = "Helix - Chat Logs",
+	MinAccess = "admin"
+})
+
 local consoleColor = Color(50, 200, 50)
 
 if (SERVER) then
@@ -101,9 +106,15 @@ if (SERVER) then
 		local logString, logFlag = ix.log.Parse(client, logType, ...)
 		if (logString == -1) then return end
 
-		CAMI.GetPlayersWithAccess("Helix - Logs", function(receivers)
-			ix.log.Send(receivers, logString, logFlag)
-		end)
+		if logType == "chat" then
+			CAMI.GetPlayersWithAccess("Helix - Chat Logs", function(receivers)
+				ix.log.Send(receivers, logString, logFlag)
+			end)
+		else
+			CAMI.GetPlayersWithAccess("Helix - Logs", function(receivers)
+				ix.log.Send(receivers, logString, logFlag)
+			end)
+		end
 
 		Msg("[LOG] ", logString .. "\n")
 

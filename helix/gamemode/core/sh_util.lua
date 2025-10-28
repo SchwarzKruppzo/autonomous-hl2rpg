@@ -27,6 +27,18 @@ ix.type = ix.type or {
 	array = 512
 }
 
+ix.transmit = ix.transmit or {
+	[2] = "none",
+	[4] = "owner",
+	[8] = "all",
+	[16] = "closelook",
+
+	none = 2,
+	owner = 4,
+	all = 8,
+	closelook = 16
+}
+
 ix.blurRenderQueue = {}
 
 --- Includes a lua file based on the prefix of the file. This will automatically call `include` and `AddCSLuaFile` based on the
@@ -68,7 +80,7 @@ end
 -- @bool[opt] bFromLua Whether or not to search from the base `lua/` folder, instead of contextually basing from `schema/`
 -- or `gamemode/`
 -- @see ix.util.Include
-function ix.util.IncludeDir(directory, bFromLua)
+function ix.util.IncludeDir(directory, bFromLua, realm)
 	-- By default, we include relatively to Helix.
 	local baseDir = "helix"
 
@@ -82,8 +94,23 @@ function ix.util.IncludeDir(directory, bFromLua)
 	-- Find all of the files within the directory.
 	for _, v in ipairs(file.Find((bFromLua and "" or baseDir)..directory.."/*.lua", "LUA")) do
 		-- Include the file from the prefix.
-		ix.util.Include(directory.."/"..v)
+		ix.util.Include(directory.."/"..v, realm)
 	end
+end
+
+function ix.util.Lib(id, data)
+	if !ix[id] then
+		local object = {}
+		object.__index = object
+
+		if data then
+			table.Merge(object, data)
+		end
+
+		ix[id] = object
+	end
+	
+	return ix[id]
 end
 
 --- Removes the realm prefix from a file name. The returned string will be unchanged if there is no prefix found.
@@ -266,7 +293,7 @@ end
 -- @treturn bool Whether or not the strings are equivalent
 function ix.util.StringMatches(a, b)
 	if (a and b) then
-		local a2, b2 = a:lower(), b:lower()
+		local a2, b2 = a:utf8lower(), b:utf8lower()
 
 		-- Check if the actual letters match.
 		if (a == b) then return true end
@@ -521,7 +548,7 @@ if (CLIENT) then
 			if (wordWidth > maxWidth) then
 				local newWidth
 
-				for i2 = 1, string.len(word) do
+				for i2 = 1, word:utf8len() do
 					local character = word[i2]
 					newWidth = surface.GetTextSize(line .. character)
 
@@ -538,7 +565,8 @@ if (CLIENT) then
 				continue
 			end
 
-			local newLine = line .. " " .. word
+			local space = (i == 1) and "" or " "
+			local newLine = line .. space .. word
 			local newWidth = surface.GetTextSize(newLine)
 
 			if (newWidth > maxWidth) then
@@ -691,8 +719,7 @@ end
 
 -- Vector extension, courtesy of code_gs
 do
-	local R = debug.getregistry()
-	local VECTOR = R.Vector
+	local VECTOR = FindMetaTable("Vector")
 	local CrossProduct = VECTOR.Cross
 	local right = Vector(0, -1, 0)
 
@@ -935,7 +962,7 @@ function ix.util.FindEmptySpace(entity, filter, spacing, size, height, tolerance
 	end
 
 	table.sort(output, function(a, b)
-		return a:Distance(position) < b:Distance(position)
+		return a:DistToSqr(position) < b:DistToSqr(position)
 	end)
 
 	return output
@@ -1006,92 +1033,212 @@ end
 	Original: https://steamcommunity.com/sharedfiles/filedetails/?id=903541818
 ]]
 
-if (system.IsLinux()) then
-	local cache = {}
+-- Credits to yobson1
 
-	-- Helper Functions
-	local function GetSoundPath(path, gamedir)
-		if (!gamedir) then
-			path = "sound/" .. path
-			gamedir = "GAME"
-		end
+local debug = false
+local sprint = debug and print or function() end
 
-		return path, gamedir
+-- Save Previous SoundDuration function
+originalSoundDuration = originalSoundDuration or SoundDuration
+
+local MP3Data = {
+	versions = {"2.5", "x", "2", "1"},
+	layers = {"x", "3", "2", "1"},
+	bitrates = {
+		["V1Lx"] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		["V1L1"] = {0, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448},
+		["V1L2"] = {0, 32, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, 384},
+		["V1L3"] = {0, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320},
+		["V2Lx"] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		["V2L1"] = {0, 32, 48, 56, 64, 80, 96, 112, 128, 144, 160, 176, 192, 224, 256, 288},
+		["V2L2"] = {0, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160},
+		["V2L3"] = {0, 8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160},
+		["VxLx"] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		["VxL1"] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		["VxL2"] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		["VxL3"] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	},
+	sampleRates = {
+		["x"] = {0, 0, 0},
+		["1"] = {44100, 48000, 32000},
+		["2"] = {22050, 24000, 16000},
+		["2.5"] = {11025, 12000, 8000}
+	},
+	samples = {
+		x = {
+			["x"] = 0,
+			["1"] = 0,
+			["2"] = 0,
+			["3"] = 0
+		},
+		["1"] = {
+			["x"] = 0,
+			["1"] = 384,
+			["2"] = 1152,
+			["3"] = 1152
+		},
+		["2"] = {
+			["x"] = 0,
+			["1"] = 384,
+			["2"] = 1152,
+			["3"] = 576
+		}
+	}
+}
+
+local function MP3FrameSize(samples, layer, bitrate, sampleRate, paddingBit)
+	local size
+
+	if layer == 1 then
+		size = math.floor(((samples * bitrate * 125) / sampleRate) + paddingBit * 4)
+	else
+		size = math.floor(((samples * bitrate * 125) / sampleRate) + paddingBit)
 	end
 
-	local function f_IsWAV(f)
-		f:Seek(8)
-
-		return f:Read(4) == "WAVE"
-	end
-
-	-- WAV functions
-	local function f_SampleDepth(f)
-		f:Seek(34)
-		local bytes = {}
-
-		for i = 1, 2 do
-			bytes[i] = f:ReadByte(1)
-		end
-
-		local num = bit.lshift(bytes[2], 8) + bit.lshift(bytes[1], 0)
-
-		return num
-	end
-
-	local function f_SampleRate(f)
-		f:Seek(24)
-		local bytes = {}
-
-		for i = 1, 4 do
-			bytes[i] = f:ReadByte(1)
-		end
-
-		local num = bit.lshift(bytes[4], 24) + bit.lshift(bytes[3], 16) + bit.lshift(bytes[2], 8) + bit.lshift(bytes[1], 0)
-
-		return num
-	end
-
-	local function f_Channels(f)
-		f:Seek(22)
-		local bytes = {}
-
-		for i = 1, 2 do
-			bytes[i] = f:ReadByte(1)
-		end
-
-		local num = bit.lshift(bytes[2], 8) + bit.lshift(bytes[1], 0)
-
-		return num
-	end
-
-	local function f_Duration(f)
-		return (f:Size() - 44) / (f_SampleDepth(f) / 8 * f_SampleRate(f) * f_Channels(f))
-	end
-
-	ixSoundDuration = ixSoundDuration or SoundDuration -- luacheck: globals ixSoundDuration
-
-	function SoundDuration(str) -- luacheck: globals SoundDuration
-		local path, gamedir = GetSoundPath(str)
-		local f = file.Open(path, "rb", gamedir)
-
-		if (!f) then return 0 end --Return nil on invalid files
-
-		local ret
-
-		if (cache[str]) then
-			ret = cache[str]
-		elseif (f_IsWAV(f)) then
-			ret = f_Duration(f)
-		else
-			ret = ixSoundDuration(str)
-		end
-
-		f:Close()
-
-		return ret
-	end
+	return (size == size and size < math.huge) and size or 0
 end
+
+local function ParseMP3FrameHeader(buffer)
+	buffer:Skip(1)
+	local b1, b2 = buffer:ReadByte(), buffer:ReadByte()
+
+	-- Get the version
+	local versionBits = bit.rshift(bit.band(b1, 0x18), 3)
+	local version = MP3Data.versions[versionBits + 1]
+	local simpleVersion = version == "2.5" and "2" or version
+
+	-- Get the layer
+	local layerBits = bit.rshift(bit.band(b1, 0x06), 1)
+	local layer = MP3Data.layers[layerBits + 1]
+
+	-- Get the bitrate
+	local bitrateKey = "V" .. simpleVersion .. "L" .. layer
+	local bitrateIndex = bit.rshift(bit.band(b2, 0xf0), 4)
+	local bitrate = MP3Data.bitrates[bitrateKey][bitrateIndex + 1] or 0
+
+	-- Get the sample rate
+	local sampleRateIdx = bit.rshift(bit.band(b2, 0x0c), 2)
+	local sampleRate = MP3Data.sampleRates[version][sampleRateIdx + 1] or 0
+
+	local sample = MP3Data.samples[simpleVersion][layer]
+
+	-- Get padding bit
+	local paddingBit = bit.rshift(bit.band(b2, 0x02), 1)
+
+	-- Seek back to where we were
+	buffer:Skip(-3)
+
+	return {
+		bitrate = bitrate,
+		sampleRate = sampleRate,
+		frameSize = MP3FrameSize(sample, layer, bitrate, sampleRate, paddingBit),
+		samples = sample
+	}
+end
+
+local soundDecoders = {
+	mp3 = function(buffer)
+		local duration = 0
+
+		-- Check for ID3v2 metadata and skip it if present
+		if buffer:Read(3) == "ID3" then
+			sprint("ID3v2 metadata detected")
+
+			-- Skip the version and revision
+			buffer:Skip(2)
+
+			-- Read the flags byte
+			local ID3Flags = buffer:ReadByte()
+
+			-- Check for footer flag
+			local footerSize = bit.band(ID3Flags, 0x10) == 0x10 and 10 or 0
+
+			-- Calculate total ID3v2 size
+			local z0, z1, z2, z3 = buffer:ReadByte(), buffer:ReadByte(), buffer:ReadByte(), buffer:ReadByte()
+			local ID3Size = 10 + ((bit.band(z0, 0x7f) * 2097152) + (bit.band(z1, 0x7f) * 16384) + (bit.band(z2, 0x7f) * 128) + bit.band(z3, 0x7f)) + footerSize
+			sprint("Total ID3v2 size: ", ID3Size, " bytes")
+
+			-- Skip the total ID3v2 size - 10 since we already seeked past the first 10 bytes, which is the header
+			buffer:Skip(ID3Size - 10)
+		else
+			-- Go back to the start of the buffer
+			buffer:Skip(-buffer:Tell())
+		end
+
+		local prevTell = buffer:Tell()
+		while buffer:Tell() < buffer:Size() - 10 do
+			-- Read the next 4 bytes from the buffer
+			local b1, b2, b3, b4 = buffer:ReadByte(), buffer:ReadByte(), buffer:ReadByte(), buffer:ReadByte()
+
+			-- Sometimes it doesn't seek by 4 bytes properly?
+			buffer:Seek(prevTell + 4)
+
+			-- Looking for 1111 1111 111 (frame synchronization bits)
+			if b1 == 0xff and bit.band(b2, 0xe0) == 0xe0 then
+				-- Go back to the start of the header
+				buffer:Skip(-4)
+
+				-- Parse the header and add to the duration of this frame
+				local frameHeader = ParseMP3FrameHeader(buffer)
+				sprint("Found next MP3 frame header @ ", buffer:Tell(), ":", frameHeader.frameSize)
+
+				if frameHeader.frameSize > 0 and frameHeader.samples > 0 then
+					buffer:Skip(frameHeader.frameSize)
+					duration = duration + (frameHeader.samples / frameHeader.sampleRate)
+				else
+					buffer:Skip(1)
+				end
+			-- Skip ID3v1 metadata
+			elseif b1 == 0x54 and b2 == 0x41 and b3 == 0x47 then -- "TAG"
+				if b4 == 0x2b then -- "+"
+					sprint("Skipping ID3v1+ metadata")
+					buffer:Skip(227 - 4)
+				else
+					sprint("Skipping ID3v1 metadata")
+					buffer:Skip(128 - 4)
+				end
+			else
+				-- Skip ahead a total of 1 byte
+				buffer:Skip(-3)
+			end
+
+			prevTell = buffer:Tell()
+		end
+
+		return duration
+	end,
+	-- Reference: http://soundfile.sapp.org/doc/WaveFormat/
+	wav = function(buffer)
+		-- Get channels
+		buffer:Seek(22)
+		local channels = buffer:ReadShort()
+
+		-- Get sample rate
+		local sampleRate = buffer:ReadLong()
+
+		-- Get samples
+		buffer:Seek(34)
+		local bitsPerSample = buffer:ReadShort()
+		local divisor = bitsPerSample / 8
+		local samples = (buffer:Size() - 44) / divisor
+
+		return samples / sampleRate / channels
+	end
+}
+
+local function SoundDurationLinux(soundPath)
+	local extension = soundPath:GetExtensionFromFilename()
+	if extension and soundDecoders[extension] then
+		local buffer = file.Open("sound/" .. soundPath, "r", "GAME")
+		local result = soundDecoders[extension](buffer)
+		buffer:Close()
+		return result
+	end
+
+	return originalSoundDuration(soundPath)
+end
+
+SoundDuration = SoundDurationLinux
 
 local ADJUST_SOUND = SoundDuration("npc/metropolice/pain1.wav") > 0 and "" or "../../hl2/sound/"
 
@@ -1138,6 +1285,43 @@ function ix.util.EmitQueuedSounds(entity, sounds, delay, spacing, volume, pitch)
 
 	-- Return how long it took for the whole thing.
 	return delay
+end
+
+--- Merges the contents of the second table with the content in the first one. The destination table will be modified.
+--- If element is table but not metatable object, value's elements will be changed only.
+-- @realm shared
+-- @tab destination The table you want the source table to merge with
+-- @tab source The table you want to merge with the destination table
+-- @return table
+function ix.util.MetatableSafeTableMerge(destination, source)
+	for k, v in pairs(source) do
+		if (istable(v) and istable(destination[k]) and getmetatable(v) == nil) then
+			-- don't overwrite one table with another
+			-- instead merge them recurisvely
+			ix.util.MetatableSafeTableMerge(destination[k], v);
+		else
+			destination[ k ] = v;
+		end
+	end
+	return destination;
+end
+
+function ix.util.Map(t, func)
+	local res = {}
+	for k, v in pairs(t) do
+		res[k] = func(v, k, t)
+	end
+
+	return res
+end
+
+function ix.util.Imap(t, func)
+	local res = {}
+	for k, v in pairs(t) do
+		res[#res + 1] = func(v, k, t)
+	end
+
+	return res
 end
 
 ix.util.Include("helix/gamemode/core/meta/sh_entity.lua")

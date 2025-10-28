@@ -27,7 +27,7 @@ if SERVER then
 
 	function ENT:SetInventory(inventory)
 		if inventory then
-			self:SetID(inventory:GetID())
+			self:SetID(inventory.id)
 		end
 	end
 
@@ -51,11 +51,11 @@ if SERVER then
 				searchTime = 15,
 				data = {money = self:GetMoney()},
 				OnPlayerClose = function()
-					ix.log.Add(activator, "closeContainer", name, inventory:GetID())
+					ix.log.Add(activator, "closeContainer", name, inventory.id)
 				end
 			})
 
-			ix.log.Add(activator, "openContainer", name, inventory:GetID())
+			ix.log.Add(activator, "openContainer", name, inventory.id)
 		end
 	end
 
@@ -85,5 +85,5 @@ else
 end
 
 function ENT:GetInventory()
-	return ix.item.inventories[self:GetID()]
+	return ix.Inventory:Get(self:GetID())
 end

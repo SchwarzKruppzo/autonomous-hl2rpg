@@ -68,6 +68,8 @@ PLUGIN.sitOffsetsF = {
 	[7] = Vector(20, 0, -19)
 };
 
+ix.Net:AddPlayerVar("sitHelperPos", false, nil, ix.Net.Type.Vector)
+
 function PLUGIN:CanSit(player, pos, option, character)
 	local obb = self.OBB[option] or self.OBB[0]
 

@@ -24,6 +24,9 @@ LANGUAGE = {
 	radioAlreadyOn = "You already have a radio that is turned on!",
 	economy = "Economy",
 
+	chatRDevice = "Использует устройство запроса...",
+	chatRadioning = "Говорит по рации...",
+
 	-- combine display messages
 	cViewData = "Downloading citizen profile data...",
 	cViewDataExpired = "ERROR! Failed to upload revised citizen profile data...",
@@ -70,7 +73,7 @@ LANGUAGE = {
 	cardNotice3 = "This card is property of Universal Union. If found, return it to a local protection officer immediately. Illegal carrying is a violation and will result in prosecution.",
 	iIDCard = "Citizen ID",
 
-	scCityAdm = "Городская Администрация",
+	scCityAdm = "Городское Представительство",
 	scCWU = "Гражданский Союз Рабочих",
 	scOTA = "Сверчеловеский Надзор",
 }

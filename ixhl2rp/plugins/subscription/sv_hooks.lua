@@ -36,16 +36,54 @@ do
 	end
 end
 
+function PLUGIN:CreatePlayerInventories(client)
+	if !client.vault then
+		local inventory = ix.meta.Inventory:New()
+		inventory:SetSize(3, 5)
+		inventory.title = "Хранилище"
+		inventory.type = "vault"
+		inventory:AddReceiver(client)
+		inventory.owner = client
+
+		client.vault = inventory
+	
+		local item_ids = client:GetData("vault_items", {})
+
+		ix.Item:LoadInstanceByID(item_ids, function(item)
+			local x, y = item.x, item.y
+
+			inventory:AddItem(item, x, y, nil, true)
+		end, function()
+			inventory:Sync()
+		end)
+	end
+end
+
+function PLUGIN:SaveVault(client)
+	if client.vault then
+		for _, v in pairs(client.vault:GetItems()) do
+			v:Save()
+		end
+
+		client:SetData("vault_items", client.vault:GetItemsID())
+	end
+end
+
+function PLUGIN:CharacterPreSave(character)
+	local client = character:GetPlayer()
+	
+	self:SaveVault(client)
+end
+
 function PLUGIN:CharacterLoaded(character)
 	local client = character:GetPlayer()
-	local index = client:GetData("vault", 0) or 0
+	if client:IsSuperAdmin() then return end
 
-	if index == 0 then
-		ix.inventory.New(0, "vault", function(inventory)
-			inventory.vars.isBag = true
-
-			client:SetData("vault", inventory:GetID())
-		end)
+	for k, faction in pairs(ix.faction.indices) do
+		if faction.bSubscriber then
+			if faction.name == "Zombie" and client:GetData("z_whitelist") then return end
+			client:SetWhitelisted(k, client:IsDonator())
+		end
 	end
 end
 
@@ -98,8 +136,12 @@ function PLUGIN:PostPlayerLoadout(client)
 	end
 end
 
-function PLUGIN:PlayerSpawnProp(client)
+function PLUGIN:PlayerSpawnProp(client, mdl)
 	if (client:GetCharacter() and client:IsDonator()) then
+		if ix.container.stored[mdl:lower()] or ix.bed.stored[mdl:lower()] then
+			return client:IsAdmin()
+		end
+		
 		return true
 	end
 end

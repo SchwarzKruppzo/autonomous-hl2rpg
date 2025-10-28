@@ -1,134 +1,425 @@
+local Craft = ix.util.Lib("Craft", {
+	recipes = {},
+	stations = {},
+})
 
-local PLUGIN = PLUGIN
+function Craft:LoadFromDir(directory, pathType, category)
+	for _, v in ipairs(file.Find(directory.."/*.lua", "LUA")) do
+		local uniqueID = v:sub(1, #v - 4)
 
-PLUGIN.craft = PLUGIN.craft or {}
-PLUGIN.craft.recipes = PLUGIN.craft.recipes or {}
-PLUGIN.craft.stations = PLUGIN.craft.stations or {}
+		if pathType == "recipe" then
+			RECIPE = ix.meta.CraftRecipe:New(uniqueID)
+				RECIPE.mainCategory = category
 
-function PLUGIN.craft.LoadFromDir(directory, pathType)
-	for _, v in ipairs(file.Find(directory.."/sh_*.lua", "LUA")) do
-		local niceName = v:sub(4, -5)
-
-		if (pathType == "recipe") then
-			RECIPE = setmetatable({
-				uniqueID = niceName
-			}, PLUGIN.meta.recipe)
 				ix.util.Include(directory.."/"..v, "shared")
 
-				PLUGIN.craft.recipes[niceName] = RECIPE
+				self.recipes[uniqueID] = RECIPE
 			RECIPE = nil
-		elseif (pathType == "station") then
-			STATION = setmetatable({
-				uniqueID = niceName
-			}, PLUGIN.meta.station)
+		elseif pathType == "station" then
+			STATION = ix.meta.CraftStation:New(uniqueID)
+
 				ix.util.Include(directory.."/"..v, "shared")
 
-				if (!scripted_ents.Get("ix_station_"..niceName)) then
+				//if (!scripted_ents.Get("ix_station_"..niceName)) then
 					local STATION_ENT = scripted_ents.Get("ix_station")
 					STATION_ENT.PrintName = STATION.name
-					STATION_ENT.uniqueID = niceName
+					STATION_ENT.uniqueID = uniqueID
 					STATION_ENT.Spawnable = true
 					STATION_ENT.AdminOnly = true
-					scripted_ents.Register(STATION_ENT, "ix_station_"..niceName)
-				end
+					scripted_ents.Register(STATION_ENT, "ix_station_"..uniqueID)
+				//end
 
-				PLUGIN.craft.stations[niceName] = STATION
+				self.stations[uniqueID] = STATION
 			STATION = nil
 		end
 	end
 end
 
-function PLUGIN.craft.GetCategories(client)
-	local categories = {}
-
-	for k, v in pairs(PLUGIN.craft.recipes) do
-		local category = v.category or "Crafting"
-
-		if (v:OnCanSee(client)) then
-			if (!categories[category]) then
-				categories[category] = {}
-			end
-
-			table.insert(categories[category], k)
-		end
-	end
-
-	return categories
-end
-
-function PLUGIN.craft.FindByName(recipe)
-	recipe = recipe:lower()
-	local uniqueID
-
-	for k, v in pairs(PLUGIN.craft.recipes) do
-		if (recipe:find(v.name:lower())) then
-			uniqueID = k
-
-			break
-		end
-	end
-
-	return uniqueID
-end
-
-if (SERVER) then
+if SERVER then
 	util.AddNetworkString("ixCraftRecipe")
-	util.AddNetworkString("ixCraftRefresh")
 
-	function PLUGIN.craft.CraftRecipe(client, uniqueID)
-		local recipeTable = PLUGIN.craft.recipes[uniqueID]
+	function Craft:AttemptCraft(recipe, client)
+		local character = client:GetCharacter()
 
-		if (recipeTable) then
-			local bCanCraft, failString, c, d, e, f = recipeTable:OnCanCraft(client)
+		if !character then
+			return false
+		end
+		
+		if recipe.skill and istable(recipe.skill) then
+			local skill = recipe.skill[1]
+			local skillTable = ix.skills.list[skill]
 
-			if (!bCanCraft) then
-				if (failString) then
-					if (failString:sub(1, 1) == "@") then
-						failString = L(failString:sub(2), client, c, d, e, f)
+			if skillTable then
+				local needed = tonumber(recipe.skill[2])
+				local ourSkill = character:GetSkillModified(skill)
+
+				if ourSkill < needed then
+					return false, string.format("Необходим навык %s %s!",  L(skillTable.name, client), needed)
+				end
+			end
+		end
+
+		if recipe.station then
+			local hasStation
+
+			if istable(recipe.station) then
+				for k, v in ipairs(recipe.station) do
+					if IsValid(client.ixStation) and client.ixStation:GetStationTable().uniqueID == v then
+						hasStation = true
+						break
 					end
-
-					client:Notify(failString)
 				end
 
+				if !hasStation then
+					return false, "Необходимо использовать рабочее место!"
+				end
+			else
+				local stationInfo = self.stations[recipe.station]
+				
+				if IsValid(client.ixStation) and client.ixStation:GetStationTable().uniqueID == recipe.station then
+					hasStation = true
+				end
+
+				if !hasStation then
+					return false, "Необходимо использовать "..stationInfo.name.."!"
+				end
+			end
+		end
+
+		local hasItems = true
+		local hasTools = true
+
+		if recipe.tools then
+			for _, uniqueID in pairs(recipe.tools or {}) do
+				if !client:HasItem(uniqueID) then
+					hasTools = false
+					break
+				end
+			end
+		end
+
+		if !hasTools then
+			return false, "У вас нет необходимых инструментов!"
+		end
+
+		if recipe.isBreakdown then
+			local hasInCraft
+
+			if IsValid(client.ixStation) then
+				hasInCraft = client.ixStation.inventory:HasItem(recipe.requirements)
+			end
+
+			if !client:HasItem(recipe.requirements, "main") and !hasInCraft then
+				hasItems = false
+			end
+		else
+			for uniqueID, amount in pairs(recipe.requirements or {}) do
+				local count = 0
+				local stored = ix.Item:Get(uniqueID)
+
+				if stored.stackable_legacy then
+					for k, v in ipairs(client:GetInventory("main"):GetItems()) do
+						if v.uniqueID == uniqueID then
+							count = count + v:GetValue()
+						end
+					end
+
+					if IsValid(client.ixStation) then
+						for k, v in ipairs(client.ixStation.inventory:GetItems()) do
+							if v.uniqueID == uniqueID then
+								count = count + v:GetValue()
+							end
+						end
+					end
+
+					if count < amount then
+						hasItems = false
+						break
+					end
+				else
+					count = count + client:GetInventory("main"):GetItemsCount(uniqueID)
+
+					if IsValid(client.ixStation) then
+						count = count + client.ixStation.inventory:GetItemsCount(uniqueID)
+					end
+
+					if recipe.any and recipe.any[uniqueID] then
+						for k, v in pairs(recipe.any[uniqueID]) do
+							count = count + client:GetInventory("main"):GetItemsCount(k)
+
+							if IsValid(client.ixStation) then
+								count = count + client.ixStation.inventory:GetItemsCount(k)
+							end
+						end
+					end
+
+					if count < amount then
+						hasItems = false
+						break
+					end
+				end
+			end
+		end
+		
+		if !hasItems then
+			return false, "У вас нет необходимых предметов!"
+		end
+
+		return true
+	end
+
+	function Craft:GetSkillScale(client, skill, level)
+		local character = client:GetCharacter()
+		local currentLevel = character:GetSkillModified(skill)
+
+		return math.Clamp(math.Remap(level, currentLevel - 2, currentLevel, 0, 1), 0, 1)
+	end
+
+	function Craft:OnCraft(recipe, client)
+		local character = client:GetCharacter()
+
+		local xp = recipe.xp or 0
+
+		if recipe.skill then
+			local skill = recipe.skill[1]
+			local level = recipe.skill[2]
+			
+			xp = xp * self:GetSkillScale(client, skill, level)
+
+			character:DoAction("craft_"..skill, xp)
+		end
+
+		local inventory = client:GetInventory("main")
+
+		if recipe.isBreakdown then
+			local hasItem
+
+			for k, v in ipairs(inventory:GetItems()) do
+				if v.uniqueID == recipe.requirements then
+					hasItem = true
+					v:Remove()
+					break
+				end
+			end
+
+			if IsValid(client.ixStation) and !hasItem then
+				for k, v in ipairs(client.ixStation.inventory:GetItems()) do
+					if v.uniqueID == recipe.requirements then
+						hasItem = true
+						v:Remove()
+						break
+					end
+				end
+			end
+		else
+			local function isAccept(recipe, uniqueID, targetUniqueID)
+				if uniqueID == targetUniqueID then
+					return true
+				end
+
+				if recipe.any and recipe.any[targetUniqueID] and recipe.any[targetUniqueID][uniqueID] then
+					return true
+				end
+				
+				return false
+			end
+			
+			for uniqueID, amount in pairs(recipe.requirements or {}) do
+				local countRemoved = 0
+				local stored = ix.Item:Get(uniqueID)
+
+				if stored.stackable_legacy then
+					for k, v in ipairs(inventory:FindItems(uniqueID)) do
+						if countRemoved >= amount then break end
+
+						countRemoved = countRemoved + v:TakeValue(amount - countRemoved)
+					end
+
+					if countRemoved < amount and IsValid(client.ixStation) then
+						for k, v in ipairs(client.ixStation.inventory:FindItems(uniqueID)) do
+							if countRemoved >= amount then 
+								break
+							end
+
+							countRemoved = countRemoved + v:TakeValue(amount - countRemoved)
+						end
+					end
+				else
+					for k, v in ipairs(inventory:GetItems()) do
+						if isAccept(recipe, v.uniqueID, uniqueID) then
+							if (countRemoved + 1) > amount then continue end
+
+							countRemoved = countRemoved + 1
+							v:Remove()
+						end
+					end
+
+					if countRemoved == amount then
+						continue
+					end
+					
+					if IsValid(client.ixStation) then
+						for k, v in ipairs(client.ixStation.inventory:GetItems()) do
+							if isAccept(recipe, v.uniqueID, uniqueID) then
+								if (countRemoved + 1) > amount then continue end
+
+								countRemoved = countRemoved + 1
+								v:Remove()
+							end
+						end
+					end
+				end
+			end
+		end
+
+		if recipe.tools then
+			local found = {}
+
+			for _, uniqueID in pairs(recipe.tools or {}) do
+				if found[uniqueID] then continue end
+
+				local sorted = {}
+
+				for k, v in ipairs(client:FindItems(uniqueID)) do
+					sorted[#sorted + 1] = {value = (v:GetData("durability") or v.durability), item = v}
+				end
+
+				if #sorted > 0 then
+					table.SortByMember(sorted, "value", true)
+
+					found[uniqueID] = sorted[1].item
+				end
+			end
+
+			for _, item in pairs(found) do
+				if item.TakeDurability then
+					local default_durability = 100
+
+					if recipe.isBreakdown then
+						default_durability = 10
+					end
+
+					item:TakeDurability(recipe.tool_durability and recipe.tool_durability[item.uniqueID] or default_durability, client)
+				end
+			end
+		end
+
+		for uniqueID, amount in pairs(recipe.results or {}) do
+			if istable(amount) then
+				amount = math.random(amount[1], amount[2])
+			end
+
+			local stored = ix.Item:Get(uniqueID)
+
+			if stored.stackable_legacy then
+				local countAdded = 0
+
+				for k, v in ipairs(inventory:FindItems(uniqueID)) do
+					if countAdded >= amount then break end
+
+					countAdded = countAdded + v:AddValue(amount - countAdded)
+				end
+
+				if countAdded < amount and IsValid(client.ixStation) then
+					for k, v in ipairs(client.ixStation.inventory:FindItems(uniqueID)) do
+						if countAdded >= amount then break end
+
+						countAdded = countAdded + v:AddValue(amount - countAdded)
+					end
+				end
+
+				local remain = (amount - countAdded)
+
+				remain = math.abs(remain)
+				
+				if remain > 0 then
+					local max = stored.max_stack
+					for i = 1, math.ceil(remain / max) do
+						remain = remain - max
+						local value = max + math.min(remain, 0)
+						
+						local inventory = client:GetInventory("main")
+						local item = ix.Item:Instance(uniqueID)
+						item:SetData("stack", value)
+						local x, y, need_rotation = inventory:FindPosition(item, item.width, item.height)
+
+						if IsValid(client.ixStation) then
+							if !x or !y then
+								inventory = client.ixStation.inventory
+
+								x, y, need_rotation = inventory:FindPosition(item, item.width, item.height)
+							end
+						end
+
+						if !x or !y then
+							inventory = nil
+						end
+						
+						if inventory then
+							item.rotated = need_rotation
+
+							inventory:AddItem(item, x, y)
+							inventory:Sync()
+						else
+							ix.Item:Spawn(client, nil, item)
+						end
+					end
+				end
+			else
+				for i = 1, amount do
+					local inventory = client:GetInventory("main")
+					local item = ix.Item:Instance(uniqueID)
+					local x, y, need_rotation = inventory:FindPosition(item, item.width, item.height)
+
+					if IsValid(client.ixStation) then
+						if !x or !y then
+							inventory = client.ixStation.inventory
+
+							x, y, need_rotation = inventory:FindPosition(item, item.width, item.height)
+						end
+					end
+
+					if !x or !y then
+						inventory = nil
+					end
+					
+					if inventory then
+						item.rotated = need_rotation
+
+						inventory:AddItem(item, x, y)
+						inventory:Sync()
+					else
+						ix.Item:Spawn(client, nil, item)
+					end
+				end
+			end
+		end
+
+		if recipe.skill then
+			client:Notify(string.format("Вы получили %s опыта за %s!", xp, recipe.isBreakdown and "разбор" or "создание"))
+		end
+		
+		return true
+	end
+
+	function Craft:CraftRecipe(client, uniqueID)
+		local recipeTable = self.recipes[uniqueID]
+
+		if recipeTable then
+			local bCanCraft, reason = self:AttemptCraft(recipeTable, client)
+
+			if !bCanCraft then
+				client:Notify(reason)
 				return false
 			end
 
-			local success, craftString, c, d, e, f = recipeTable:OnCraft(client)
-
-			if (craftString) then
-				client:Notify(string.format(craftString, c))
-			end
+			local success = self:OnCraft(recipeTable, client)
 
 			return success
 		end
 	end
 
 	net.Receive("ixCraftRecipe", function(length, client)
-		PLUGIN.craft.CraftRecipe(client, net.ReadString())
-
-		timer.Simple(0.2, function()
-			net.Start("ixCraftRefresh")
-			net.Send(client)
-		end)
+		ix.Craft:CraftRecipe(client, net.ReadString())
 	end)
 end
-
-do
-	local COMMAND = {}
-	COMMAND.arguments = ix.type.string
-	COMMAND.description = "@cmdCraftRecipe"
-
-	function COMMAND:OnRun(client, recipe)
-		PLUGIN.craft.CraftRecipe(client, PLUGIN.craft.FindByName(recipe))
-	end
-
-	ix.command.Add("CraftRecipe", COMMAND)
-end
-
-hook.Add("DoPluginIncludes", "ixCrafting", function(path, pluginTable)
-	if (!PLUGIN.paths) then
-		PLUGIN.paths = {}
-	end
-
-	table.insert(PLUGIN.paths, path)
-end)

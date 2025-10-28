@@ -10,6 +10,10 @@ ix.area.types = ix.area.types or {}
 ix.area.properties = ix.area.properties or {}
 ix.area.stored = ix.area.stored or {}
 
+ix.option.Add("showArea", ix.type.bool, true, {
+	category = "general"
+})
+
 ix.config.Add("areaTickTime", 1, "How many seconds between each time a character's current area is calculated.",
 	function(oldValue, newValue)
 		if (SERVER) then

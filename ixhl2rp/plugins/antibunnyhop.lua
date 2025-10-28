@@ -15,6 +15,7 @@ end
 local staminaUse = 3
 
 function PLUGIN:SetupMove(ply, mv, cmd)
+	/*
 	if mv:KeyPressed(IN_JUMP) then
 		local value = ply:GetLocalVar("stm", 0) - staminaUse
 
@@ -41,5 +42,5 @@ function PLUGIN:SetupMove(ply, mv, cmd)
 			local buttons = bit.band(mv:GetButtons(), bit.bnot(IN_JUMP))
 			mv:SetButtons(buttons)
 		end
-	end
+	end*/
 end

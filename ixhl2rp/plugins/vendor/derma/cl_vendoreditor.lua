@@ -32,6 +32,16 @@ function PANEL:Init()
 		end
 	end
 
+	self.card_access = self:Add("DLabel")
+	self.card_access:Dock(TOP)
+	self.card_access:DockMargin(0, 4, 0, 0)
+	self.card_access:SetText(entity.card_access)
+
+	self.password = self:Add("DLabel")
+	self.password:Dock(TOP)
+	self.password:DockMargin(0, 4, 0, 0)
+	self.password:SetText(entity.password)
+
 	self.model = self:Add("DTextEntry")
 	self.model:Dock(TOP)
 	self.model:DockMargin(0, 4, 0, 0)
@@ -178,7 +188,7 @@ function PANEL:Init()
 				self:updateVendor("mode", {uniqueID, VENDOR_SELLONLY})
 			end):SetImage("icon16/cog_add.png")
 
-			local itemTable = ix.item.list[uniqueID]
+			local itemTable = ix.Item.stored[uniqueID]
 
 			-- Set the price of the item.
 			menu:AddOption(L"price", function()
@@ -244,7 +254,7 @@ function PANEL:ReloadItemList(filter)
 
 	self.items:Clear()
 
-	for k, v in SortedPairs(ix.item.list) do
+	for k, v in SortedPairs(ix.Item.stored) do
 		local itemName = v.GetName and v:GetName() or L(v.name)
 
 		if (filter and !itemName:lower():find(filter:lower(), 1, false)) then
@@ -257,7 +267,7 @@ function PANEL:ReloadItemList(filter)
 			itemName,
 			v.category or L"none",
 			mode and L(VENDOR_TEXT[mode]) or L"none",
-			entity:GetPrice(k),
+			entity:GetPrice(k, false, true),
 			max and current.."/"..max or "-"
 		)
 

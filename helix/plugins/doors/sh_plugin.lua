@@ -5,6 +5,14 @@ PLUGIN.name = "Doors"
 PLUGIN.author = "Chessnut"
 PLUGIN.description = "A simple door system."
 
+ix.Net:AddEntityVar("ownable", nil, ix.Net.Type.Bool)
+ix.Net:AddEntityVar("visible", nil, ix.Net.Type.Bool)
+ix.Net:AddEntityVar("disabled", nil, ix.Net.Type.Bool)
+ix.Net:AddEntityVar("faction", nil, ix.Net.Type.EntityIndex)
+ix.Net:AddEntityVar("class", nil, ix.Net.Type.EntityIndex)
+ix.Net:AddEntityVar("title", nil, ix.Net.Type.String)
+ix.Net:AddEntityVar("name", nil, ix.Net.Type.String)
+
 -- luacheck: globals DOOR_OWNER DOOR_TENANT DOOR_GUEST DOOR_NONE
 DOOR_OWNER = 3
 DOOR_TENANT = 2

@@ -179,8 +179,10 @@ function PLUGIN:PostPlayerLoadout(client)
 	local character = client:GetCharacter()
 
 	if character then
-		client:SetRunSpeed(ix.config.Get("runSpeed") * CalcAthleticsSpeed(character:GetSkillModified("athletics")))
-		client:SetJumpPower(160 * (1 + math.min(math.Remap(character:GetSkillModified("acrobatics"), 0, 10, 0, 0.75), 0.75)))
+		client.recalculateSpeed = true
+
+		//client:SetRunSpeed(ix.config.Get("runSpeed") * CalcAthleticsSpeed(character:GetSkillModified("athletics")))
+		//client:SetJumpPower(160 * (1 + math.min(math.Remap(character:GetSkillModified("acrobatics"), 0, 10, 0, 0.75), 0.75)))
 
 		local uniqueID = "ixAthletics" .. client:SteamID()
 		timer.Create(uniqueID, 1, 0, function()

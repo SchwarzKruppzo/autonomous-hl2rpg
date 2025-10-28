@@ -6,7 +6,8 @@ do
 	COMMAND = {
 		description = "Send a radio message out to other characters on your current radio channel.",
 		arguments = ix.type.text,
-		alias = "R"
+		alias = "R",
+		indicator = "chatRadioning",
 	}
 
 	function COMMAND:OnRun(client, message)
@@ -23,7 +24,8 @@ do
 	COMMAND = {
 		description = "Send a radio message out to other characters on your current radio channel.",
 		arguments = ix.type.text,
-		alias = "RW"
+		alias = "RW",
+		indicator = "chatRadioning",
 	}
 
 	function COMMAND:OnRun(client, message)
@@ -40,7 +42,8 @@ do
 	COMMAND = {
 		description = "Send a radio message out to other characters on your current radio channel.",
 		arguments = ix.type.text,
-		alias = "RY"
+		alias = "RY",
+		indicator = "chatRadioning",
 	}
 
 	function COMMAND:OnRun(client, message)

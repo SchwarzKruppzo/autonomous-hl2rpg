@@ -32,9 +32,44 @@ if (SERVER) then
 		end
 	end
 
+	function ENT:CreateInventory(data)
+		local model = self:GetModel():lower()
+		data = data or ix.container.stored[model]
+
+		local inventory = ix.meta.Inventory:New()
+		inventory:SetSize(data.width, data.height)
+		inventory.title = data.name
+		inventory.type = "container"
+		inventory.owner = self
+
+		self:SetInventory(inventory)
+	end
+
+	function ENT:LoadItems(items)
+		if istable(items) then
+			ix.Item:LoadInstanceByID(items, function(item)
+				local inventory = ix.Inventory:Get(self:GetID())
+
+				inventory:AddItem(item, item.x, item.y)
+			end)
+		end
+	end
+
+	function ENT:GetItems()
+		local index = self:GetID()
+
+		if index then
+			local inventory = ix.Inventory:Get(index)
+
+			return inventory:GetItemsID()
+		end
+		
+		return {}
+	end
+	
 	function ENT:SetInventory(inventory)
 		if (inventory) then
-			self:SetID(inventory:GetID())
+			self:SetID(inventory.id)
 		end
 	end
 
@@ -50,19 +85,9 @@ if (SERVER) then
 		local index = self:GetID()
 
 		if (!ix.shuttingDown and !self.ixIsSafe and ix.entityDataLoaded and index) then
-			local inventory = ix.item.inventories[index]
+			local inventory = ix.Inventory:Get(index)
 
 			if (inventory) then
-				ix.item.inventories[index] = nil
-
-				local query = mysql:Delete("ix_items")
-					query:Where("inventory_id", index)
-				query:Execute()
-
-				query = mysql:Delete("ix_inventories")
-					query:Where("inventory_id", index)
-				query:Execute()
-
 				hook.Run("ContainerRemoved", self, inventory)
 			end
 		end
@@ -73,14 +98,24 @@ if (SERVER) then
 
 		if (inventory) then
 			local name = self:GetDisplayName()
+			local definition = ix.container.stored[self:GetModel():lower()]
 
 			ix.storage.Open(activator, inventory, {
 				name = name,
 				entity = self,
 				searchTime = ix.config.Get("containerOpenTime", 0.7),
 				data = {money = self:GetMoney()},
+				OnPlayerOpen = function()
+					if (definition.OnOpen) then
+					    definition.OnOpen(self, activator)
+					end
+				end,
 				OnPlayerClose = function()
-					ix.log.Add(activator, "closeContainer", name, inventory:GetID())
+					if (definition.OnClose) then
+						definition.OnClose(self, activator)
+					end
+
+					ix.log.Add(activator, "closeContainer", name, inventory.id)
 				end
 			})
 
@@ -88,7 +123,7 @@ if (SERVER) then
 				self.Sessions[activator:GetCharacter():GetID()] = true
 			end
 
-			ix.log.Add(activator, "openContainer", name, inventory:GetID())
+			ix.log.Add(activator, "openContainer", name, inventory.id)
 		end
 	end
 
@@ -99,10 +134,10 @@ if (SERVER) then
 			local character = activator:GetCharacter()
 
 			if (character) then
-				local def = ix.container.stored[self:GetModel():lower()]
+				local definition = ix.container.stored[self:GetModel():lower()]
 
 				if (self:GetLocked() and !self.Sessions[character:GetID()]) then
-					self:EmitSound(def.locksound or "doors/default_locked.wav")
+					self:EmitSound(definition.locksound or "doors/default_locked.wav")
 
 					if (!self.keypad) then
 						net.Start("ixContainerPassword")
@@ -159,14 +194,12 @@ else
 			end
 		end
 
-		if definition then
-			local description = tooltip:AddRow("description")
-			description:SetText(definition.description)
-			description:SizeToContents()
-		end
+		local description = tooltip:AddRow("description")
+		description:SetText(definition.description)
+		description:SizeToContents()
 	end
 end
 
 function ENT:GetInventory()
-	return ix.item.inventories[self:GetID()]
+	return ix.Inventory:Get(self:GetID())
 end

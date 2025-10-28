@@ -54,9 +54,9 @@ function PLUGIN:SaveData()
 			query:Update("character_name", v[1])
 			query:Update("cid", v[2])
 			query:Update("regid", v[3])
-			query:Update("genericdata", util.TableToJSON(v[4]))
-			query:Update("datafile", util.TableToJSON(v[5]))
-			query:Update("access", util.TableToJSON(v[6]))
+			query:Update("genericdata", v[4] and util.TableToJSON(v[4]) or "[]")
+			query:Update("datafile", v[5] and util.TableToJSON(v[5]) or "[]")
+			query:Update("access", v[6] and util.TableToJSON(v[6]) or "[]")
 		query:Execute()
 	end
 end
@@ -261,7 +261,7 @@ end
 function PLUGIN:CharacterLoaded(character)
 	timer.Simple(1, function()
 		local player = character:GetPlayer()
-		local cid = character:GetIDCard()
+		local cid = player:GetIDCard()
 
 		if cid then
 			player.ixDatafile = cid:GetData("datafileID")

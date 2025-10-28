@@ -76,6 +76,20 @@ function PLUGIN:LoadScannerTerminals()
 			phys:EnableMotion(false)
 		end
 	end
+
+	for _, v in ipairs(ix.data.Get("rebelScannerTerminals") or {}) do
+		local rs = ents.Create("ix_rebelscannerterminal")
+
+		rs:SetPos(v[1])
+		rs:SetAngles(v[2])
+		rs:Spawn()
+
+		local phys = rs:GetPhysicsObject()
+
+		if IsValid(phys) then
+			phys:EnableMotion(false)
+		end
+	end
 end
 
 function PLUGIN:SaveScannerTerminals()
@@ -94,6 +108,14 @@ function PLUGIN:SaveScannerTerminals()
 	end
 
 	ix.data.Set("cmbScannerTerminals2", data)
+
+	data = {}
+
+	for _, v in ipairs(ents.FindByClass("ix_rebelscannerterminal")) do
+		data[#data + 1] = {v:GetPos(), v:GetAngles()}
+	end
+
+	ix.data.Set("rebelScannerTerminals", data)
 end
 
 net.Receive("ScannerData", function(len, client)
@@ -127,11 +149,21 @@ net.Receive("ScannerData", function(len, client)
 end)
 
 PLUGIN.activeID = PLUGIN.activeID or 0
+
+Schema.scanner_deploy_cmb = CurTime()
+Schema.scanner_deploy_rebels = CurTime()
+Schema.scanner_deploy_rebels2 = CurTime()
+
 net.Receive("ScannerTerminalDeploy", function(len, player)
 	local terminal = net.ReadEntity()
 
 	if !IsValid(terminal) or !terminal.IsScannerTerminal then return end
 	if player:GetShootPos():DistToSqr(terminal:GetPos()) > 9801 then return end
+
+	if Schema.scanner_deploy_cmb and Schema.scanner_deploy_cmb >= CurTime() then
+		return
+	end
+	
 	if player:IsPilotScanner() or player:IsRagdoll() or !player:Alive() or !player:GetCharacter() then return end
 	
 	if IsValid(PLUGIN:GetActiveScanners()[player]) then
@@ -152,11 +184,14 @@ net.Receive("ScannerTerminalDeploy", function(len, player)
 	scanner:SetPos(pos)
 	scanner:Spawn()
 	scanner:SetID(PLUGIN.activeID)
+	scanner.isCombine = true
 
 	PLUGIN:GetActiveScanners()[player] = scanner
 
 	scanner:Transmit(player)
 	player:SetNWEntity("Scanner", scanner)
+
+	Schema.scanner_deploy_cmb = CurTime() + 1800
 	--player:SetNetVar("IgnoreMoving", true)
 	--player:SetNetVar("StancePos", player:GetPos())
 	--player:SetNetVar("StanceAng", player:GetAngles())
@@ -169,6 +204,11 @@ net.Receive("ScannerTerminalDeploy2", function(len, player)
 
 	if !IsValid(terminal) or !terminal.IsScannerTerminal then return end
 	if player:GetShootPos():DistToSqr(terminal:GetPos()) > 9801 then return end
+
+	if Schema.scanner_deploy_rebels and Schema.scanner_deploy_rebels >= CurTime() then
+		return
+	end
+
 	if player:IsPilotScanner() or player:IsRagdoll() or !player:Alive() or !player:GetCharacter() then return end
 	
 	if IsValid(PLUGIN:GetActiveScanners()[player]) then
@@ -198,6 +238,8 @@ net.Receive("ScannerTerminalDeploy2", function(len, player)
 
 	scanner:Transmit(player)
 	player:SetNWEntity("Scanner", scanner)
+
+	Schema.scanner_deploy_rebels = CurTime() + 3600
 	--player:SetNetVar("IgnoreMoving", true)
 	--player:SetNetVar("StancePos", player:GetPos())
 	--player:SetNetVar("StanceAng", player:GetAngles())
@@ -205,6 +247,52 @@ net.Receive("ScannerTerminalDeploy2", function(len, player)
 	--player:SetForcedAnimation("stances_stand03", 0, nil)
 end)
 
+net.Receive("ScannerTerminalDeploy3", function(len, player)
+	local terminal = net.ReadEntity()
+
+	if !IsValid(terminal) or !terminal.IsScannerTerminal then return end
+	if player:GetShootPos():DistToSqr(terminal:GetPos()) > 9801 then return end
+
+	if Schema.scanner_deploy_rebels2 and Schema.scanner_deploy_rebels2 >= CurTime() then
+		return
+	end
+
+	if player:IsPilotScanner() or player:IsRagdoll() or !player:Alive() or !player:GetCharacter() then return end
+	
+	if IsValid(PLUGIN:GetActiveScanners()[player]) then
+		return
+	end
+
+
+	local spawnPoints = ix.plugin.list["spawns"].spawns["metropolice"]["scanner3"]
+
+	if (!spawnPoints or #spawnPoints <= 0) then return end
+
+	local randomSpawn = math.random(1, #spawnPoints)
+	local pos = spawnPoints[randomSpawn]
+	
+	PLUGIN.activeID = PLUGIN.activeID + 1
+
+	local scanner = ents.Create("ix_scanner")
+	scanner:SetPos(pos)
+	scanner:Spawn()
+	scanner.Rebel = true
+	scanner:SetID(PLUGIN.activeID)
+	scanner:SetClawScanner()
+	scanner:ResetSequence("idle")
+
+	PLUGIN:GetActiveScanners()[player] = scanner
+
+	scanner:Transmit(player)
+	player:SetNWEntity("Scanner", scanner)
+
+	Schema.scanner_deploy_rebels2 = CurTime() + 3600
+	--player:SetNetVar("IgnoreMoving", true)
+	--player:SetNetVar("StancePos", player:GetPos())
+	--player:SetNetVar("StanceAng", player:GetAngles())
+	--player:SetNetVar("StanceIdle", true)
+	--player:SetForcedAnimation("stances_stand03", 0, nil)
+end)
 
 
 

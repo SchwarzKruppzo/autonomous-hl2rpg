@@ -84,7 +84,7 @@ function PANEL:RefreshResults()
 
 	local results = {}
 
-	for k, v in pairs(ix.item.list) do
+	for k, v in pairs(ix.Item:All()) do
 		if (v.name:lower():find(text)) then
 			results[k] = v
 		end

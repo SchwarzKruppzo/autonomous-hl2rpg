@@ -55,3 +55,19 @@ ix.bed.Register("models/props_unique/hospital/exam_table.mdl", {
 	type = 3,
 	rate = 1.5
 })
+ix.bed.Register("models/props_vtmb/heartbed.mdl", {
+	type = 1,
+	rate = 0.5
+})
+ix.bed.Register("models/props_vtmb/fancybed.mdl", {
+	type = 1,
+	rate = 0.5
+})
+ix.bed.Register("models/props_vtmb/bedmodern.mdl", {
+	type = 0,
+	rate = 0.25
+})
+ix.bed.Register("models/props/interior/bunkbed.mdl", {
+	type = 0,
+	rate = 0.25
+})

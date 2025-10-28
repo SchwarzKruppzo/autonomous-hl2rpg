@@ -74,10 +74,21 @@ function ix.hud.DrawItemPickup()
 	end
 end
 
+RARITY_COLORS = {
+	[0] = Color(255, 255, 255, 255),
+	[1] = Color(51, 204, 51, 255),
+	[2] = Color(0, 102, 255, 255),
+	[3] = Color(204, 0, 255, 255),
+	[4] = Color(230, 188, 22, 255)
+}
+local redClr = Color(200, 50, 50)
+
 function ix.hud.PopulateItemTooltip(tooltip, item)
+	local rColor = RARITY_COLORS[item:GetRarity()] or RARITY_COLORS[0]
 	local name = tooltip:AddRow("name")
 	name:SetImportant()
 	name:SetText(item.GetName and item:GetName() or L(item.name))
+	name:SetBackgroundColor(rColor)
 	name:SetMaxWidth(math.max(name:GetMaxWidth(), ScrW() * 0.5))
 	name:SizeToContents()
 
@@ -87,6 +98,15 @@ function ix.hud.PopulateItemTooltip(tooltip, item)
 
 	if (item.PopulateTooltip) then
 		item:PopulateTooltip(tooltip)
+	end
+
+	if item.contraband then
+		local contraband = tooltip:AddRow("contraband")
+		contraband:SetText("Является контрабандой: хранение и транспортировка запрещена.")
+		contraband:SetBackgroundColor(ColorAlpha(redClr, 64))
+		contraband:SetTextColor(redClr)
+		contraband:SetFont("item.contraband")
+		contraband:SizeToContents()
 	end
 
 	hook.Run("PopulateItemTooltip", tooltip, item)

@@ -18,6 +18,8 @@ CAMI.RegisterPrivilege({
 	MinAccess = "superadmin"
 })
 
+ix.Net:AddPlayerVar("parts", false, nil, ix.Net.Type.Table)
+
 -- this stores pac3 part information to plugin's table'
 function ix.pac.RegisterPart(id, outfit)
 	ix.pac.list[id] = outfit

@@ -13,6 +13,8 @@ function ENT:SetupDataTables()
 	self:NetworkVar("String", 1, "Description")
 end
 
+ECONOMY_TICK = 90 * 60
+
 function ENT:Initialize()
 	if (SERVER) then
 		self:SetModel("models/mossman.mdl")
@@ -23,6 +25,8 @@ function ENT:Initialize()
 		self:SetCollisionBounds(Vector(-16, -16, 0), Vector(16, 16, 72))
 		self:SetBloodColor(BLOOD_COLOR_RED)
 
+		self.password = ""
+		self.card_access = ""
 		self.items = {}
 		self.messages = {}
 		self.factions = {}
@@ -47,12 +51,23 @@ end
 function ENT:CanAccess(client)
 	local bAccess = false
 	local uniqueID = ix.faction.indices[client:Team()].uniqueID
+	local free_access = true
+
+	if (self.password != "") then
+		free_access = false
+	end
+
+	if (self.card_access != "") then
+		free_access = false
+		if (client:HasIDAccess(self.card_access)) then
+			return true
+		end
+	end
 
 	if (self.factions and !table.IsEmpty(self.factions)) then
+		free_access = false
 		if (self.factions[uniqueID]) then
 			bAccess = true
-		else
-			return false
 		end
 	end
 
@@ -61,11 +76,19 @@ function ENT:CanAccess(client)
 		local classID = class and class.uniqueID
 
 		if (classID and !self.classes[classID]) then
-			return false
+			bAccess = false
 		end
 	end
-
-	return true
+	if (free_access or bAccess) then
+		return true
+	end
+	if (self.password == "") then
+		return false
+	end
+	if (self.Sessions[client:GetCharacter():GetID()]) then
+		return true
+	end
+	return false
 end
 
 function ENT:GetStock(uniqueID)
@@ -74,12 +97,21 @@ function ENT:GetStock(uniqueID)
 	end
 end
 
-function ENT:GetPrice(uniqueID, selling)
-	local price = ix.item.list[uniqueID] and self.items[uniqueID] and
-		self.items[uniqueID][VENDOR_PRICE] or ix.item.list[uniqueID].cost or ix.item.list[uniqueID].price or 0
+function ENT:GetPrice(uniqueID, selling, editor)
+	local price = ix.Item.stored[uniqueID] and self.items[uniqueID] and
+		self.items[uniqueID][VENDOR_PRICE] or ix.Item.stored[uniqueID].cost or ix.Item.stored[uniqueID].price or 0
 
 	if (selling) then
 		price = math.floor(price * (self.scale or 0.5))
+	end
+
+	if !editor then
+		if price != 0 then
+			local sell = self.items[uniqueID][5]
+			local buy = self.items[uniqueID][6]
+
+			price = math.max(math.floor(price * math.max(1 + 0.975 * math.Remap(buy, 0, sell, -0.975, 0), 1 - 0.975)), 1)
+		end
 	end
 
 	return price
@@ -88,7 +120,7 @@ end
 function ENT:CanSellToPlayer(client, uniqueID)
 	local data = self.items[uniqueID]
 
-	if (!data or !client:GetCharacter() or !ix.item.list[uniqueID]) then
+	if (!data or !client:GetCharacter() or !ix.Item.stored[uniqueID]) then
 		return false
 	end
 
@@ -110,7 +142,7 @@ end
 function ENT:CanBuyFromPlayer(client, uniqueID)
 	local data = self.items[uniqueID]
 
-	if (!data or !client:GetCharacter() or !ix.item.list[uniqueID]) then
+	if (!data or !client:GetCharacter() or !ix.Item.stored[uniqueID]) then
 		return false
 	end
 
@@ -118,7 +150,7 @@ function ENT:CanBuyFromPlayer(client, uniqueID)
 		return false
 	end
 
-	if (!self:HasMoney(data[VENDOR_PRICE] or ix.item.list[uniqueID].cost or ix.item.list[uniqueID].price or 0)) then
+	if (!self:HasMoney(data[VENDOR_PRICE] or ix.Item.stored[uniqueID].cost or ix.Item.stored[uniqueID].price or 0)) then
 		return false
 	end
 
@@ -170,6 +202,23 @@ if (SERVER) then
 			end
 		end
 	end
+
+	function ENT:OnChangedAccess(access)
+		self.card_access = access
+	end
+
+	function ENT:OnChangedPassword(password)
+		self.password = password
+	end
+
+	function ENT:onEnteredPassword(client, password)
+		if (self.password == "") then
+			return
+		end
+		if (password and password == self.password) then
+			self.Sessions[client:GetCharacter():GetID()] = true
+		end
+	end
 	
 	function ENT:Use(activator)
 		local character = activator:GetCharacter()
@@ -188,6 +237,15 @@ if (SERVER) then
 
 		if (self.messages[VENDOR_WELCOME]) then
 			activator:ChatPrint(self:GetDisplayName()..": "..self.messages[VENDOR_WELCOME])
+		end
+
+		if self.nextEconomicsTick and (os.time() >= self.nextEconomicsTick) then
+			for k, v in pairs(self.items) do
+				self.items[k][5] = self.orders[k].sell or self.items[k][5]
+				self.items[k][6] = self.orders[k].buy or self.items[k][6]
+			end
+			
+			self.nextEconomicsTick = os.time() + ECONOMY_TICK
 		end
 
 		local items = {}
@@ -252,7 +310,11 @@ if (SERVER) then
 		net.Send(self.receivers)
 	end
 
-	function ENT:AddStock(uniqueID, value)
+	function ENT:AddStock(uniqueID, value, x)
+		if !x then
+			self.orders[uniqueID].sell = self.orders[uniqueID].sell + 1
+		end
+
 		if (!self.items[uniqueID][VENDOR_MAXSTOCK]) then
 			return
 		end
@@ -261,11 +323,44 @@ if (SERVER) then
 	end
 
 	function ENT:TakeStock(uniqueID, value)
+		self.orders[uniqueID].buy = self.orders[uniqueID].buy + 1
+
 		if (!self.items[uniqueID][VENDOR_MAXSTOCK]) then
 			return
 		end
 
-		self:AddStock(uniqueID, -(value or 1))
+		self:AddStock(uniqueID, -(value or 1), true)
+	end
+
+	function ENT:InitOrders(reset)
+		self.nextEconomicsTick = os.time() + ECONOMY_TICK
+		self.orders = {}
+
+		for uniqueID, data in pairs(self.items) do
+			local savedSell = self.items[uniqueID][5]
+			local savedBuy = self.items[uniqueID][6]
+
+			local sell = data[VENDOR_MAXSTOCK] or 20
+			local buy = data[VENDOR_MAXSTOCK] or 20
+
+			if !reset then
+				if savedSell then
+					sell = (savedSell > sell) and math.max(math.floor(savedSell - ((savedSell - sell) * 0.5)), sell) or math.min(math.floor(savedSell + ((sell - savedSell) * 0.5)), sell)
+				end
+
+				if savedBuy then
+					buy = (savedBuy > buy) and math.max(math.floor(savedBuy - ((savedBuy - buy) * 0.5)), buy) or math.min(math.floor(savedBuy + ((buy - savedBuy) * 0.5)), buy)
+				end
+			end
+
+			self.orders[uniqueID] = {
+				sell = sell,
+				buy = buy
+			}
+
+			self.items[uniqueID][5] = sell
+			self.items[uniqueID][6] = buy
+		end 
 	end
 else
 	function ENT:CreateBubble()
@@ -392,5 +487,106 @@ properties.Add("ixvendor_bg", {
 		local text = net.ReadString()
 
 		entity:OnChangedBodyGroups(text)
+	end
+})
+
+properties.Add("ixvendor_access", {
+	MenuLabel = "Set Vendor Access",
+	Order = 400,
+	MenuIcon = "icon16/tag_blue_edit.png",
+
+	Filter = function(self, entity, client)
+		if (entity:GetClass() != "ix_vendor") then return false end
+		if (!gamemode.Call("CanProperty", client, "ixvendor_access", entity)) then return false end
+
+			return true
+	end,
+
+	Action = function(self, entity)
+		Derma_StringRequest("Specify Card Access", "", "cmbMpfAll", function(text)
+			self:MsgStart()
+			net.WriteEntity(entity)
+			net.WriteString(text)
+			self:MsgEnd()
+		end)
+	end,
+
+	Receive = function(self, length, client)
+		local entity = net.ReadEntity()
+
+		if (!IsValid(entity)) then return end
+		if (!self:Filter(entity, client)) then return end
+
+		local text = net.ReadString()
+
+		entity:OnChangedAccess(text)
+	end
+})
+
+properties.Add("ixvendor_password_set", {
+	MenuLabel = "Set Vendor Password",
+	Order = 400,
+	MenuIcon = "icon16/tag_blue_edit.png",
+
+	Filter = function(self, entity, client)
+		if (entity:GetClass() != "ix_vendor") then return false end
+		if (!gamemode.Call("CanProperty", client, "ixvendor_password_set", entity)) then return false end
+
+			return true
+	end,
+
+	Action = function(self, entity)
+		Derma_StringRequest("Specify Password", "", "qwerty", function(text)
+			self:MsgStart()
+			net.WriteEntity(entity)
+			net.WriteString(text)
+			self:MsgEnd()
+		end)
+	end,
+
+	Receive = function(self, length, client)
+		local entity = net.ReadEntity()
+
+		if (!IsValid(entity)) then return end
+		if (!self:Filter(entity, client)) then return end
+
+		local text = net.ReadString()
+
+		entity:OnChangedPassword(text)
+	end
+})
+
+properties.Add("ixvendor_password_enter", {
+	MenuLabel = "Enter Vendor Password",
+	Order = 400,
+	MenuIcon = "icon16/tag_blue_edit.png",
+	-- self.Sessions[activator:GetCharacter():GetID()]
+	-- self.Sessions[activator:GetCharacter():GetID()] = true
+
+	Filter = function(self, entity, client)
+		if (entity:GetClass() != "ix_vendor") then return false end
+		-- if (!gamemode.Call("CanProperty", client, "ixvendor_password_set", entity)) then return false end
+
+			return true
+	end,
+
+	Action = function(self, entity)
+		Derma_StringRequest("Enter Password", "", "", function(text)
+			self:MsgStart()
+			net.WriteEntity(entity)
+			net.WriteString(text)
+			self:MsgEnd()
+		end)
+	end,
+
+	Receive = function(self, length, client)
+		local entity = net.ReadEntity()
+
+		if (!IsValid(entity)) then return end
+		if (!self:Filter(entity, client)) then return end
+
+		local text = net.ReadString()
+
+		entity:onEnteredPassword(client, text)
 	end
 })

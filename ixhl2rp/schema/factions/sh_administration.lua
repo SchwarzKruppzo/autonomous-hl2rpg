@@ -43,8 +43,12 @@ function FACTION:GetRationType(character)
 	return Schema:GetCitizenRationTypes(character)
 end
 
-function FACTION:OnCharacterCreated(client, character)
-	character:CreateIDCard("card_ca")
+function FACTION:OnSpawn(client, firstTime)
+	if firstTime then
+		local character = client:GetCharacter()
+		
+		character:CreateIDCard("card_ca")
+	end
 end
 
 FACTION.npcRelations = {

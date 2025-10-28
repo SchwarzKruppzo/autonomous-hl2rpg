@@ -59,7 +59,9 @@ function PANEL:Init()
 		self.progress:DecrementProgress()
 
 		self:SetActiveSubpanel("faction", 0)
-		self:SlideDown()
+		if BRANCH != "x86-64" then
+			self:SlideDown()
+		end
 
 		parent.mainPanel:Undim()
 	end
@@ -201,7 +203,9 @@ function PANEL:Init()
 
 		ix.characters = charList
 
-		self:SlideDown()
+		if BRANCH != "x86-64" then
+			self:SlideDown()
+		end
 
 		if (!IsValid(self) or !IsValid(parent)) then
 			return
@@ -217,7 +221,9 @@ function PANEL:Init()
 				net.WriteUInt(id, 32)
 			net.SendToServer()
 		else
-			self:SlideDown()
+			if BRANCH != "x86-64" then
+				self:SlideDown()
+			end
 		end
 	end)
 
@@ -228,7 +234,9 @@ function PANEL:Init()
 		local fault = net.ReadString()
 		local args = net.ReadTable()
 
-		self:SlideDown()
+		if BRANCH != "x86-64" then
+			self:SlideDown()
+		end
 
 		parent.mainPanel:Undim()
 		parent:ShowNotice(3, L(fault, unpack(args)))
@@ -247,7 +255,9 @@ function PANEL:SendPayload()
 			local parent = self:GetParent()
 
 			self.awaitingResponse = false
-			self:SlideDown()
+			if BRANCH != "x86-64" then
+				self:SlideDown()
+			end
 
 			parent.mainPanel:Undim()
 			parent:ShowNotice(3, L("unknownError"))

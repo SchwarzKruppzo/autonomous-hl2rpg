@@ -20,8 +20,8 @@ function PANEL:Init()
 		self:Populate(value)
 	end
 
-	for _, v in pairs(ix.item.list) do
-		if (v.base == "base_customizable_items") then
+	for _, v in pairs(ix.Item.stored) do
+		if v.isCustomBase then
 			self.baseSelector:AddChoice(v.uniqueID)
 		end
 	end
@@ -61,7 +61,7 @@ function PANEL:Init()
 end
 
 function PANEL:Populate(base)
-	base = ix.item.list[base]
+	base = ix.Item.stored[base]
 
 	self.settings:Clear()
 	self.base = base.uniqueID

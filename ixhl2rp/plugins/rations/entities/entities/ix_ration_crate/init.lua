@@ -50,7 +50,7 @@ end
 
 local model = "models/items/item_item_crate.mdl"
 function ENT:Touch(ent)
-	if !ent.GetItemID then
+	if self.stop then
 		return
 	end
 
@@ -58,7 +58,13 @@ function ENT:Touch(ent)
 		return
 	end
 
-	local item = ent:GetItemTable()
+	self.nextUse = CurTime() + 1
+
+	if !ent.GetItem then
+		return
+	end
+
+	local item = ent:GetItem()
 
 	if !item or item.uniqueID != RATION_TO_FILL then
 		return
@@ -66,36 +72,48 @@ function ENT:Touch(ent)
 	
 	ent:Remove()
 
-	self:SetCount(self:GetCount() + 1)
+	self.workers = self.workers or {}
+
+	for charID, _ in pairs(item.workers or {}) do
+		self.workers[#self.workers + 1] = charID
+	end
+	
+	local held = ent.ixHeldOwner
+
+	if IsValid(held) then
+		self.workers[#self.workers + 1] = held:GetCharacter():GetID()
+	end
+
+	local newCount = self:GetCount() + 1
+
+	if newCount == 10 then
+		self.stop = true
+	end
+	
+	self:SetCount(newCount)
 
 	self:EmitSound("items/medshot4.wav")
-	self.nextUse = CurTime() + .5
+end
 
-	if self:GetCount() >= 10 then
-		if !self.spawnShipment then
-			self.spawnShipment = true
-
-			local container = ents.Create("ix_container")
-			container:SetPos(self:GetPos())
-			container:SetAngles(self:GetAngles())
-			container:SetModel(model)
-			container:Spawn()
-
-			ix.item.NewInv(0, "container:" .. model, function(inventory)
-				-- we'll technically call this a bag since we don't want other bags to go inside
-				inventory.vars.isBag = true
-				inventory.vars.isContainer = true
-
-				inventory:Add(RATION_TO_FILL, 10)
-
-				if (IsValid(container)) then
-					container:SetInventory(inventory)
-					container:SetDisplayName("Ящик с рационами")
-				end
-			end)
-
-			self:Remove()
-			return false
-		end
+function ENT:Use(activator)
+	if self.nextUse and self.nextUse > CurTime() then
+		return
 	end
+
+	self.nextUse = CurTime() + 1
+
+	
+	if self:GetCount() != 10 then
+		return
+	end
+
+	if IsValid(activator.crateTake) then
+		return
+	end
+	
+	activator.crateTake = self
+
+	net.Start("crate.take")
+		net.WriteEntity(self)
+	net.Send(activator)
 end

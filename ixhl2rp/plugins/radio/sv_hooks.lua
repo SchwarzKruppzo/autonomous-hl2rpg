@@ -37,18 +37,12 @@ function PLUGIN:ClockworkRadioChannelInitialized(channel) end
 
 -- Called when a player's channels should be adjusted
 function PLUGIN:PlayerAdjustChannels(player, listenChannels, globalChannels) 
-	local itemsA = player:GetCharacter():GetInventory():GetItems()
-	local itemsB = player:GetCharacter():GetEquipment():GetItems()
+	local itemID = player:GetFirstAtSlot(1, 1, 'radio')
+	local radio = itemID and ix.Item.instances[itemID]
 
-	for k, itemTable in pairs(itemsA) do
-		if itemTable.frequency then
-			self:AddItemChannelToPlayer(player, itemTable)
-		end
-	end
-
-	for k, itemTable in pairs(itemsB) do
-		if itemTable.frequency then
-			self:AddItemChannelToPlayer(player, itemTable)
+	if radio then
+		if radio.frequency then
+			self:AddItemChannelToPlayer(player, radio)
 		end
 	end
 end
@@ -167,8 +161,8 @@ function PLUGIN:LoadData()
 end
 
 netstream.Hook("ixRadioFrequency", function(player, id, freq)
-	local itemTable = player:GetCharacter():GetInventory():GetItemByID(id)
-
+	local has, itemTable = player:HasItemByID(id)
+	
 	if itemTable then
 		if string.find(freq, "^%d%d%d%.%d$") then
 			local first = string.match(freq, "(%d)%d%d%.%d")

@@ -72,6 +72,12 @@ if (SERVER) then
 			return client:NotifyLocalized("dNotValid")
 		end
 
+		if table.HasValue(Schema.banned_doors, door:MapCreationID()) then
+			client:ConCommand("play beams/beamstart5.wav")
+			
+			return client:Notify("жопу себе на замок поставь")
+		end
+
 		if IsValid(door.ixLock) then
 			door.ixLock:Remove()
 		end
@@ -162,7 +168,7 @@ if (SERVER) then
 			return
 		end
 
-		if (!client:GetCharacter():HasIDAccess(self:GetAccess())) then
+		if (!client:HasIDAccess(self:GetAccess())) then
 			self:DisplayError()
 			self.nextUseTime = CurTime() + 2
 

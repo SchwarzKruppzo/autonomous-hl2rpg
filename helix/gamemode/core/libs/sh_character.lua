@@ -26,13 +26,20 @@ ix.char.loaded = ix.char.loaded or {}
 -- @table ix.char.vars
 -- @usage print(ix.char.vars["name"])
 -- > table: 0xdeadbeef
-ix.char.vars = ix.char.vars or {}
+
 
 --- Functions similar to `ix.char.loaded`, but is serverside only. This contains a table of all loaded characters grouped by
 -- the SteamID64 of the player that owns them.
 -- @realm server
 -- @table ix.char.cache
 ix.char.cache = ix.char.cache or {}
+
+ix.char.var_max = ix.char.var_max or 0
+ix.char.var_max_bits = ix.char.var_max_bits or 0
+
+ix.char.vars = {}
+ix.char.vars_id = {}
+ix.char.meta_vars = {}
 
 ix.util.Include("helix/gamemode/core/meta/sh_character.lua")
 
@@ -98,7 +105,7 @@ if (SERVER) then
 	function ix.char.Restore(client, callback, bNoCache, id)
 		local steamID64 = client:SteamID64()
 		local cache = ix.char.cache[steamID64]
-
+/*
 		if (cache and !bNoCache) then
 			for _, v in ipairs(cache) do
 				local character = ix.char.loaded[v]
@@ -113,7 +120,7 @@ if (SERVER) then
 			end
 
 			return
-		end
+		end*/
 
 		local query = mysql:Select("ix_characters")
 			query:Select("id")
@@ -262,6 +269,8 @@ if (SERVER) then
 						value = istable(value) and value or util.JSONToTable(value)
 					end
 
+					-- load meta vars
+
 					data[k] = value
 				end
 			end
@@ -285,7 +294,7 @@ function ix.char.New(data, id, client, steamID)
 		data.description = data.description:gsub("#", "#​")
 	end
 
-	local character = setmetatable({vars = {}}, ix.meta.character)
+	local character = setmetatable({vars = {}, meta_vars = {}}, ix.meta.character)
 		for k, v in pairs(data) do
 			if (v != nil) then
 				character.vars[k] = v
@@ -297,6 +306,14 @@ function ix.char.New(data, id, client, steamID)
 
 		if (SERVER and IsValid(client) or steamID) then
 			character.steamID = IsValid(client) and client:SteamID64() or steamID
+		end
+
+		if CLIENT and IsValid(client) and client == LocalPlayer() then
+			character.isLocal = true
+		end
+
+		for var, data in pairs(ix.char.meta_vars) do
+			character.meta_vars[var] = data.Meta:New(character, var, data)
 		end
 	return character
 end
@@ -326,6 +343,9 @@ do
 		fieldType = ix.type.string,
 		default = "John Doe",
 		index = 1,
+		Net = {
+			Transmit = ix.transmit.all
+		},
 		OnValidate = function(self, value, payload, client)
 			value = tostring(value):gsub("\r\n", ""):gsub("\n", "")
 			value = string.Trim(value)
@@ -375,6 +395,9 @@ do
 		fieldType = ix.type.text,
 		default = "",
 		index = 2,
+		Net = {
+			Transmit = ix.transmit.all
+		},
 		OnValidate = function(self, value, payload)
 			value = string.Trim((tostring(value):gsub("\r\n", ""):gsub("\n", "")))
 			local minLength = ix.config.Get("minDescriptionLength", 16)
@@ -415,6 +438,9 @@ do
 		fieldType = ix.type.string,
 		default = "models/error.mdl",
 		index = 3,
+		Net = {
+			Transmit = ix.transmit.all
+		},
 		OnSet = function(character, value)
 			local client = character:GetPlayer()
 
@@ -542,6 +568,9 @@ do
 		fieldType = ix.type.string,
 		default = "Citizen",
 		bNoDisplay = true,
+		Net = {
+			Transmit = ix.transmit.all
+		},
 		FilterValues = function(self)
 			-- make sequential table of faction unique IDs
 			local values = {}
@@ -584,7 +613,7 @@ do
 			newData.faction = ix.faction.indices[value].uniqueID
 		end
 	})
-
+/*
 	-- attribute manipulation should be done with methods from the ix.attributes library
 	ix.char.RegisterVar("attributes", {
 		field = "attributes",
@@ -593,6 +622,9 @@ do
 		index = 4,
 		category = "attributes",
 		isLocal = true,
+		Net = {
+			Transmit = ix.transmit.owner
+		},
 		OnDisplay = function(self, container, payload)
 			local maximum = hook.Run("GetDefaultAttributePoints", LocalPlayer(), payload) or 10
 
@@ -669,7 +701,7 @@ do
 		ShouldDisplay = function(self, container, payload)
 			return !table.IsEmpty(ix.attributes.list)
 		end
-	})
+	})*/
 
 	--- Sets this character's current money. Money is only networked to the player that owns this character.
 	-- @realm server
@@ -685,7 +717,10 @@ do
 		fieldType = ix.type.number,
 		default = 0,
 		isLocal = true,
-		bNoDisplay = true
+		bNoDisplay = true,
+		Net = {
+			Transmit = ix.transmit.owner
+		}
 	})
 
 	--- Sets a data field on this character. This is useful for storing small bits of data that you need persisted on this
@@ -710,6 +745,9 @@ do
 		bNoDisplay = true,
 		field = "data",
 		fieldType = ix.type.text,
+		Net = {
+			Transmit = ix.transmit.owner
+		},
 		OnSet = function(character, key, value, noReplication, receiver)
 			local data = character:GetData()
 			local client = character:GetPlayer()
@@ -746,6 +784,9 @@ do
 	ix.char.RegisterVar("var", {
 		default = {},
 		bNoDisplay = true,
+		Net = {
+			Transmit = ix.transmit.all
+		},
 		OnSet = function(character, key, value, noReplication, receiver)
 			local data = character:GetVar()
 			local client = character:GetPlayer()
@@ -797,7 +838,8 @@ do
 		fieldType = ix.type.number,
 		bNoDisplay = true,
 		bNoNetworking = true,
-		bNotModifiable = true
+		bNotModifiable = true,
+		ReadOnly = true
 	})
 
 	--- Returns the Unix timestamp of when this character was last used by its owning player.
@@ -810,6 +852,7 @@ do
 		bNoDisplay = true,
 		bNoNetworking = true,
 		bNotModifiable = true,
+		ReadOnly = true,
 		bSaveLoadInitialOnly = true
 	})
 
@@ -824,6 +867,7 @@ do
 		bNoDisplay = true,
 		bNoNetworking = true,
 		bNotModifiable = true,
+		ReadOnly = true,
 		bSaveLoadInitialOnly = true
 	})
 
@@ -837,7 +881,18 @@ do
 		bNoDisplay = true,
 		bNoNetworking = true,
 		bNotModifiable = true,
+		ReadOnly = true,
 		bSaveLoadInitialOnly = true
+	})
+
+	ix.char.RegisterVar("savedItems", {
+		field = "items",
+		fieldType = ix.type.text,
+		default = {},
+		bNoDisplay = true,
+		Net = {
+			Transmit = ix.transmit.none
+		}
 	})
 end
 
@@ -860,8 +915,18 @@ do
 		util.AddNetworkString("ixCharacterSet")
 		util.AddNetworkString("ixCharacterVar")
 		util.AddNetworkString("ixCharacterVarChanged")
+		util.AddNetworkString("CharacterVarChanged")
 
 		net.Receive("ixCharacterChoose", function(length, client)
+			if client.nextCharacterLoad and client.nextCharacterLoad > CurTime() then
+				net.Start("ixCharacterLoadFailure")
+					net.WriteString("Вы не можете так быстро менять персонажей!")
+				net.Send(client)
+				return
+			end
+
+			client.nextCharacterLoad = CurTime() + 15
+	
 			local id = net.ReadUInt(32)
 
 			if (client:GetCharacter() and client:GetCharacter():GetID() == id) then
@@ -887,15 +952,10 @@ do
 
 				if (currentChar) then
 					currentChar:Save()
-
-					for _, v in ipairs(currentChar:GetInventory(true)) do
-						if (istable(v)) then
-							v:RemoveReceiver(client)
-						end
-					end
 				end
 
 				hook.Run("PrePlayerLoadedCharacter", client, character, currentChar)
+				character.player = client
 				character:Setup()
 				client:Spawn()
 
@@ -956,9 +1016,6 @@ do
 				end
 			end
 
-			print(5)
-			PrintTable(payload)
-
 			for k, v in SortedPairsByMemberValue(ix.char.vars, "index") do
 				local value = payload[k]
 
@@ -995,6 +1052,7 @@ do
 
 			ix.char.Create(payload, function(id)
 				if (IsValid(client)) then
+					ix.char.loaded[id]:SetVar('firstTime', true)
 					ix.char.loaded[id]:Sync(client)
 
 					net.Start("ixCharacterAuthed")
@@ -1014,6 +1072,7 @@ do
 		end)
 
 		net.Receive("ixCharacterDelete", function(length, client)
+			/*
 			local id = net.ReadUInt(32)
 			local character = ix.char.loaded[id]
 			local steamID = client:SteamID64()
@@ -1039,28 +1098,6 @@ do
 					query:Where("steamid", client:SteamID64())
 				query:Execute()
 
-				-- DBTODO: setup relations instead
-				-- remove inventory from database
-				query = mysql:Select("ix_inventories")
-					query:Select("inventory_id")
-					query:Where("character_id", id)
-					query:Callback(function(result)
-						if (istable(result)) then
-							-- remove associated items from database
-							for _, v in ipairs(result) do
-								local itemQuery = mysql:Delete("ix_items")
-									itemQuery:Where("inventory_id", v.inventory_id)
-								itemQuery:Execute()
-
-								ix.item.inventories[tonumber(v.inventory_id)] = nil
-							end
-						end
-
-						local invQuery = mysql:Delete("ix_inventories")
-							invQuery:Where("character_id", id)
-						invQuery:Execute()
-					end)
-				query:Execute()
 
 				-- other plugins might need to deal with deleted characters.
 				hook.Run("CharacterDeleted", client, id, isCurrentChar)
@@ -1071,12 +1108,13 @@ do
 					client:StripAmmo()
 				end
 			end
+			*/
 		end)
 	else
 		net.Receive("ixCharacterInfo", function()
 			local data = net.ReadTable()
 			local id = net.ReadUInt(32)
-			local client = net.ReadUInt(8)
+			local client = Entity(net.ReadUInt(8))
 
 			ix.char.loaded[id] = ix.char.New(data, id, client)
 		end)
@@ -1090,6 +1128,19 @@ do
 				local value = net.ReadType()
 
 				character.vars[key] = value
+			end
+		end)
+
+		net.Receive("CharacterVarChanged", function()
+			local id = net.ReadUInt(32)
+			local character = ix.char.loaded[id]
+
+			if character then
+				local key, value = net.ReadCharVar(character)
+				
+				if key and value then
+					character.vars[key] = value
+				end
 			end
 		end)
 

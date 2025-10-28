@@ -351,8 +351,8 @@ if (SERVER) then
 
 				local invOkay = true
 
-				for _, v in pairs(client:GetCharacter():GetInventory():GetItems()) do
-					if (v.uniqueID == uniqueID and v:GetID() != 0 and ix.item.instances[v:GetID()] and v:GetData("equip", false) == false) then
+				for _, v in pairs(client:GetItems()) do
+					if (v.uniqueID == uniqueID and v:GetID() != 0 and ix.Item.instances[v:GetID()] and v:GetData("equip", false) == false) then
 						invOkay = v:Remove()
 						found = true
 						name = L(v.name, client)
@@ -366,7 +366,6 @@ if (SERVER) then
 				end
 
 				if (!invOkay) then
-					client:GetCharacter():GetInventory():Sync(client, true)
 					return client:NotifyLocalized("tellAdmin", "trd!iid")
 				end
 
@@ -388,15 +387,17 @@ if (SERVER) then
 					return client:NotifyLocalized("canNotAfford")
 				end
 
-				local name = L(ix.item.list[uniqueID].name, client)
+				local name = L(ix.Item:Get(uniqueID).name, client)
 
 				client:GetCharacter():TakeMoney(price)
 				client:NotifyLocalized("businessPurchase", name, ix.currency.Get(price))
 
 				entity:GiveMoney(price)
 
-				if (!client:GetCharacter():GetInventory():Add(uniqueID)) then
-					ix.item.Spawn(uniqueID, client)
+				local instance = ix.Item:Instance(uniqueID)
+
+				if !client:AddItem(instance) then
+					ix.Item:Spawn(client, nil, instance)
 				else
 					net.Start("ixVendorAddItem")
 						net.WriteString(uniqueID)

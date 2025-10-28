@@ -24,22 +24,6 @@ end
 
 do
 	ix.bar.Add(function()
-		return math.max(LocalPlayer():Health() / LocalPlayer():GetMaxHealth(), 0)
-	end, "cellar/ui/cross.png", 1, "health")
-
-	ix.bar.Add(function()
-		local character = LocalPlayer():GetCharacter()
-
-		if character then
-			return math.max(character:GetBlood() / 5000, 0)
-		end
-	end, "cellar/ui/blood.png", 2, "blood")
-
-	ix.bar.Add(function()
-		return math.Clamp((ix.plugin.list["stamina"].predictedStamina or 100) / LocalPlayer():GetCharacter():GetMaxStamina(), 0, 1)
-	end, "cellar/ui/stam.png", 3, "stam")
-
-	ix.bar.Add(function()
 		local character = LocalPlayer():GetCharacter()
 
 		if character then
@@ -58,11 +42,12 @@ do
 	end, "cellar/ui/water.png", 6, "thirst")
 
 	ix.bar.Add(function()
-		local character = LocalPlayer():GetCharacter()
+		local client = LocalPlayer()
+		local character = client:GetCharacter()
 
 		if character then
-			local radLevel = LocalPlayer():GetNetVar("radDmg") or 0
-			local geiger = character:HasGeigerCounter()
+			local radLevel = client:GetNetVar("radDmg") or 0
+			local geiger = client:HasGeigerCounter()
 
 			if geiger and radLevel > 0 then
 				return (radLevel / 100)
@@ -71,12 +56,15 @@ do
 	end, "cellar/ui/geiger.png", 7, "geiger")
 
 	ix.bar.Add(function()
-		local character = LocalPlayer():GetCharacter()
+		local client = LocalPlayer()
+		local character = client:GetCharacter()
 
 		if character then
-			local filter = character:HasWearedFilter()
+			local filter = client:HasWearedFilter()
 
 			if filter then
+				filter = ix.Item.instances[filter]
+				
 				return filter:GetFilterQuality() / filter.filterQuality
 			end
 		end

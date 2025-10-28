@@ -1,4 +1,4 @@
-
+/*
 local entityMeta = FindMetaTable("Entity")
 local playerMeta = FindMetaTable("Player")
 
@@ -47,3 +47,4 @@ function entityMeta:GetNetVar(key, default)
 end
 
 playerMeta.GetLocalVar = entityMeta.GetNetVar
+*/
