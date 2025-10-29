@@ -123,66 +123,6 @@ function GM:TranslateActivity(client, act)
 	end
 end
 
-function GM:CanPlayerUseBusiness(client, uniqueID)
-	local itemTable = ix.item.list[uniqueID]
-
-	if (!client:GetCharacter()) then
-		return false
-	end
-
-	if (itemTable.noBusiness) then
-		return false
-	end
-
-	if (itemTable.factions) then
-		local allowed = false
-
-		if (istable(itemTable.factions)) then
-			for _, v in pairs(itemTable.factions) do
-				if (client:Team() == v) then
-					allowed = true
-
-					break
-				end
-			end
-		elseif (client:Team() != itemTable.factions) then
-			allowed = false
-		end
-
-		if (!allowed) then
-			return false
-		end
-	end
-
-	if (itemTable.classes) then
-		local allowed = false
-
-		if (istable(itemTable.classes)) then
-			for _, v in pairs(itemTable.classes) do
-				if (client:GetCharacter():GetClass() == v) then
-					allowed = true
-
-					break
-				end
-			end
-		elseif (client:GetCharacter():GetClass() == itemTable.classes) then
-			allowed = true
-		end
-
-		if (!allowed) then
-			return false
-		end
-	end
-
-	if (itemTable.flag) then
-		if (!client:GetCharacter():HasFlags(itemTable.flag)) then
-			return false
-		end
-	end
-
-	return true
-end
-
 function GM:DoAnimationEvent(client, event, data)
 	local class = client.ixAnimModelClass
 
@@ -542,8 +482,6 @@ end
 
 function GM:PostGamemodeLoaded()
 	baseclass.Set("ix_character", ix.meta.character)
-	baseclass.Set("ix_inventory", ix.meta.inventory)
-	baseclass.Set("ix_item", ix.meta.item)
 end
 
 if (SERVER) then

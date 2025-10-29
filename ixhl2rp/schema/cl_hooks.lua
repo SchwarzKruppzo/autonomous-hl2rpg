@@ -133,10 +133,6 @@ function Schema:IsRecognizedChatType(chatType)
 	end
 end
 
-function Schema:BuildBusinessMenu(panel)
-	return false
-end
-
 netstream.Hook("CombineDisplayMessage", function(text, color, arguments)
 	if (IsValid(ix.gui.combine)) then
 		ix.gui.combine:AddLine(text, color, nil, unpack(arguments))

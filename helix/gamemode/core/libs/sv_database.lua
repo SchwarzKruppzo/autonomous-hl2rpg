@@ -82,13 +82,6 @@ function ix.db.LoadTables()
 		query:PrimaryKey("id")
 	query:Execute()
 
-	query = mysql:Create("ix_inventories")
-		query:Create("inventory_id", "INT(11) UNSIGNED NOT NULL AUTO_INCREMENT")
-		query:Create("character_id", "INT(11) UNSIGNED NOT NULL")
-		query:Create("inventory_type", "VARCHAR(150) DEFAULT NULL")
-		query:PrimaryKey("inventory_id")
-	query:Execute()
-
 	query = mysql:Create("ix_items")
 		query:Create("item_id", "INT(11) UNSIGNED NOT NULL AUTO_INCREMENT")
 		query:Create("unique_id", "VARCHAR(60) NOT NULL")
@@ -146,9 +139,6 @@ function ix.db.WipeTables(callback)
 	query:Execute()
 
 	query = mysql:Drop("ix_characters")
-	query:Execute()
-
-	query = mysql:Drop("ix_inventories")
 	query:Execute()
 
 	query = mysql:Drop("ix_items")

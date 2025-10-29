@@ -69,28 +69,18 @@ if (SERVER) then
 			query:Insert("money", data.money)
 			query:Insert("data", util.TableToJSON(data.data or {}))
 			query:Callback(function(result, status, lastID)
-				local invQuery = mysql:Insert("ix_inventories")
-					invQuery:Insert("character_id", lastID)
-					invQuery:Callback(function(invResult, invStats, invLastID)
-						local client = player.GetBySteamID64(data.steamID)
+				local client = player.GetBySteamID64(data.steamID)
 
-						ix.char.RestoreVars(data, data)
+				ix.char.RestoreVars(data, data)
 
-						local w, h = ix.config.Get("inventoryWidth"), ix.config.Get("inventoryHeight")
-						local character = ix.char.New(data, lastID, client, data.steamID)
-						local inventory = ix.inventory.Create(w, h, invLastID)
+				local character = ix.char.New(data, lastID, client, data.steamID)
 
-						character.vars.inv = {inventory}
-						inventory:SetOwner(lastID)
+				ix.char.loaded[lastID] = character
+				table.insert(ix.char.cache[data.steamID], lastID)
 
-						ix.char.loaded[lastID] = character
-						table.insert(ix.char.cache[data.steamID], lastID)
-
-						if (callback) then
-							callback(lastID)
-						end
-					end)
-				invQuery:Execute()
+				if (callback) then
+					callback(lastID)
+				end
 			end)
 		query:Execute()
 	end
@@ -151,67 +141,6 @@ if (SERVER) then
 						local character = ix.char.New(data, charID, client)
 
 						hook.Run("CharacterRestored", character)
-						character.vars.inv = {
-							[1] = -1,
-						}
-
-						local invQuery = mysql:Select("ix_inventories")
-							invQuery:Select("inventory_id")
-							invQuery:Select("inventory_type")
-							invQuery:Where("character_id", charID)
-							invQuery:Callback(function(info)
-								if (istable(info) and #info > 0) then
-									local inventories = {}
-
-									for _, v2 in pairs(info) do
-										if (v2.inventory_type and isstring(v2.inventory_type) and v2.inventory_type == "NULL") then
-											v2.inventory_type = nil
-										end
-
-										if (hook.Run("ShouldRestoreInventory", charID, v2.inventory_id, v2.inventory_type) != false) then
-											local w, h = ix.config.Get("inventoryWidth"), ix.config.Get("inventoryHeight")
-											local invType
-
-											if (v2.inventory_type) then
-												invType = ix.item.inventoryTypes[v2.inventory_type]
-
-												if (invType) then
-													w, h = invType.w, invType.h
-												end
-											end
-
-											inventories[tonumber(v2.inventory_id)] = {w, h, v2.inventory_type}
-										end
-									end
-
-									ix.inventory.Restore(inventories, nil, nil, function(inventory)
-										local inventoryType = inventories[inventory:GetID()][3]
-
-										if (inventoryType) then
-											inventory.vars.isBag = inventoryType
-											table.insert(character.vars.inv, inventory)
-										else
-											character.vars.inv[1] = inventory
-										end
-
-										inventory:SetOwner(charID)
-									end, true)
-								else
-									local insertQuery = mysql:Insert("ix_inventories")
-										insertQuery:Insert("character_id", charID)
-										insertQuery:Callback(function(_, status, lastID)
-											local w, h = ix.config.Get("inventoryWidth"), ix.config.Get("inventoryHeight")
-											local inventory = ix.inventory.Create(w, h, lastID)
-											inventory:SetOwner(charID)
-
-											character.vars.inv = {
-												inventory
-											}
-										end)
-									insertQuery:Execute()
-								end
-							end)
-						invQuery:Execute()
 
 						ix.char.loaded[charID] = character
 					else

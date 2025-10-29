@@ -332,11 +332,12 @@ else
 end
 
 function PLUGIN:InitializedPlugins()
+	/*
 	local items = ix.item.list
 
 	for _, v in pairs(items) do
 		if (v.pacData) then
 			ix.pac.list[v.uniqueID] = v.pacData
 		end
-	end
+	end*/
 end

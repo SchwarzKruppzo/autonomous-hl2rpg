@@ -28,12 +28,6 @@ function GM:PlayerInitialSpawn(client)
 		local character = ix.char.New(data, botID, client, client:SteamID64())
 		character.isBot = true
 
-		local inventory = ix.inventory.Create(ix.config.Get("inventoryWidth"), ix.config.Get("inventoryHeight"), botID)
-		inventory:SetOwner(botID)
-		inventory.noSave = true
-
-		character.vars.inv = {inventory}
-
 		ix.char.loaded[botID] = character
 
 		character:Setup()

@@ -64,15 +64,6 @@ if (SERVER) then
 		return L("%s destroyed a '%s' #%d.", name, itemName, itemID)
 	end, FLAG_WARNING)
 
-	ix.log.AddType("shipmentTake", function(client, ...)
-		local arg = {...}
-		return L("%s took '%s' from the shipment", client:Name(), arg[1])
-	end, FLAG_WARNING)
-
-	ix.log.AddType("shipmentOrder", function(client, ...)
-		return L("%s ordered a shipment", client:Name())
-	end, FLAG_SUCCESS)
-
 	ix.log.AddType("buy", function(client, ...)
 		local arg = {...}
 		return L("%s purchased '%s' from the NPC", client:Name(), arg[1])
@@ -153,15 +144,6 @@ if (SERVER) then
 
 	function PLUGIN:PreCharacterDeleted(client, character)
 		ix.log.Add(client, "charDelete", character:GetName())
-	end
-
-	function PLUGIN:ShipmentItemTaken(client, itemClass, amount)
-		local itemTable = ix.item.list[itemClass]
-		ix.log.Add(client, "shipmentTake", itemTable:GetName())
-	end
-
-	function PLUGIN:CreateShipment(client, shipmentEntity)
-		ix.log.Add(client, "shipmentOrder")
 	end
 
 	function PLUGIN:CharacterVendorTraded(client, vendor, x, y, invID, price, isSell)
