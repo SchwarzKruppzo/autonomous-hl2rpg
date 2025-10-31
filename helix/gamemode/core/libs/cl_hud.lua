@@ -113,21 +113,6 @@ function ix.hud.PopulateItemTooltip(tooltip, item)
 end
 
 function ix.hud.PopulatePlayerTooltip(tooltip, client)
-	local name = tooltip:AddRow("name")
-	name:SetImportant()
-	name:SetText(client:SteamName())
-	name:SetBackgroundColor(team.GetColor(client:Team()))
-	name:SizeToContents()
-
-	local nameHeight = name:GetTall()
-	name:SetTextInset(nameHeight + 4, 0)
-	name:SetWide(name:GetWide() + nameHeight + 4)
-
-	local avatar = name:Add("AvatarImage")
-	avatar:Dock(LEFT)
-	avatar:SetPlayer(client, nameHeight)
-	avatar:SetSize(name:GetTall(), name:GetTall())
-
 	local currentPing = client:Ping()
 
 	local ping = tooltip:AddRow("ping")

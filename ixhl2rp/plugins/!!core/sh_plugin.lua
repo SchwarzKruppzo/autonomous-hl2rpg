@@ -8,7 +8,6 @@ ix.currency.symbol = ""
 ix.currency.singular = "token"
 ix.currency.plural = "tokens"
 
-ix.util.Include("cl_hooks.lua")
 ix.util.Include("sv_hooks.lua")
 ix.util.Include("sh_hooks.lua")
 
@@ -31,7 +30,7 @@ do
 					if (delay > 0 and speaker.ixLastOOC) then
 						local lastOOC = CurTime() - speaker.ixLastOOC
 
-						-- Use this method of checking time in case the oocDelay config changes.
+						-- Use his method of checking time in case the oocDelay config changes.
 						if (lastOOC <= delay and !CAMI.PlayerHasAccess(speaker, "Helix - Bypass OOC Timer", nil)) then
 							speaker:NotifyLocalized("oocDelay", delay - math.ceil(lastOOC))
 
