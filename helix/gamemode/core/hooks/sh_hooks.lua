@@ -358,9 +358,9 @@ end
 function GM:CanPlayerUseCharacter(client, character)
 	local banned = character:GetData("banned")
 
-	if (banned) then
-		if (isnumber(banned)) then
-			if (banned < os.time()) then
+	if banned then
+		if isnumber(banned) then
+			if banned < os.time() then
 				return
 			end
 
@@ -372,8 +372,18 @@ function GM:CanPlayerUseCharacter(client, character)
 
 	local bHasWhitelist = client:HasWhitelist(character:GetFaction())
 
-	if (!bHasWhitelist) then
+	if !bHasWhitelist then
 		return false, "@noWhitelist"
+	end
+
+	local currentChar = client:GetCharacter()
+
+	if currentChar then
+		local status, result = hook.Run("CanPlayerSwitchCharacter", client, currentChar, character)
+
+		if status == false then
+			return status, result
+		end
 	end
 end
 

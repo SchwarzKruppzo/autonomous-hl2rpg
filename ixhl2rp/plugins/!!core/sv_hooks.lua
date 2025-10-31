@@ -102,18 +102,6 @@ function GM:PlayerInitialSpawn(client)
 	end)
 end
 
-function PLUGIN:CanPlayerUseCharacter(client, character)
-	local currentChar = client:GetCharacter()
-
-	if currentChar then
-		local status, result = hook.Run("CanPlayerSwitchCharacter", client, currentChar, character)
-
-		if status == false then
-			return status, result
-		end
-	end
-end
-
 function PLUGIN:CanPlayerSwitchCharacter(client, character, newCharacter)
 	if IsValid(client.ixRagdoll) then
 		return false, "@notNow"
