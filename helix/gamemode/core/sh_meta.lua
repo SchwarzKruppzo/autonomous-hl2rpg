@@ -40,12 +40,10 @@ function implements(name, name2)
 		merge(copy, class)
 
 		ix.meta[last_class] = copy
-		
-		local obj = ix.meta[last_class]
 
 		last_class = nil
 
-		return obj
+		return copy
 	end
 end
 
@@ -53,7 +51,7 @@ function class(name, abstract)
 	last_class = name
 
 	local obj = {}
-	obj.AbstractClass = abstract
+
 	obj.__index = obj
 	obj.class_name = name
 	obj.implements = implements
@@ -70,7 +68,7 @@ function class(name, abstract)
 			end
 		end
 
-		if this.AbstractClass then
+		if abstract then
 			object.New = function(this, ...)
 				local new_object = {}
 
@@ -99,68 +97,3 @@ end
 function abstract_class(name)
 	return class(name, true)
 end
-
-/*
-do
-	local Base = class "Base"
-		Base.name = "Base"
-		function Base:Init()
-			print("this is init")
-		end
-		function Base:GetName()
-			return self.name
-		end
-
-	
-	local BasedBase = class "BasedBase" 
-		BasedBase.name = "Heart"
-		BasedBase.value = 5
-		BasedBase.ded = 1
-		function BasedBase:Init(name)
-			rp.meta.Base.Init(self)
-
-			self.name = name
-		end
-		function BasedBase:test()
-			print(self:GetName())
-		end
-	implements "Base"
-end
-
-local obj = rp.meta.BasedBase:New("test")
-print(obj:test())
-
-do
-	local Item = abstract_class "Item"
-		Item.id = -1
-		Item.name = "Heart2"
-		function Item:__eq(other)
-			return self.id != -1 and self.id == other.id
-		end
-
-	local ItemFood = abstract_class "ItemFood"
-		ItemFood.isUsable = true
-	implements "Item"
-end
-
-local templates = {}
-
-do
-	local TEMPLATE = rp.meta.ItemFood:New()
-	TEMPLATE.uniqueID = "basic_item"
-
-	function TEMPLATE:Use()
-		print("yo")
-	end
-
-	templates[TEMPLATE.uniqueID] = TEMPLATE
-end
-
-local instance = templates["basic_item"]:New()
-instance.id = 1
-
-local instance2 = templates["basic_item"]:New()
-instance2.id = 2
-
-print(instance == instance2)
-*/
