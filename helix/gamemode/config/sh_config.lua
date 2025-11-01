@@ -143,21 +143,6 @@ ix.config.Add("defaultMoney", 0, "The amount of money that players start with.",
 	category = "characters",
 	data = {min = 0, max = 1000}
 })
-ix.config.Add("allowVoice", false, "Whether or not voice chat is allowed.", function(oldValue, newValue)
-	if (SERVER) then
-		hook.Run("VoiceToggled", newValue)
-	end
-end, {
-	category = "server"
-})
-ix.config.Add("voiceDistance", 600.0, "How far can the voice be heard.", function(oldValue, newValue)
-	if (SERVER) then
-		hook.Run("VoiceDistanceChanged", newValue)
-	end
-end, {
-	category = "server",
-	data = {min = 0, max = 5000, decimals = 1}
-})
 ix.config.Add("weaponAlwaysRaised", false, "Whether or not weapons are always raised.", nil, {
 	category = "server"
 })
