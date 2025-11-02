@@ -1,3 +1,4 @@
+-- schwarz kruppzo: очень старый код, необходимо в дальнейшем переработать под поддержку разных рас
 local PANEL = {}
 PANEL.colorBG = Color(255, 255, 255, 150)
 
@@ -16,11 +17,6 @@ end
 local tex_body = Material("clockwork/limbs/body.png")
 function PANEL:BuildData()
 	local character = LocalPlayer():GetCharacter()
-	local limbs = character:Limbs()
-
-	if !limbs then
-		return
-	end
 
 	self.character = character
 	self.texBG = tex_body
@@ -47,7 +43,7 @@ function PANEL:BuildData()
 			for k, limb in ipairs(health.body.parts or {}) do
 				if limb.hidden then continue end
 
-				text = text .. string.format("%s � %s/%s HP", limb.name, health:GetPartHealth(limb.id), limb.health) .. ((k != #limbs) and "\n" or "")
+				text = text .. string.format("%s — %s/%s HP", limb.name, health:GetPartHealth(limb.id), limb.health) .. ((k != #limbs) and "\n" or "")
 			end
 				  
 			local description = tooltip:AddRow("description")
