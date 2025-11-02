@@ -29,9 +29,10 @@ ENT.spotlightHDRColorScale = 0.67
 ENT.maxHealth = 100
 
 function ENT:SetupDataTables()
+	self:NetworkVar("Bool", 0, "IsCombine")
 	self:NetworkVar("Entity", 0, "Pilot")
-	self:NetworkVar("String", 0, "ID")
-	self:NetworkVar("String", 1, "ScannerName")
+	self:NetworkVar("Int", 0, "ID")
+	self:NetworkVar("String", 0, "ScannerName")
 end
 
 local CAMHELPER = {}

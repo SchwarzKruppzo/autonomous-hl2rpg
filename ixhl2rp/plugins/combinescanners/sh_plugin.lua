@@ -1,10 +1,9 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "Combine Scanners"
-PLUGIN.author = "Schwarz Kruppzo"
+PLUGIN.author = "Schwarz Kruppzo, Alan Wake"
 PLUGIN.description = "Adds a controllable combine scanners."
 
-PLUGIN.buffer = PLUGIN.buffer or {}
 PLUGIN.Picture = {
 	w = 580,
 	h = 420,
@@ -39,6 +38,61 @@ do
 	function PLAYER:GetPilotingScanner()
 		return self:GetNWEntity("Scanner")
 	end
+end
+
+function PLUGIN:GetActiveScanners(forceRebellion) // by default returns combine scanners
+	local tbl = {}
+	for k,v in ipairs(ents.FindByClass("ix_scanner"))do
+		if (forceRebellion && !v:GetIsCombine()) then
+			tbl[#tbl + 1] = v
+			continue
+		end
+
+		tbl[#tbl + 1] = v
+	end
+
+	return tbl
+end
+
+function PLUGIN:CanEnterToScanner(client, scanner, terminal)
+	print(client:IsRestricted(), IsValid(scanner:GetPilot()), IsValid(terminal), client:GetPos():Distance(terminal:GetPos()) > 400)
+	if (client:IsRestricted() or IsValid(scanner:GetPilot()) or (!IsValid(terminal) || client:GetPos():Distance(terminal:GetPos()) > 400)) then
+		return false
+	end
+
+	return true
+end
+
+function PLUGIN:CanFoldScanner(client, scanner)
+	if (client:IsRestricted() or IsValid(scanner:GetPilot()) or client:GetPos():Distance(scanner:GetPos()) > 400) then
+		return false
+	end
+
+	return true
+end
+
+function PLUGIN:GetMaxID(forCombine)
+	local tblActive = self:GetActiveScanners(!forCombine)
+
+	local maxId = 0
+	for k,v in ipairs(tblActive)do
+		local currentId = v:GetID()
+		if currentId > maxId then
+			maxId = currentId
+		end
+	end
+
+	return maxId
+end
+
+function PLUGIN:GenerateScannerName(isCombine)
+	local newScannerId = self:GetMaxID(isCombine) + 1
+
+	if (isCombine) then
+		return Format("AE:c24.SCN-%d", newScannerId), newScannerId
+	end
+
+	return Format("AE:???-%d", newScannerId), newScannerId
 end
 
 ix.util.Include("sh_commands.lua")

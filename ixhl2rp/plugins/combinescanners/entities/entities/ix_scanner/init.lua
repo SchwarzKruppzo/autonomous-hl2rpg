@@ -3,8 +3,6 @@ include("shared.lua")
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 
-util.AddNetworkString("ScannerFlash")
-
 ENT.noHandsPickup = true
 ENT.scanSounds = {
 	Sound("npc/scanner/scanner_scan1.wav"),
@@ -24,6 +22,7 @@ ENT.painSounds = {
 }
 ENT.sirenSound = Sound("npc/scanner/scanner_siren2.wav")
 ENT.SCANNER_ATTACHMENT_LIGHT = "light"
+ENT.ScannerModel = "models/Combine_Scanner.mdl"
 
 function ENT:SpawnFunction(player, trace, className)
 	local entity = ents.Create(className)
@@ -132,7 +131,7 @@ function ENT:IsSpotlightOn()
 end
 
 function ENT:Initialize()
-	self:SetModel("models/Combine_Scanner.mdl")
+	self:SetModel(self.ScannerModel)
 	self:PhysicsInit(SOLID_VPHYSICS)
 	self:SetSolid(SOLID_VPHYSICS)
 	self:AddSolidFlags(FSOLID_NOT_STANDABLE)
@@ -144,6 +143,7 @@ function ENT:Initialize()
 	self:SetPlaybackRate(1.0)
 	self:AddFlags(FL_FLY)
 	self:PrecacheGibs()
+	self:SetUseType(SIMPLE_USE)
 
 	self.camhelper = ents.Create("camera_helper")
 	self.camhelper:Spawn()
@@ -331,16 +331,12 @@ function ENT:Die(dmgInfo)
 		effect:SetEntity(self)
 	util.Effect("Explosion", effect, true, true)
 
-	if self.isCombine then
-		local pos = self:GetPos()
+	local pos = self:GetPos()
 
-		timer.Simple(0, function()
-			if math.random(1, 100) < 51 then
-				local instance = ix.Item:Instance("combine_resine")
-				ix.Item:Spawn(pos, nil, instance)
-			end
-		end)
-	end
+	timer.Simple(0, function()
+		local instance = ix.Item:Instance("junk_combine_scanner")
+		ix.Item:Spawn(pos, nil, instance)
+	end)
 
 	self:EmitSound("NPC_SScanner.Die")
 	self:Remove()

@@ -1,3 +1,5 @@
+local PLUGIN = PLUGIN
+
 if SERVER then
 	AddCSLuaFile()
 end
@@ -52,7 +54,24 @@ else
 
 				return false
 			end,
-			["View Active Scanners"] = true
+			["View Active Scanners"] = function()
+				timer.Simple(0, function()
+					local options = {}
+					local localPlayer = LocalPlayer()
+					for k,v in ipairs(PLUGIN:GetActiveScanners())do
+						options[Format("%s [%s]", v:GetScannerName(), PLUGIN:CanEnterToScanner(localPlayer, v, self) && "СВОБОДЕН" || "ЗАНЯТ")] = function()
+							net.Start("ScannerEnter")
+								net.WriteEntity(v)
+								net.WriteEntity(self)
+							net.SendToServer()
+						end
+					end
+
+					if (!table.IsEmpty(options)) then
+						ix.menu.Open(options, self, true)
+					end
+				end)
+			end
 		}
 
 		return options

@@ -7,6 +7,8 @@ util.AddNetworkString("ScannerExit")
 util.AddNetworkString("ScannerTerminalAccess")
 util.AddNetworkString("ScannerTerminalDeploy")
 util.AddNetworkString("ScannerTerminalDeploy2")
+util.AddNetworkString("ScannerFlash")
+util.AddNetworkString("ScannerFold")
 
 local sndSpotlight = Sound("npc/turret_floor/click1.wav")
 
@@ -44,41 +46,9 @@ function PLUGIN:CanPlayerReceiveScan(client, photographer)
 	return client:IsCombine()
 end
 
-function PLUGIN:GetActiveScanners()
-	return self.buffer
-end
-
 function PLUGIN:LoadScannerTerminals()
 	for _, v in ipairs(ix.data.Get("cmbScannerTerminals") or {}) do
 		local rs = ents.Create("ix_scannerterminal")
-
-		rs:SetPos(v[1])
-		rs:SetAngles(v[2])
-		rs:Spawn()
-
-		local phys = rs:GetPhysicsObject()
-
-		if IsValid(phys) then
-			phys:EnableMotion(false)
-		end
-	end
-
-	for _, v in ipairs(ix.data.Get("cmbScannerTerminals2") or {}) do
-		local rs = ents.Create("ix_scannerterminal2")
-
-		rs:SetPos(v[1])
-		rs:SetAngles(v[2])
-		rs:Spawn()
-
-		local phys = rs:GetPhysicsObject()
-
-		if IsValid(phys) then
-			phys:EnableMotion(false)
-		end
-	end
-
-	for _, v in ipairs(ix.data.Get("rebelScannerTerminals") or {}) do
-		local rs = ents.Create("ix_rebelscannerterminal")
 
 		rs:SetPos(v[1])
 		rs:SetAngles(v[2])
@@ -100,22 +70,66 @@ function PLUGIN:SaveScannerTerminals()
 	end
 
 	ix.data.Set("cmbScannerTerminals", data)
+end
 
-	data = {}
+function PLUGIN:ConnectScannerToPlayer(client, scanner, terminal)
+	if (self:CanEnterToScanner(client, scanner, terminal)) then
+		scanner:Transmit(client)
+		client:SetNWEntity("Scanner", scanner)
 
-	for _, v in ipairs(ents.FindByClass("ix_scannerterminal2")) do
-		data[#data + 1] = {v:GetPos(), v:GetAngles()}
+		return true
+	end
+end
+
+function PLUGIN:SpawnScanner(isCombine, pos)
+	if (!pos) then
+		local spawnPoints = (ix.plugin.list["spawns"].spawns["metropolice"] or {})["scanner"]
+
+		if (!spawnPoints or #spawnPoints <= 0) then return end
+
+		pos = spawnPoints[math.random(1, #spawnPoints)]
 	end
 
-	ix.data.Set("cmbScannerTerminals2", data)
+	local scanner = ents.Create("ix_scanner")
+	scanner:SetPos(pos)
+	scanner:Spawn()
 
-	data = {}
+	scanner:SetIsCombine(isCombine)
 
-	for _, v in ipairs(ents.FindByClass("ix_rebelscannerterminal")) do
-		data[#data + 1] = {v:GetPos(), v:GetAngles()}
+	local generatedName, scannerId = self:GenerateScannerName(isCombine)
+	scanner:SetScannerName(generatedName)
+	scanner:SetID(scannerId)
+
+	return scanner
+end
+
+function PLUGIN:DeployScanner(client, terminal, isPortable)
+	if client:IsPilotScanner() or client:IsRagdoll() or !client:Alive() or !client:GetCharacter() then
+		return
 	end
 
-	ix.data.Set("rebelScannerTerminals", data)
+	local item = client:FindItem("combine_scanner")
+
+	if (!item) then
+		return false, "Необходим сканнер для размещения!"
+	end
+
+	local scanner = self:SpawnScanner(true)
+
+	if (!IsValid(scanner)) then
+		return false, "Невозможно определить точку спавна сканнера!"
+	end
+
+	local res = self:ConnectScannerToPlayer(client, scanner, terminal)
+
+	if (!res) then
+		SafeRemoveEntity(scanner)
+		return false, "Не удалось подключиться к сканнеру!"
+	end
+
+	item:Remove()
+
+	return true, nil, scanner
 end
 
 net.Receive("ScannerData", function(len, client)
@@ -150,150 +164,43 @@ end)
 
 PLUGIN.activeID = PLUGIN.activeID or 0
 
-Schema.scanner_deploy_cmb = CurTime()
-Schema.scanner_deploy_rebels = CurTime()
-Schema.scanner_deploy_rebels2 = CurTime()
-
 net.Receive("ScannerTerminalDeploy", function(len, player)
 	local terminal = net.ReadEntity()
 
-	if !IsValid(terminal) or !terminal.IsScannerTerminal then return end
-	if player:GetShootPos():DistToSqr(terminal:GetPos()) > 9801 then return end
-
-	if Schema.scanner_deploy_cmb and Schema.scanner_deploy_cmb >= CurTime() then
+	if !IsValid(terminal) or !terminal.IsScannerTerminal then
 		return
 	end
-	
-	if player:IsPilotScanner() or player:IsRagdoll() or !player:Alive() or !player:GetCharacter() then return end
-	
-	if IsValid(PLUGIN:GetActiveScanners()[player]) then
+	if player:GetPos():Distance(terminal:GetPos()) > 400 then
 		return
 	end
 
+	local result, err, scanner = PLUGIN:DeployScanner(player, terminal)
+	if (!result) then
+		return player:Notify(err)
+	end
 
-	local spawnPoints = ix.plugin.list["spawns"].spawns["metropolice"]["scanner"]
-
-	if (!spawnPoints or #spawnPoints <= 0) then return end
-
-	local randomSpawn = math.random(1, #spawnPoints)
-	local pos = spawnPoints[randomSpawn]
-	
-	PLUGIN.activeID = PLUGIN.activeID + 1
-
-	local scanner = ents.Create("ix_scanner")
-	scanner:SetPos(pos)
-	scanner:Spawn()
-	scanner:SetID(PLUGIN.activeID)
-	scanner.isCombine = true
-
-	PLUGIN:GetActiveScanners()[player] = scanner
-
-	scanner:Transmit(player)
-	player:SetNWEntity("Scanner", scanner)
-
-	Schema.scanner_deploy_cmb = CurTime() + 1800
-	--player:SetNetVar("IgnoreMoving", true)
-	--player:SetNetVar("StancePos", player:GetPos())
-	--player:SetNetVar("StanceAng", player:GetAngles())
-	--player:SetNetVar("StanceIdle", true)
-	--player:SetForcedAnimation("stances_stand03", 0, nil)
+	player:Notify(Format("Присвоено название: %s", scanner:GetScannerName()))
 end)
 
-net.Receive("ScannerTerminalDeploy2", function(len, player)
+net.Receive("ScannerFold", function(len, player)
+	local scanner = net.ReadEntity()
+	if (IsValid(scanner) && scanner:GetClass() == "ix_scanner") && PLUGIN:CanFoldScanner(player, scanner) then
+		local pos, angles = scanner:GetPos(), scanner:GetAngles()
+		SafeRemoveEntity(scanner)
+
+		local instance = ix.Item:Instance("combine_scanner")
+		ix.Item:Spawn(pos, angles, instance)
+	end
+end)
+
+net.Receive("ScannerEnter", function(len, player)
+	local scanner = net.ReadEntity()
 	local terminal = net.ReadEntity()
-
-	if !IsValid(terminal) or !terminal.IsScannerTerminal then return end
-	if player:GetShootPos():DistToSqr(terminal:GetPos()) > 9801 then return end
-
-	if Schema.scanner_deploy_rebels and Schema.scanner_deploy_rebels >= CurTime() then
-		return
+	if (IsValid(terminal) && terminal:GetClass() == "ix_scannerterminal") then
+		local result = PLUGIN:ConnectScannerToPlayer(player, scanner, terminal)
+		if (!result) then
+			player:Notify("Не удалось подключиться к сканнеру!")
+		end
 	end
-
-	if player:IsPilotScanner() or player:IsRagdoll() or !player:Alive() or !player:GetCharacter() then return end
-	
-	if IsValid(PLUGIN:GetActiveScanners()[player]) then
-		return
-	end
-
-
-	local spawnPoints = ix.plugin.list["spawns"].spawns["metropolice"]["scanner2"]
-
-	if (!spawnPoints or #spawnPoints <= 0) then return end
-
-	local randomSpawn = math.random(1, #spawnPoints)
-	local pos = spawnPoints[randomSpawn]
-	
-	PLUGIN.activeID = PLUGIN.activeID + 1
-
-	local scanner = ents.Create("ix_scanner")
-	scanner:SetPos(pos)
-	scanner:Spawn()
-	scanner.Rebel = true
-	scanner:SetID(PLUGIN.activeID)
-	scanner:SetModel("models/customscan/superbeescanner.mdl")
-	scanner:PrecacheGibs()
-	scanner:ResetSequence("idle")
-
-	PLUGIN:GetActiveScanners()[player] = scanner
-
-	scanner:Transmit(player)
-	player:SetNWEntity("Scanner", scanner)
-
-	Schema.scanner_deploy_rebels = CurTime() + 3600
-	--player:SetNetVar("IgnoreMoving", true)
-	--player:SetNetVar("StancePos", player:GetPos())
-	--player:SetNetVar("StanceAng", player:GetAngles())
-	--player:SetNetVar("StanceIdle", true)
-	--player:SetForcedAnimation("stances_stand03", 0, nil)
+	// TODO: Available to enter scanner from portable device
 end)
-
-net.Receive("ScannerTerminalDeploy3", function(len, player)
-	local terminal = net.ReadEntity()
-
-	if !IsValid(terminal) or !terminal.IsScannerTerminal then return end
-	if player:GetShootPos():DistToSqr(terminal:GetPos()) > 9801 then return end
-
-	if Schema.scanner_deploy_rebels2 and Schema.scanner_deploy_rebels2 >= CurTime() then
-		return
-	end
-
-	if player:IsPilotScanner() or player:IsRagdoll() or !player:Alive() or !player:GetCharacter() then return end
-	
-	if IsValid(PLUGIN:GetActiveScanners()[player]) then
-		return
-	end
-
-
-	local spawnPoints = ix.plugin.list["spawns"].spawns["metropolice"]["scanner3"]
-
-	if (!spawnPoints or #spawnPoints <= 0) then return end
-
-	local randomSpawn = math.random(1, #spawnPoints)
-	local pos = spawnPoints[randomSpawn]
-	
-	PLUGIN.activeID = PLUGIN.activeID + 1
-
-	local scanner = ents.Create("ix_scanner")
-	scanner:SetPos(pos)
-	scanner:Spawn()
-	scanner.Rebel = true
-	scanner:SetID(PLUGIN.activeID)
-	scanner:SetClawScanner()
-	scanner:ResetSequence("idle")
-
-	PLUGIN:GetActiveScanners()[player] = scanner
-
-	scanner:Transmit(player)
-	player:SetNWEntity("Scanner", scanner)
-
-	Schema.scanner_deploy_rebels2 = CurTime() + 3600
-	--player:SetNetVar("IgnoreMoving", true)
-	--player:SetNetVar("StancePos", player:GetPos())
-	--player:SetNetVar("StanceAng", player:GetAngles())
-	--player:SetNetVar("StanceIdle", true)
-	--player:SetForcedAnimation("stances_stand03", 0, nil)
-end)
-
-
-
-
