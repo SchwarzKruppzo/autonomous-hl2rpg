@@ -85,6 +85,37 @@ do
 
 		return result
 	end
+
+	if (!NikNaks) then
+		NikNaks = {
+			CurrentMap = {
+				PVSForOrigin = function()
+				end
+			}
+		}
+	end
+
+	local playerMeta = FindMetaTable("Player")
+
+	if (!playerMeta.IsProne) then
+		function playerMeta:IsProne()
+			return false
+		end
+	end
+
+	local function errorWithName(name)
+		return function()
+			ErrorNoHalt(Format("Attempted to run \"%s\" dependency function!", name))
+		end
+	end
+
+	if (!express) then
+		express = {
+			Receive = errorWithName("express.Receive"),
+			Send = errorWithName("express.Send"),
+			Broadcast = errorWithName("express.Broadcast"),
+		}
+	end
 end
 
 -- Include core framework files.

@@ -155,10 +155,7 @@ if (SERVER) then
 
 		-- If exiting of observer, re-add all parts.
 		if (!state) then
-			local character = client:GetCharacter()
-			local inventory = character:GetInventory()
-
-			for _, v in pairs(inventory:GetItems()) do
+			for _, v in pairs(client:GetItems()) do
 				if (v:GetData("equip") == true and v.pacData) then
 					client:AddPart(v.uniqueID, v)
 				end
