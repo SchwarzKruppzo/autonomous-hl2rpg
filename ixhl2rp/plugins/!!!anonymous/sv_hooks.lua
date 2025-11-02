@@ -55,10 +55,12 @@ function PLUGIN:PrePlayerLoadedCharacter(client, character, oldcharacter)
 	end
 end
 
-require("statusx")
-require("quax")
+local statusx, err = pcall(require, "statusx")
+local quax, err = pcall(require, "quax")
 
-query.EnableInfoDetour(true)
+if query then
+	query.EnableInfoDetour(true)
+end
 
 function PLUGIN:GetOnline()
 	return player.GetCount()
@@ -113,18 +115,24 @@ function PLUGIN:A2S_INFO(ip, port, info)
 	return info 
 end
 
+if err then
+	ErrorNoHalt("[Anonymous System] StatusX or QuaX not found, anonymous system will be disabled!")
 
-/*
-function PLUGIN:STATUS_INFO(client, info)
-	info.players = self:GetOnline()
+	local PLAYER = FindMetaTable("Player")
 
-	return info
+	function PLAYER:GetAnonID()
+		return self:SteamID()
+	end
+
+	function PLAYER:AnonSteamName()
+		return self:SteamName()
+	end
+
+	function PLAYER:AnonSteamID()
+		return self:SteamID()
+	end
+
+	function PLAYER:AnonSteamID64()
+		return self:SteamID64()
+	end
 end
-
-
-function PLUGIN:SERVER_INFO(info)
-	info.players = self:GetOnline()
-
-	return info
-end
-*/
