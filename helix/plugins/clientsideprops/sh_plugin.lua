@@ -1,8 +1,6 @@
 local PLUGIN = PLUGIN
 local Persistence = ix.plugin.Get("persistence")
 
-require("niknaks")
-
 PLUGIN.name = "Clientside Props"
 PLUGIN.author = "Schwarz Kruppzo"
 PLUGIN.description = "Convert serverside props to clientside props for performance."

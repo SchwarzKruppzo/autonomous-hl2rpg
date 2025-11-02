@@ -3,6 +3,10 @@ local BLEEDING_DISTANCE = 2048 ^ 2
 local bleedingPlayers = {}
 
 function PLUGIN:Think()
+	if !NikNaks then
+		return
+	end
+	
 	self.coroutine = self.coroutine and coroutine.status(self.coroutine) != "dead" and self.coroutine or coroutine.create(function()
 		while (true) do
 			bleedingPlayers = {}

@@ -86,13 +86,10 @@ do
 		return result
 	end
 
-	if (!NikNaks) then
-		NikNaks = {
-			CurrentMap = {
-				PVSForOrigin = function()
-				end
-			}
-		}
+	local succ, err = pcall(require, "niknaks")
+
+	if !succ then
+		ErrorNoHalt("[Helix] NikNaks addon not found, some functionality may not work!")
 	end
 
 	local playerMeta = FindMetaTable("Player")
