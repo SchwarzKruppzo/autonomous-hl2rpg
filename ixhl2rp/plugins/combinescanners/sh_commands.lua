@@ -7,8 +7,6 @@ do
 			local scanner = client:GetPilotingScanner()
 			
 			scanner:Eject()
-
-			SafeRemoveEntity(scanner)
 		end
 	end
 

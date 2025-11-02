@@ -1,3 +1,5 @@
+local PLUGIN = PLUGIN
+
 include("shared.lua")
 
 local knots = {
@@ -90,8 +92,28 @@ end
 
 local colorTargetID = Color(50, 100, 150)
 
-function ENT:HUDPaintTargetID(x, y, alpha)
-	--y = Clockwork.kernel:DrawInfo(self:GetScannerName(), x, y, colorTargetID, alpha)
+function ENT:OnPopulateEntityInfo(container)
+	local name = container:AddRow("name")
+	name:SetImportant()
+	name:SetText(self:GetScannerName())
+	name:SetBackgroundColor(Color(255, 190, 0, 255))
+	name:SizeToContents()
+
+	local description = container:AddRowAfter("name", "description")
+	description:SetText("Автономная Единица серии Сканнер-L. Оснащён анти-гравитационным двигателем, камерой наблюдения и лампой спереди корпуса для вспышки и подсветки. Металл имеет множество изъянов в виде ржавчины и сколов, что соответствует немалому пробегу сканнера. Издаёт приглушённые жужжания.")
+	description:SizeToContents()
+end
+
+function ENT:GetEntityMenu(client)
+	if (PLUGIN:CanFoldScanner(client, self)) then
+		return {
+			["Сложить"] = function()
+				net.Start("ScannerFold")
+					net.WriteEntity(self)
+				net.SendToServer()
+			end
+		}
+	end
 end
 
 net.Receive("ScannerFlash", function()
