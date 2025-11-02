@@ -95,6 +95,14 @@ do
 		}
 	end
 
+	local playerMeta = FindMetaTable("Player")
+
+	if (!playerMeta.IsProne) then
+		function playerMeta:IsProne()
+			return false
+		end
+	end
+
 	local function errorWithName(name)
 		return function()
 			ErrorNoHalt(Format("Attempted to run \"%s\" dependency function!", name))
