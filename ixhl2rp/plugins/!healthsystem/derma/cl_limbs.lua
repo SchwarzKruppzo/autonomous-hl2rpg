@@ -53,6 +53,28 @@ function PANEL:BuildData()
 	end)
 end
 
+local colors = {
+	Color(166, 243, 76),
+	Color(233, 225, 94),
+	Color(233, 173, 94),
+	Color(222, 57, 57)
+}
+
+local function GetColor(health, max)
+	max = max or health
+	local percent = health / max 
+
+	if percent > 0.75 then
+		return colors[1]
+	elseif percent > 0.5 then
+		return colors[2]
+	elseif percent > 0.25 then
+		return colors[3]
+	else
+		return colors[4]
+	end
+end
+
 function PANEL:Paint(w, h)
 	if self.character then
 		surface.SetDrawColor(self.colorBG)
@@ -61,7 +83,7 @@ function PANEL:Paint(w, h)
 
 		local health = self.character:Health()
 		for k, v in ipairs(self.tex) do
-			local limbColor = ix.limb:GetColor(health:GetPartHealth(v[3]), v[4])
+			local limbColor = GetColor(health:GetPartHealth(v[3]), v[4])
 
 			surface.SetDrawColor(limbColor.r, limbColor.g, limbColor.b, 150)
 			surface.SetMaterial(v[2])
