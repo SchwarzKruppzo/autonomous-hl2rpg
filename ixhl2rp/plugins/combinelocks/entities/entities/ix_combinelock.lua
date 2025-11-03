@@ -59,6 +59,8 @@ if (SERVER) then
 		end
 
 		self:SetParent(door)
+		self.attach_ang = angles
+		
 		timer.Simple(0, function()
 			self:SetLocalPos(door:WorldToLocal(position))
 			self:SetLocalAngles(door:WorldToLocalAngles(angles))

@@ -6,9 +6,10 @@ function PLUGIN:SaveCombineLocks()
 			data[#data + 1] = {
 				v.door:MapCreationID(),
 				v:GetLocalPos(),
-				v:GetAngles(),
+				v.attach_ang or angle_zero,
 				v:GetLocked(),
-				v:GetAccess()
+				v:GetAccess(),
+				v:GetPos()
 			}
 		end
 	end
@@ -23,7 +24,7 @@ function PLUGIN:LoadCombineLocks()
 		if (IsValid(door) and door:IsDoor()) then
 			local lock = ents.Create("ix_combinelock")
 
-			lock:SetPos(door:GetPos())
+			lock:SetPos(v[6] or door:GetPos())
 			lock:Spawn()
 			lock:SetDoor(door, door:LocalToWorld(v[2]), v[3])
 			lock:SetLocked(v[4])
