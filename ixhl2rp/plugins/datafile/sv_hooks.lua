@@ -313,7 +313,7 @@ netstream.Hook("UpdateLastSeen", function(client, datafileID)
 	if PLUGIN:IsRestricted((PLUGIN.stored[tonumber(datafileID)] or {})[4]) then return end
 	if !PLUGIN:HasDatafileAccess(char, datafileID) then return end
 
-	PLUGIN:UpdateLastSeen(client, datafileID)
+	PLUGIN:UpdateLastSeen(datafileID)
 	PLUGIN:RefreshDatafile(client, datafileID)
 end)
 
