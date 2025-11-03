@@ -45,6 +45,21 @@ function Item:Init()
 		tip = "equipTip",
 		icon = "icon16/box.png",
 		OnRun = function(item)
+			if item.hasLock then
+				local client = item.player
+				if item:CheckBiolock(client) == false then
+					local char = client:GetCharacter()
+					local info = {severity = 5}
+					char:Health():AddHediff("sparkburn", HITGROUP_LEFTARM, info)
+					char:Health():AddHediff("sparkburn", HITGROUP_RIGHTARM, info)
+
+					client:EmitSound("weapons/stunstick/alyx_stunner1.wav")
+
+					ix.Item:DropItem(client, item.id)
+
+					return false
+				end
+			end
 			item:Equip(item.player)
 		end,
 		OnCanRun = function(item)
@@ -54,19 +69,12 @@ function Item:Init()
 
 			local client = item.player
 
-
 			if item.inventory_id then
 				local inv = ix.Inventory:Get(item.inventory_id)
 
 				if inv and inv.type != "main" and inv.owner != client then -- cannot equip weapon outside
 					return false
 				elseif inv and inv.type == "main" and inv.owner != client then -- cannot equip weapon outside
-					return false
-				end
-			end
-
-			if item.hasLock then
-				if item:CheckBiolock(client) == false then
 					return false
 				end
 			end
