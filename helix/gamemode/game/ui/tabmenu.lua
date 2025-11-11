@@ -1579,6 +1579,8 @@ function PANEL:Init()
 		local xp = character:GetLevelXP()
 		local xp_max = LEVEL_PLUGIN:GetRequiredLevelXP(level)
 		local xp_delta = xp / xp_max
+		local free_xp = character:GetSkillMemory()
+		local free_xp_max = character:GetMaxSkillMemory()
 
 		surface.SetFont("ui.tabmenu.level")
 		local level_w, level_h = surface.GetTextSize(level)
@@ -1595,7 +1597,8 @@ function PANEL:Init()
 		y = y + level_bar_h
 
 		DisableClipping(true)
-			draw.SimpleText("ДО СЛЕДУЮЩЕГО: ".. math.Round(xp_max - xp).." XP", "ui.tabmenu.levelmini", x + level_bar_w, y, level_clr, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
+			draw.SimpleText(Format("ДО СЛЕДУЮЩЕГО: %d XP", math.Round(xp_max - xp)), "ui.tabmenu.levelmini", x + level_bar_w, y, level_clr, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
+			draw.SimpleText(Format("СВОБОДНО: %d/%d XP", free_xp, free_xp_max), "ui.tabmenu.levelmini", x + level_bar_w, y + level_bar_h, level_clr, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
 		DisableClipping(false)
 	end
 
