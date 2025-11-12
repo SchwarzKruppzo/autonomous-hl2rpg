@@ -41,7 +41,7 @@ end
 local stored = PLUGIN.chatDisplay or {}
 PLUGIN.chatDisplay = stored
 
-local function PopupMessage(entity, messageInfo)
+function PLUGIN:PopupMessage(entity, messageInfo)
 	local class = ix.chat.classes[messageInfo.chatType]
 	local maxLen = ix.option.Get("chatDisplayLength")
 	local text = messageInfo.text
@@ -58,7 +58,7 @@ end
 function PLUGIN:MessageReceived(client, messageInfo)
 	if IsValid(client) and client != LocalPlayer() and ix.option.Get("chatDisplayEnabled", false) then
 		if hook.Run("ShouldChatMessageDisplay2", client, messageInfo) != false then
-			PopupMessage(client, messageInfo)
+			self:PopupMessage(client, messageInfo)
 		end
 	end
 end
@@ -150,5 +150,5 @@ end
 
 
 netstream.Hook("displaychatPopupPos", function(pos, messageInfo)
-	PopupMessage(pos, messageInfo)
+	PLUGIN:PopupMessage(pos, messageInfo)
 end)
