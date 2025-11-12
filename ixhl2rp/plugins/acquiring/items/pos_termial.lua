@@ -117,7 +117,8 @@ ITEM.functions.Pay = {
 	end,
 
 	OnCanRun = function(item)
-		return !!item.entity && item:GetData("enteredSum", 0) > 0 && !!item.player:GetIDCard()
+		return !!item.entity && item:GetData("enteredSum", 0) > 0
+        //&& !!item.player:GetIDCard()
 	end
 }
 
