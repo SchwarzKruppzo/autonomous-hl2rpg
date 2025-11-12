@@ -1,5 +1,13 @@
 local PLUGIN = PLUGIN
 
+function PLUGIN:SaveData()
+    self:SetData(ix.Acquiring.LastAcquiringId)
+end
+
+function PLUGIN:LoadData()
+    ix.Acquiring.LastAcquiringId = self:GetData(0)
+end
+
 netstream.Hook("acquiringBindDatafile", function(client, datafileId)
     if ix.Acquiring:CanBindDatafileId(client, client.ixAcquiringTerminal, datafileId) then
         ix.Acquiring:BindDatafileId(client.ixAcquiringTerminal, datafileId)
@@ -14,10 +22,6 @@ netstream.Hook("acquiringEnterSum", function(client, save, sum)
     sum = tonumber(sum)
     if (ix.Acquiring:CanEnterSum(client, client.ixAcquiringTerminal, sum)) then
         ix.Acquiring:EnterSum(client.ixAcquiringTerminal, sum, !!save)
-        
-        if (!client.ixAcquiringTerminal.entity) then
-            client.ixAcquiringTerminal:Sync(client)
-        end
 
         return client:Notify(Format("Выставлена оплата на %s жетонов", tostring(sum)))
     end

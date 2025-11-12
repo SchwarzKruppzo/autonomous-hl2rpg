@@ -1,4 +1,4 @@
-ITEM.name = "POS-терминал оплаты"
+ITEM.name = "POS-терминал"
 ITEM.description = "Кассовый аппарат, позволяющий проводить оплату при безналичном рассчёте."
 ITEM.category = "Уникальное"
 ITEM.rarity = 3
@@ -111,6 +111,8 @@ ITEM.functions.Pay = {
     icon = "icon16/money.png",
 
 	OnRun = function(item)
+        ix.Acquiring:ProcessPayment(item.player, item)
+
 		return false
 	end,
 
@@ -119,31 +121,57 @@ ITEM.functions.Pay = {
 	end
 }
 
-function ITEM:PopulateTooltip(tooltip)
-    local enteredSum = self:GetData("enteredSum", 0)
-    local datafileId = self:GetData("datafileId", "")
-
-    local paintFunction = function(_, width, height)
-        surface.SetDrawColor(ColorAlpha(derma.GetColor("Error", tooltip), 11))
-        surface.DrawRect(0, 0, width, height)
+local function getWithZeroes(value)
+    local zeroes = 3 - math.Clamp(#tostring(value), 0, 3)
+    for i=1, zeroes do
+        value = Format("0%s", value)
     end
 
-    if datafileId != "" then
-        local connectedTo = tooltip:AddRowAfter("description", "connectedTo")
-        connectedTo:SetMinimalHidden(true)
-        connectedTo:SetFont("ixMonoSmallFont")
-        connectedTo:SetText(Format("POS-terminal connected to #%s Datafile ID.", datafileId))
-        connectedTo.Paint = paintFunction
-        connectedTo:SizeToContents()
+    return value
+end
+
+function ITEM:GetName()
+    return Format("%s #%s", self.name, getWithZeroes(self:GetData("acquiringId", 0)))
+end
+
+if CLIENT then
+    function ITEM:PopulateTooltip(tooltip)
+        local enteredSum = self:GetData("enteredSum", 0)
+        local datafileId = self:GetData("datafileId", "")
+
+        local paintFunction = function(_, width, height)
+            surface.SetDrawColor(ColorAlpha(derma.GetColor("Error", tooltip), 11))
+            surface.DrawRect(0, 0, width, height)
+        end
+
+        if datafileId != "" then
+            local connectedTo = tooltip:AddRowAfter("description", "connectedTo")
+            connectedTo:SetMinimalHidden(true)
+            connectedTo:SetFont("ixMonoSmallFont")
+            connectedTo:SetText(Format("POS-terminal connected to #%s Datafile ID.", datafileId))
+            connectedTo.Paint = paintFunction
+            connectedTo:SizeToContents()
+        end
+
+        if enteredSum > 0 then
+            local enteredSumPanel = tooltip:AddRowAfter("description", "enteredSum")
+            enteredSumPanel:SetMinimalHidden(true)
+            enteredSumPanel:SetFont("ixMonoSmallFont")
+            enteredSumPanel:SetText(Format("Their display tells you to pay %s tokens.", enteredSum))
+            enteredSumPanel.Paint = paintFunction
+            enteredSumPanel:SizeToContents()
+        end
     end
 
-    if enteredSum > 0 then
-        local enteredSumPanel = tooltip:AddRowAfter("description", "enteredSum")
-        enteredSumPanel:SetMinimalHidden(true)
-        enteredSumPanel:SetFont("ixMonoSmallFont")
-        enteredSumPanel:SetText(Format("Their display tells you to pay %s tokens.", enteredSum))
-        enteredSumPanel.Paint = paintFunction
-        enteredSumPanel:SizeToContents()
+    return
+end
+
+function ITEM:OnInstanced(isCreated)
+	if isCreated then
+        local newId = ix.Acquiring.LastAcquiringId + 1
+        ix.Acquiring.LastAcquiringId = newId
+
+        self:SetData("acquiringId", newId)
     end
 end
 

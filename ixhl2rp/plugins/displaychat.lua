@@ -18,24 +18,20 @@ ix.option.Add("chatDisplayDurationPerSymbol", ix.type.number, 0.5, {
 	min = 0.01, max = 1, decimals = 2
 })
 
-function DisplayChatPopupPos(pos, text)
-	local foundEnts = ents.FindInSphere(pos, 900)
+function PLUGIN:DisplayChatPopupPos(pos, messageInfo)
+	if CLIENT then
+		return self:PopupMessage(pos, messageInfo)
+	end
+	
 	local sortedPlayers = {}
 
-	for k,v in ipairs(foundEnts)do
-		if (v:IsPlayer()) then
+	for k,v in ipairs(player.GetAll())do
+		if (pos:DistToSqr(v:GetPos()) < 900 * 900) then
 			sortedPlayers[#sortedPlayers+1] = v
 		end
 	end
 
-	local messageInfo = {
-		chatType = "me",
-		text = text,
-		anonymous = false,
-		data = data
-	}
-
-	netstream.Start(sortedTbl, "displaychatPopupEntity", pos, messageInfo)
+	netstream.Start(sortedPlayers, "displaychatPopupPos", pos, messageInfo)
 end
 
 if SERVER then 
@@ -153,6 +149,6 @@ function PLUGIN:HUDPaint()
 end
 
 
-netstream.Hook("displaychatPopupEntity", function(pos, messageInfo)
+netstream.Hook("displaychatPopupPos", function(pos, messageInfo)
 	PopupMessage(pos, messageInfo)
 end)
