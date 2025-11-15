@@ -261,11 +261,6 @@ if (SERVER) then
 
 		activator.ixVendor = self
 
-		-- force sync to prevent outdated inventories while buying/selling
-		if (character) then
-			character:GetInventory():Sync(activator, true)
-		end
-
 		net.Start("ixVendorOpen")
 			net.WriteEntity(self)
 			net.WriteUInt(self.money or 0, 16)
