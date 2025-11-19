@@ -13,8 +13,8 @@ surface.CreateFont("autonomous.hint.small", {
 	weight = 500
 })
 surface.CreateFont("autonomous.hint.info", {
-	font = "Blender Pro Book",
-	size = Scale(19),
+	font = "Blender Pro Medium",
+	size = Scale(18),
 	extended = true,
 	weight = 500
 })
@@ -163,9 +163,12 @@ function PANEL:SetTitle(text)
 end
 
 function PANEL:Init()
-	Material("autonomous/hint1"):SetTexture("$basetexture", RT_HINT)
-	Material("autonomous/hint1"):SetInt("$translucent", 1)
-	Material("autonomous/hint1"):SetInt("$vertexalpha", 1)
+	local hintMaterial = Material("autonomous/hint1")
+
+	hintMaterial:SetTexture("$basetexture", RT_HINT)
+	hintMaterial:SetInt("$translucent", 1)
+	hintMaterial:SetInt("$vertexalpha", 1)
+
 	local padding = 30
 
 
@@ -227,27 +230,25 @@ function PANEL:Resize()
 	self.container:SizeToChildren(false, true) 
 
 	local contentTall = self.container:GetTall()
-	local padding = self.padding or 30 -- верхний отступ
-	local bottomPadding = Scale(16) -- отступ снизу
+	local minHeight = 100
+	
+	contentTall = math.max(contentTall, minHeight)
 
-	local totalHeight = contentTall // + padding + bottomPadding
+	if self:GetTall() == contentTall then return end
 
-	local minHeight = 100 
-	totalHeight = math.max(totalHeight, minHeight)
+	self:SetTall(contentTall)
 
-	if self:GetTall() == totalHeight then return end
-
-	self:SetTall(totalHeight)
-
-	self:RecacheHintSize(self:GetWide(), totalHeight)
+	self:RecacheHintSize(self:GetWide(), contentTall)
 end
 
+/*
 function PANEL:GetCursorPosition()
 	local width, height = self:GetSize()
 	local mouseX, mouseY = gui.MousePos()
 
 	return math.Clamp(mouseX + self.mousePadding, 0, ScrW() - width), math.Clamp(mouseY + self.mousePadding, 0, ScrH() - height)
 end
+*/
 
 function PANEL:Think()
 	if self.parent then
@@ -367,44 +368,11 @@ do
 	local ixRemoveTooltip = RemoveTooltip
 	local tooltip
 	local lastHover
-/*
-	function PANEL:SetAutonomousTooltip(callback, panel)
+
+	function PANEL:SetAutonomousTooltip(callbackOrKey)
 		self:SetMouseInputEnabled(true)
-		self.OverrideTooltip = callback
-		self.OverrideTooltipPanel = panel or "autonomous.tooltip"
-	end
 
-	function ChangeTooltip(panel, ...) -- luacheck: globals ChangeTooltip
-		if (!panel.OverrideTooltip) then
-			return ixChangeTooltip(panel, ...)
-		end
-
-		RemoveTooltip()
-
-		timer.Create("ixTooltip", 0.1, 1, function()
-			if (!IsValid(panel) or lastHover != panel) then
-				return
-			end
-
-			tooltip = vgui.Create(panel.OverrideTooltipPanel)
-			panel.OverrideTooltip(tooltip)
-			tooltip.parent = panel
-
-			if tooltip.Resize then
-				tooltip:Resize()
-			else
-				tooltip:SizeToContents()
-			end
-		end)
-
-		lastHover = panel
-	end
-
-	*/
-
-	function PANEL:SetAutonomousTooltip(callback)
-		self:SetMouseInputEnabled(true)
-		self.OverrideTooltipCallback = callback
+		self.OverrideTooltipCallback = callbackOrKey
 	end
 
 	function ChangeTooltip(panel, ...) -- luacheck: globals ChangeTooltip
@@ -413,7 +381,6 @@ do
 		end
 
 		RemoveTooltip()
-
 
 		timer.Create("ixTooltip", 0.1, 1, function()
 			if (!IsValid(panel) or lastHover != panel) then
