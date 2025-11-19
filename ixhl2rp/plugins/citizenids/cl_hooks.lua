@@ -1,5 +1,5 @@
 function Schema:CreateCharacterInfo(panel)
-	if (IsValid(panel) and self:GetFactionGroup(LocalPlayer():Team()) != FACTION_GROUP_REBEL) then
+	if IsValid(panel) then
 		panel.cid = panel:Add("ixListRow")
 		panel.cid:SetList(panel.list)
 		panel.cid:Dock(TOP)

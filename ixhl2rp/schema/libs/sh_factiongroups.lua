@@ -1,8 +1,7 @@
 FACTION_GROUP_NONE = 0
 FACTION_GROUP_CWU = 1
 FACTION_GROUP_COMBINE = 2
-FACTION_GROUP_REBEL = 3
-FACTION_GROUP_OTA = 4
+FACTION_GROUP_OTA = 3
 
 Schema.factionGroups = Schema.factionGroups or {}
 
@@ -56,15 +55,5 @@ do
 	function PLAYER:IsCWU()
 		local faction = self:Team()
 		return Schema:GetFactionGroup(faction) == FACTION_GROUP_CWU
-	end
-
-	function CHAR:IsRebel()
-		local faction = self:GetFaction()
-		return Schema:GetFactionGroup(faction) == FACTION_GROUP_REBEL
-	end
-
-	function PLAYER:IsRebel()
-		local faction = self:Team()
-		return Schema:GetFactionGroup(faction) == FACTION_GROUP_REBEL
 	end
 end
