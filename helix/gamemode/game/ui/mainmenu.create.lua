@@ -1953,8 +1953,6 @@ function PANEL:CreateSkillsStage()
 		tooltip:AddDivider()
 
 		tooltip:AddMarkup([[<font=autonomous.hint.info><colour=210,240,250>Влияет на стоимость повышения характеристики персонажа. Основная характеристика повышается без штрафов, в то время как стоимость остальных характеристик будет составлять 4 очка.</colour></font>]])		
-
-		tooltip:Resize()
 	end)
 	focusFrame:AlignRight(Scale(80))
 
@@ -2098,8 +2096,6 @@ function PANEL:CreateSkillsStage()
 			if v.Tooltip then
 				v.Tooltip(v, tooltip)
 			end
-			
-			tooltip:Resize()
 		end)
 
 		local descMarkup

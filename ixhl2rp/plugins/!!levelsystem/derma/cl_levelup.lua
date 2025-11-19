@@ -192,8 +192,6 @@ function PANEL:Setup(points)
 			if v.Tooltip then
 				v.Tooltip(v, tooltip)
 			end
-			
-			tooltip:Resize()
 		end)
 
 		local descMarkup

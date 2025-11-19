@@ -127,6 +127,7 @@ ix.DX = ix.DX or ix.util.Include("game/cl_ui_shaders.lua")
 
 ix.util.Include("game/cl_ui_palette.lua")
 ix.util.Include("game/cl_ui_utils.lua")
+ix.util.Include("game/cl_ui_tooltips.lua")
 ix.util.Include("game/ui/generic.menu.lua", "client")
 ix.util.Include("game/ui/generic.panels.lua", "client")
 ix.util.Include("game/ui/tooltip.lua", "client")

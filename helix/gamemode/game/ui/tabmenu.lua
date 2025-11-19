@@ -856,8 +856,6 @@ function PANEL:Init()
 				if v.Tooltip then
 					v.Tooltip(v, tooltip)
 				end
-				
-				tooltip:Resize()
 			end)
 		end
 

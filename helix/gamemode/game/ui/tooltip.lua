@@ -13,8 +13,8 @@ surface.CreateFont("autonomous.hint.small", {
 	weight = 500
 })
 surface.CreateFont("autonomous.hint.info", {
-	font = "Blender Pro Medium",
-	size = Scale(16),
+	font = "Blender Pro Book",
+	size = Scale(19),
 	extended = true,
 	weight = 500
 })
@@ -34,16 +34,23 @@ function PANEL:Init()
 
 	self.alignx = nil
 	self.aligny = nil
+
+	self.hoveredLink = nil
 end
 
 function PANEL:SetMarkup(text, x, y, w)
 	self.text = text
 	self.alignx = x
 	self.aligny = y
+	
+	-- Парсим markup с жестко заданной шириной
+	self.markup = ix.markup.Parse(self.text, w)
 
-	self.markup = markup.Parse(self.text, w)
-
+	-- Устанавливаем высоту панели равной высоте распарсеного текста
 	self:SetTall(self.markup:GetHeight())
+	
+	-- Если мы внутри контейнера с Docking, нужно сказать ему, что мы изменились
+	self:InvalidateParent(true)
 end
 
 function PANEL:Paint(width, height)
@@ -61,7 +68,27 @@ function PANEL:Paint(width, height)
 		y = y + height * 0.5
 	end
 	
-	self.markup:Draw(x, y, self.alignx, self.aligny, 255)
+	self.markup:draw(x, y, self.alignx, self.aligny, 255, self.hoveredLink)
+end
+
+function PANEL:Think()
+    if !self.markup then return end
+
+    local mx, my = self:CursorPos()
+    local linkID, bx, by, bw, bh = self.markup:GetLinkAtPos(mx, my, 0, 0, self.alignx, self.aligny)
+
+    if linkID and (linkID != self.hoveredLink) then
+        self.hoveredLink = linkID
+        
+        if linkID then
+            ix.Tooltip:Clear(ix.Tooltip.currentDepth + 1)
+            
+            local screenX, screenY = input.GetCursorPos()
+
+            ix.Tooltip:Create(self, ix.Tooltip.currentDepth + 1, linkID, screenX, screenY)
+
+        end
+    end
 end
 
 vgui.Register("hint.textpanel", PANEL, "Panel")
@@ -111,8 +138,7 @@ function PANEL:AddSmallText(value, alignment, color)
 	text:Dock(TOP)
 	text:SetFont("autonomous.hint.small")
 	text:SetText(value)
-	text:SetTextColor(color and color or smallColor)
-	text:SetContentAlignment(alignment and alignment or 4)
+	text:SetTextColor(color or smallColor)
 	text:SizeToContents()
 
 	return text
@@ -120,12 +146,14 @@ end
 
 function PANEL:AddMarkup(value, alignmentX, alignmentY, offset)
 	local paddingLeft, paddingTop, paddingRight, paddingBottom = self.container:GetDockPadding()
+	local availableWidth = self.minWidth - paddingLeft - paddingRight - (offset or 0)
 
 	local text = self.container:Add("hint.textpanel")
 	text:Dock(TOP)
-	text:SetMarkup(value, alignmentX and alignmentX or TEXT_ALIGN_LEFT, alignmentY and alignmentY or TEXT_ALIGN_TOP, (self.container:GetWide() - paddingLeft - paddingRight - (offset or 0)))
+	text:SetMarkup(value, alignmentX or TEXT_ALIGN_LEFT, alignmentY or TEXT_ALIGN_TOP, availableWidth)
+	text:DockMargin(0, 0, 0, Scale(4)) 
 
-	self.markups[#self.markups + 1] = text
+	table.insert(self.markups, text)
 
 	return text
 end
@@ -136,7 +164,8 @@ end
 
 function PANEL:Init()
 	Material("autonomous/hint1"):SetTexture("$basetexture", RT_HINT)
-
+	Material("autonomous/hint1"):SetInt("$translucent", 1)
+	Material("autonomous/hint1"):SetInt("$vertexalpha", 1)
 	local padding = 30
 
 
@@ -150,7 +179,8 @@ function PANEL:Init()
 	self._size = Vector(0, -x, -y) * self.scale
 	self.mdl_pos = nil
 
-	self.mdl = ClientsideModel('models/autonomous/hint1.mdl', RENDERGROUP_OPAQUE)
+	self.mdl = ClientsideModel('models/autonomous/hint1.mdl', RENDERGROUP_TRANSLUCENT)
+	self.mdl:SetRenderMode(RENDERMODE_TRANSTEXTURE)
 	self.mdl:SetNoDraw(true)
 	self.mdl:SetupBones()
 
@@ -168,7 +198,7 @@ function PANEL:Init()
 
 	self.container = self:Add("EditablePanel")
 	self.container:Dock(TOP)
-	self.container:SetWide(self.minWidth)
+	self.container:SetSize(self.minWidth, 200)
 	--self.container:SetAlpha(0)
 	self.container:DockPadding(paddingLeft, 0, paddingLeft * 0.5, paddingTop)
 
@@ -194,15 +224,22 @@ end
 
 function PANEL:Resize()
 	self.container:InvalidateLayout(true)
+	self.container:SizeToChildren(false, true) 
 
-	for k, v in ipairs(self.markups) do
-		v:InvalidateLayout(true)
-	end
+	local contentTall = self.container:GetTall()
+	local padding = self.padding or 30 -- верхний отступ
+	local bottomPadding = Scale(16) -- отступ снизу
 
-	self.container:SizeToChildren(true, true)
+	local totalHeight = contentTall // + padding + bottomPadding
 
-	self:InvalidateLayout(true)
-	self:SizeToChildren(false, true)
+	local minHeight = 100 
+	totalHeight = math.max(totalHeight, minHeight)
+
+	if self:GetTall() == totalHeight then return end
+
+	self:SetTall(totalHeight)
+
+	self:RecacheHintSize(self:GetWide(), totalHeight)
 end
 
 function PANEL:GetCursorPosition()
@@ -218,16 +255,16 @@ function PANEL:Think()
 			self.parent.update_tooltip = false
 			self:Clear()
 			self.parent.OverrideTooltip(self)
-			self:SizeToContents()
+			self:Resize()
 		end
 	end
-
+/*
 	local newX, newY = self:GetCursorPosition()
 
 	self:SetPos(newX, newY)
 	self.lastX, self.lastY = newX, newY
 
-	self:MoveToFront() -- dragging a panel w/ tooltip will push the tooltip beneath even the menu panel(???)
+	self:MoveToFront() -- dragging a panel w/ tooltip will push the tooltip beneath even the menu panel(???)*/
 end
 
 local bg = Material("devtest/dif1.png")
@@ -248,7 +285,7 @@ end
 
 function PANEL:Paint(w, h)
 	render.PushRenderTarget(RT_HINT)
-		render.Clear(0, 0, 0, 0)
+		render.Clear(0, 0, 0, 255)
 
 		cam.Start2D()
 		--surface.SetAlphaMultiplier(0.1)
@@ -272,12 +309,13 @@ function PANEL:Paint(w, h)
 
 			surface.SetDrawColor(0, 240, 255, 200)
 			surface.DrawRect(256, 0, 21, 256)
+			
 		cam.End2D()
 	render.PopRenderTarget()
 
+	local alpha = (self:GetAlpha() / 255)
 
-
-	cam.Start3D(pos, ang, 0, 0, w, h)
+	cam.Start3D(pos, ang)
 		render.SetViewPort(self:GetX(), self:GetY(), w, h)
 		cam.StartOrthoView(-w/2 * self.scale, h/2 * self.scale, w/2 * self.scale, -h/2 * self.scale)
 			render.SuppressEngineLighting(true)
@@ -306,11 +344,16 @@ function PANEL:Paint(w, h)
 			end
 
 			self.mdl:SetPos(self._size)
-			render.SetBlend(1)
+
+			render.SetBlend(alpha)
+			render.CullMode(MATERIAL_CULLMODE_NONE)
+
 			self.mdl:DrawModel()
 
-			cam.PopModelMatrix()
+			render.CullMode(MATERIAL_CULLMODE_CCW)
+			render.SetBlend(1)
 
+			cam.PopModelMatrix()
 			render.SuppressEngineLighting(false)
 		cam.EndOrthoView()
 	cam.End3D()
@@ -324,7 +367,7 @@ do
 	local ixRemoveTooltip = RemoveTooltip
 	local tooltip
 	local lastHover
-
+/*
 	function PANEL:SetAutonomousTooltip(callback, panel)
 		self:SetMouseInputEnabled(true)
 		self.OverrideTooltip = callback
@@ -346,18 +389,54 @@ do
 			tooltip = vgui.Create(panel.OverrideTooltipPanel)
 			panel.OverrideTooltip(tooltip)
 			tooltip.parent = panel
-			tooltip:SizeToContents()
+
+			if tooltip.Resize then
+				tooltip:Resize()
+			else
+				tooltip:SizeToContents()
+			end
+		end)
+
+		lastHover = panel
+	end
+
+	*/
+
+	function PANEL:SetAutonomousTooltip(callback)
+		self:SetMouseInputEnabled(true)
+		self.OverrideTooltipCallback = callback
+	end
+
+	function ChangeTooltip(panel, ...) -- luacheck: globals ChangeTooltip
+		if (!panel.OverrideTooltipCallback) then
+			return ixChangeTooltip(panel, ...)
+		end
+
+		RemoveTooltip()
+
+
+		timer.Create("ixTooltip", 0.1, 1, function()
+			if (!IsValid(panel) or lastHover != panel) then
+				return
+			end
+
+			if lastHover and lastHover.OverrideTooltipCallback then
+				ix.Tooltip:Clear(1)
+			end
+			
+			if IsValid(tooltip) then
+				return
+			end
+
+			local screenX, screenY = input.GetCursorPos()
+
+			tooltip = ix.Tooltip:Create(panel, 1, panel.OverrideTooltipCallback, screenX, screenY)
 		end)
 
 		lastHover = panel
 	end
 
 	function RemoveTooltip() -- luacheck: globals RemoveTooltip
-		if (IsValid(tooltip)) then
-			tooltip:Remove()
-			tooltip = nil
-		end
-
 		timer.Remove("ixTooltip")
 		lastHover = nil
 

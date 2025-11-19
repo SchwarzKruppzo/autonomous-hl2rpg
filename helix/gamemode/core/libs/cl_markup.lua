@@ -153,7 +153,7 @@ local function CheckTextOrTag(p)
 		text_block.font = font_stack[#font_stack]
 		text_block.link = link_stack[#link_stack]
 
-		if text_block.link and #colour_stack == 1 then
+		if text_block.link then
 			 text_block.colour = colourmap["link"]
 		end
 
