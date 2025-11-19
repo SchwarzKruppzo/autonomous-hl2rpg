@@ -5,6 +5,7 @@ ix.markup = ix.markup or {}
 -- Temporary information used when building text frames.
 local colour_stack = { {r=255,g=255,b=255,a=255} }
 local font_stack = { "DermaDefault" }
+local link_stack = { nil } 
 local curtag = nil
 local blocks = {}
 
@@ -44,6 +45,8 @@ local colourmap = {
 	["ltpurple"] =	{	r=255,	g=128,	b=255,	a=255	},
 	["ltcyan"] =	{	r=128,	g=255,	b=255,	a=255	},
 	["ltturq"] =	{	r=128,	g=255,	b=255,	a=255	},
+	["link"] =      {   r=100,  g=200,  b=255,  a=255   }, -- Цвет ссылки по умолчанию
+	["hover"] =     {   r=255,  g=200,  b=100,  a=255   }  -- Цвет ссылки при наведении
 }
 
 --[[
@@ -72,6 +75,8 @@ local function ExtractParams(p1,p2,p3)
 			table.remove(colour_stack)
 		elseif (tag == "font" or tag == "face") then
 			table.remove(font_stack)
+		elseif (tag == "link") then
+			table.remove(link_stack)
 		end
 
 	else
@@ -95,6 +100,11 @@ local function ExtractParams(p1,p2,p3)
 		elseif (p1 == "font" or p1 == "face") then
 
 			table.insert(font_stack, tostring(p2))
+
+		elseif (p1 == "link") then
+
+			table.insert(link_stack, tostring(p2)) -- p2 это ID ссылки (economy, money...)
+
 		elseif (p1 == "img" and p2) then
 			local exploded = string.Explode(",", p2)
 			local material = exploded[1] or p2
@@ -141,6 +151,12 @@ local function CheckTextOrTag(p)
 		text_block.text = p
 		text_block.colour = colour_stack[#colour_stack]
 		text_block.font = font_stack[#font_stack]
+		text_block.link = link_stack[#link_stack]
+
+		if text_block.link and #colour_stack == 1 then
+			 text_block.colour = colourmap["link"]
+		end
+
 		table.insert(blocks, text_block)
 
 	end
@@ -203,7 +219,7 @@ end
           the alpha value of the text-colour.
    Usage: MarkupObject:Draw(100, 100)
 ]]
-function MarkupObject:draw(xOffset, yOffset, halign, valign, alphaoverride)
+function MarkupObject:draw(xOffset, yOffset, halign, valign, alphaoverride, activeLinkKey)
 	for i = 1, #self.blocks do
 		local blk = self.blocks[i]
 
@@ -237,16 +253,58 @@ function MarkupObject:draw(xOffset, yOffset, halign, valign, alphaoverride)
 				elseif (valign == TEXT_ALIGN_BOTTOM) then	y = y - (self.totalHeight)
 				end
 
+				local col = blk.colour
+				if blk.link and activeLinkKey == blk.link then
+					col = colourmap["hover"]
+				end
+
 				local alpha = blk.colour.a
 				if (alphaoverride) then alpha = alphaoverride end
 
 				surface.SetFont( blk.font )
-				surface.SetTextColor( blk.colour.r, blk.colour.g, blk.colour.b, alpha )
+				surface.SetTextColor( col.r, col.g, col.b, alpha )
 				surface.SetTextPos( x, y )
 				surface.DrawText( blk.text )
 			end
 		end
 	end
+end
+
+--[[
+	Математически проверяет, находится ли точка (mx, my) над какой-либо ссылкой.
+	Использует ту же логику координат, что и draw.
+]]
+function MarkupObject:GetLinkAtPos(mx, my, xOffset, yOffset, halign, valign)
+    for i = 1, #self.blocks do
+        local blk = self.blocks[i]
+        if !blk.link then continue end
+
+        -- Расчет X
+        local x = xOffset + blk.offset.x
+        if (halign == TEXT_ALIGN_CENTER) then x = x - (self.totalWidth * 0.5)
+        elseif (halign == TEXT_ALIGN_RIGHT) then x = x - (self.totalWidth) end
+        
+        local w = blk.thisX
+        local h = blk.thisY -- Высота блока
+
+        -- Расчет Y
+        local y
+        if (blk.texture) then
+            y = yOffset + blk.offset.y
+            w = blk.w
+            h = blk.h
+        else
+            y = yOffset + (blk.height - blk.thisY) + blk.offset.y
+            if (valign == TEXT_ALIGN_CENTER) then y = y - (self.totalHeight / 2)
+            elseif (valign == TEXT_ALIGN_BOTTOM) then y = y - (self.totalHeight) end
+        end
+        
+        -- Проверка AABB
+        if (mx >= x and mx <= x + w and my >= y and my <= y + h) then
+            return blk.link, x, y, w, h
+        end
+    end
+    return nil
 end
 
 --[[
@@ -266,6 +324,7 @@ function ix.markup.Parse(ml, maxwidth)
 
 	colour_stack = { {r=255,g=255,b=255,a=255} }
 	font_stack = { "DermaDefault" }
+	link_stack = { nil } 
 	blocks = {}
 
 	if (not string.find(ml, "<")) then
@@ -345,6 +404,7 @@ function ix.markup.Parse(ml, maxwidth)
 						new_block.offset = {}
 						new_block.offset.x = xOffset
 						new_block.offset.y = yOffset
+						new_block.link = block.link
 						table.insert(new_block_list, new_block)
 						if (xOffset + x1 > xMax) then
 							xMax = xOffset + x1
@@ -410,6 +470,7 @@ function ix.markup.Parse(ml, maxwidth)
 							new_block.offset = {}
 							new_block.offset.x = xOffset
 							new_block.offset.y = yOffset
+							new_block.link = block.link
 							table.insert(new_block_list, new_block)
 
 							if (xOffset + x1 > xMax) then
@@ -448,6 +509,7 @@ function ix.markup.Parse(ml, maxwidth)
 				new_block.offset = {}
 				new_block.offset.x = xOffset
 				new_block.offset.y = yOffset
+				new_block.link = block.link
 				table.insert(new_block_list, new_block)
 
 				lineHeight = thisY
