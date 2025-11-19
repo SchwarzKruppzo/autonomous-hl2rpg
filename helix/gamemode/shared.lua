@@ -188,17 +188,6 @@ function GM:OnReloaded()
 		if (IsValid(ix.gui.scoreboard)) then
 			ix.gui.scoreboard:Remove()
 		end
-	else
-		-- Auto-reload support for faction pay timers.
-		for index, faction in ipairs(ix.faction.indices) do
-			for _, v in ipairs(team.GetPlayers(index)) do
-				if (faction.pay and faction.pay > 0) then
-					timer.Adjust("ixSalary"..v:UniqueID(), faction.payTime or 300, 0)
-				else
-					timer.Remove("ixSalary"..v:UniqueID())
-				end
-			end
-		end
 	end
 
 	if (!IX_RELOADED) then
