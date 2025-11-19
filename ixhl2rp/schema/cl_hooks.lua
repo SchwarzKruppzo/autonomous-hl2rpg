@@ -32,10 +32,6 @@ function Schema:FinishChat()
 	netstream.Start("PlayerFinishChat")
 end
 
-function Schema:CanPlayerJoinClass(client, class, info)
-	return client:Team() == FACTION_ZOMBIE
-end
-
 function Schema:GetPlayerEntityMenu(client, options)
 	local callingPlayer = LocalPlayer()
 

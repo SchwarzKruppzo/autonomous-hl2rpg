@@ -53,14 +53,14 @@ end
 
 function PLUGIN:OnCharacterCreated(client, character)
 	local defaultLang
-
+/*
 	if character:GetFaction() == FACTION_VORTIGAUNT then
 		defaultLang = "vort"
 	elseif character:GetFaction() == FACTION_ZOMBIE then
 		defaultLang = "xen"
 	elseif character:GetFaction() == FACTION_OTA or character:GetFaction() == FACTION_SYNTH then
 		defaultLang = "imp"
-	end
+	end*/
 
 	if defaultLang then
 		local knownLang = character:GetLanguages() or {}

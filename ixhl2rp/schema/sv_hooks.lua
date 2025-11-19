@@ -269,10 +269,6 @@ function Schema:PlayerMessageSend(speaker, chatType, text, anonymous, receivers,
 end
 
 function Schema:CanPlayerJoinClass(client, class, info)
-	if client:Team() == FACTION_ZOMBIE then
-		return true
-	end
-	
 	if (client:IsRestricted()) then
 		client:Notify("You cannot change classes when you are restrained!")
 

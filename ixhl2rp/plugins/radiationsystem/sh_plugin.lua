@@ -93,12 +93,6 @@ do
 	end
 
 	function PLAYER:HasGeigerCounter()
-		if self:Team() == FACTION_OTA then
-			return true
-		elseif self:Team() == FACTION_MPF then
-			return true
-		end
-
 		return self:HasItem("geiger_counter")
 	end
 end
