@@ -50,8 +50,8 @@ local colourmap = {
 }
 
 --[[
-    Name: colourMatch(c)
-    Desc: Match a colour name to an rgb value.
+	Name: colourMatch(c)
+	Desc: Match a colour name to an rgb value.
    Usage: ** INTERNAL ** Do not use!
 ]]
 local function colourMatch(c)
@@ -61,8 +61,8 @@ local function colourMatch(c)
 end
 
 --[[
-    Name: ExtractParams(p1,p2,p3)
-    Desc: This function is used to extract the tag information.
+	Name: ExtractParams(p1,p2,p3)
+	Desc: This function is used to extract the tag information.
    Usage: ** INTERNAL ** Do not use!
 ]]
 local function ExtractParams(p1,p2,p3)
@@ -134,9 +134,9 @@ local function ExtractParams(p1,p2,p3)
 end
 
 --[[
-    Name: CheckTextOrTag(p)
-    Desc: This function places data in the "blocks" table
-          depending of if p is a tag, or some text
+	Name: CheckTextOrTag(p)
+	Desc: This function places data in the "blocks" table
+		  depending of if p is a tag, or some text
    Usage: ** INTERNAL ** Do not use!
 ]]
 local function CheckTextOrTag(p)
@@ -163,8 +163,8 @@ local function CheckTextOrTag(p)
 end
 
 --[[
-    Name: ProcessMatches(p1,p2,p3)
-    Desc: CheckTextOrTag for 3 parameters. Called by string.gsub
+	Name: ProcessMatches(p1,p2,p3)
+	Desc: CheckTextOrTag for 3 parameters. Called by string.gsub
    Usage: ** INTERNAL ** Do not use!
 ]]
 local function ProcessMatches(p1,p2,p3)
@@ -176,9 +176,9 @@ end
 local MarkupObject = {}
 
 --[[
-    Name: MarkupObject:Create()
-    Desc: Called by Parse. Creates a new table, and setups the
-          metatable.
+	Name: MarkupObject:Create()
+	Desc: Called by Parse. Creates a new table, and setups the
+		  metatable.
    Usage: ** INTERNAL ** Do not use!
 ]]
 function MarkupObject:create()
@@ -190,8 +190,8 @@ function MarkupObject:create()
 end
 
 --[[
-    Name: MarkupObject:GetWidth()
-    Desc: Returns the width of a markup block
+	Name: MarkupObject:GetWidth()
+	Desc: Returns the width of a markup block
    Usage: ml:GetWidth()
 ]]
 function MarkupObject:GetWidth()
@@ -199,8 +199,8 @@ function MarkupObject:GetWidth()
 end
 
 --[[
-    Name: MarkupObject:GetHeight()
-    Desc: Returns the height of a markup block
+	Name: MarkupObject:GetHeight()
+	Desc: Returns the height of a markup block
    Usage: ml:GetHeight()
 ]]
 function MarkupObject:GetHeight()
@@ -212,11 +212,11 @@ function MarkupObject:size()
 end
 
 --[[
-    Name: MarkupObject:Draw(xOffset, yOffset, halign, valign, alphaoverride)
-    Desc: Draw the markup text to the screen as position
-          xOffset, yOffset. Halign and Valign can be used
-          to align the text. Alphaoverride can be used to override
-          the alpha value of the text-colour.
+	Name: MarkupObject:Draw(xOffset, yOffset, halign, valign, alphaoverride)
+	Desc: Draw the markup text to the screen as position
+		  xOffset, yOffset. Halign and Valign can be used
+		  to align the text. Alphaoverride can be used to override
+		  the alpha value of the text-colour.
    Usage: MarkupObject:Draw(100, 100)
 ]]
 function MarkupObject:draw(xOffset, yOffset, halign, valign, alphaoverride, activeLinkKey)
@@ -275,47 +275,47 @@ end
 	Использует ту же логику координат, что и draw.
 ]]
 function MarkupObject:GetLinkAtPos(mx, my, xOffset, yOffset, halign, valign)
-    for i = 1, #self.blocks do
-        local blk = self.blocks[i]
-        if !blk.link then continue end
+	for i = 1, #self.blocks do
+		local blk = self.blocks[i]
+		if !blk.link then continue end
 
-        -- Расчет X
-        local x = xOffset + blk.offset.x
-        if (halign == TEXT_ALIGN_CENTER) then x = x - (self.totalWidth * 0.5)
-        elseif (halign == TEXT_ALIGN_RIGHT) then x = x - (self.totalWidth) end
-        
-        local w = blk.thisX
-        local h = blk.thisY -- Высота блока
+		-- Расчет X
+		local x = xOffset + blk.offset.x
+		if (halign == TEXT_ALIGN_CENTER) then x = x - (self.totalWidth * 0.5)
+		elseif (halign == TEXT_ALIGN_RIGHT) then x = x - (self.totalWidth) end
+		
+		local w = blk.thisX
+		local h = blk.thisY -- Высота блока
 
-        -- Расчет Y
-        local y
-        if (blk.texture) then
-            y = yOffset + blk.offset.y
-            w = blk.w
-            h = blk.h
-        else
-            y = yOffset + (blk.height - blk.thisY) + blk.offset.y
-            if (valign == TEXT_ALIGN_CENTER) then y = y - (self.totalHeight / 2)
-            elseif (valign == TEXT_ALIGN_BOTTOM) then y = y - (self.totalHeight) end
-        end
-        
-        -- Проверка AABB
-        if (mx >= x and mx <= x + w and my >= y and my <= y + h) then
-            return blk.link, x, y, w, h
-        end
-    end
-    return nil
+		-- Расчет Y
+		local y
+		if (blk.texture) then
+			y = yOffset + blk.offset.y
+			w = blk.w
+			h = blk.h
+		else
+			y = yOffset + (blk.height - blk.thisY) + blk.offset.y
+			if (valign == TEXT_ALIGN_CENTER) then y = y - (self.totalHeight / 2)
+			elseif (valign == TEXT_ALIGN_BOTTOM) then y = y - (self.totalHeight) end
+		end
+		
+		-- Проверка AABB
+		if (mx >= x and mx <= x + w and my >= y and my <= y + h) then
+			return blk.link, x, y, w, h
+		end
+	end
+	return nil
 end
 
 --[[
-    Name: Parse(ml, maxwidth)
-    Desc: Parses the pseudo-html markup language, and creates a
-          MarkupObject, which can be used to the draw the
-          text to the screen. Valid tags are: font and colour.
-          \n and \t are also available to move to the next line,
-          or insert a tab character.
-          Maxwidth can be used to make the text wrap to a specific
-          width.
+	Name: Parse(ml, maxwidth)
+	Desc: Parses the pseudo-html markup language, and creates a
+		  MarkupObject, which can be used to the draw the
+		  text to the screen. Valid tags are: font and colour.
+		  \n and \t are also available to move to the next line,
+		  or insert a tab character.
+		  Maxwidth can be used to make the text wrap to a specific
+		  width.
    Usage: markup.Parse("<font=Default>changed font</font>\n<colour=255,0,255,255>changed colour</colour>")
 ]]
 function ix.markup.Parse(ml, maxwidth)
