@@ -74,6 +74,12 @@ end
 function PANEL:Think()
     if !self.markup then return end
 
+    local childTooltip = self.childTooltip
+
+    if IsValid(childTooltip) and childTooltip.depth != ix.Tooltip.active then
+    	return
+    end
+    
     local mx, my = self:CursorPos()
     local linkID, bx, by, bw, bh = self.markup:GetLinkAtPos(mx, my, 0, 0, self.alignx, self.aligny)
 
@@ -81,12 +87,11 @@ function PANEL:Think()
         self.hoveredLink = linkID
         
         if linkID then
-            ix.Tooltip:Clear(ix.Tooltip.currentDepth + 1)
-            
-            local screenX, screenY = input.GetCursorPos()
+        	local depth = #ix.Tooltip.active + 1
+        	local screenX, screenY = input.GetCursorPos()
 
-            ix.Tooltip:Create(self, ix.Tooltip.currentDepth + 1, linkID, screenX, screenY)
-
+            ix.Tooltip:Clear(depth)
+            ix.Tooltip:Create(self, depth, linkID, screenX, screenY)
         end
     end
 end
@@ -171,7 +176,7 @@ function PANEL:Init()
 
 	local padding = 30
 
-
+	self.isAutonomousTooltip = true
 	self.fraction = 1
 	self.mousePadding = 8
 	self.minWidth = Scale(640)

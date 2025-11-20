@@ -1,72 +1,98 @@
 local Tooltip = ix.util.Lib("Tooltip", {
 	active = {},
-	db = {},
-	currentDepth = 0
+	db = {}
 })
 
 local closeTimer = 0
-local GRACE_PERIOD = 0.5
+local GRACE_PERIOD = 0.15
+local MIN_LIFE_TIME = 1
+
+function Tooltip:Add(entry, title, callback)
+	local info = {
+		title = title or entry,
+		show = callback or function() end
+	}
+
+	self.db[entry] = info
+end
 
 function Tooltip:Clear(startIndex)
 	for i = #self.active, startIndex, -1 do
-		if IsValid(self.active[i]) then
-			self.active[i]:Remove()
+		local tooltip = self.active[i]
+
+		if IsValid(tooltip) then
+			if IsValid(tooltip.sourcePanel) then
+				tooltip.sourcePanel.hoveredLink = nil
+				tooltip.sourcePanel.childTooltip = nil
+			end
+			tooltip:Remove()
 		end
 
 		self.active[i] = nil
 	end
 
+	-- переключаемся на последнюю
 	local active = self.active[#self.active]
 
 	if IsValid(active) then
 		active:MakePopup()
-		active:SetAlpha(255)
-		active.hoveredLink = nil
+
+		timer.Simple(0, function()
+			active:RequestFocus()
+			active:MoveToFront()
+		end)
 
 		self:CalculateVisibility()
+
+		active:SetAlpha(255)
 	end
 end
 
-function Tooltip:IsHovered(targetPanel)
-	if !IsValid(targetPanel) then return false end
-	local hovered = vgui.GetHoveredPanel()
+function Tooltip:GetHoveredDepth()
+	local panel = vgui.GetHoveredPanel()
 	
-	if !IsValid(hovered) then return false end
-
-	-- простой случай: мышь прямо над панелью
-	if hovered == targetPanel then return true end
-	
-	-- вложенность (если внутри панели будут другие элементы)
-	while IsValid(hovered) do
-
-		if hovered == targetPanel then return true end
-		hovered = hovered:GetParent()
+	if IsValid(panel) and panel.isAutonomousTooltip then
+		return panel.depth
 	end
 	
-	return false
+	while IsValid(panel) do
+		-- если мы навели на ССЫЛКУ, которая держит подсказку открытой
+		if IsValid(panel.childTooltip) then
+			return panel.childTooltip.depth
+		end
+
+		-- если мы навели на саму ПОДСКАЗКУ
+		if panel.isAutonomousTooltip then
+			return panel.depth
+		end
+
+		panel = panel:GetParent()
+	end
+
+	return 0
 end
 
 hook.Add("Think", "tooltip.think", function()
-	if #Tooltip.active <= 0 then return end
-
-	local shouldKeepOpen = false
-
-	for i, tooltip in ipairs(Tooltip.active) do
-		if IsValid(tooltip) then
-			if Tooltip:IsHovered(tooltip) then
-				shouldKeepOpen = true
-			end
-
-			if IsValid(tooltip.sourcePanel) and Tooltip:IsHovered(tooltip.sourcePanel) then
-				shouldKeepOpen = true
-			end
-		end
-	end
+	local count = #Tooltip.active
+	if count <= 0 then return end
 
 	local CT = CurTime()
+	local newestTooltip = Tooltip.active[count]
 
-	if shouldKeepOpen then
+	-- защита от мгновенного закрытия для только что созданной подсказки
+	if IsValid(newestTooltip) and newestTooltip.creationTime and (CT < newestTooltip.creationTime + MIN_LIFE_TIME) then
 		closeTimer = CT + GRACE_PERIOD
+		return
+	end
+
+	local hoveredDepth = Tooltip:GetHoveredDepth()
+
+	if hoveredDepth > 0 then
+		closeTimer = CT + GRACE_PERIOD
+		
+		if hoveredDepth < count then
+			Tooltip:Clear(hoveredDepth + 1)
+		end
 	else
 		if CT >= closeTimer then
 			Tooltip:Clear(1)
@@ -103,24 +129,34 @@ function Tooltip:Create(sourcePanel, depth, callbackOrKey, overrideX, overrideY)
 	local tooltip = vgui.Create("autonomous.tooltip")
 	tooltip:MakePopup()
 	tooltip:SetKeyBoardInputEnabled(false)
+	tooltip:SetZPos(99999)
+
+	timer.Simple(0, function()
+		tooltip:RequestFocus()
+		tooltip:MoveToFront()
+	end)
+	
+	tooltip.creationTime = CurTime()
+	tooltip.depth = depth or 1
+	tooltip.sourcePanel = sourcePanel 
+
+	-- cвязь: cсылка -> подсказка
+	if IsValid(sourcePanel) then
+		sourcePanel.childTooltip = tooltip
+	end
 
 	if isfunction(callbackOrKey) then
 		callbackOrKey(tooltip)
 	else
 		local info = self.db[callbackOrKey]
-
 		tooltip:SetTitle(info.title:utf8upper())
-
 		info.show(tooltip)
 	end
 	
-	tooltip.depth = depth or 1
-	tooltip.parent = sourcePanel
-	tooltip.sourcePanel = sourcePanel 
-	
+	closeTimer = CurTime() + GRACE_PERIOD + MIN_LIFE_TIME
+
 	-- Позиционирование
 	local x, y
-
 	if overrideX and overrideY then
 		x = overrideX + 10
 		y = overrideY
@@ -129,25 +165,17 @@ function Tooltip:Create(sourcePanel, depth, callbackOrKey, overrideX, overrideY)
 		x = x + 15 
 	end
 	
-	-- Коррекция границ экрана
 	if x + tooltip:GetWide() > ScrW() then
-		-- Если не влезает справа, ставим СЛЕВА от панели
-		if overrideX then
-			 x = overrideX - tooltip:GetWide() - 10
-		else
-			 x = x - tooltip:GetWide() - 30
-		end
+		if overrideX then x = overrideX - tooltip:GetWide() - 10
+		else x = x - tooltip:GetWide() - 30 end
 	end
 	
-	if y + tooltip:GetTall() > ScrH() then
-		y = ScrH() - tooltip:GetTall()
-	end
+	if y + tooltip:GetTall() > ScrH() then y = ScrH() - tooltip:GetTall() end
 
 	tooltip:SetPos(x, y)
 	tooltip:Resize()
 	
 	self.active[depth] = tooltip
-	self.currentDepth = depth
 
 	return tooltip
 end
