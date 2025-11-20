@@ -44,12 +44,7 @@ do
 	end
 
 	function CHAR:GetMaxSkillMemory()
-		local intelligence = self:GetSpecial("in")
-		local perPoint = (5 * (intelligence - 1))
-		local hasPerk = (intelligence >= 5) and 250 or 0
-		local hasPerk2 = (intelligence >= 50) and 500 or 0
-
-		return 750 + hasPerk + hasPerk2 + perPoint
+		return ix.config.Get("memoryXPDefault", 750) + ix.specials.list["in"]:CalculateBoostSkillMemory(self:GetSpecial("in"))
 	end
 
 	function CHAR:HasSkillMemory(xp)
