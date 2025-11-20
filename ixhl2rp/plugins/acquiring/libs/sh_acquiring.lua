@@ -4,6 +4,19 @@ local Acquiring = ix.util.Lib("Acquiring", {
     soundAccept = "sk_terminal/terminal_prompt_confirm.wav"
 })
 
+function Acquiring:GetWorldPOSTerminals()
+    local tbl = {}
+
+    for k,v in pairs(ix.Item.entities)do
+        local item = v:GetItem()
+        if (item.isPosTerminal) then
+            tbl[#tbl + 1] = item
+        end
+    end
+
+    return tbl
+end
+
 function Acquiring:HasFullAccess(client)
     local res = client:HasIDAccess("EDIT_POS")
     if res then

@@ -2,7 +2,7 @@ ITEM.name = "POS-терминал"
 ITEM.description = "Кассовый аппарат, позволяющий проводить оплату при безналичном рассчёте."
 ITEM.category = "Уникальное"
 ITEM.rarity = 3
-ITEM.model = "models/props_lab/keypad.mdl"
+ITEM.model = "models/bybig/pos_terminal_2.mdl"
 ITEM.width = 1
 ITEM.height = 2
 ITEM.iconCam = {
@@ -10,6 +10,8 @@ ITEM.iconCam = {
 	ang = Angle(13.264633178711, 181.15328979492, 0),
 	fov = 2.1230087892101,
 }
+
+ITEM.isPosTerminal = true
 
 ITEM:AddData("acquiringId", {
 	Transmit = ix.transmit.all,
