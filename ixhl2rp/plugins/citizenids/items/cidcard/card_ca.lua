@@ -9,6 +9,7 @@ ITEM.iconCam = {
 }
 ITEM.cardType = 3
 ITEM.access = {
+	["EDIT_POS"] = true,
 	["DATAFILE_FULL"] = true,
 	["cmbCit*"] = true,
 	["cmbCwu*"] = true,
