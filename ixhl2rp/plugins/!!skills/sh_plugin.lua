@@ -31,6 +31,11 @@ ix.config.Add("strengthMultiplier", 0.3, "The strength multiplier scale", nil, {
 	category = "Strength"
 })
 
+ix.config.Add("memoryXPDefault", 750, "Memory XP default value", nil, {
+	data = {min = 0, max = 10000},
+	category = "XP"
+})
+
 
 local function CalculateWidestName(tbl)
 	local highest = 0
