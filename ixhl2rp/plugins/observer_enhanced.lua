@@ -64,11 +64,11 @@ if CLIENT then
 			local position = v.position:ToScreen()
 			local text, color, height, font
 			
-			if position then
+			if position && position.visible then
 				if isstring(v.text) then
 					ix.util.DrawText(v.text, position.x, position.y, v.color or colorWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, nil, alpha)
-				else			
-					for k2, v2 in ipairs(v.text) do	
+				else
+					for k2, v2 in ipairs(v.text) do
 						local barValue
 						local maximum = 100
 
