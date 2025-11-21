@@ -1,6 +1,6 @@
 ITEM.name = "Стяжки"
-ITEM.description = "Оранжевые стяжки."
-ITEM.model = "models/items/crossbowrounds.mdl"
+ITEM.description = "Пластиковые одноразовые стяжки. Подойдут для временной иммобилизации конечностей цели."
+ITEM.model = "models/bybig/stagy.mdl"
 ITEM.rarity = 1
 ITEM.max_stack = 8
 ITEM.stackable = true
