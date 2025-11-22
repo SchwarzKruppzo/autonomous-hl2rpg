@@ -68,8 +68,7 @@ function ItemCustomize:Init()
 		Transmit = ix.transmit.all,
 	})
 
-	self.data_callbacks = {}
-	self.data_callbacks.checksum = function(item, value)
+	self:AddDataCallback("checksum", function(item, value)
 		if !CustomItem.loaded then
 			CustomItem:Load()
 		end
@@ -86,7 +85,7 @@ function ItemCustomize:Init()
 				net.WriteType(value)
 			net.SendToServer()
 		end
-	end
+	end)
 end
 
 function ItemCustomize:GetMaterial()

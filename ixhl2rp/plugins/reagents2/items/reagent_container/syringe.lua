@@ -97,9 +97,8 @@ function ITEM:LayoutIcon(panel, entity)
 end
 
 if CLIENT then
-	ITEM.data_callbacks = {}
-	ITEM.data_callbacks["value"] = function(self, value)
+	ITEM:AddDataCallback("value", function(self, value)
 		self.update_state = value
 		self.update_pose_parameter = true
-	end
+	end)
 end

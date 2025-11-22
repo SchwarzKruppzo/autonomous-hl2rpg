@@ -231,6 +231,7 @@ function ITEM:Init(uniqueID)
 	self.uniqueID = uniqueID or "undefined"
 	self.id = self.id or 0
 	self.data = self.data or {}
+	self.data_callbacks = self.data_callbacks or {}
 
 	self.vars = self.vars or {}
 	self.var_max = self.var_max or 0
@@ -476,6 +477,18 @@ function ITEM:AddData(key, data)
 			end
 		end
 	end
+end
+
+function ITEM:AddDataCallback(key, callback)
+	if !self.vars[key] then
+		return
+	end
+
+	if !isfunction(callback) then
+		error("expected function for data callback \"" .. key .. "\"")
+	end
+
+	self.data_callbacks[key] = callback
 end
 
 --- Sets a key within the item's data.
@@ -805,7 +818,7 @@ else
 				for k, v in pairs(data) do
 					item.data[k] = v
 
-					if item.data_callbacks and isfunction(item.data_callbacks[k]) then
+					if item.data_callbacks[k] then
 						item.data_callbacks[k](item, v)
 					end
 				end
@@ -819,7 +832,7 @@ else
 		if item and key then
 			item.data[key] = value
 
-			if item.data_callbacks and isfunction(item.data_callbacks[key]) then
+			if item.data_callbacks[key] then
 				item.data_callbacks[key](item, value)
 			end
 		end
