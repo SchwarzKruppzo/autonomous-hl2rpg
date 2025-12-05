@@ -96,6 +96,37 @@ function Item:Init()
 		end
 	}
 
+	self.functions.unloadMagazine = {
+		name = "Разрядить",
+		icon = "icon16/page_go.png",
+		OnRun = function(item)
+			local primary = baseclass.Get(item.class).Primary
+
+			if (!primary) then
+				return ErrorNoHalt(Format("Unable to find baseclass %s of item %s\n", item.class, item.uniqueID))
+			end
+
+			local ammoType = primary.Ammo
+
+			if (!ix.Item.stored[ammoType]) then
+				return ErrorNoHalt(Format("Unable to unload magazine with ammoType %s\n", ammoType))
+			end
+
+			local instance = ix.Item:Instance(ammoType)
+			instance:SetData("stack", item:GetData("ammo", 0))
+			item:SetData("ammo", 0)
+
+			if (!item.player:AddItem(instance)) then
+				ix.Item:Spawn(item.player, nil, instance)
+			end
+
+			(item.entity or item.player):EmitSound("weapons/smg1/smg1_reload.wav")
+		end,
+		OnCanRun = function(item)
+			return item:GetData("ammo", 0) > 0 && !item:IsEquipped()
+		end
+	}
+
 	self.functions.examine = {
 		tip = "examineTip",
 		OnRun = function(item)
