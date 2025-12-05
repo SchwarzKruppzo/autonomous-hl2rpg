@@ -100,8 +100,6 @@ function Item:Init()
 		name = "Разрядить",
 		icon = "icon16/page_go.png",
 		OnRun = function(item)
-			local emitEntity = item.entity or item.player
-
 			local primary = baseclass.Get(item.class).Primary
 
 			if (!primary) then
@@ -110,23 +108,22 @@ function Item:Init()
 
 			local ammoType = primary.Ammo
 
-			local prediction = Format("bullets_%s", ammoType) // should be rewrote
-
-			if (!ix.Item.stored[prediction]) then
+			if (!ix.Item.stored[ammoType]) then
 				return ErrorNoHalt(Format("Unable to unload magazine with ammoType %s\n", ammoType))
 			end
 
-			local instance = ix.Item:Instance(prediction)
+			local instance = ix.Item:Instance(ammoType)
 			instance:SetData("stack", item:GetData("ammo", 0))
 			item:SetData("ammo", 0)
 
-			item.player:GiveItem(instance)
-			emitEntity:EmitSound("weapons/smg1/smg1_reload.wav")
+			if (!item.player:AddItem(instance)) then
+				ix.Item:Spawn(item.player, nil, instance)
+			end
+
+			(item.entity or item.player):EmitSound("weapons/smg1/smg1_reload.wav")
 		end,
 		OnCanRun = function(item)
-			// maybe have troubles if we unload magazine with custom weapon base ie CW or arcCW and we will don't know how to set its current magazine. so Alan can't give you the universal way.
-
-			return item:GetData("ammo", 0) > 0 && (!item:IsEquipped() || !!item.entity)
+			return item:GetData("ammo", 0) > 0 && !item:IsEquipped()
 		end
 	}
 
