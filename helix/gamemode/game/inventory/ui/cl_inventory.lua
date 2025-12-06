@@ -242,6 +242,8 @@ function PANEL:OnDrop(dropped)
 	if !dropped then
 		self:Rebuild()
 		return
+	else
+		dropped.procceed = true
 	end
 
 	if drop_slot.out_of_bounds then
@@ -379,6 +381,12 @@ function PANEL:OnDrop(dropped)
 		net.WriteUInt(target_y, 8)
 		net.WriteBool(was_rotated)
 	net.SendToServer()
+
+	if (oldInventoryID != targetInventoryID) then
+		ix.Inventory:Get(oldInventoryID).panel:Rebuild()
+	end
+	
+	self:Rebuild()
 end
 
 function PANEL:SetInventoryID(inventory_id)
