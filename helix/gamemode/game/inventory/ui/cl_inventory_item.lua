@@ -188,7 +188,13 @@ function PANEL:DragMouseRelease(mcode)
 		return false
 	end
 
+	self.procceed = nil
+
 	dragndrop.Drop()
+	
+	if (!self.procceed) then
+		ix.Inventory:Get(self:GetInventoryID()).panel:Rebuild()
+	end
 
 	self:MouseCapture(false)
 	return true
