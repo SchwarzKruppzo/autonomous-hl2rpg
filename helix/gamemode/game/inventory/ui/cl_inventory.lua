@@ -387,6 +387,119 @@ function PANEL:SetInventoryID(inventory_id)
 	self:Rebuild()
 end
 
+function PANEL:ShouldBeRebuild()
+    local width, height = self:GetInventorySize()
+    
+    local meta_items = {}
+    local meta_occupied = {}
+    
+    for i = 1, height do
+        for k = 1, width do
+            local slot_items = self:GetSlot(k, i) or {}
+            
+            for _, item_id in ipairs(slot_items) do
+                local instance = ix.Item.instances[item_id]
+                if instance and not meta_items[item_id] then
+                    if instance.x == k and instance.y == i then
+                        meta_items[item_id] = {
+                            x = k, 
+                            y = i,
+                            width = instance.width or 1,
+                            height = instance.height or 1
+                        }
+                        
+                        for y = i, i + (instance.height or 1) - 1 do
+                            for x = k, k + (instance.width or 1) - 1 do
+                                meta_occupied[x .. "_" .. y] = item_id
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+    
+    local slot_items = {}
+    local slot_occupied = {}
+    
+    for i = 1, height do
+        for k = 1, width do
+            local slot = self.slot_panels[i] and self.slot_panels[i][k]
+            
+            if IsValid(slot) and slot.instance_ids and #slot.instance_ids > 0 then
+                local item_id = slot.instance_ids[1]
+                local instance = ix.Item.instances[item_id]
+                
+                if instance and not slot_items[item_id] then
+                    if instance.x == k and instance.y == i then
+                        slot_items[item_id] = {
+                            x = k, 
+                            y = i,
+                            width = instance.width or 1,
+                            height = instance.height or 1
+                        }
+                        
+                        for y = i, i + (instance.height or 1) - 1 do
+                            for x = k, k + (instance.width or 1) - 1 do
+                                slot_occupied[x .. "_" .. y] = item_id
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+    
+    local meta_count = 0
+    for _ in pairs(meta_items) do meta_count = meta_count + 1 end
+    
+    local slot_count = 0
+    for _ in pairs(slot_items) do slot_count = slot_count + 1 end
+    
+    if meta_count != slot_count then
+        return true
+    end
+    
+    for item_id, meta_data in pairs(meta_items) do
+        local slot_data = slot_items[item_id]
+        
+        if not slot_data then
+            return true
+        end
+        
+        if meta_data.x != slot_data.x or 
+           meta_data.y != slot_data.y or
+           meta_data.width != slot_data.width or
+           meta_data.height != slot_data.height then
+            return true
+        end
+    end
+    
+    for item_id, slot_data in pairs(slot_items) do
+        local meta_data = meta_items[item_id]
+        
+        if not meta_data then
+            return true
+        end
+    end
+    
+    for i = 1, height do
+        for k = 1, width do
+            local key = k .. "_" .. i
+            local meta_item = meta_occupied[key]
+            local slot_item = slot_occupied[key]
+            
+            if (meta_item and not slot_item) or (not meta_item and slot_item) then
+                return true
+            end
+            if meta_item and slot_item and meta_item != slot_item then
+                return true
+            end
+        end
+    end
+    return false
+end
+
 function PANEL:Rebuild()
 	dragndrop.Clear()
 	self.scroll:Clear()
