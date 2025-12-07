@@ -103,6 +103,21 @@ function PLUGIN:SpawnScanner(isCombine, pos)
 	return scanner
 end
 
+function PLUGIN:ActivateScannerAsItem(item)
+	local itemEnt = item.entity
+	if (IsValid(itemEnt) && item.uniqueID == "combine_scanner") then
+		local pos, angles = itemEnt:GetPos(), itemEnt:GetAngles()
+		local entity = self:SpawnScanner(true, pos)
+
+		entity:SetAngles(angles)
+		itemEnt:Remove()
+
+		return true, entity
+	end
+
+	return false
+end
+
 function PLUGIN:DeployScanner(client, terminal, isPortable)
 	if client:IsPilotScanner() or client:IsRagdoll() or !client:Alive() or !client:GetCharacter() then
 		return
