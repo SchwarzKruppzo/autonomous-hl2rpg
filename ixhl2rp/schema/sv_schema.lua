@@ -226,7 +226,7 @@ function Schema:SearchPlayer(client, target)
 	return true
 end
 
-
+/*
 concommand.Add("unlock_ration", function(client)
 	if IsValid(client) then
 		return
@@ -251,3 +251,4 @@ concommand.Add("lock_ration", function(client)
 		v:SetEnabled(false)
 	end
 end)
+*/
