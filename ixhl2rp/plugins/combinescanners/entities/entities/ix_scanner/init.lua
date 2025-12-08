@@ -1,3 +1,5 @@
+local PLUGIN = PLUGIN
+
 include("shared.lua")
 
 AddCSLuaFile("cl_init.lua")
@@ -25,11 +27,7 @@ ENT.SCANNER_ATTACHMENT_LIGHT = "light"
 ENT.ScannerModel = "models/Combine_Scanner.mdl"
 
 function ENT:SpawnFunction(player, trace, className)
-	local entity = ents.Create(className)
-	entity:SetPos(trace.HitPos + Vector(0, 0, 32))
-	entity:Spawn()
-
-	return entity
+	return PLUGIN:SpawnScanner(true, trace.HitPos + Vector(0, 0, 32))
 end
 
 function ENT:Eject()

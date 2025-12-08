@@ -26,7 +26,7 @@ ENT.spotlightFar = 512
 ENT.spotlightFOV = 60
 ENT.spotlightLocalAngles = Angle(7.5, 0, 0)
 ENT.spotlightHDRColorScale = 0.67
-ENT.maxHealth = 100
+ENT.maxHealth = 180
 
 function ENT:SetupDataTables()
 	self:NetworkVar("Bool", 0, "IsCombine")
