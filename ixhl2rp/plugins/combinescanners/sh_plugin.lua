@@ -55,7 +55,7 @@ function PLUGIN:GetActiveScanners(forceRebellion) // by default returns combine 
 end
 
 function PLUGIN:CanEnterToScanner(client, scanner, terminal)
-	if (client:IsRestricted() or IsValid(scanner:GetPilot()) or (!IsValid(terminal) || client:GetPos():Distance(terminal:GetPos()) > 400)) then
+	if (client:IsRestricted() or IsValid(scanner:GetPilot()) or (isentity(terminal) && (terminal:GetClass() != "ix_scannerterminal" || client:GetPos():DistToSqr(terminal:GetPos()) > 400 * 400))) then
 		return false
 	end
 
@@ -63,7 +63,7 @@ function PLUGIN:CanEnterToScanner(client, scanner, terminal)
 end
 
 function PLUGIN:CanFoldScanner(client, scanner)
-	if (client:IsRestricted() or IsValid(scanner:GetPilot()) or client:GetPos():Distance(scanner:GetPos()) > 400) then
+	if (client:IsRestricted() or IsValid(scanner:GetPilot()) or client:GetPos():DistToSqr(scanner:GetPos()) > 400 * 400) then
 		return false
 	end
 

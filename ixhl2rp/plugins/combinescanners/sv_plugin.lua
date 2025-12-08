@@ -211,7 +211,7 @@ end)
 net.Receive("ScannerEnter", function(len, player)
 	local scanner = net.ReadEntity()
 	local terminal = net.ReadEntity()
-	if (IsValid(terminal) && terminal:GetClass() == "ix_scannerterminal") then
+	if (IsValid(terminal)) then
 		local result = PLUGIN:ConnectScannerToPlayer(player, scanner, terminal)
 		if (!result) then
 			player:Notify("Не удалось подключиться к сканнеру!")
