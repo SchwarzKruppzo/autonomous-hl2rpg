@@ -3,6 +3,10 @@ local ItemMedical = class("ItemMedical"):implements("Item")
 ItemMedical.useSound = {"npc/barnacle/barnacle_gulp1.wav", "npc/barnacle/barnacle_gulp2.wav"}
 
 local function action(self, time, condition, callback)
+	if (self:IsWepRaised()) then
+		self:ToggleWepRaised()
+	end
+
 	local uniqueID = "ixMedical"..self:UniqueID()
 
 	timer.Create(uniqueID, 0.1, time / 0.1, function()
