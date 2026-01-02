@@ -26,6 +26,7 @@ do
 
 	function GenerateAnonID(steamid) 
 		if steamid == "BOT" then return "BOT" end
+		if steamid:match("_LAN") then return "LAN" end
 
 		local x, y, z = m(steamid, "STEAM_(%d+):(%d+):(%d+)")
 
@@ -36,6 +37,7 @@ do
 
 	function GenerateAnonID64(steamid64) 
 		if steamid64 == "BOT" then return "BOT" end
+		if steamid64 == "0" then return "LAN" end
 
 		steamid64 = t(sub(steamid64, 5))
 		steamid64 = (steamid64 - COMMUNITY_ID)

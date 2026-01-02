@@ -40,7 +40,8 @@ function ItemMedical:Init()
 			local uses = item:GetUses()
 			local client, character = item.player, item.player:GetCharacter()
 
-			local medicineFactor = 0.5 * (character:GetSkillModified("medicine") * 0.1)
+			local medicineSkill = character:GetSkillModified("medicine")
+			local medicineFactor = 0.5 * (medicineSkill * 0.1)
 			local mod = 1 - medicineFactor
 
 			if client.bUsingMedical then
@@ -51,6 +52,10 @@ function ItemMedical:Init()
 			item.inUse = client
 
 			local time = item.stats.time or 10
+			
+			if (time > 0) then
+    			time = time * (1 - (medicineSkill * 0.09))
+			end
 
 			client:SetAction("@medInject", time)
 
@@ -129,7 +134,8 @@ function ItemMedical:Init()
 				return
 			end
 
-			local medicineFactor = 0.5 * (character:GetSkillModified("medicine") * 0.1)
+			local medicineSkill = character:GetSkillModified("medicine")
+			local medicineFactor = 0.5 * (medicineSkill * 0.1)
 			local mod = 1 - medicineFactor
 
 			if client.bUsingMedical then
@@ -139,7 +145,11 @@ function ItemMedical:Init()
 			client.bUsingMedical = true
 			item.inUse = client
 
-			local time = item.stats.time or 10
+			local time = (item.stats.time or 10) * .8 -- использование НА ком-то должно быть быстрее, чем использование на себе
+
+			if (time > 0) then
+    			time = time * (1 - (medicineSkill * 0.09))
+			end
 
 			client:SetAction("@medInject", time)
 			
