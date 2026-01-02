@@ -87,7 +87,7 @@ function ix.hud.PopulateItemTooltip(tooltip, item)
 	local rColor = RARITY_COLORS[item:GetRarity()] or RARITY_COLORS[0]
 	local name = tooltip:AddRow("name")
 	name:SetImportant()
-	name:SetText(item.GetName and item:GetName() or L(item.name))
+	name:SetText(item:GetPrintName())
 	name:SetBackgroundColor(rColor)
 	name:SetMaxWidth(math.max(name:GetMaxWidth(), ScrW() * 0.5))
 	name:SizeToContents()
