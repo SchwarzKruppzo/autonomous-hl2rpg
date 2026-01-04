@@ -15,7 +15,7 @@ HOLDTYPE_TRANSLATOR["grenade"] = "grenade"
 HOLDTYPE_TRANSLATOR["fist"] = "normal"
 HOLDTYPE_TRANSLATOR["melee2"] = "melee"
 HOLDTYPE_TRANSLATOR["passive"] = "normal"
-HOLDTYPE_TRANSLATOR["knife"] = "melee"
+HOLDTYPE_TRANSLATOR["knife"] = "knife"
 HOLDTYPE_TRANSLATOR["duel"] = "pistol"
 HOLDTYPE_TRANSLATOR["camera"] = "smg"
 HOLDTYPE_TRANSLATOR["magic"] = "normal"
@@ -43,6 +43,8 @@ function GM:TranslateActivity(client, act)
 	local clientInfo = client:GetTable()
 	local modelClass = clientInfo.ixAnimModelClass or "player"
 	local bRaised = client:IsWepRaised()
+
+	clientInfo.CalcSeqOverride2 = nil
 
 	if (modelClass == "player") then
 		local weapon = client:GetActiveWeapon()
@@ -74,7 +76,7 @@ function GM:TranslateActivity(client, act)
 
 			if (tree and tree[act]) then
 				if (isstring(tree[act])) then
-					clientInfo.CalcSeqOverride = client:LookupSequence(tree[act])
+					clientInfo.CalcSeqOverride2 = client:LookupSequence(tree[act])
 
 					return
 				else
@@ -101,6 +103,7 @@ function GM:TranslateActivity(client, act)
 			if (isstring(act)) then
 				clientInfo.CalcSeqOverride = client:LookupSequence(act)
 			else
+				clientInfo.CalcSeqOverride = -1
 				return act
 			end
 		elseif (client:OnGround()) then
@@ -110,17 +113,38 @@ function GM:TranslateActivity(client, act)
 				if (isstring(act2)) then
 					clientInfo.CalcSeqOverride = client:LookupSequence(act2)
 				else
+					clientInfo.CalcSeqOverride = -1
 					return act2
 				end
 			end
 		elseif (glide) then
+			if (istable(glide)) then
+				glide = glide[bRaised and 2 or 1]
+			end
+
 			if (isstring(glide)) then
 				clientInfo.CalcSeqOverride = client:LookupSequence(glide)
 			else
+				clientInfo.CalcSeqOverride = -1
 				return clientInfo.ixAnimGlide
 			end
 		end
 	end
+
+	if clientInfo.CalcSeqOverride2 then
+		clientInfo.CalcSeqOverride = clientInfo.CalcSeqOverride2
+	end
+end
+
+if SERVER then
+	util.AddNetworkString("ixAnimEvent")
+else
+	net.Receive("ixAnimEvent", function()
+		local a = net.ReadEntity()
+		local b = net.ReadInt(32)
+
+		a:AddVCDSequenceToGestureSlot(GESTURE_SLOT_ATTACK_AND_RELOAD, b, 0, true)
+	end)
 end
 
 function GM:DoAnimationEvent(client, event, data)
@@ -132,6 +156,17 @@ function GM:DoAnimationEvent(client, event, data)
 		local weapon = client:GetActiveWeapon()
 
 		if (IsValid(weapon)) then
+			if SERVER then
+				if event == 401 then
+					net.Start("ixAnimEvent")
+						net.WriteEntity(client)
+						net.WriteInt(client:LookupSequence(data == 1 and "activatebaton" or "deactivatebaton"), 32)
+					net.SendPVS(client:GetPos())
+
+					return ACT_INVALID
+				end
+			end
+
 			local animation = client.ixAnimTable
 
 			if (event == PLAYERANIMEVENT_ATTACK_PRIMARY) then
@@ -143,7 +178,11 @@ function GM:DoAnimationEvent(client, event, data)
 
 				return ACT_VM_SECONDARYATTACK
 			elseif (event == PLAYERANIMEVENT_RELOAD) then
-				client:AnimRestartGesture(GESTURE_SLOT_ATTACK_AND_RELOAD, animation.reload or ACT_GESTURE_RELOAD_SMG1, true)
+				if isstring(animation.reload) then
+					client:AddVCDSequenceToGestureSlot(GESTURE_SLOT_ATTACK_AND_RELOAD, client:LookupSequence(animation.reload), 0, true)
+				else
+					client:AnimRestartGesture(GESTURE_SLOT_ATTACK_AND_RELOAD, animation.reload or ACT_GESTURE_RELOAD_SMG1, true)
+				end
 
 				return ACT_INVALID
 			elseif (event == PLAYERANIMEVENT_JUMP) then
@@ -186,8 +225,16 @@ local function UpdatePlayerHoldType(client, weapon)
 	local holdType = "normal"
 
 	if (IsValid(weapon)) then
+		local class = weapon:GetClass()
+		local baseTable = ix.anim[client.ixAnimModelClass] or {}
+
 		holdType = weapon.HoldType or weapon:GetHoldType()
 		holdType = HOLDTYPE_TRANSLATOR[holdType] or holdType
+
+
+		if baseTable and baseTable[class] then
+			holdType = class or holdType
+		end
 	end
 
 	client.ixAnimHoldType = holdType
@@ -209,6 +256,10 @@ local function UpdateAnimationTable(client, vehicle)
 	end
 
 	client.ixAnimGlide = baseTable["glide"]
+
+	if (client.ixAnimTable) then
+		client.ixAnimGlide = client.ixAnimTable.glide or client.ixAnimGlide
+	end
 end
 
 function GM:PlayerWeaponChanged(client, weapon)
@@ -283,13 +334,15 @@ do
 
 		client:SetPoseParameter("move_yaw", normalizeAngle(vectorAngle(velocity)[2] - client:EyeAngles()[2]))
 
-		local sequenceOverride = clientInfo.CalcSeqOverride
+		local sequenceOverride = nil
+		if clientInfo.CalcSeqOverride and clientInfo.CalcSeqOverride > 0 then sequenceOverride = clientInfo.CalcSeqOverride or sequenceOverride end
+
 		clientInfo.CalcSeqOverride = -1
 		clientInfo.CalcIdeal = ACT_MP_STAND_IDLE
 
 		-- we could call the baseclass function, but it's faster to do it this way
 		local BaseClass = self.BaseClass
-
+		local length = velocity:Length2DSqr()
 		if (BaseClass:HandlePlayerNoClipping(client, velocity) or
 			BaseClass:HandlePlayerDriving(client) or
 			BaseClass:HandlePlayerVaulting(client, velocity) or
@@ -297,14 +350,15 @@ do
 			BaseClass:HandlePlayerSwimming(client, velocity) or
 			BaseClass:HandlePlayerDucking(client, velocity)) then -- luacheck: ignore 542
 		else
-			local length = velocity:Length2DSqr()
-
 			if (length > 22500) then
 				clientInfo.CalcIdeal = ACT_MP_RUN
 			elseif (length > 0.25) then
 				clientInfo.CalcIdeal = ACT_MP_WALK
 			end
 		end
+
+		self:TranslateActivity(client, clientInfo.CalcIdeal)
+		hook.Run("ModifyMainActivity", client, length, clientInfo)
 
 		clientInfo.m_bWasOnGround = client:OnGround()
 		clientInfo.m_bWasNoclipping = (client:GetMoveType() == MOVETYPE_NOCLIP and !client:InVehicle())
@@ -384,6 +438,16 @@ function GM:CanPlayerUseCharacter(client, character)
 		if status == false then
 			return status, result
 		end
+	end
+end
+
+function GM:CanPlayerSwitchCharacter(client, character, newCharacter)
+	if IsValid(client.ixRagdoll) then
+		return false, "@notNow"
+	end
+
+	if client:GetNetVar("forcedSequence") then
+		return false, "@notNow"
 	end
 end
 

@@ -1,7 +1,12 @@
-
 Schema.name = "HL2 RP"
-Schema.author = "CELLAR Team"
+Schema.author = "AUTONOMOUS Team"
 Schema.description = ""
+
+ix.config.language = "russian"
+
+ix.currency.symbol = ""
+ix.currency.singular = "token"
+ix.currency.plural = "tokens"
 
 -- Include netstream
 ix.util.Include("libs/thirdparty/sh_netstream2.lua")

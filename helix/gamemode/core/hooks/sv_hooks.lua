@@ -7,16 +7,30 @@ function GM:PlayerInitialSpawn(client)
 		local index = math.random(1, table.Count(ix.faction.indices))
 		local faction = ix.faction.indices[index]
 
-		local character = ix.char.New({
+		local data = {
 			name = client:Name(),
 			faction = faction and faction.uniqueID or "unknown",
-			model = faction and table.Random(faction:GetModels(client)) or "models/gman.mdl"
-		}, botID, client, client:SteamID64())
+			model = faction and table.Random(faction:GetModels(client, table.Random(faction.genders or {GENDER_MALE, GENDER_FEMALE}))) or "models/gman.mdl",
+			specials = {
+				["st"] = 3,
+				["ag"] = 3,
+				["pe"] = 3,
+				["en"] = 3,
+				["in"] = 3,
+				["lk"] = 3,
+			},
+			skills = {}
+		}
+		for a, b in pairs(ix.skills.list) do
+			data.skills[a] = {0, 0, 0}
+		end
+		local character = ix.char.New(data, botID, client, client:SteamID64())
 		character.isBot = true
 
 		ix.char.loaded[botID] = character
 
 		character:Setup()
+		character.limbobject = LDATA_HUMAN_MALE
 		client:Spawn()
 
 		ix.chat.Send(nil, "connect", client:SteamName())
@@ -76,7 +90,7 @@ function GM:PlayerInitialSpawn(client)
 	client:SetNoDraw(true)
 	client:SetNotSolid(true)
 	client:Lock()
-	
+
 	timer.Simple(1, function()
 		if (!IsValid(client)) then
 			return
