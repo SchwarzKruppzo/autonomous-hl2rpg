@@ -12,14 +12,6 @@ ix.option.Add("show3DPanels", ix.type.bool, true, {
 	category = "general"
 })
 
-ix.lang.AddTable("english", {
-	optShow3DPanels = "Show custom 3D panels",
-})
-
-ix.lang.AddTable("russian", {
-	optShow3DPanels = "Показывать пользовательские изображения",
-})
-
 if (SERVER) then
 	util.AddNetworkString("ixPanelList")
 	util.AddNetworkString("ixPanelAdd")
