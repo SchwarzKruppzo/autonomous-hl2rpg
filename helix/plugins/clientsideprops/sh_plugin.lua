@@ -18,26 +18,20 @@ CAMI.RegisterPrivilege({
 })
 
 ix.option.Add("csRenderSpeed", ix.type.number, 50, {
-	category = "производительность",
+	category = "option.category.performance",
 	min = 1,
 	max = 512
 })
 
-ix.lang.AddTable("russian", {
-	optCsRenderSpeed = "Скорость прорисовки клиентских пропов",
-	optdCsRenderSpeed = "Сколько клиентских пропов просчитывается одновременно за кадр. Более низкие значения = больше FPS, но медленнее, более высокие значения = меньше FPS, но быстрее.",
-	cmdRemoveClientProps = "Удалить все клиентские пропы в радиусе вокруг вас."
-})
-
 ix.command.Add("RemoveClientProps", {
-	description = "@cmdRemoveClientProps",
+	description = "@cmd.clientprops.remove",
 	adminOnly = true,
 	arguments = {
 		ix.type.number
 	},
 	OnRun = function(self, client, radius)
 		if radius < 0 then
-			client:Notify("Радиус должен быть положительным числом!")
+			client:NotifyLocalized("clientprops.invalidRadius")
 
 			return
 		end
@@ -56,14 +50,14 @@ ix.command.Add("RemoveClientProps", {
 			net.WriteUInt(radius, 16)
 		net.Broadcast()
 
-		client:Notify("Удалены все клиентские пропы в радиусе " .. radius .. " юнитов.")
+		client:NotifyLocalized("clientprops.removed", radius)
 	end
 })
 
 
 
 properties.Add("clientprop", {
-	MenuLabel = "Сделать клиентским пропом",
+	MenuLabel = "Make Clientside",
 	Order = 400,
 	MenuIcon = "icon16/contrast_low.png",
 
@@ -84,13 +78,13 @@ properties.Add("clientprop", {
 		if !self:Filter(entity, client) then return end
 		
 		if !entity:TestPVS(client) then
-			client:Notify("Этот проп не может быть конвертирован, так как он за пределами игрового мира.")
+			client:NotifyLocalized("clientprops.outOfBound")
 
 			return
 		end
 
 		if entity.PermaID then
-			client:Notify("Необходимо убрать проп из Perma All, прежде чем конвертировать его.")
+			client:NotifyLocalized("clientprops.permaall")
 
 			return
 		end
