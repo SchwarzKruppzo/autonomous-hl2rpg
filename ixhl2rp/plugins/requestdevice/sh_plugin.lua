@@ -7,13 +7,13 @@ PLUGIN.description = ""
 function PLUGIN:InitializedChatClasses()
 	ix.chat.Register("request", {
 		color = Color(255, 165, 32),
-		format = "Запрос от %s, #%s - \"%s\"",
+		format = "request_device.chat.request",
 		bReceiveVoices = true,
 		CanHear = function(class, speaker, listener)
 			return listener:IsCombine() or listener:IsCityAdmin()
 		end,
 		OnChatAdd = function(class, speaker, text, bAnonymous, info)
-			chat.AddText(class.color, ix.util.GetMaterial("cellar/chat/request.png"), string.format(class.format, info.name, info.cid, text))
+			chat.AddText(class.color, ix.util.GetMaterial("cellar/chat/request.png"), L(class.format, info.name, info.cid, text))
 
 			-- TODO: add waypoint
 
@@ -23,7 +23,7 @@ function PLUGIN:InitializedChatClasses()
 
 	ix.chat.Register("request_eavesdrop", {
 		color = Color(255, 255, 150),
-		format = "%s запрашивает \"%s\"",
+		format = "request_device.chat.eavesdrop",
 		CanHear = function(class, speaker, listener)
 			if ix.chat.classes.request:CanHear(speaker, listener) then
 				return false
@@ -37,15 +37,15 @@ function PLUGIN:InitializedChatClasses()
 		OnChatAdd = function(class, speaker, text)
 			local name = hook.Run("GetCharacterName", speaker, class.uniqueID) or IsValid(speaker) and speaker:Name()
 
-			chat.AddText(class.color, ix.util.GetMaterial("cellar/chat/eaves_request.png"), string.format(class.format, name, text))
+			chat.AddText(class.color, ix.util.GetMaterial("cellar/chat/eaves_request.png"), L(class.format, name, text))
 		end
 	})
 
 	ix.chat.Register("request_loopback", {
 		color = Color(255, 165, 32),
-		format = "Устройство запроса передает \"%s\"",
+		format = "request_device.chat.loopback",
 		OnChatAdd = function(class, speaker, text)
-			chat.AddText(class.color, ix.util.GetMaterial("cellar/chat/request.png"), string.format(class.format, text))
+			chat.AddText(class.color, ix.util.GetMaterial("cellar/chat/request.png"), L(class.format, text))
 
 			if LocalPlayer() != speaker then
 				surface.PlaySound("npc/scanner/scanner_scan4.wav")
@@ -162,11 +162,3 @@ do
 		end
 	})
 end
-
-ix.lang.AddTable("english", {
-	rdNotFound = "Request device with assigned CID is not found!",
-})
-
-ix.lang.AddTable("russian", {
-	rdNotFound = "Устройство запроса с таким CID не найдено или превышено время отклика!",
-})
