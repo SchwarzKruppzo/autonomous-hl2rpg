@@ -64,7 +64,7 @@ function PANEL:AddLine(elements, bShouldScroll, class)
 	if (ix.option.Get("chatTimestamps", false)) then
 		buffer[#buffer + 1] = "<color=150,150,150>("
 
-		if (ix.option.Get("24hourTime", false)) then
+		if (ix.option.Get("hour24Time", false)) then
 			buffer[#buffer + 1] = os.date("%H:%M")
 		else
 			buffer[#buffer + 1] = os.date("%I:%M %p")
