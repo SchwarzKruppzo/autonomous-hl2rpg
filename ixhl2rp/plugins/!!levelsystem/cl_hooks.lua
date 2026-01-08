@@ -5,7 +5,7 @@ local function levelTooltip(tooltip)
 
 	if character then
 		local tooltip = tooltip:AddRow("description")
-		tooltip:SetText(L("levelXP", math.Round(character:GetLevelXP()), math.Round(PLUGIN:GetRequiredLevelXP(character:GetLevel()))))
+		tooltip:SetText(L("tooltip.levelXP", math.Round(character:GetLevelXP()), math.Round(PLUGIN:GetRequiredLevelXP(character:GetLevel()))))
 		tooltip:SizeToContents()
 	end
 end
@@ -24,7 +24,7 @@ end
 
 function PLUGIN:UpdateCharacterInfo(panel, character)
 	if panel and panel.level then
-		panel.level:SetLabelText(L("level"))
+		panel.level:SetLabelText(L("tooltip.level"))
 		panel.level:SetText(character:GetLevel())
 		panel.level:SizeToContents()
 	end

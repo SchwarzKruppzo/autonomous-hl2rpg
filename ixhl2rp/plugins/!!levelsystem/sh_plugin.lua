@@ -43,17 +43,17 @@ ix.chat.Register("level", {
 	end,
 	OnChatAdd = function(self, speaker, text, bAnonymous, data)
 		if data.t == 1 then
-			chat.AddText(color_white, string.format("Ваш уровень повышен до %s! Введите /lvl, чтобы распределить новые очки.", LocalPlayer():GetCharacter():GetLevel()))
+			chat.AddText(color_white, L("chat.level.increased", LocalPlayer():GetCharacter():GetLevel()))
 		elseif data.t == 2 then
 			local name = L((ix.skills.list[data.skill] or {}).name) or "Unknown"
 
-			chat.AddText(color_white, string.format("Ваш навык %s повышен до %s!", name, data.value))
+			chat.AddText(color_white, L("chat.skill.increased", name, data.value))
 		elseif data.t == 3 then
-			chat.AddText(color_white, string.format("Ваш уровень понижен до %s!", LocalPlayer():GetCharacter():GetLevel()))
+			chat.AddText(color_white, L("chat.level.decreased", LocalPlayer():GetCharacter():GetLevel()))
 		elseif data.t == 4 then
 			local name = L((ix.skills.list[data.skill] or {}).name) or "Unknown"
 
-			chat.AddText(color_white, string.format("Ваш навык %s понижен до %s!", name, data.value))
+			chat.AddText(color_white, L("chat.skill.decreased", name, data.value))
 		end
 	end
 })
@@ -90,7 +90,7 @@ ix.command.Add("Roll", {
 })
 
 ix.command.Add("Dice", {
-	description = "Бросок кубика с заданными параметрами.",
+	description = "@cmd.dice",
 	arguments = {
 		ix.type.number,
 		ix.type.number
@@ -161,7 +161,7 @@ ix.command.Add("CharSetLevel", {
 			target:SetData("levelup", true)
 		end
 
-		return "Вы успешно изменили уровень персонажа."
+		return "@cmd.notify.lvlChanged"
 	end
 })
 
@@ -200,7 +200,7 @@ ix.command.Add("CharAddLevel", {
 			})
 		end
 
-		return "Вы успешно добавили уровни персонажу."
+		return "@cmd.notify.lvlAdded"
 	end
 })
 
@@ -215,6 +215,6 @@ ix.command.Add("CharAddLevelXP", {
 	OnRun = function(self, client, target, xp)
 		target:AddLevelXP(xp)
 
-		return "Вы успешно добавили опыт персонажу."
+		return "@cmd.notify.lvlAddedXP"
 	end
 })

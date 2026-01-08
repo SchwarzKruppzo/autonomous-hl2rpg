@@ -79,7 +79,7 @@ do
 		if character then
 			character:AddLevelXP(xp)
 
-			self:NotifyLocalized("rewardXP", xp, text)
+			self:NotifyLocalized("xp.reward", xp, text)
 		end
 	end
 end
