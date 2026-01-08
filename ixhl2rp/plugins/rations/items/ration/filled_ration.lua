@@ -1,5 +1,5 @@
-ITEM.name = "Заполненный рацион"
-ITEM.description = "Непрочная пластиковая упаковка без печатей. Она должна содержать пищевую единицу и банку с водой."
+ITEM.name = "item.ration_filled"
+ITEM.description = "item.ration_filled.desc"
 ITEM.model = Model("models/weapons/w_packate.mdl")
 ITEM.loot = {
 	"citizen_supplements",

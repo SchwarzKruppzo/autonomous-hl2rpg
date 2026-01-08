@@ -1,7 +1,7 @@
-ITEM.name = "Пустой рацион"
+ITEM.name = "item.ration_empty"
 ITEM.category = "Хлам"
 ITEM.model = Model("models/weapons/w_packate.mdl")
-ITEM.description = "Пустая упаковка из под рациона."
+ITEM.description = "item.ration_empty2.desc"
 
 ITEM:AddData("A", {
 	Transmit = ix.transmit.none,

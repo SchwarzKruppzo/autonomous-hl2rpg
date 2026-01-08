@@ -3,12 +3,12 @@ local ItemRation = class("ItemRation"):implements("Item")
 ItemRation.junk = "empty_ration"
 
 function ItemRation:Init()
-	self.category = "Рационы"
+	self.category = "item.category.ration"
 
 	self.loot = {}
 	
 	self.functions.open = {
-		name = "Вскрыть",
+		name = "func.openRation",
 		OnRun = function(item)
 			local client, character = item.player, item.player:GetCharacter()
 			local junk = item.junk

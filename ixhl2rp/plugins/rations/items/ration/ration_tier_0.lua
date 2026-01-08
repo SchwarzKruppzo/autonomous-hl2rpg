@@ -1,5 +1,5 @@
-ITEM.name = "Рацион минимального уровня"
-ITEM.description = "Непрочная пластиковая упаковка с большой печатью спереди и надписью \"Рацион минимального уровня\". Она должна содержать пищевую единицу и банку с водой."
+ITEM.name = "item.ration_m"
+ITEM.description = "item.ration_m.desc"
 ITEM.model = Model("models/weapons/w_packati.mdl")
 ITEM.loot = {
 	"minimal_supplements",
