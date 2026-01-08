@@ -1,4 +1,3 @@
-
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "Temporary Flags"
@@ -12,37 +11,7 @@ CAMI.RegisterPrivilege({
 
 ix.Net:AddPlayerVar("tempFlags", true, nil, ix.Net.Type.Table)
 
-ix.lang.AddTable("english", {
-	cmdCharGiveTempFlags = "Give temporary flags to a character. Time specified in minutes.",
-	cmdCharExtendTempFlags = "Extend (or reduce) a character's current temporary flags. They will expire after the given amount of time.",
-	flagTempGiveTitle = "Give Temporary Flags",
-	flagTempGive = "%s has given %s '%s' flags for %d minutes.",
-	flagAlreadyGiven = "%s already has the '%s' flags, or these flags do not exist.",
-	cmdCharTakeTempFlags = "Take temporary flags from a character.",
-	flagAlreadyTaken = "%s does not have the '%s' flags.",
-	flagTempTake = "%s has taken the '%s' temporary flags from %s.",
-	cmdCharClearTempFlag = "Take all temporary flags from a character.",
-	flagNoClear = "%s does not have any temporary flags.",
-	flagExpired = "%s's temporary '%s' flags have expired.",
-	flagExpireWarn = "Your temporary '%s' flags will expire in 5 minutes."
-})
-
-ix.lang.AddTable("russian", {
-	cmdCharGiveTempFlags = "Выдать персонажу временные флаги. Время указано в минутах.",
-	cmdCharExtendTempFlags = "Продлить (или сократить) текущие временные флаги персонажа. Они пропадут через отведенное количество времени.",
-	flagTempGiveTitle = "Выдать временные флаги",
-	flagTempGive = "%s выдал %s '%s' флаги на %d минут.",
-	flagAlreadyGiven = "%s уже имеет флаги '%s', или эти флаги несуществуют.",
-	cmdCharTakeTempFlags = "Забрать временные флаги у персонажа.",
-	flagAlreadyTaken = "%s не имеет '%s' флагов.",
-	flagTempTake = "%s забрал '%s' временные флаги у %s.",
-	cmdCharClearTempFlag = "Забрать все временные флаги у персонажа.",
-	flagNoClear = "%s не имеет никаких временных флагов.",
-	flagExpired = "Временные флаги персонажа %s '%s' истекли.",
-	flagExpireWarn = "Ваши временные '%s' флаги истекут через 5 минут."
-})
-
-ix.config.Add("TempFlagsRemoveOnCharSwap", true, "Should all temporary flags be removed when a player changes character.", nil, {category = "administration"})
+ix.config.Add("TempFlagsRemoveOnCharSwap", true, "config.tempFlagsRemove.desc", nil, {category = "administration"})
 
 function PLUGIN:CharacterHasFlags(character, flags)
 	local client = character:GetPlayer()
@@ -84,14 +53,14 @@ if (SERVER) then
 				end
 
 				if (warn != "") then
-					client:NotifyLocalized("flagExpireWarn", warn)
+					client:NotifyLocalized("tempflags.expireWarn", warn)
 				end
 
 				if (expired == "") then continue end
 
 				for _, v in ipairs(players) do
 					if (CAMI.PlayerHasAccess(v, "Helix - Manage Temp Flags") or v == client) then
-						v:NotifyLocalized("flagExpired", client:Name(), expired)
+						v:NotifyLocalized("tempflags.expired", client:Name(), expired)
 					end
 				end
 
@@ -122,7 +91,7 @@ function PLUGIN:PostPlayerLoadout(client)
 end
 
 ix.command.Add("CharGiveTempFlags", {
-	description = "@cmdCharGiveTempFlags",
+	description = "@cmd.char.tempflags.give",
 	privilege = "Manage Temp Flags",
 	arguments = {
 		ix.type.player,
@@ -150,7 +119,7 @@ ix.command.Add("CharGiveTempFlags", {
 		end
 
 		if (given == "") then
-			client:NotifyLocalized("flagAlreadyGiven", target:Name(), toGive)
+			client:NotifyLocalized("tempflags.alreadyGiven", target:Name(), toGive)
 			return
 		end
 
@@ -158,14 +127,14 @@ ix.command.Add("CharGiveTempFlags", {
 
 		for _, v in ipairs(player.GetAll()) do
 			if (self:OnCheckAccess(v) or v == target) then
-				v:NotifyLocalized("flagTempGive", client:Name(), target:Name(), given, math.Clamp(math.floor(time), 10, 120))
+				v:NotifyLocalized("tempflags.give", client:Name(), target:Name(), given, math.Clamp(math.floor(time), 10, 120))
 			end
 		end
 	end
 })
 
 ix.command.Add("CharExtendTempFlags", {
-	description = "@cmdCharExtendTempFlags",
+	description = "@cmd.char.tempflags.extend",
 	privilege = "Manage Temp Flags",
 	arguments = {
 		ix.type.player,
@@ -182,7 +151,7 @@ ix.command.Add("CharExtendTempFlags", {
 		end
 
 		if (given == "") then
-			client:NotifyLocalized("flagNoClear", target:Name())
+			client:NotifyLocalized("tempflags.noClear", target:Name())
 			return
 		end
 
@@ -190,14 +159,14 @@ ix.command.Add("CharExtendTempFlags", {
 
 		for _, v in ipairs(player.GetAll()) do
 			if (self:OnCheckAccess(v) or v == target) then
-				v:NotifyLocalized("flagTempGive", client:Name(), target:Name(), given, math.Clamp(math.floor(time), 10, 120))
+				v:NotifyLocalized("tempflags.give", client:Name(), target:Name(), given, math.Clamp(math.floor(time), 10, 120))
 			end
 		end
 	end
 })
 
 ix.command.Add("CharTakeTempFlag", {
-	description = "@cmdCharTakeTempFlags",
+	description = "@cmd.char.tempflags.take",
 	privilege = "Manage Temp Flags",
 	arguments = {
 		ix.type.player,
@@ -206,7 +175,7 @@ ix.command.Add("CharTakeTempFlag", {
 	OnRun = function(self, client, target, toTake)
 		local flags = target:GetLocalVar("tempFlags")
 		if (!flags) then
-			client:NotifyLocalized("flagNoClear", target:Name())
+			client:NotifyLocalized("tempflags.noClear", target:Name())
 			return
 		end
 
@@ -233,20 +202,20 @@ ix.command.Add("CharTakeTempFlag", {
 		end
 
 		if (taken == "") then
-			client:NotifyLocalized("flagAlreadyTaken", target:Name(), toTake)
+			client:NotifyLocalized("tempflags.alreadyTaken", target:Name(), toTake)
 			return
 		end
 
 		for _, v in ipairs(player.GetAll()) do
 			if (self:OnCheckAccess(v) or v == target) then
-				v:NotifyLocalized("flagTempTake", client:Name(), taken, target:Name())
+				v:NotifyLocalized("tempflags.take", client:Name(), taken, target:Name())
 			end
 		end
 	end
 })
 
 ix.command.Add("CharClearTempFlag", {
-	description = "@cmdCharClearTempFlag",
+	description = "@cmd.char.tempflags.clear",
 	privilege = "Manage Temp Flags",
 	arguments = {
 		ix.type.player,
@@ -254,7 +223,7 @@ ix.command.Add("CharClearTempFlag", {
 	OnRun = function(self, client, target)
 		local flags = target:GetLocalVar("tempFlags")
 		if (!flags) then
-			client:NotifyLocalized("flagNoClear", target:Name())
+			client:NotifyLocalized("tempflags.noClear", target:Name())
 			return
 		end
 
@@ -272,20 +241,20 @@ ix.command.Add("CharClearTempFlag", {
 		end
 
 		if (taken == "") then
-			client:NotifyLocalized("flagNoClear", target:Name())
+			client:NotifyLocalized("tempflags.noClear", target:Name())
 			return
 		end
 
 		for _, v in ipairs(player.GetAll()) do
 			if (self:OnCheckAccess(v) or v == target) then
-				v:NotifyLocalized("flagTempTake", client:Name(), taken, target:Name())
+				v:NotifyLocalized("tempflags.take", client:Name(), taken, target:Name())
 			end
 		end
 	end
 })
 
 ix.command.Add("CharCheckFlags", {
-	description = "Проверить флаги персонажа.",
+	description = "cmd.char.tempflags.check",
 	adminOnly = true,
 	arguments = {
 		ix.type.character
@@ -294,7 +263,7 @@ ix.command.Add("CharCheckFlags", {
 		if (SERVER) then
 			local target = target:GetPlayer()
 			
-			client:Notify("У этого персонажа "..target:GetCharacter():GetFlags().." флаги")
+			client:NotifyLocalized("tempflags.check", target:GetCharacter():GetFlags())
 		end
 	end
 })
