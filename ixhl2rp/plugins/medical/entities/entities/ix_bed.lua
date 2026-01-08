@@ -53,7 +53,7 @@ else
 
 		local title = tooltip:AddRow("name")
 		title:SetImportant()
-		title:SetText("Кровать")
+		title:SetText(L"entities.medical.bed")
 		title:SetBackgroundColor(self.color)
 		title:SizeToContents()
 	end

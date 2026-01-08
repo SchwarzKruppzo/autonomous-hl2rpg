@@ -1,5 +1,5 @@
-ITEM.name = "Бинт"
-ITEM.description = "Моток бинтов. Здесь не так много, поэтому используйте с умом."
+ITEM.name = "item.bandage"
+ITEM.description = "item.bandage.desc"
 ITEM.model = Model("models/items/bandage.mdl")
 ITEM.cost = 10
 ITEM.iconCam = {

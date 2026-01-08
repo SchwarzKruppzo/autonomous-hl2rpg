@@ -1,5 +1,5 @@
-ITEM.name = "Морфин"
-ITEM.description = "Автоинъектор морфина. Используется для внутримышечной инъекции для лечения сильной боли, такой как переломы."
+ITEM.name = "item.morphine"
+ITEM.description = "item.morphine.desc"
 ITEM.model = Model("models/items/morphine.mdl")
 ITEM.useSound = "items/medshot4.wav"
 ITEM.cost = 100

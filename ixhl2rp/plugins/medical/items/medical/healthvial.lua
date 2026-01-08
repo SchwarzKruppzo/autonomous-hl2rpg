@@ -1,5 +1,5 @@
-ITEM.name = "Флакон с биогелем"
-ITEM.description = "Странный флакон, наполненный зеленой жидкостью. Будьте осторожны."
+ITEM.name = "item.healthvial"
+ITEM.description = "item.healthvial.desc"
 ITEM.model = Model("models/healthvial.mdl")
 ITEM.useSound = "items/medshot4.wav"
 ITEM.width = 1

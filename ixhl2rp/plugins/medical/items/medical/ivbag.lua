@@ -1,5 +1,5 @@
-ITEM.name = "Пакет физраствора"
-ITEM.description = "Пакет физраствора, используемый для переливания. Не так эффективен, как пакет крови, но это лучше, чем ничего."
+ITEM.name = "item.ivbag"
+ITEM.description = "item.ivbag.desc"
 ITEM.model = Model("models/mosi/fallout4/props/aid/ivbag.mdl")
 ITEM.useSound = "items/medshot4.wav"
 ITEM.cost = 150

@@ -1,5 +1,5 @@
-ITEM.name = "Аптечка Альянса"
-ITEM.description = "Белый корпус с отсеками и различными медикаментами."
+ITEM.name = "item.healthkit"
+ITEM.description = "item.healthkit.desc"
 ITEM.model = Model("models/items/healthkit.mdl")
 ITEM.useSound = "items/medshot4.wav"
 ITEM.width = 2

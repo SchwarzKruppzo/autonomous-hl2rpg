@@ -27,7 +27,7 @@ local function action(self, time, condition, callback)
 end
 
 function ItemMedical:Init()
-	self.category = "Медицина"
+	self.category = "item.category.medical"
 
 	self.stats = {
 		uses = 1,
@@ -35,7 +35,7 @@ function ItemMedical:Init()
 	}
 
 	self.functions.use = {
-		name = "Использовать",
+		name = "use.medicine",
 		OnRun = function(item)
 			local uses = item:GetUses()
 			local client, character = item.player, item.player:GetCharacter()
@@ -114,7 +114,7 @@ function ItemMedical:Init()
 	}
 
 	self.functions.inject = {
-		name = "Использовать на",
+		name = "use.medicineOn",
 		OnRun = function(item)
 			local uses = item:GetUses()
 			local client, character = item.player, item.player:GetCharacter()
@@ -228,7 +228,7 @@ function ItemMedical:Init()
 
 	self.combine = self.combine or {}
 	self.combine.comb = {
-		name = "Объединить",
+		name = "combine.medicine",
 		OnRun = function(item, targetItem, items)
 			local uses = item:GetUses()
 			local targetUses = targetItem:GetUses()

@@ -1,5 +1,5 @@
-ITEM.name = "Эпинефрин"
-ITEM.description = "Автоинъектор эпинефрина. Используется для внутримышечной инъекции для восстановления бессознательных жертв."
+ITEM.name = "item.epinephrine"
+ITEM.description = "item.epinephrine.desc"
 ITEM.model = Model("models/items/adrenaline.mdl")
 ITEM.useSound = "items/medshot4.wav"
 ITEM.rarity = 1

@@ -1,5 +1,5 @@
-ITEM.name = "Пакет крови"
-ITEM.description = "Пакет крови, используемый для переливания крови."
+ITEM.name = "item.bloodbag"
+ITEM.description = "item.bloodbag.desc"
 ITEM.model = Model("models/props_rpd/medical_blood.mdl")
 ITEM.useSound = "items/medshot4.wav"
 ITEM.cost = 200

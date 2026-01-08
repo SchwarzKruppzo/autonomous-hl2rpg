@@ -1,5 +1,5 @@
-ITEM.name = "Болеутоляющее"
-ITEM.description = "Умеренный болеутоляющий препарат, подходящий для регулярного использования облегчения боли и воспаления, вызванного умеренными ранами."
+ITEM.name = "item.painkiller"
+ITEM.description = "item.painkiller.desc"
 ITEM.model = Model("models/items/painkiller.mdl")
 ITEM.cost = 20
 ITEM.stats.uses = 5
