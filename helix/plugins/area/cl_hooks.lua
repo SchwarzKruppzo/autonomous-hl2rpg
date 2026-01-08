@@ -199,7 +199,7 @@ function PLUGIN:OnAreaChanged(oldID, newID)
 		return
 	end
 
-	local format = newID .. (ix.option.Get("24hourTime", false) and ", %H:%M." or ", %I:%M %p.")
+	local format = newID .. (ix.option.Get("hour24Time", false) and ", %H:%M." or ", %I:%M %p.")
 	format = ix.date.GetFormatted(format)
 
 	self.panel:AddEntry(format, area.properties.color)
