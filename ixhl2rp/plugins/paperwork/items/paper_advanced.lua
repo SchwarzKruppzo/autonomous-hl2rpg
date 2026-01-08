@@ -1,12 +1,12 @@
 local PLUGIN = PLUGIN
 
-ITEM.name = "Лист бумаги"
+ITEM.name = "item.paper"
 ITEM.model = "models/props_c17/paper01.mdl"
 ITEM.stackable = true
 ITEM.max_stack = 5
 ITEM.width = 1
 ITEM.height = 1
-ITEM.description = "iPaperDesc"
+ITEM.description = "item.paper.desc"
 ITEM.isPaper = true
 ITEM.bAllowMultiCharacterInteraction = true
 
@@ -31,7 +31,7 @@ ITEM:AddData("canEdit", { -- timestamp
 })
 
 ITEM.functions.View = {
-	name = "Прочитать",
+	name = "use.read",
 	OnRun = function(item)
 		local text = item:GetData("T", "")
 
@@ -50,7 +50,7 @@ ITEM.functions.View = {
 }
 
 ITEM.functions.Write = {
-	name = "Написать",
+	name = "use.write",
 	OnRun = function(item)
 		local text = item:GetData("T", nil)
 
@@ -70,7 +70,7 @@ ITEM.functions.Write = {
 }
 
 function ITEM:GetDescription()
-	return self:GetData("O", 0) == 0 and L("iPaperDesc") or L("iPaperDesc2")
+	return self:GetData("O", 0) == 0 and L("item.paper.desc") or L("item.paper.desc2")
 end
 
 function ITEM:GetTitle()

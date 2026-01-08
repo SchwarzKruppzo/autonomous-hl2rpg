@@ -10,13 +10,13 @@ Item.iconCam = {
 }
 
 function Item:Init()
-	self.category = "Книги"
-	self.name = "Пустая книга"
+	self.category = "item.category.book"
+	self.name = "item.emptybook"
 	self.width = 2
 	self.height = 1
 
 	self.functions.Write = {
-		name = "Редактировать",
+		name = "use.bookwrite",
 		OnRun = function(item)
 			local data = item:GetData("T") or {}
 

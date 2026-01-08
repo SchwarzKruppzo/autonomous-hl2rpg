@@ -1,0 +1,58 @@
+ix.Locale:Build("en")
+
+
+item.category.book  = "Books"
+
+item.paper 			= "Paper"
+item.paper.desc 	= "A clear white paper."
+item.paper.desc2 	= "A white paper. Something is written on it."
+item.book 			= "Book"
+item.emptybook 		= "Empty Book"
+item.book.desc 		= "A small sized book in a binding."
+
+use.read 			= "Read"
+use.write 			= "Write"
+use.bookwrite 		= "Edit"
+
+pwB 				= "Bold"
+pwI 				= "Italic"
+pwU 				= "Underline"
+pwLarge 			= "Large font size"
+pwSmall 			= "Small font size"
+pwBig 				= "Big font size"
+pwCenter 			= "Center text align"
+pwRight 			= "Right text align"
+pwList 				= "List"
+pwListEntry 		= "List element"
+pwHR 				= "Horizontal rule"
+pwBR 				= "Newline"
+pwBlue 				= "Blue color"
+pwGreen 			= "Green color"
+pwRed  				= "Red color"
+pwSign 				= "Make a sign"
+pwField 			= "Text Field"
+
+iPaperTitle 		= "Title: %s"
+iPaperError 		= "This item is already in use!"
+
+pwTitle 			= "Title:"
+pwContent 			= "Content:"
+pwOk 				= "Write"
+pwSize 				= "Size: %s/%s"
+pwAdminRestrict 	= "Cannot be picked up."
+
+book.gui.fontpreview 	= "Sample text"
+book.gui.editTitle 		= "Write a book"
+book.gui.saveTitle 		= "Book title"
+book.gui.saveDesc 		= "Please enter the title you want for this book."
+book.gui.untitled 		= "Untitled"
+book.gui.save 			= "Save"
+book.gui.saveAndClose 	= "Save and close"
+book.gui.preview 		= "Preview"
+book.gui.font 			= "Choose font"
+book.gui.maxpages 		= "Max pages - 16"
+book.gui.pagecounter 	= "Page %s: %s/1600"
+book.gui.prevpage 		= "PREVIOUS PAGE"
+book.gui.nextpage 		= "NEXT PAGE"
+book.gui.hint 			= "[TAB] — close book"
+

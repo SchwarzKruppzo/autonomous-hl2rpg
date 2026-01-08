@@ -71,10 +71,12 @@ function PANEL:Init()
 	buttonBox:Dock(FILL)
 	buttonBox:SetTall(ix.UI.Scale(50 / 3))
 
-	self:CreateFontButton(buttonBox, "BookAlegreya", "Стандартный текст")
-	self:CreateFontButton(buttonBox, "BookCaveat", "Стандартный текст")
-	self:CreateFontButton(buttonBox, "BookPacifico", "Стандартный текст")
-	self:CreateFontButton(buttonBox, "BookMarck", "Стандартный текст")
+	local textPreview = L("pwTextPreview")
+	
+	self:CreateFontButton(buttonBox, "BookAlegreya", textPreview)
+	self:CreateFontButton(buttonBox, "BookCaveat", textPreview)
+	self:CreateFontButton(buttonBox, "BookPacifico", textPreview)
+	self:CreateFontButton(buttonBox, "BookMarck", textPreview)
 end
 
 function PANEL:CreateFontButton(buttonBox, font, text)

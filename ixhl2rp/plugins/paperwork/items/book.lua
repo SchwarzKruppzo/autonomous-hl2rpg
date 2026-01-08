@@ -38,13 +38,13 @@ end
 
 
 
-ITEM.name = "Книга"
+ITEM.name = "item.book"
 ITEM.model = "models/n_models/n_book.mdl"
 ITEM.stackable = true
 ITEM.max_stack = 5
 ITEM.width = 2
 ITEM.height = 1
-ITEM.description = "Небольшого размера книга в переплете."
+ITEM.description = "item.book.desc"
 
 ITEM:AddData("C", { -- title
 	Transmit = ix.transmit.all,
@@ -59,7 +59,7 @@ ITEM:AddData("checksum", {
 })
 
 ITEM.functions.View = {
-	name = "Прочитать",
+	name = "use.read",
 	OnRun = function(item)
 		local checksum = item:GetData("checksum", "")
 		local info = Books.stored[checksum]

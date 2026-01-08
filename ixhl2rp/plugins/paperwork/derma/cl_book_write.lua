@@ -12,8 +12,8 @@ function PANEL:LoadPage(id)
 	self.text:SetText(self.data[id])
 	self.text2:SetText(self.data[id + 1])
 
-	self.page_left:SetText(string.format("Страница %s: %s/1600", id, string.utf8len(self.data[id])))
-	self.page_right:SetText(string.format("Страница %s: %s/1600", id + 1, string.utf8len(self.data[id + 1])))
+	self.page_left:SetText(L("book.gui.pagecounter", id, string.utf8len(self.data[id])))
+	self.page_right:SetText(L("book.gui.pagecounter", id + 1, string.utf8len(self.data[id + 1])))
 end
 
 function PANEL:SetFont(font)
@@ -24,7 +24,7 @@ function PANEL:SetFont(font)
 end
 
 function PANEL:Init()
-	if (IsValid(ix.gui.bookwriting)) then
+	if IsValid(ix.gui.bookwriting) then
 		ix.gui.bookwriting:Remove()
 		ix.gui.bookwriting = nil
 	end
@@ -35,21 +35,20 @@ function PANEL:Init()
 	self:Center()
 	self:SetBackgroundBlur(false)
 	self:SetDeleteOnClose(true)
-	self:SetTitle("Написать книгу")
+	self:SetTitle(L"book.gui.editTitle")
 
-	
 	self.currentPage = 1
 	self.font = "BookAlegreya"
 
 	self.close = self:Add("DButton")
 	self.close:Dock(BOTTOM)
 	self.close:DockMargin(0, 5, 0, 0)
-	self.close:SetText("Сохранить и завершить")
+	self.close:SetText(L"book.gui.saveAndClose")
 	self.close.DoClick = function()
 		local data = self.data
 		local font = self.font
 		
-		Derma_StringRequest("Название книги", "Как вы хотите назвать эту книгу?", "Без названия", function(text)
+		Derma_StringRequest(L"book.gui.saveTitle", L"book.gui.saveDesc", L"book.gui.untitled", function(text)
 			express.Send("book.write", {text, data, font})
 		end)
 
@@ -59,7 +58,7 @@ function PANEL:Init()
 	self.save = self:Add("DButton")
 	self.save:Dock(BOTTOM)
 	self.save:DockMargin(0, 45, 0, 0)
-	self.save:SetText("Сохранить")
+	self.save:SetText(L"book.gui.save")
 	self.save.DoClick = function()
 		express.Send("book.save", {self.font, self.data})
 
@@ -69,7 +68,7 @@ function PANEL:Init()
 	self.preview = self:Add("DButton")
 	self.preview:Dock(BOTTOM)
 	self.preview:DockMargin(0, 5, 0, 0)
-	self.preview:SetText("Предпросмотр")
+	self.preview:SetText(L"book.gui.preview")
 	self.preview.DoClick = function()
 		local preview = vgui.Create("cellar.ui.book")
 		preview:OpenBook(self.data, self.font)
@@ -78,7 +77,7 @@ function PANEL:Init()
 	self.selectFont = self:Add("DButton")
 	self.selectFont:Dock(BOTTOM)
 	self.selectFont:DockMargin(0, 5, 0, 0)
-	self.selectFont:SetText("Выбор шрифта")
+	self.selectFont:SetText(L"book.gui.font")
 	self.selectFont.DoClick = function()
 		local selector = vgui.Create("cellar.book.font")
 		selector.callback = function(font)
@@ -93,7 +92,7 @@ function PANEL:Init()
 
 	self.max = self:Add("DLabel")
 	self.max:Dock(TOP)
-	self.max:SetText("Максимум страниц - 16")
+	self.max:SetText(L"book.gui.maxpages")
 
 	local left = self:Add("Panel")
 	left:SetWide(w * 0.5)
@@ -120,7 +119,7 @@ function PANEL:Init()
 			surface.PlaySound("common/talk.wav")
 		end
 
-		self.page_left:SetText(string.format("Страница %s: %s/1600", self.currentPage, string.utf8len(text)))
+		self.page_left:SetText(L("book.gui.pagecounter", self.currentPage, string.utf8len(text)))
 
 		self.data[self.currentPage] = text
 	end
@@ -143,23 +142,23 @@ function PANEL:Init()
 			surface.PlaySound("common/talk.wav")
 		end
 
-		self.page_right:SetText(string.format("Страница %s: %s/1600", self.currentPage, string.utf8len(text)))
+		self.page_right:SetText(L("book.gui.pagecounter", self.currentPage, string.utf8len(text)))
 
 		self.data[self.currentPage + 1] = text
 	end
 
 	self.page_left = left:Add("DLabel")
 	self.page_left:Dock(TOP)
-	self.page_left:SetText("Страница 1: 0/1600")
+	self.page_left:SetText(L("book.gui.pagecounter", 1, 0))
 
 	self.page_right = right:Add("DLabel")
 	self.page_right:Dock(TOP)
-	self.page_right:SetText("Страница 2: 0/1600")
+	self.page_right:SetText(L("book.gui.pagecounter", 2, 0))
 
 	self.page1 = left:Add("DButton")
 	self.page1:Dock(BOTTOM)
 	self.page1:DockMargin(0, 4, 0, 0)
-	self.page1:SetText("ПРЕДЫДУЩАЯ СТРАНИЦА")
+	self.page1:SetText(L"book.gui.prevpage")
 	self.page1.DoClick = function()
 		self.currentPage = math.max(self.currentPage - 2, 1)
 
@@ -169,7 +168,7 @@ function PANEL:Init()
 	self.page2 = right:Add("DButton")
 	self.page2:Dock(BOTTOM)
 	self.page2:DockMargin(0, 4, 0, 0)
-	self.page2:SetText("СЛЕДУЮЩАЯ СТРАНИЦА")
+	self.page2:SetText(L"book.gui.nextpage")
 	self.page2.DoClick = function()
 		self.currentPage = math.min(self.currentPage + 2, 15)
 

@@ -2,7 +2,7 @@ local PLUGIN = PLUGIN
 
 PLUGIN.name = "Paperwork"
 PLUGIN.description = "Adds a SS13 Paperwork."
-PLUGIN.author = "SchwarzKruppzo"
+PLUGIN.author = "Schwarz Kruppzo"
 
 PLUGIN.maxTitleLength = 128
 PLUGIN.maxLength = 10000

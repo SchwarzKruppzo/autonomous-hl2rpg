@@ -59,7 +59,7 @@ function PANEL:Init()
 
 	self.hint = self:Add("DLabel")
 	self.hint:SetFont("ixMediumFont")
-	self.hint:SetText("[TAB] — закрыть книгу")
+	self.hint:SetText(L"book.gui.hint")
 	self.hint:SizeToContents()
 	self.hint:Center()
 	self.hint:AlignBottom(16)
