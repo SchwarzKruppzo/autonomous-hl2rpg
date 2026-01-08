@@ -282,7 +282,7 @@ function ITEM:__eq(other) return self:GetID() == other:GetID() end
 
 function ITEM:GetID() return self.id end
 function ITEM:GetPrintName() return CLIENT and L(self.name or 'unknown') or self.name end
-function ITEM:GetName() return self.name end
+function ITEM:GetName() return CLIENT and self:GetPrintName() or l(self.name) end
 function ITEM:GetDescription() return CLIENT and L(self.description or 'noDesc') or self.description end
 
 function ITEM:GetIconModel() return self.icon_model end

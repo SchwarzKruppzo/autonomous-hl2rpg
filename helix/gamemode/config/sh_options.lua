@@ -4,7 +4,7 @@ if (CLIENT) then
 		category = "appearance", min = 0.3, max = 2, decimals = 1
 	})
 
-	ix.option.Add("24hourTime", ix.type.bool, false, {
+	ix.option.Add("hour24Time", ix.type.bool, false, {
 		category = "appearance"
 	})
 

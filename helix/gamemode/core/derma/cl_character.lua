@@ -299,7 +299,7 @@ function PANEL:UpdateReturnButton(bValue)
 		bValue = self.bUsingCharacter
 	end
 
-	self.returnButton:SetText(bValue and "return" or "leave")
+	self.returnButton:SetText(bValue and "returnButton" or "leave")
 	self.returnButton:SizeToContents()
 end
 

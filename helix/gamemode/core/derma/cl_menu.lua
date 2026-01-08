@@ -42,7 +42,7 @@ function PANEL:Init()
 	self.buttons:SetPaintedManually(true)
 
 	local close = self.buttons:Add("ixMenuButton")
-	close:SetText("return")
+	close:SetText("returnButton")
 	close:SizeToContents()
 	close:Dock(BOTTOM)
 	close.DoClick = function()

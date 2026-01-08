@@ -1,17 +1,15 @@
-
 --[[--
 Multi-language phrase support.
 
-Helix has support for multiple languages, and you can easily leverage this system for use in your own schema, plugins, etc.
-Languages will be loaded from the schema and any plugins in `languages/sh_languagename.lua`, where `languagename` is the id of a
-language (`english` for English, `french` for French, etc). The structure of a language file is a table of phrases with the key
-as its phrase ID and the value as its translation for that language. For example, in `plugins/area/sh_english.lua`:
-	LANGUAGE = {
-		area = "Area",
-		areas = "Areas",
-		areaEditMode = "Area Edit Mode",
-		-- etc.
-	}
+Languages will be loaded from the schema and any plugins in `languages/languagename.lua`. The structure of a language file is a table of phrases with the key
+as its phrase ID and the value as its translation for that language. For example, in `plugins/area/languages/english.lua`:
+	ix.Locale:Build("en") -- gmod internal language id is used
+
+	area = "Area",
+	areas = "Areas",
+	areaEditMode = "Area Edit Mode",
+	-- etc.
+
 
 The phrases defined in these language files can be used with the `L` global function:
 	print(L("areaEditMode"))
@@ -27,82 +25,111 @@ does not have a set language. An example:
 	Entity(1):ChatPrint(L("areaEditMode"))
 	> -- "Area Edit Mode" will print in the player's chatbox
 ]]
--- @module ix.lang
 
-ix.lang = ix.lang or {}
-ix.lang.stored = ix.lang.stored or {}
-ix.lang.names = ix.lang.names or {}
+local Locale = ix.util.Lib("Locale", {
+	stored = {},
+	lang = nil
+})
 
---- Loads language files from a directory.
--- @realm shared
--- @internal
--- @string directory Directory to load language files from
-function ix.lang.LoadFromDir(directory)
-	for _, v in ipairs(file.Find(directory.."/sh_*.lua", "LUA")) do
-		local niceName = v:sub(4, -5):lower()
+local stored = Locale.stored -- or {}
+--Locale.stored = stored
 
-		ix.util.Include(directory.."/"..v, "shared")
+function Locale:AddTable(lang, data)
+	lang = tostring(lang):lower()
 
-		if (LANGUAGE) then
-			if (NAME) then
-				ix.lang.names[niceName] = NAME
-				NAME = nil
-			end
+	if isfunction(data) then
+		self:Build(lang, data)
 
-			ix.lang.AddTable(niceName, LANGUAGE)
-			LANGUAGE = nil
+		data()
+	else
+		stored[lang] = table.Merge(stored[lang] or {}, data)
+	end
+end
+
+function Locale:Build(lang, fEnv)
+	local data = {}
+	local reverseData = {}
+
+	stored[lang] = stored[lang] or {}
+
+	local builder 
+	builder = {
+		__index = function(self, subCategory)
+			local subID = string.format("%s%s.", reverseData[self] or "", subCategory)
+
+			if data[subID] then return data[subID] end
+
+			local category = setmetatable({}, builder)
+			reverseData[category] = subID
+			data[subID] = category
+
+			return category
+		end,
+		__newindex = function(self, key, value)
+			local subID = string.format("%s%s", reverseData[self] or "", key)
+
+			stored[lang][subID] = value
 		end
+	}
+
+	local object = setmetatable({}, builder)
+	setfenv(fEnv and fEnv or 2, object)
+
+	return object
+end
+
+if SERVER then
+	function l(key, ...) -- this is for serverside naming (logs and such)
+		local info = stored.en
+
+		return string.format(info and info[key] or key, ...)
 	end
-end
-
---- Adds phrases to a language. This is used when you aren't adding entries through the files in the `languages/` folder. A
--- common use case is adding language phrases in a single-file plugin.
--- @realm shared
--- @string language The ID of the language
--- @tab data Language data to add to the given language
--- @usage ix.lang.AddTable("english", {
--- 	myPhrase = "My Phrase"
--- })
-function ix.lang.AddTable(language, data)
-	language = tostring(language):lower()
-	ix.lang.stored[language] = table.Merge(ix.lang.stored[language] or {}, data)
-end
-
-if (SERVER) then
-	-- luacheck: globals L
+	
 	function L(key, client, ...)
-		local languages = ix.lang.stored
-		local langKey = ix.option.Get(client, "language", "english")
-		local info = languages[langKey] or languages.english
+		local langKey = client:GetInfo("gmod_language")
+		local info = stored[langKey] or stored.en
 
-		return string.format(info and info[key] or languages.english[key] or key, ...)
+		return string.format(info and info[key] or stored.en[key] or key, ...)
 	end
 
-	-- luacheck: globals L2
 	function L2(key, client, ...)
-		local languages = ix.lang.stored
-		local langKey = ix.option.Get(client, "language", "english")
-		local info = languages[langKey] or languages.english
+		local langKey = client:GetInfo("gmod_language")
+		local info = stored[langKey] or stored.en
 
-		if (info and info[key]) then
+		if info and info[key] then
 			return string.format(info[key], ...)
 		end
 	end
 else
-	function L(key, ...)
-		local languages = ix.lang.stored
-		local langKey = ix.option.Get("language", "english")
-		local info = languages[langKey] or languages.english
+	Locale.lang = Locale.lang or GetConVar("gmod_language"):GetString()
 
-		return string.format(info and info[key] or languages.english[key] or key, ...)
+	function L(key, ...)
+		local info = stored[Locale.lang] or stored.en
+
+		return string.format(info and info[key] or stored.en[key] or key, ...)
 	end
 
 	function L2(key, ...)
-		local langKey = ix.option.Get("language", "english")
-		local info = ix.lang.stored[langKey]
+		local info = stored[Locale.lang] or stored.en
 
-		if (info and info[key]) then
+		if info and info[key] then
 			return string.format(info[key], ...)
 		end
 	end
+
+	cvars.AddChangeCallback("gmod_language", function(convar_name, value_old, value_new)
+	    Locale.lang = value_new
+	end)
 end
+
+function Locale:LoadFromDir(directory)
+	for _, v in ipairs(file.Find(directory.."/*.lua", "LUA")) do
+		local id = v:sub(0, -5):lower()
+
+		ix.util.Include(directory.."/"..v, "shared")
+	end
+end
+
+-- backward compatibility (will be removed lately)
+ix.lang = ix.lang or {}
+ix.lang.AddTable = function(lang, data) Locale:AddTable(lang, data) end

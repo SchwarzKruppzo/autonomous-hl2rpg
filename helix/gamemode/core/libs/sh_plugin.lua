@@ -39,7 +39,7 @@ function ix.plugin.Load(uniqueID, path, isSingleFile, variable)
 	PLUGIN.loading = true
 
 	if (!isSingleFile) then
-		ix.lang.LoadFromDir(path.."/languages")
+		ix.Locale:LoadFromDir(path.."/languages")
 		ix.util.IncludeDir(path.."/libs", true)
 		ix.faction.LoadFromDir(path.."/factions")
 		ix.class.LoadFromDir(path.."/classes")

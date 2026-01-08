@@ -146,7 +146,7 @@ ix.util.IncludeDir("core/derma", nil, "client")
 ix.util.IncludeDir("core/hooks")
 
 -- Include language and default base items.
-ix.lang.LoadFromDir("helix/gamemode/languages")
+ix.Locale:LoadFromDir("helix/gamemode/languages")
 ix.Item:LoadFromDir("helix/gamemode/items")
 
 ix.Net:AddPlayerVar("holdingObject", true, nil, ix.Net.Type.Entity)
