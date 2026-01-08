@@ -62,7 +62,7 @@ if SERVER then
 end
 
 function ItemCustomize:Init()
-	self.category = "Кастом"
+	self.category = "item.category.customize"
 
 	self:AddData("checksum", {
 		Transmit = ix.transmit.all,
