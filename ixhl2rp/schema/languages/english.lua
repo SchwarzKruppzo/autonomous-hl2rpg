@@ -78,3 +78,6 @@ cardNotice1					= "This card is property of Civil Worker's Union. If found, retu
 cardNotice2					= "This card is property of Combine Civil Authority. If found, return it to a local protection officer immediately. Illegal carrying is a violation and will result in prosecution."
 cardNotice3					= "This card is property of Universal Union. If found, return it to a local protection officer immediately. Illegal carrying is a violation and will result in prosecution."
 iIDCard						= "Citizen ID"
+
+item.category.crafted 		= "Derivative Components"
+item.category.raw 			= "Raw Resources"

@@ -84,3 +84,6 @@ cardNotice3 				= "This card is property of Universal Union. If found, return it
 scCityAdm 					= "Городское Представительство"
 scCWU 						= "Гражданский Союз Рабочих"
 scOTA 						= "Сверчеловеский Надзор"
+
+item.category.crafted 		= "Производные компоненты"
+item.category.raw 			= "Базовые компоненты"

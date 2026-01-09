@@ -1,6 +1,6 @@
-ITEM.name = "Слиток золота"
-ITEM.description = "Слиток ценного металла, отлитый и готовый к продаже. На рынке стоит больших денег."
-ITEM.category = "Производные компоненты"
+ITEM.name = "item.gold_ingot"
+ITEM.description = "item.gold_ingot.desc"
+ITEM.category = "item.category.crafted"
 ITEM.rarity = 2
 ITEM.model = "models/autonomous/mining/gold_ingot.mdl"
 ITEM.width = 2

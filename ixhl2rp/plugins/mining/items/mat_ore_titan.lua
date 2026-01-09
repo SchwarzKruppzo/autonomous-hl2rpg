@@ -1,6 +1,6 @@
-ITEM.name = "Титановая руда"
-ITEM.description = "Минеральное образование, остро необходимое для производства передовых сплавов Альянса. Активно задействуется в промышленности по всей планете Земля."
-ITEM.category = "Базовые компоненты"
+ITEM.name = "item.titan_ore"
+ITEM.description = "item.titan_ore.desc"
+ITEM.category = "item.category.raw"
 ITEM.model = "models/autonomous/mining/ore_resource.mdl"
 ITEM.width = 1
 ITEM.height = 1

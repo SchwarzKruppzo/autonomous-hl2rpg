@@ -1,6 +1,6 @@
-ITEM.name = "Золотая руда"
-ITEM.description = "Драгоценное минеральное образование, используемое как для производства электронных и механических компонентов - так и для украшений. В нынешнее время золото стоит куда меньше, однако все еще является важной частью экономики Альянса."
-ITEM.category = "Базовые компоненты"
+ITEM.name = "item.gold_ore"
+ITEM.description = "item.gold_ore.desc"
+ITEM.category = "item.category.raw"
 ITEM.model = "models/autonomous/mining/ore_resource.mdl"
 ITEM.width = 1
 ITEM.height = 1
