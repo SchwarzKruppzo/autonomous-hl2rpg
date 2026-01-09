@@ -98,22 +98,23 @@ do
 end
 
 ix.command.Add("CharSetRad", {
-	description = "Установить игроку уровень радиации",
+	description = "@cmd.radiation.set",
 	adminOnly = true,
 	arguments = {ix.type.character, ix.type.number},
 	OnRun = function(self, client, target, rad)
 		target:SetRadLevel(rad)
-		return "Rad level changed."
+
+		return "@radLevelChanged"
 	end
 })
 
 ix.command.Add("CharSetRadResist", {
-	description = "Установить игроку уровень сопротивления к радиации",
+	description = "@cmd.radiation.setResist",
 	adminOnly = true,
 	arguments = {ix.type.character, ix.type.number},
 	OnRun = function(self, client, target, resist)
 		target:SetData("xresist", resist)
-		return "Rad resist changed."
+		return "@radResistChanged"
 	end
 })
 

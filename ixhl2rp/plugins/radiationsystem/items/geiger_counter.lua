@@ -1,7 +1,7 @@
-ITEM.name = "Счётчик Гейгера"
-ITEM.category = "Радиация"
+ITEM.name = "item.geiger_counter"
+ITEM.category = "item.category.radiation"
 ITEM.model = "models/geiger_counter/geiger_counter.mdl"
-ITEM.description = "Старый на вид прибор для измерения радиационного фона."
+ITEM.description = "item.geiger_counter.desc"
 ITEM.rarity = 1
 ITEM.iconCam = {
 	pos = Vector(118.17261505127, -1.1891540288925, 211.32052612305),

@@ -1,7 +1,7 @@
-ITEM.name = "iRadChecker"
-ITEM.category = "Радиация"
+ITEM.name = "item.radchecker"
+ITEM.category = "item.category.radiation"
 ITEM.model = Model("models/Items/car_battery01.mdl")
-ITEM.description = "iRadCheckerDesc"
+ITEM.description = "item.radchecker.desc"
 ITEM.rarity = 1
 
 function ITEM:Check(user, target)
@@ -23,7 +23,7 @@ function ITEM:Check(user, target)
 end
 
 ITEM.functions.Use = {
-	name = "use",
+	name = "use.radcheck",
 	OnRun = function(item)
 		item:Check(item.player, item.player)
 
@@ -35,7 +35,7 @@ ITEM.functions.Use = {
 }
 
 ITEM.functions.UseOn = {
-	name = "useon",
+	name = "use.radcheck2",
 	OnRun = function(item)
 		local client = item.player
 
