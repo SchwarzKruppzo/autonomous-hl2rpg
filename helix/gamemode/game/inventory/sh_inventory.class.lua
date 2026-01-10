@@ -1043,8 +1043,7 @@ else
 			end
 		end
 
-		if IsValid(inventory.panel) then
-
+		if IsValid(inventory.panel) && inventory.panel:ShouldBeRebuild() then
 			inventory.panel:Rebuild()
 		end
 	end)
