@@ -44,7 +44,7 @@ if (CLIENT) then
 		category = "general"
 	})
 end
-
+/* -- we are using garry's mod language instead
 ix.option.Add("language", ix.type.array, ix.config.language or "english", {
 	category = "general",
 	bNetworked = true,
@@ -66,4 +66,4 @@ ix.option.Add("language", ix.type.array, ix.config.language or "english", {
 
 		return entries
 	end
-})
+})*/
