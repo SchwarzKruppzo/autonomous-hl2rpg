@@ -7,27 +7,25 @@ end
 
 local updateInterval = 6
 function PLUGIN:Think()
-	if !self.coroutine or coroutine.status(self.coroutine) == "dead" then
-		self.coroutine = coroutine.create(function()
-			repeat
-				local maxProcessed = ix.option.Get("csRenderSpeed", 50)
-				local processed = 0
+	self.coroutine = self.coroutine and coroutine.status(self.coroutine) != "dead" and self.coroutine or coroutine.create(function()
+		while true do
+			local maxProcessed = ix.option.Get("csRenderSpeed", 50)
+			local processed = 0
 
-				for _, info in ipairs(self.clientProps) do
-					self:HandleClientsideProp(info)
-					processed = processed + 1
+			for _, info in ipairs(self.clientProps) do
+				self:HandleClientsideProp(info)
+				processed = processed + 1
 
-					if processed >= maxProcessed then
-						processed = 0
+				if processed >= maxProcessed then
+					processed = 0
 
-						coroutine.yield()
-					end
+					coroutine.yield()
 				end
+			end
 
-				coroutine.yield()
-			until false
-		end)
-	end
+			coroutine.yield()
+		end
+	end)
 
 	if FrameNumber() % updateInterval != 0 then 
 		return 
@@ -58,26 +56,26 @@ function PLUGIN:KeyPress(client, key)
 		filter = client
 	}
 
-	repeat
+	while searchDist < 256 do
+		if IsValid(selectedProp) then break end
+
 		trace.endpos = trace.start + forwardVec * searchDist
 
 		for _, prop in ipairs(self.activeClientProps) do
-			local distSq = prop:GetPos():DistToSqr(trace.endpos)
-			if distSq > 62500 then continue end
+			if prop:GetPos():DistToSqr(trace.endpos) > 65536 then continue end
 
 			local boundsMin, boundsMax = prop:GetRenderBounds()
 			local relPos = prop:WorldToLocal(trace.endpos)
 
-			if relPos:WithinAABox(boundsMin, boundsMax) then
-				selectedProp = prop
-				break
-			end
+			if !relPos:WithinAABox(boundsMin, boundsMax) then continue end
+
+			selectedProp = prop
+				
+			break
 		end
 
-		if IsValid(selectedProp) then break end
-
 		searchDist = searchDist + 1
-	until searchDist >= 250
+	end
 
 	if !IsValid(selectedProp) then return end
 
@@ -110,8 +108,8 @@ net.Receive("clientprop.recreate", function()
 	for _, prop in ipairs(PLUGIN.activeClientProps) do
 		if !prop:GetPos():IsEqualTol(pos, 0.1) then continue end
 
-		table.remove(PLUGIN.activeClientProps, k)
 		prop:Remove()
+		table.remove(PLUGIN.activeClientProps, k)
 
 		break
 	end

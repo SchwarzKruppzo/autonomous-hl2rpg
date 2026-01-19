@@ -26,8 +26,9 @@ function PLUGIN:HandleClientsideProp(info)
 		for k, prop in ipairs(self.activeClientProps) do
 			if !info.position:IsEqualTol(prop:GetPos(), 0.1) then continue end
 
-			table.remove(self.activeClientProps, k)
 			prop:Remove()
+
+			table.remove(self.activeClientProps, k)
 
 			return
 		end
