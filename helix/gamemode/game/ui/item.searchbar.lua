@@ -1,6 +1,3 @@
-
-local PLUGIN = PLUGIN
-
 -- luacheck: ignore 122
 
 local PANEL = {}
@@ -35,10 +32,8 @@ function PANEL:Init()
 	end
 
 	self.Search.OnKeyCode = function(p, code)
-
 		if (code == KEY_F1) then hook.Run("OnSpawnMenuClose") end
 		if (code == KEY_ESCAPE) then hook.Run("OnSpawnMenuClose") end
-
 	end
 
 	self.StartSearch = function(pluginTable)
@@ -103,12 +98,11 @@ function PANEL:RefreshResults()
 
 	self.searchResultsItem:SetParent(ContentPanel)
 	ContentPanel:SwitchPanel(self.searchResultsItem)
-
 end
 
+vgui.Register("ui.item.searchbar", PANEL)
 
-function PLUGIN:PopulateContent(panel, tree, node)
+function ix.UI:PopulateSearchContent(panel, tree, node)
+--hook.Add("ui.PopupateContent", "ui.item.searchbar", function(panel, tree, node)
 	ContentPanel = panel
-end
-
-vgui.Register("ItemSearchBar", PANEL)
+end --)

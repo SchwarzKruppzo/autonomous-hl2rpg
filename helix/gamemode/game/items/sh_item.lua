@@ -15,6 +15,10 @@ Item.items_to_savedata = {}
 
 ix.util.Include("sh_item.class.lua")
 ix.util.Include("sh_preview.lua")
+ix.util.Include("cl_spawn.items.lua")
+ix.util.Include("sv_spawn.items.lua")
+
+ix.flag.Add("G", "Access to item spawn.")
 
 function Item:All() return self.stored end
 function Item:Instances() return self.instances end

@@ -480,3 +480,9 @@ tempflags.expireWarn = "Ваши временные '%s' флаги истеку
 tempflags.check = "У этого персонажа '%s' флаги."
 
 config.tempFlagsRemove.desc = "Следует ли удалять все временные флаги при смене персонажа игроком."
+
+
+spawn.ui.itemGive 						= "Выдать себе"
+spawn.ui.itemCopyID						= "Скопировать Item ID"
+spawn.ui.itemCustomItems 				= "Кастомные Предметы"
+spawn.ui.items 							= "Предметы"

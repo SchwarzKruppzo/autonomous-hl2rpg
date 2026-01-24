@@ -490,3 +490,9 @@ tempflags.expireWarn = "Your temporary '%s' flags will expire in 5 minutes."
 tempflags.check = "This character have the '%s' temporary flags."
 
 config.tempFlagsRemove.desc = "Should all temporary flags be removed when a player changes character."
+
+
+spawn.ui.itemGive 						= "Give"
+spawn.ui.itemCopyID						= "Copy Item ID"
+spawn.ui.itemCustomItems 				= "Custom Items"
+spawn.ui.items 							= "Items"

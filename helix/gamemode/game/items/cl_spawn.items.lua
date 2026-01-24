@@ -1,6 +1,3 @@
-
-local PLUGIN = PLUGIN
-
 local icons = {
 	["Инструменты"] = "wrench",
 	["Одежда"] = "suit",
@@ -66,11 +63,11 @@ spawnmenu.AddContentType("ixItem", function(container, data)
 
 	function icon:OpenMenu()
 		local menu = DermaMenu()
-		menu:AddOption("Скопировать Item ID", function()
+		menu:AddOption(L"spawn.ui.itemCopyID", function()
 			SetClipboardText(data.uniqueID)
 		end)
 
-		menu:AddOption("Выдать себе", function()
+		menu:AddOption(L"spawn.ui.itemGive", function()
 			net.Start("MenuItemGive")
 				net.WriteString(custom and data.checksum or data.uniqueID)
 				net.WriteBool(custom)
@@ -90,26 +87,25 @@ local function CreateItemsPanel()
 	local tree = base.ContentNavBar.Tree
 	local categories = {}
 
-	vgui.Create("ItemSearchBar", base.ContentNavBar)
+	vgui.Create("ui.item.searchbar", base.ContentNavBar)
 
 	local items = ix.Item:All()
 
 	for k, v in SortedPairsByMemberValue(items, "category") do
-		if (!categories[v.category] and !string.match(v.name, "Base")) then
+		if !categories[v.category] and !string.match(v.name, "Base") then
 			categories[v.category] = true
 
 			local category = tree:AddNode(L(v.category), icons[v.category] and ("icon16/" .. icons[v.category] .. ".png") or "icon16/brick.png")
 
 			function category:DoPopulate()
-				if (self.Container) then return end
+				if self.Container then return end
 
 				self.Container = vgui.Create("ContentContainer", base)
 				self.Container:SetVisible(false)
 				self.Container:SetTriggerSpawnlistChange(false)
 
-
 				for uniqueID, itemTable in SortedPairsByMemberValue(items, "name") do
-					if (itemTable.category == v.category and not string.match( itemTable.name, "Base" )) then
+					if itemTable.category == v.category and not string.match(itemTable.name, "Base") then
 						spawnmenu.CreateContentIcon("ixItem", self.Container, itemTable)
 					end
 				end
@@ -122,9 +118,9 @@ local function CreateItemsPanel()
 		end
 	end
 
-	local category = tree:AddNode("Кастомные Предметы", "icon16/heart.png")
+	local category = tree:AddNode(L"spawn.ui.itemCustomItems", "icon16/heart.png")
 	function category:DoPopulate()
-		if (self.Container) then return end
+		if self.Container then return end
 
 		self.Container = vgui.Create("ContentContainer", base)
 		self.Container:SetVisible(false)
@@ -141,22 +137,15 @@ local function CreateItemsPanel()
 		base:SwitchPanel(self.Container)
 	end
 
-
-
 	local FirstNode = tree:Root():GetChildNode(0)
 
-	if (IsValid(FirstNode)) then
+	if IsValid(FirstNode) then
 		FirstNode:InternalDoClick()
 	end
 
-	PLUGIN:PopulateContent(base, tree, nil)
+	ix.UI:PopulateSearchContent(base, tree)
 
 	return base
 end
 
-spawnmenu.AddCreationTab("Предметы", CreateItemsPanel, "icon16/script_key.png")
-
--- ensures the spawnmenu repopulates
-timer.Simple(0, function()
-	RunConsoleCommand("spawnmenu_reload")
-end)
+spawnmenu.AddCreationTab(L"spawn.ui.items", CreateItemsPanel, "icon16/script_key.png")
