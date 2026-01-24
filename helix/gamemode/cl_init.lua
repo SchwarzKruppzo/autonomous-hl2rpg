@@ -48,3 +48,7 @@ CreateConVar("cl_weaponcolor", "0.30 1.80 2.10", {
 timer.Remove("HintSystem_OpeningMenu")
 timer.Remove("HintSystem_Annoy1")
 timer.Remove("HintSystem_Annoy2")
+
+timer.Simple(0, function()
+	RunConsoleCommand("spawnmenu_reload")
+end)

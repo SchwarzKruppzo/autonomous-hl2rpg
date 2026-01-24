@@ -123,11 +123,14 @@ ix.util.Include("core/sh_meta.lua")
 ix.util.Include("core/sh_networking.lua")
 ix.util.Include("core/sh_exceptions.lua")
 
+ix.util.IncludeDir("core/libs")
+
 ix.DX = ix.DX or ix.util.Include("game/cl_ui_shaders.lua")
 
 ix.util.Include("game/cl_ui_palette.lua")
 ix.util.Include("game/cl_ui_utils.lua")
 ix.util.Include("game/cl_ui_tooltips.lua")
+ix.util.Include("game/ui/item.searchbar.lua", "client")
 ix.util.Include("game/ui/generic.menu.lua", "client")
 ix.util.Include("game/ui/generic.panels.lua", "client")
 ix.util.Include("game/ui/tooltip.lua", "client")
@@ -137,17 +140,19 @@ ix.util.Include("game/ui/tabmenu.frame.lua", "client")
 ix.util.Include("game/ui/tabmenu.lua", "client")
 ix.util.Include("core/libs/sh_character.lua")
 
-
 ix.util.Include("game/items/sh_item.lua")
 ix.util.Include("game/inventory/sh_inventory.lua")
+ix.util.Include("game/character/sh_character.lua")
 
-ix.util.IncludeDir("core/libs")
 ix.util.IncludeDir("core/derma", nil, "client")
 ix.util.IncludeDir("core/hooks")
 
 -- Include language and default base items.
 ix.Locale:LoadFromDir("helix/gamemode/languages")
 ix.Item:LoadFromDir("helix/gamemode/items")
+
+ix.BodyTypes:Load()
+ix.Races:Load()
 
 ix.Net:AddPlayerVar("holdingObject", true, nil, ix.Net.Type.Entity)
 ix.Net:AddPlayerVar("bIsHoldingObject", true, nil, ix.Net.Type.Bool)
