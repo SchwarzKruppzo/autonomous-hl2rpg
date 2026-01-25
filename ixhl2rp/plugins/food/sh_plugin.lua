@@ -4,7 +4,7 @@ PLUGIN.name = "Food and Drinks"
 PLUGIN.author = "SchwarzKruppzo"
 PLUGIN.description = "Adds a hunger and thirst with various useable items."
 
-ix.lang.AddTable("english", {
+ix.lang.AddTable("en", {
 	useDrink = "Drink",
 	useDrinkAll = "Drink All",
 	useFood = "Consume",
@@ -19,7 +19,7 @@ ix.lang.AddTable("english", {
 	barHunger = "HUNGER"
 })
 
-ix.lang.AddTable("russian", {
+ix.lang.AddTable("ru", {
 	useDrink = "Выпить",
 	useDrinkAll = "Выпить всё",
 	useFood = "Съесть",
@@ -72,3 +72,25 @@ ix.util.Include("cl_drunk.lua")
 ix.util.Include("sh_commands.lua")
 ix.util.Include("sh_config.lua")
 ix.util.Include("sv_hooks.lua")
+
+if CLIENT then
+	do -- remove after HUD update
+		ix.bar.Add(function()
+			local character = LocalPlayer():GetCharacter()
+
+			if character then
+				local hunger = character:GetHunger()
+				return hunger / 100
+			end
+		end, "cellar/ui/food.png", 5, "hunger")
+		
+		ix.bar.Add(function()
+			local character = LocalPlayer():GetCharacter()
+
+			if character then
+				local thirst = character:GetThirst()
+				return thirst / 100
+			end
+		end, "cellar/ui/water.png", 6, "thirst")
+	end
+end

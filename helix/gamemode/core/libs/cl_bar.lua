@@ -30,23 +30,23 @@ function ix.bar.Remove(identifier)
 	end
 end
 
-function ix.bar.Add(getValue, color, priority, identifier)
+function ix.bar.Add(getValue, icon, priority, identifier)
 	if (identifier) then
 		ix.bar.Remove(identifier)
 	end
 
 	local index = #ix.bar.list + 1
 
-	color = color or Color(math.random(150, 255), math.random(150, 255), math.random(150, 255))
+	icon = icon or false
 	priority = priority or index
 
 	ix.bar.list[index] = {
 		index = index,
-		color = color,
+		icon = icon,
 		priority = priority,
 		GetValue = getValue,
 		identifier = identifier,
-		panel = IsValid(ix.gui.bars) and ix.gui.bars:AddBar(index, color, priority)
+		panel = IsValid(ix.gui.bars) and ix.gui.bars:AddBar(index, icon, priority)
 	}
 
 	return priority
@@ -89,16 +89,6 @@ function ix.bar.DrawAction()
 			draw.SimpleText(ix.bar.actionText, "ixMediumFont", x, y - 24, TEXT_COLOR)
 		end
 	end
-end
-
-do
-	ix.bar.Add(function()
-		return math.max(LocalPlayer():Health() / LocalPlayer():GetMaxHealth(), 0)
-	end, Color(200, 50, 40), nil, "health")
-
-	ix.bar.Add(function()
-		return math.min(LocalPlayer():Armor() / 100, 1)
-	end, Color(30, 70, 180), nil, "armor")
 end
 
 net.Receive("ixActionBar", function()

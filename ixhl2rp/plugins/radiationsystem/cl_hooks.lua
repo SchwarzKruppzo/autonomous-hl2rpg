@@ -1,5 +1,36 @@
 local PLUGIN = PLUGIN
 
+do -- remove after HUD update
+	ix.bar.Add(function()
+		local client = LocalPlayer()
+		local character = client:GetCharacter()
+
+		if character then
+			local radLevel = client:GetNetVar("radDmg") or 0
+			local geiger = client:HasGeigerCounter()
+
+			if geiger and radLevel > 0 then
+				return (radLevel / 100)
+			end
+		end
+	end, "cellar/ui/geiger.png", 7, "geiger")
+
+	ix.bar.Add(function()
+		local client = LocalPlayer()
+		local character = client:GetCharacter()
+
+		if character then
+			local filter = client:HasWearedFilter()
+
+			if filter then
+				filter = ix.Item.instances[filter]
+				
+				return filter:GetFilterQuality() / filter.filterQuality
+			end
+		end
+	end, "cellar/ui/filter.png", 8, "filter")
+end
+
 timer.Create("ixGeigerThink", 0.06, 0, function()
 	if IsValid(LocalPlayer()) and LocalPlayer():GetCharacter() then
 		PLUGIN:GeigerThink(LocalPlayer():GetCharacter())

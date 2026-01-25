@@ -2,20 +2,22 @@
 -- bar manager
 -- this manages positions for bar panels
 local PANEL = {}
+local ICON_SIZE = 16
+local BAR_HEIGHT = 100
 
 AccessorFunc(PANEL, "padding", "Padding", FORCE_NUMBER)
 
 function PANEL:Init()
 	self:SetSize(ScrW() * 0.35, ScrH())
-	self:SetPos(4, 4)
+	self:SetPos(ICON_SIZE * 3, ICON_SIZE * 7)
 	self:ParentToHUD()
 
 	self.bars = {}
-	self.padding = 2
+	self.padding = 16
 
 	-- add bars that were registered before manager creation
 	for _, v in ipairs(ix.bar.list) do
-		v.panel = self:AddBar(v.index, v.color, v.priority)
+		v.panel = self:AddBar(v.index, v.icon, v.priority)
 	end
 end
 
@@ -31,12 +33,12 @@ function PANEL:Clear()
 	end
 end
 
-function PANEL:AddBar(index, color, priority)
+function PANEL:AddBar(index, icon, priority)
 	local panel = self:Add("ixInfoBar")
-	panel:SetSize(self:GetWide(), BAR_HEIGHT)
+	panel:SetSize(ICON_SIZE, BAR_HEIGHT * 2)
 	panel:SetVisible(false)
 	panel:SetID(index)
-	panel:SetColor(color)
+	panel:SetIcon(isstring(icon) and icon or false)
 	panel:SetPriority(priority)
 
 	self.bars[#self.bars + 1] = panel
@@ -72,19 +74,19 @@ end
 
 -- update target Y positions
 function PANEL:Organize()
-	local currentY = 0
+	local currentX = 0
 
 	for _, v in ipairs(self.bars) do
 		if (!v:IsVisible()) then
 			continue
 		end
 
-		v:SetPos(0, currentY)
+		v:SetPos(currentX, 0)
 
-		currentY = currentY + self.padding + v:GetTall()
+		currentX = currentX + self.padding + v:GetWide()
 	end
 
-	self:SetSize(self:GetWide(), currentY)
+	self:SetSize(currentX, self:GetTall())
 end
 
 function PANEL:Think()
@@ -105,8 +107,9 @@ function PANEL:Think()
 
 	for _, v in ipairs(self.bars) do
 		local info = ix.bar.list[v:GetID()]
-		local realValue, barText = info.GetValue()
+		local realValue = info.GetValue()
 
+		realValue = realValue or 0
 		if (bShouldHide or realValue == false) then
 			v:SetVisible(false)
 			continue
@@ -116,14 +119,14 @@ function PANEL:Think()
 			v:SetLifetime(curTime + 5)
 		end
 
-		if (v:GetLifetime() < curTime and !info.visible and !bAlwaysShow and !hook.Run("ShouldBarDraw", info)) then
+		if (realValue <= 0 and !info.visible and !bAlwaysShow and !hook.Run("ShouldBarDraw", info)) then
 			v:SetVisible(false)
 			continue
 		end
 
 		v:SetVisible(true)
 		v:SetValue(realValue)
-		v:SetText(isstring(barText) and barText or "")
+		v:SetIcon(isstring(info.icon) and info.icon or false)
 	end
 
 	self:Organize()
@@ -144,56 +147,62 @@ AccessorFunc(PANEL, "value", "Value", FORCE_NUMBER)
 AccessorFunc(PANEL, "delta", "Delta", FORCE_NUMBER)
 AccessorFunc(PANEL, "lifetime", "Lifetime", FORCE_NUMBER)
 
+local clrBackground = Color(100, 100, 100, 150)
+
 function PANEL:Init()
 	self.value = 0
 	self.delta = 0
 	self.lifetime = 0
 
-	self.bar = self:Add("DPanel")
-	self.bar:SetPaintedManually(true)
-	self.bar:Dock(FILL)
-	self.bar:DockMargin(2, 2, 2, 2)
+	self.icon = self:Add("DImage")
+	self.icon:SetImage("ui/cross.png")
+	self.icon:Dock(TOP)
+	self.icon:SetSize(16, 16)
+	self.icon:DockPadding(0, 4, 0, 0)
+	
+	self.bar = self:Add("EditablePanel")
+	self.bar:Dock(TOP)
+	self.bar:DockMargin(6, 10, 6, 0)
+	self.bar:SetTall(BAR_HEIGHT)
 	self.bar.Paint = function(this, width, height)
-		width = width * math.min(self.delta, 1)
+		surface.SetDrawColor(clrBackground)
+		surface.DrawRect(0, 0, width, height)
 
-		derma.SkinFunc("PaintInfoBar", self, width, height, self.color)
+		local delta = math.min(self.delta, 1)
+
+		height = height * delta + 1
+
+		surface.SetDrawColor(color_white)
+		surface.DrawRect(0, BAR_HEIGHT - (height - 1), width, height)
 	end
-
-	self.label = self:Add("DLabel")
-	self.label:SetFont("ixSmallFont")
-	self.label:SetContentAlignment(5)
-	self.label:SetText("")
-	self.label:SetTextColor(Color(240, 240, 240))
-	self.label:SetExpensiveShadow(2, Color(20, 20, 20))
-	self.label:SetPaintedManually(true)
-	self.label:SizeToContents()
-	self.label:Dock(FILL)
 end
 
-function PANEL:SetText(text)
-	self.label:SetText(text)
-	self.label:SizeToContents()
+function PANEL:SetIcon(icon)
+	if icon then
+		self.icon:SetImage(icon)
+		self.icon:SetVisible(true)
+	else
+		self.icon:SetVisible(false)
+	end
 end
 
 function PANEL:Think()
-	self.delta = math.Approach(self.delta, self.value, FrameTime())
+	local value = math.Approach(self.delta, self.value, FrameTime())
+	
+	if value == self.value and self.delta != self.value and self.value != 0 and self.value != 1 then
+		value = self.delta
+	end
+
+	self.delta = value
 end
 
 function PANEL:Paint(width, height)
-	surface.SetDrawColor(230, 230, 230, 15)
-	surface.DrawRect(0, 0, width, height)
-	surface.DrawOutlinedRect(0, 0, width, height)
 
-	self.bar:PaintManual()
-
-	DisableClipping(true)
-		self.label:PaintManual()
-	DisableClipping(false)
 end
 
 vgui.Register("ixInfoBar", PANEL, "Panel")
 
-if (IsValid(ix.gui.bars)) then
+if IsValid(ix.gui.bars) then
 	ix.gui.bars:Remove()
 	ix.gui.bars = vgui.Create("ixInfoBarManager")
 end
