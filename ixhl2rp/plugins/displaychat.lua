@@ -18,6 +18,22 @@ ix.option.Add("chatDisplayDurationPerSymbol", ix.type.number, 0.5, {
 	min = 0.01, max = 1, decimals = 2
 })
 
+function PLUGIN:DisplayChatPopupPos(pos, messageInfo)
+	if CLIENT then
+		return self:PopupMessage(pos, messageInfo)
+	end
+	
+	local sortedPlayers = {}
+
+	for k,v in ipairs(player.GetAll())do
+		if (pos:DistToSqr(v:GetPos()) < 900 * 900) then
+			sortedPlayers[#sortedPlayers+1] = v
+		end
+	end
+
+	netstream.Start(sortedPlayers, "displaychatPopupPos", pos, messageInfo)
+end
+
 if SERVER then 
 	return 
 end
@@ -25,20 +41,24 @@ end
 local stored = PLUGIN.chatDisplay or {}
 PLUGIN.chatDisplay = stored
 
+function PLUGIN:PopupMessage(entity, messageInfo)
+	local class = ix.chat.classes[messageInfo.chatType]
+	local maxLen = ix.option.Get("chatDisplayLength")
+	local text = messageInfo.text
+	local textLen = string.utf8len(text)
+	local duration = math.max(2, math.min(textLen, maxLen) * ix.option.Get("chatDisplayDurationPerSymbol"))
+	
+	stored[entity] = {
+		text = textLen > maxLen and utf8.sub(text, 1, ix.option.Get("chatDisplayLength")).."..." or text,
+		color = class and class.color or color_white,
+		fadeTime = duration
+	}
+end
+
 function PLUGIN:MessageReceived(client, messageInfo)
 	if IsValid(client) and client != LocalPlayer() and ix.option.Get("chatDisplayEnabled", false) then
 		if hook.Run("ShouldChatMessageDisplay2", client, messageInfo) != false then
-			local class = ix.chat.classes[messageInfo.chatType]
-			local maxLen = ix.option.Get("chatDisplayLength")
-			local text = messageInfo.text
-			local textLen = string.utf8len(text)
-			local duration = math.max(2, math.min(textLen, maxLen) * ix.option.Get("chatDisplayDurationPerSymbol"))
-			
-			stored[client] = {
-				text = textLen > maxLen and utf8.sub(text, 1, ix.option.Get("chatDisplayLength")).."..." or text,
-				color = class and class.color or color_white,
-				fadeTime = duration
-			}
+			self:PopupMessage(client, messageInfo)
 		end
 	end
 end
@@ -82,8 +102,8 @@ function PLUGIN:HUDPaint()
 		local toRem = {}
 
 		for k, v in pairs(stored) do
-			if IsValid(k) then
-				local targetPos = hook.Run("GetTypingIndicatorPosition", k)
+			if IsValid(k) || isvector(k) then
+				local targetPos = isvector(k) && k || hook.Run("GetTypingIndicatorPosition", k)
 				local pos = targetPos:ToScreen()
 				local distSqr = clientPos:DistToSqr(targetPos)
 
@@ -127,3 +147,8 @@ function PLUGIN:HUDPaint()
 		end
 	end
 end
+
+
+netstream.Hook("displaychatPopupPos", function(pos, messageInfo)
+	PLUGIN:PopupMessage(pos, messageInfo)
+end)
