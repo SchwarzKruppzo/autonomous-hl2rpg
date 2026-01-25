@@ -87,3 +87,9 @@ scOTA 						= "Сверчеловеский Надзор"
 
 item.category.crafted 		= "Производные компоненты"
 item.category.raw 			= "Базовые компоненты"
+
+
+option.category.music 		= "Музыка"
+option.ambientToggle 		= "Включить музыку"
+option.ambientVol 			= "Громкость музыки"
+option.ambientTime 			= "Время между музыкой (сек)"

@@ -88,7 +88,7 @@ function PLUGIN:CharacterLoaded(character)
 end
 
 ix.option.Add("ambientToggle", ix.type.bool, true, {
-	category = "Музыка",
+	category = "option.category.music",
 	OnChanged = function(_, value)
 		if !value then
 			StopAmbient()
@@ -100,7 +100,7 @@ ix.option.Add("ambientToggle", ix.type.bool, true, {
 })
 
 ix.option.Add("ambientVol", ix.type.number, 1, {
-	category = "Музыка",
+	category = "option.category.music",
 	decimals = 2,
 	min = 0.01, 
 	max = 1, 
@@ -110,20 +110,8 @@ ix.option.Add("ambientVol", ix.type.number, 1, {
 })
 
 ix.option.Add("ambientTime", ix.type.number, 0, {
-	category = "Музыка",
+	category = "option.category.music",
 	decimals = 0,
 	min = 0, 
 	max = 600
-})
-
-ix.lang.AddTable("english", {
-	optAmbientToggle = "Toggle music",
-	optAmbientVol = "Music volume",
-	optAmbientTime = "Time between music (sec)",
-})
-
-ix.lang.AddTable("russian", {
-	optAmbientToggle = "Включить музыку",
-	optAmbientVol = "Громкость музыки",
-	optAmbientTime = "Время между музыкой (сек)"
 })

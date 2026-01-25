@@ -81,3 +81,9 @@ iIDCard						= "Citizen ID"
 
 item.category.crafted 		= "Derivative Components"
 item.category.raw 			= "Raw Resources"
+
+
+option.category.music 		= "Music"
+option.ambientToggle 		= "Toggle music"
+option.ambientVol 			= "Music volume"
+option.ambientTime 			= "Time between music (in seconds)"
