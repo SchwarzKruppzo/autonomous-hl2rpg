@@ -39,6 +39,11 @@ function PLUGIN:MessageReceived(client, messageInfo)
 				color = class and class.color or color_white,
 				fadeTime = duration
 			}
+
+
+			if system.IsWindows() and !system.HasFocus() then
+				system.FlashWindow()
+			end
 		end
 	end
 end
