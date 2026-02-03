@@ -116,6 +116,7 @@ do
 end
 
 -- Include core framework files.
+ix.util.Include("core/cl_fonts.lua")
 ix.util.Include("core/cl_skin.lua")
 ix.util.IncludeDir("core/libs/thirdparty")
 ix.util.Include("core/sh_config.lua")
