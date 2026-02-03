@@ -27,7 +27,9 @@ does not have a set language. An example:
 ]]
 
 local Locale = ix.util.Lib("Locale", {
-	stored = {},
+	stored = {
+		en = {}
+	},
 	lang = nil
 })
 
