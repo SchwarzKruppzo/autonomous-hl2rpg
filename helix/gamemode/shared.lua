@@ -141,6 +141,8 @@ ix.util.Include("game/ui/tabmenu.frame.lua", "client")
 ix.util.Include("game/ui/tabmenu.lua", "client")
 ix.util.Include("core/libs/sh_character.lua")
 
+ix.util.IncludeDir("matproxy", nil, "client")
+
 ix.util.Include("game/items/sh_item.lua")
 ix.util.Include("game/inventory/sh_inventory.lua")
 ix.util.Include("game/character/sh_character.lua")
