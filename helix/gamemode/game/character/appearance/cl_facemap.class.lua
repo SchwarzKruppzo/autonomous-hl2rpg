@@ -40,7 +40,7 @@ local dataFallback = {
 	x = 2048,
 	y = 2048,
 	size = RT_SIZE_NO_CHANGE,
-	depth = MATERIAL_RT_DEPTH_SHARED,
+	depth = MATERIAL_RT_DEPTH_SEPARATE,
 	textureFlags = TEXTUREFLAGS_ANISOTROPIC or 16,
 	renderTargetFlags = CREATERENDERTARGETFLAGS_AUTOMIPMAP,
 	format = IMAGE_FORMAT_RGBA8888
@@ -105,6 +105,39 @@ local function BakeTexture(blend, key)
 	return blendRT
 end
 
+local mask = Material("autonomous/humans/eyes/eye_iris_mask")
+local base = Material("autonomous/humans/eyes/base_eye.png")
+local iris = Material("autonomous/humans/eyes/base_iris.png")
+local function BakeEyes(blend, key)
+	blend.color = blend.color or color_white
+
+	local blendRT = CreateRenderTarget(blend.name, {x = 256, y = 256})
+	render.PushRenderTarget(blendRT)
+		cam.Start2D()
+
+		render.Clear(0, 0, 0, 0)
+
+		ix.DX.DrawMaterial(0, 0, 0, 256, 256, color_white, base)
+		ix.DX.DrawMaterial(0, 0, 0, 256, 256, Color(blend.color.r, blend.color.g, blend.color.b, 255), iris)
+		
+		render.OverrideColorWriteEnable(true, false)
+			render.SetWriteDepthToDestAlpha(false)
+				render.OverrideBlend(true, BLEND_SRC_COLOR, BLEND_SRC_ALPHA, BLENDFUNC_MIN)
+
+				surface.SetMaterial(mask)
+				surface.DrawTexturedRect(0, 0, 256, 256)
+
+				render.OverrideBlend(false)
+			render.SetWriteDepthToDestAlpha(true)
+		render.OverrideColorWriteEnable(false)
+
+		cam.End2D()
+	render.PopRenderTarget()
+	
+	surface.DisableClipping(false)
+	return blendRT
+end
+
 local FaceMap = class("FaceMap")
 local CharGen = ix.CharGen
 
@@ -119,6 +152,8 @@ function FaceMap:Init(name, bundle)
 	self.faceMix = 0
 	self.primary = nil
 	self.secondary = nil
+
+	self.eyeColor = color_white
 
 	self._primaryTex = 0
 	self._secondaryTex = 0
@@ -173,6 +208,32 @@ function FaceMap:SetLayerColor(id, clr)
 	self.colorLayers[id] = clr
 end
 
+function FaceMap:SetEyeColor(clr)
+	self.eyeColor = clr
+end
+
+function FaceMap:GenerateEyes(callback)
+	local data = {
+		name = "eyes_"..self.name,
+		color = self.eyeColor,
+		noSave = self.noSave
+	}
+
+	if callback then
+		local hookName = "facemap.eyes."..self.name
+
+		hook.Add("PreRender", hookName, function()
+			hook.Remove("PreRender", hookName)
+
+			local texture = BakeEyes(data, "$basetexture")
+
+			callback(texture)
+		end)
+	else
+		return BakeEyes(data, "$basetexture")
+	end
+end
+
 function FaceMap:Generate(callback)
 	local textures = {}
 
@@ -205,7 +266,7 @@ function FaceMap:Generate(callback)
 	end
 
 	local data = {
-		name = self.name,
+		name = "facemap_"..self.name,
 		textures = textures,
 		noSave = self.noSave
 	}
