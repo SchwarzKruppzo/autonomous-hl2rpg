@@ -1,25 +1,31 @@
-local ItemFood = class("ItemFood"):implements("Item")
+local ItemFood = class("ItemFood")
+implements("ItemReagentContainer", "ItemFood")
+
+ItemFood = ix.meta.ItemFood
 
 ItemFood.junk = nil
 ItemFood.useSound = {"npc/barnacle/barnacle_gulp1.wav", "npc/barnacle/barnacle_gulp2.wav"}
+ItemFood.volume = 200
+ItemFood.portion_amount = 50
+ItemFood.reagent_flags = ix.Reagents.holder.injectable
 
 function ItemFood:Init()
+	ix.meta.ItemReagentContainer.Init(self)
+
 	self.category = "Еда"
 
 	self.stats = {
 		container = false,
-		thirst = 0,
 		hunger = 0,
-		uses = 1,
-		freezeSpeed = 2 * 60 * 60, -- 2 hours
-		unfreezeSpeed = 60 * 60, -- 1 hour
-		--noExpire = true,
+		thirst = 0,
+		freezeSpeed = 2 * 60 * 60,
+		unfreezeSpeed = 60 * 60,
 		expireTime = 24 * 60 * 60,
 		expireMultiplier = {
 			cold = 999
 		}
 	}
-	
+
 	self.functions.open = {
 		name = "Вскрыть",
 		OnRun = function(item)
@@ -31,20 +37,34 @@ function ItemFood:Init()
 		end,
 		OnCanRun = function(item) return (item:IsClosed() == true) end
 	}
+
 	self.functions.use = {
 		name = "Съесть",
 		OnRun = function(item)
-			local uses = item:GetUses()
-			local client, character = item.player, item.player:GetCharacter()
+			local client = item.player
+			local character = client:GetCharacter()
+			local portionAmount = math.min(item.portion_amount, item.reagents and item.reagents.volume or 0)
 
-			character:UpdateNeeds(item.stats.thirst, item.stats.hunger)
+			if portionAmount <= 0 then
+				return
+			end
+
+			local portionScale = portionAmount / item.portion_amount
+			local thirst = (item.stats.thirst or 0) * portionScale
+			local hunger = (item.stats.hunger or 0) * portionScale
+
+			local reagentThirst, reagentHunger = ix.Reagents:Consume(item.reagents, portionAmount, client)
+			thirst = thirst + reagentThirst
+			hunger = hunger + reagentHunger
+
+			character:UpdateNeeds(thirst, hunger)
 
 			if item.stats.stamina then
-				client:RestoreStamina(item.stats.stamina)
+				client:RestoreStamina(item.stats.stamina * portionScale)
 			end
 
 			if item.stats.blood then
-				character:SetBlood(math.min(character:GetBlood() + item.stats.blood, 5000))
+				character:SetBlood(math.min(character:GetBlood() + item.stats.blood * portionScale, 5000))
 			end
 
 			if istable(item.useSound) then
@@ -54,51 +74,49 @@ function ItemFood:Init()
 			end
 
 			if item.CustomEffect then
-				item:CustomEffect(client, 1)
+				item:CustomEffect(client, portionAmount)
 			end
 
-			if uses > 1 then
-				item:SetData("uses", uses - 1)
-			else
-				local junk = item.junk
-
-				if IsValid(item.entity) then
-					local pos, ang = item.entity:GetPos(), item.entity:GetAngles()
-
-					item.entity:Remove()
-
-					if junk then
-						local new_item = ix.Item:Instance(junk)
-
-						ix.Item:Spawn(pos, ang, new_item)
-					end
-				else
-					item:Remove()
-
-					if junk then
-						local new_item = ix.Item:Instance(junk)
-
-						client:AddItem(new_item)
-					end
-				end
+			if item.reagents.volume <= 0.1 then
+				item:OnDepleted()
 			end
 		end,
-		OnCanRun = function(item) return !item:IsClosed() end
+		OnCanRun = function(item)
+			if item:IsClosed() then return false end
+			if SERVER and item.reagents then return item.reagents.volume > 0.1 end
+			if CLIENT then return (item:GetData("value") or 0) > 0.1 end
+			return true
+		end
 	}
+
 	self.functions.useall = {
 		name = "Съесть всё",
 		OnRun = function(item)
-			local uses = item:GetUses()
-			local client, character = item.player, item.player:GetCharacter()
+			local client = item.player
+			local character = client:GetCharacter()
+			local remaining = item.reagents and item.reagents.volume or 0
 
-			character:UpdateNeeds(item.stats.thirst * uses, item.stats.hunger * uses)
+			if remaining <= 0.1 then
+				return
+			end
 
+			local portions = remaining / item.portion_amount
+			local thirst = (item.stats.thirst or 0) * portions
+			local hunger = (item.stats.hunger or 0) * portions
+
+			local reagentThirst, reagentHunger = ix.Reagents:Consume(item.reagents, remaining, client)
+			thirst = thirst + reagentThirst
+			hunger = hunger + reagentHunger
+
+			character:UpdateNeeds(thirst, hunger)
+
+			local totalFraction = remaining / item.volume
 			if item.stats.stamina then
-				client:RestoreStamina(item.stats.stamina * uses)
+				client:RestoreStamina(item.stats.stamina * totalFraction)
 			end
 
 			if item.stats.blood then
-				character:SetBlood(math.min(character:GetBlood() + (item.stats.blood * uses), 5000))
+				character:SetBlood(math.min(character:GetBlood() + item.stats.blood * totalFraction, 5000))
 			end
 
 			if istable(item.useSound) then
@@ -108,47 +126,18 @@ function ItemFood:Init()
 			end
 
 			if item.CustomEffect then
-				item:CustomEffect(client, uses)
+				item:CustomEffect(client, remaining)
 			end
 
-			local junk = item.junk
-			local class = item.uniqueID
-			
-			if IsValid(item.entity) then
-				local pos, ang = item.entity:GetPos(), item.entity:GetAngles()
-
-				item.entity:Remove()
-				
-				if junk then
-					local new_item = ix.Item:Instance(junk)
-
-					ix.Item:Spawn(pos, ang, new_item)
-				end
-			else
-				item:Remove()
-
-				if junk then
-					local new_item = ix.Item:Instance(junk)
-
-					item.player:AddItem(new_item)
-				end
-			end
+			item:OnDepleted()
 		end,
-		OnCanRun = function(item) return !item:IsClosed() end
+		OnCanRun = function(item)
+			if item:IsClosed() then return false end
+			if SERVER and item.reagents then return item.reagents.volume > 0.1 end
+			if CLIENT then return (item:GetData("value") or 0) > 0.1 end
+			return true
+		end
 	}
-
-	self:AddData("closed", {
-		Transmit = ix.transmit.owner,
-	})
-
-	self:AddData("uses", {
-		Transmit = ix.transmit.owner,
-	})
-
-	/*
-	self:AddData("test", {
-		Transmit = bit.bor(ix.transmit.closelook, ix.transmit.owner),
-	})*/
 
 	self:AddData("expire", {
 		Transmit = ix.transmit.owner,
@@ -169,10 +158,6 @@ function ItemFood:Init()
 	})
 end
 
-function ItemFood:GetUses()
-	return self:GetData("uses") or self.stats.uses
-end
-
 function ItemFood:IsClosed()
 	if self.stats.container then
 		return self:GetData("closed")
@@ -181,13 +166,37 @@ function ItemFood:IsClosed()
 	return false
 end
 
-function ItemFood:OnInstanced(isCreated)
-	if isCreated then
-		self:SetData("uses", self.stats.uses or 1)
+function ItemFood:GetReagentFlags()
+	if self:IsClosed() then
+		return 0
+	end
+
+	return ix.Reagents.holder.injectable
+end
+
+if SERVER then
+	function ItemFood:OnFirstCreated()
 		self:SetData("closed", self.stats.container or false)
+
+		self.reagents:AddReagent("food_matter", self.volume, 300, true)
+		self.reagents:UpdateTotal()
 
 		if !self:IsClosed() then
 			self:StartRotProgress()
+		end
+	end
+
+	function ItemFood:OnMigrateData()
+		local savedUses = self:GetData("uses")
+		local maxUses = math.floor(self.volume / self.portion_amount + 0.5)
+
+		if savedUses and maxUses > 0 then
+			local remaining = (savedUses / maxUses) * self.volume
+			self.reagents:AddReagent("food_matter", remaining, 300, true)
+			self.reagents:UpdateTotal()
+		else
+			self.reagents:AddReagent("food_matter", self.volume, 300, true)
+			self.reagents:UpdateTotal()
 		end
 	end
 end
@@ -196,7 +205,7 @@ function ItemFood:StartRotProgress()
 	if self.stats.noExpire then
 		return
 	end
-	
+
 	self:SetData("expire", os.time() + self.stats.expireTime)
 	self:SetData("expire_last", nil)
 	self:SetData("delta_time", nil)
@@ -234,7 +243,7 @@ function ItemFood:OnTransfer(newInventory, oldInventory)
 	if currentTime >= rottenTime then
 		return
 	end
-	
+
 	if !newInventory or newInventory.type != "container" then
 		local freezedTime = self:GetData("freezed_time") or 0
 		local remainingTime = expireTime - freezedTime
@@ -244,7 +253,7 @@ function ItemFood:OnTransfer(newInventory, oldInventory)
 
 		self:SetData("expire_last", expireLast + (rottenTime - expireLast))
 		self:SetData("expire", currentTime + (remainingTime / self.stats.expireMultiplier.cold))
-		
+
 		self:SetData("delta_time", currentTime)
 		self:SetData("delta_seconds", self.stats.unfreezeSpeed)
 	elseif newInventory and newInventory.type == "container" then
@@ -284,7 +293,7 @@ if CLIENT then
 				if number >= v[1] then
 					local count = math.floor(number / v[1])
 					local txt = tostring(count)
-					
+
 					if count > 4 and v[4] then
 						output[#output + 1] = txt.." "..v[4]
 					elseif count > 1 then
@@ -308,19 +317,20 @@ if CLIENT then
 			if !self.stats.noExpire and !self:IsClosed() then
 				local expirationDate = self:GetRottenTime()
 
-				if os.time() >= expirationDate then
-
-				else
+				if os.time() < expirationDate then
 					expDateT = tooltip:AddRowAfter("name", "expirationDate")
 					expDateT:SetBackgroundColor(derma.GetColor("Error", tooltip))
 					expDateT:SetTextColor(derma.GetColor("Warning", expDateT))
 					expDateT:SetText("Испортится через: " .. ParseDuration((expirationDate - os.time()) / 60))
 				end
 			end
-			
-			local uses = tooltip:AddRowAfter(expDateT and "expirationDate" or "name")
-			uses:SetBackgroundColor(derma.GetColor("Success", tooltip))
-			uses:SetText(L("usesDesc", self:GetUses(), self.stats.uses))
+
+			local currentVolume = math.Round(self:GetVolume())
+			local maxVolume = self:GetMaxVolume()
+
+			local vol = tooltip:AddRowAfter(expDateT and "expirationDate" or "name")
+			vol:SetBackgroundColor(derma.GetColor("Success", tooltip))
+			vol:SetText(L("portionDesc", currentVolume, maxVolume))
 		end
 	end
 end

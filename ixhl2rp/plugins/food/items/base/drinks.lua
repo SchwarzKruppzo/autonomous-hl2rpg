@@ -1,56 +1,73 @@
-local ItemDrink = class("ItemDrink"):implements("Item")
+local ItemDrink = class("ItemDrink")
+implements("ItemReagentContainer", "ItemDrink")
+
+ItemDrink = ix.meta.ItemDrink
 
 ItemDrink.junk = nil
 ItemDrink.useSound = {"npc/barnacle/barnacle_gulp1.wav", "npc/barnacle/barnacle_gulp2.wav"}
+ItemDrink.volume = 330
+ItemDrink.sip_amount = 66
+ItemDrink.reagent_type = "water"
 
 function ItemDrink:Init()
+	ix.meta.ItemReagentContainer.Init(self)
+
 	self.category = "Напитки"
 
 	self.stats = {
 		container = false,
-		thirst = 0,
-		hunger = 0,
-		uses = 1,
-		freezeSpeed = 2 * 60 * 60, -- 2 hours
-		unfreezeSpeed = 60 * 60, -- 1 hour
-		--noExpire = true,
+		freezeSpeed = 2 * 60 * 60,
+		unfreezeSpeed = 60 * 60,
 		expireTime = 24 * 60 * 60,
 		expireMultiplier = {
 			cold = 999
 		}
 	}
-	
+
 	self.functions.open = {
 		name = "Вскрыть",
 		OnRun = function(item)
 			item:SetData("closed", false)
 			item:StartRotProgress()
 
+			if SERVER and item.reagents then
+				item.reagents.flags = item:GetReagentFlags()
+			end
+
 			item.player:EmitSound("foley/crushable/tin_can_break.mp3")
 			return true
 		end,
-		OnCanRun = function(item) 
+		OnCanRun = function(item)
 			if IsValid(item:GetEntity()) then
 				return false
 			end
-			
-			return (item:IsClosed() == true) 
+
+			return (item:IsClosed() == true)
 		end
 	}
+
 	self.functions.use = {
 		name = "Отпить",
 		OnRun = function(item)
-			local uses = item:GetUses()
-			local client, character = item.player, item.player:GetCharacter()
+			local client = item.player
+			local character = client:GetCharacter()
+			local sipAmount = math.min(item.sip_amount, item.reagents and item.reagents.volume or 0)
 
-			character:UpdateNeeds(item.stats.thirst, item.stats.hunger)
+			if sipAmount <= 0 then
+				return
+			end
+
+			local thirst, hunger = ix.Reagents:Consume(item.reagents, sipAmount, client)
+			character:UpdateNeeds(thirst, hunger)
 
 			if item.stats.stamina then
-				client:RestoreStamina(item.stats.stamina)
+				local fraction = sipAmount / item.volume
+				client:RestoreStamina(item.stats.stamina * fraction)
 			end
 
 			if item.stats.blood then
-				character:SetBlood(math.min(character:GetBlood() + item.stats.blood, 5000))
+				local fraction = sipAmount / item.volume
+				character:SetBlood(math.min(character:GetBlood() + item.stats.blood * fraction, 5000))
 			end
 
 			if istable(item.useSound) then
@@ -60,53 +77,43 @@ function ItemDrink:Init()
 			end
 
 			if item.CustomEffect then
-				item:CustomEffect(client, 1)
+				item:CustomEffect(client, sipAmount)
 			end
 
-			if uses > 1 then
-				item:SetData("uses", uses - 1)
-			else
-				local junk = item.junk
-				local class = item.uniqueID
-
-				if IsValid(item.entity) then
-					local pos, ang = item.entity:GetPos(), item.entity:GetAngles()
-
-					item.entity:Remove()
-
-					if junk then
-						local new_item = ix.Item:Instance(junk)
-						new_item:SetData("class", class)
-
-						ix.Item:Spawn(pos, ang, new_item)
-					end
-				else
-					item:Remove()
-
-					if junk then
-						local new_item = ix.Item:Instance(junk)
-						new_item:SetData("class", class)
-						client:AddItem(new_item)
-					end
-				end
+			if item.reagents.volume <= 0.1 then
+				item:OnDepleted()
 			end
 		end,
-		OnCanRun = function(item) return !item:IsClosed() end
+		OnCanRun = function(item)
+			if item:IsClosed() then return false end
+			if SERVER and item.reagents then return item.reagents.volume > 0.1 end
+			if CLIENT then return (item:GetData("value") or 0) > 0.1 end
+			return true
+		end
 	}
+
 	self.functions.useall = {
 		name = "Отпить всё",
 		OnRun = function(item)
-			local uses = item:GetUses()
-			local client, character = item.player, item.player:GetCharacter()
+			local client = item.player
+			local character = client:GetCharacter()
+			local remaining = item.reagents and item.reagents.volume or 0
 
-			character:UpdateNeeds(item.stats.thirst * uses, item.stats.hunger * uses)
+			if remaining <= 0.1 then
+				return
+			end
+
+			local thirst, hunger = ix.Reagents:Consume(item.reagents, remaining, client)
+			character:UpdateNeeds(thirst, hunger)
 
 			if item.stats.stamina then
-				client:RestoreStamina(item.stats.stamina * uses)
+				local fraction = remaining / item.volume
+				client:RestoreStamina(item.stats.stamina * fraction)
 			end
 
 			if item.stats.blood then
-				character:SetBlood(math.min(character:GetBlood() + (item.stats.blood * uses), 5000))
+				local fraction = remaining / item.volume
+				character:SetBlood(math.min(character:GetBlood() + item.stats.blood * fraction, 5000))
 			end
 
 			if istable(item.useSound) then
@@ -116,43 +123,35 @@ function ItemDrink:Init()
 			end
 
 			if item.CustomEffect then
-				item:CustomEffect(client, uses)
+				item:CustomEffect(client, remaining)
 			end
 
-			local junk = item.junk
-			local class = item.uniqueID
-			
-			if IsValid(item.entity) then
-				local pos, ang = item.entity:GetPos(), item.entity:GetAngles()
-
-				item.entity:Remove()
-				
-				if junk then
-					local new_item = ix.Item:Instance(junk)
-					new_item:SetData("class", class)
-
-					ix.Item:Spawn(pos, ang, new_item)
-				end
-			else
-				item:Remove()
-
-				if junk then
-					local new_item = ix.Item:Instance(junk)
-					new_item:SetData("class", class)
-					item.player:AddItem(new_item)
-				end
-			end
+			item:OnDepleted()
 		end,
-		OnCanRun = function(item) return !item:IsClosed() end
+		OnCanRun = function(item)
+			if item:IsClosed() then return false end
+			if SERVER and item.reagents then return item.reagents.volume > 0.1 end
+			if CLIENT then return (item:GetData("value") or 0) > 0.1 end
+			return true
+		end
 	}
 
-	self:AddData("closed", {
-		Transmit = ix.transmit.owner,
-	})
+	self.functions.pour = {
+		name = "Вылить содержимое",
+		OnRun = function(item)
+			if item.reagents then
+				item.reagents:Clear()
+			end
 
-	self:AddData("uses", {
-		Transmit = ix.transmit.owner,
-	})
+			item:OnDepleted()
+		end,
+		OnCanRun = function(item)
+			if item:IsClosed() then return false end
+			if SERVER and item.reagents then return item.reagents.volume > 0.1 end
+			if CLIENT then return (item:GetData("value") or 0) > 0.1 end
+			return true
+		end
+	}
 
 	self:AddData("expire", {
 		Transmit = ix.transmit.owner,
@@ -173,10 +172,6 @@ function ItemDrink:Init()
 	})
 end
 
-function ItemDrink:GetUses()
-	return self:GetData("uses") or self.stats.uses
-end
-
 function ItemDrink:IsClosed()
 	if self.stats.container then
 		return self:GetData("closed")
@@ -185,13 +180,37 @@ function ItemDrink:IsClosed()
 	return false
 end
 
-function ItemDrink:OnInstanced(isCreated)
-	if isCreated then
-		self:SetData("uses", self.stats.uses or 1)
+function ItemDrink:GetReagentFlags()
+	if self:IsClosed() then
+		return ix.Reagents.holder.injectable
+	end
+
+	return ix.Reagents.holder.open
+end
+
+if SERVER then
+	function ItemDrink:OnFirstCreated()
 		self:SetData("closed", self.stats.container or false)
+
+		self.reagents:AddReagent(self.reagent_type, self.volume, 300, true)
+		self.reagents:UpdateTotal()
 
 		if !self:IsClosed() then
 			self:StartRotProgress()
+		end
+	end
+
+	function ItemDrink:OnMigrateData()
+		local savedUses = self:GetData("uses")
+		local maxUses = math.floor(self.volume / self.sip_amount + 0.5)
+
+		if savedUses and maxUses > 0 then
+			local remaining = (savedUses / maxUses) * self.volume
+			self.reagents:AddReagent(self.reagent_type, remaining, 300, true)
+			self.reagents:UpdateTotal()
+		else
+			self.reagents:AddReagent(self.reagent_type, self.volume, 300, true)
+			self.reagents:UpdateTotal()
 		end
 	end
 end
@@ -238,7 +257,7 @@ function ItemDrink:OnTransfer(newInventory, oldInventory)
 	if currentTime >= rottenTime then
 		return
 	end
-	
+
 	if !newInventory or newInventory.type != "container" then
 		local freezedTime = self:GetData("freezed_time") or 0
 		local remainingTime = expireTime - freezedTime
@@ -248,7 +267,7 @@ function ItemDrink:OnTransfer(newInventory, oldInventory)
 
 		self:SetData("expire_last", expireLast + (rottenTime - expireLast))
 		self:SetData("expire", currentTime + (remainingTime / self.stats.expireMultiplier.cold))
-		
+
 		self:SetData("delta_time", currentTime)
 		self:SetData("delta_seconds", self.stats.unfreezeSpeed)
 	elseif newInventory and newInventory.type == "container" then
@@ -289,7 +308,7 @@ if CLIENT then
 				if number >= v[1] then
 					local count = math.floor(number / v[1])
 					local txt = tostring(count)
-					
+
 					if count > 4 and v[4] then
 						output[#output + 1] = txt.." "..v[4]
 					elseif count > 1 then
@@ -313,19 +332,20 @@ if CLIENT then
 			if !self.stats.noExpire and !self:IsClosed() then
 				local expirationDate = self:GetRottenTime()
 
-				if os.time() >= expirationDate then
-
-				else
+				if os.time() < expirationDate then
 					expDateT = tooltip:AddRowAfter("name", "expirationDate")
 					expDateT:SetBackgroundColor(derma.GetColor("Error", tooltip))
 					expDateT:SetTextColor(derma.GetColor("Warning", expDateT))
 					expDateT:SetText("Испортится через: " .. ParseDuration((expirationDate - os.time()) / 60))
 				end
 			end
-			
-			local uses = tooltip:AddRowAfter(expDateT and "expirationDate" or "name")
-			uses:SetBackgroundColor(derma.GetColor("Success", tooltip))
-			uses:SetText(L("usesDesc", self:GetUses(), self.stats.uses))
+
+			local currentVolume = math.Round(self:GetVolume())
+			local maxVolume = self:GetMaxVolume()
+
+			local vol = tooltip:AddRowAfter(expDateT and "expirationDate" or "name")
+			vol:SetBackgroundColor(derma.GetColor("Success", tooltip))
+			vol:SetText(L("volumeDesc", currentVolume, maxVolume))
 		end
 	end
 end
