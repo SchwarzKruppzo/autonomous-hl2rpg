@@ -10,7 +10,7 @@ function ReagentHolder:Init(maxVolume, flags)
 	self.volume = 0
 	self.max_volume = maxVolume or 100
 	self.reagents = {}
-	self.flags = flags
+	self.flags = flags or 0
 
 	self.addiction_tick = 1
 	self.addiction_list = {}
@@ -62,20 +62,9 @@ function ReagentHolder:DeleteReagent(id)
 	end
 
 	if reagent then
-		/*if (my_atom && isliving(my_atom))
-			var/mob/living/M = my_atom
-			if(R.metabolizing)
-				R.metabolizing = FALSE
-				R.on_mob_end_metabolize(M)
-			R.on_mob_delete(M)
-		end*/
-		
 		reagent = nil
 		table.remove(self.reagents, id)
 		self:UpdateTotal()
-
-		/*if (my_atom)
-			my_atom.on_reagent_change(DEL_REAGENT)*/
 
 		self.recached = false
 	end
@@ -94,19 +83,16 @@ function ReagentHolder:RemoveReagent(id, amount, noReaction)
 	if reagent then
 		amount = math.Clamp(amount, 0, reagent.volume)
 		reagent.volume = reagent.volume - amount
-		
+
 		self:UpdateTotal()
 
-		if !noReaction then //So it does not handle reactions when it need not to
+		if !noReaction then
 			self:HandleReactions()
 		end
 
-		//if(my_atom)
-		//	my_atom.on_reagent_change(REM_REAGENT)
-
 		return true
 	end
-	
+
 	return false
 end
 
@@ -126,32 +112,20 @@ function ReagentHolder:AddReagent(reagentID, amount, reagentTemp, noReaction)
 			return false
 		end
 	end
-	
-	local new_total = cached_total + amount
 
 	self:RecacheReagents()
-
-	/*
-	var/cached_temp = chem_temp
-	//Equalize temperature - Not using specific_heat() because the new chemical isn't in yet.
-	var/specific_heat = 0
-	var/thermal_energy = 0
-	for(var/i in cached_reagents)
-		var/datum/reagent/R = i
-		specific_heat += R.specific_heat * (R.volume / new_total)
-		thermal_energy += R.specific_heat * R.volume * cached_temp
-	specific_heat += D.specific_heat * (amount / new_total)
-	thermal_energy += D.specific_heat * amount * reagtemp
-	chem_temp = thermal_energy / (specific_heat * new_total)
-	*/
 
 	local id = self.cached_reagents[reagentID]
 	if id then
 		local reagent = self.reagents[id]
 		reagent.volume = reagent.volume + amount
-		//R.on_merge(data, amount)
 	else
 		local reagent = ix.Reagents:New(reagentID)
+
+		if !reagent then
+			return false
+		end
+
 		reagent.holder = self
 		reagent.volume = amount
 		table.insert(self.reagents, reagent)
@@ -161,10 +135,6 @@ function ReagentHolder:AddReagent(reagentID, amount, reagentTemp, noReaction)
 
 	self:UpdateTotal()
 
-	if self.owner then
-		--my_atom.on_reagent_change(ADD_REAGENT)
-	end
-	
 	if !noReaction then
 		self:HandleReactions()
 	end
@@ -179,11 +149,11 @@ end
 function ReagentHolder:Transfer(target, amount, user, method, multiplier, noReaction)
 	amount = amount or 1
 	multiplier = multiplier or 1
-	
+
 	if amount < 0 then
 		return
 	end
-	
+
 	local targetOwner
 
 	if target.reagent_holder then
@@ -201,32 +171,20 @@ function ReagentHolder:Transfer(target, amount, user, method, multiplier, noReac
 	local part = amount / self.volume
 
 	for id, reagent in ipairs(self.reagents) do
-		/*
-		if(remove_blacklisted && !T.can_synth)
-			continue
-		*/
-
 		local transfer_amount = reagent.volume * part
 
 		target:AddReagent(reagent.uniqueID, transfer_amount * multiplier, 300, true)
-
-		/*
-		if(method)
-			R.react_single(T, target_atom, method, part, show_message)
-			T.on_transfer(target_atom, method, transfer_amount * multiplier)
-		*/
-
 		self:RemoveReagent(id, transfer_amount)
 	end
 
 	self:UpdateTotal()
 	target:UpdateTotal()
-	
+
 	if !noReaction then
 		target:HandleReactions()
 		self:HandleReactions()
 	end
-	
+
 	return amount
 end
 
@@ -236,19 +194,36 @@ function ReagentHolder:HandleReactions()
 	end
 end
 
-// TEST SECTION
-/*
+function ReagentHolder:Serialize()
+	local data = {}
 
+	for _, reagent in ipairs(self.reagents) do
+		data[#data + 1] = {id = reagent.uniqueID, volume = reagent.volume}
+	end
 
-ix.meta.Reagent:Register("water", {})
-ix.meta.Reagent:Register("chlore", {})
+	return data
+end
 
-local holder1 = ReagentHolder:New(1000, 0)
-local holder2 = ReagentHolder:New(1000, 0)
-holder1:AddReagent("water", 500)
-holder1:AddReagent("chlore", 500)
-holder1:Transfer(holder2, 35)
+function ReagentHolder:Deserialize(data)
+	self.reagents = {}
+	self.volume = 0
+	self.recached = false
 
+	if data then
+		for _, entry in ipairs(data) do
+			self:AddReagent(entry.id, entry.volume, 300, true)
+		end
+	end
 
+	self:UpdateTotal()
+end
 
-PrintTable(holder2)*/
+function ReagentHolder:Clear()
+	self.reagents = {}
+	self.volume = 0
+	self.recached = false
+
+	if self.owner and self.owner.OnReagentUpdateTotal then
+		self.owner:OnReagentUpdateTotal(0)
+	end
+end

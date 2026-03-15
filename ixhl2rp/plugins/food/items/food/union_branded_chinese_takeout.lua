@@ -5,10 +5,12 @@ ITEM.cost = 10
 ITEM.width = 1
 ITEM.height = 1
 
+ITEM.volume = 350
+ITEM.portion_amount = 70
+
 ITEM.stats.container = true
 ITEM.stats.thirst = -2
 ITEM.stats.hunger = 10
-ITEM.stats.uses = 5
 
 ITEM.junk = "empty_chinese_takeout"
 ITEM.rarity = 1

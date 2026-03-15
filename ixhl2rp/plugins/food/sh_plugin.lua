@@ -13,6 +13,8 @@ ix.lang.AddTable("en", {
 	categoryDrink = "Drink",
 	categoryJunk = "Junk",
 	usesDesc = "Uses: %s/%s",
+	volumeDesc = "%s/%s ml",
+	portionDesc = "%s/%s g",
 	foodNotify = "I have eaten %s.",
 	drinkNotify = "I have drunk %s.",
 	barThirst = "THIRST",
@@ -28,6 +30,8 @@ ix.lang.AddTable("ru", {
 	categoryDrink = "Напитки",
 	categoryJunk = "Мусор",
 	usesDesc = "Использований: %s/%s",
+	volumeDesc = "%s/%s мл",
+	portionDesc = "%s/%s г",
 	foodNotify = "Вы съели %s.",
 	drinkNotify = "Вы выпили %s.",
 	barThirst = "ЖАЖДА",
@@ -68,6 +72,7 @@ ix.char.RegisterVar("hunger", {
 	bNoDisplay = true
 })
 
+ix.util.Include("sh_reagents.lua")
 ix.util.Include("cl_drunk.lua")
 ix.util.Include("sh_commands.lua")
 ix.util.Include("sh_config.lua")

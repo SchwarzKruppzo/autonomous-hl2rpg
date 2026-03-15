@@ -10,7 +10,9 @@ ITEM.iconCam = {
 	fov = 4.2122905227024,
 }
 
+ITEM.volume = 250
+ITEM.sip_amount = 50
+ITEM.reagent_type = "cream_coffee"
+
+ITEM.reusable = true
 ITEM.stats.container = false
-ITEM.stats.thirst = 12
-ITEM.stats.hunger = 0
-ITEM.stats.uses = 5

@@ -4,6 +4,9 @@ ITEM.cost = 10
 ITEM.model = "models/mosi/fallout4/props/alcohol/bourbon.mdl"
 ITEM.width = 1
 ITEM.height = 2
+ITEM.volume = 750
+ITEM.sip_amount = 75
+ITEM.reagent_type = "bourbon"
 ITEM.iconCam = {
 	pos = Vector(200.80784606934, 152.37223815918, 19.026912689209),
 	ang = Angle(2.4344501495361, 217.19110107422, 0),
@@ -11,15 +14,6 @@ ITEM.iconCam = {
 }
 
 ITEM.stats.container = true
-ITEM.stats.thirst = 7
-ITEM.stats.hunger = 0
-ITEM.stats.uses = 10
 
 ITEM.rarity = 1
 ITEM.junk = "empty_glass_bottle"
-
-function ITEM:CustomEffect(client, uses)
-	local health = client:GetCharacter():Health()
-
-	health:AddHediff("alcohol", 0, {severity = 0, effect = 10 * uses, tended_start = os.time(), tended_time = 60})
-end

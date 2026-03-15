@@ -10,7 +10,8 @@ ITEM.iconCam = {
 	fov = 2.2486659732394,
 }
 
+ITEM.volume = 500
+ITEM.sip_amount = 83
+ITEM.reagent_type = "olive_oil"
+
 ITEM.stats.container = true
-ITEM.stats.thirst = 1.7
-ITEM.stats.hunger = 2.5
-ITEM.stats.uses = 6

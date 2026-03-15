@@ -11,6 +11,8 @@ ITEM.iconCam = {
 	fov = 2.0258673575793,
 }
 
+ITEM.volume = 330
+ITEM.sip_amount = 66
+ITEM.reagent_type = "orange_juice"
+
 ITEM.stats.container = false
-ITEM.stats.thirst = 10
-ITEM.stats.uses = 5

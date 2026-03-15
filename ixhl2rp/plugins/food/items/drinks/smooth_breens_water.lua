@@ -12,10 +12,11 @@ ITEM.iconCam = {
 	fov = 4.2787847985967,
 }
 
+ITEM.volume = 330
+ITEM.sip_amount = 66
+ITEM.reagent_type = "smooth_breens_water"
+
 ITEM.stats.container = true
-ITEM.stats.thirst = 20
-ITEM.stats.hunger = 0
-ITEM.stats.uses = 5
 ITEM.stats.noExpire = true
 
 ITEM.junk = "empty_can"

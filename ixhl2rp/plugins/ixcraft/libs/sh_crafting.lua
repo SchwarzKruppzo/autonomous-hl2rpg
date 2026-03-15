@@ -180,17 +180,31 @@ if SERVER then
 						count = count + client.ixStation.inventory:GetItemsCount(uniqueID)
 					end
 
-					if recipe.any and recipe.any[uniqueID] then
-						for k, v in pairs(recipe.any[uniqueID]) do
-							count = count + client:GetInventory("main"):GetItemsCount(k)
+				if recipe.any and recipe.any[uniqueID] then
+					for k, v in pairs(recipe.any[uniqueID]) do
+						count = count + client:GetInventory("main"):GetItemsCount(k)
 
-							if IsValid(client.ixStation) then
-								count = count + client.ixStation.inventory:GetItemsCount(k)
-							end
+						if IsValid(client.ixStation) then
+							count = count + client.ixStation.inventory:GetItemsCount(k)
 						end
 					end
+				end
 
-					if count < amount then
+				for _, item in ipairs(client:GetInventory("main"):GetItems()) do
+					if item.reusable and item.junk == uniqueID and (item:GetData("value") or 0) <= 0.1 then
+						count = count + 1
+					end
+				end
+
+				if IsValid(client.ixStation) then
+					for _, item in ipairs(client.ixStation.inventory:GetItems()) do
+						if item.reusable and item.junk == uniqueID and (item:GetData("value") or 0) <= 0.1 then
+							count = count + 1
+						end
+					end
+				end
+
+				if count < amount then
 						hasItems = false
 						break
 					end
@@ -257,41 +271,61 @@ if SERVER then
 				end
 			end
 		else
-			local function isAccept(recipe, uniqueID, targetUniqueID)
-				if uniqueID == targetUniqueID then
-					return true
-				end
-
-				if recipe.any and recipe.any[targetUniqueID] and recipe.any[targetUniqueID][uniqueID] then
-					return true
-				end
-				
-				return false
+		local function isAccept(recipe, item, targetUniqueID)
+			if item.uniqueID == targetUniqueID then
+				return true
 			end
-			
-			for uniqueID, amount in pairs(recipe.requirements or {}) do
-				local countRemoved = 0
-				local stored = ix.Item:Get(uniqueID)
 
-				if stored.stackable_legacy then
-					for k, v in ipairs(inventory:FindItems(uniqueID)) do
-						if countRemoved >= amount then break end
+			if recipe.any and recipe.any[targetUniqueID] and recipe.any[targetUniqueID][item.uniqueID] then
+				return true
+			end
+
+			if item.reusable and item.junk == targetUniqueID and (item:GetData("value") or 0) <= 0.1 then
+				return true
+			end
+
+			return false
+		end
+		
+		for uniqueID, amount in pairs(recipe.requirements or {}) do
+			local countRemoved = 0
+			local stored = ix.Item:Get(uniqueID)
+
+			if stored.stackable_legacy then
+				for k, v in ipairs(inventory:FindItems(uniqueID)) do
+					if countRemoved >= amount then break end
+
+					countRemoved = countRemoved + v:TakeValue(amount - countRemoved)
+				end
+
+				if countRemoved < amount and IsValid(client.ixStation) then
+					for k, v in ipairs(client.ixStation.inventory:FindItems(uniqueID)) do
+						if countRemoved >= amount then 
+							break
+						end
 
 						countRemoved = countRemoved + v:TakeValue(amount - countRemoved)
 					end
+				end
+			else
+				for k, v in ipairs(inventory:GetItems()) do
+					if isAccept(recipe, v, uniqueID) then
+						if (countRemoved + 1) > amount then continue end
 
-					if countRemoved < amount and IsValid(client.ixStation) then
-						for k, v in ipairs(client.ixStation.inventory:FindItems(uniqueID)) do
-							if countRemoved >= amount then 
-								break
-							end
-
-							countRemoved = countRemoved + v:TakeValue(amount - countRemoved)
-						end
+						countRemoved = countRemoved + 1
+						local inv = v.inventory_id
+						v:Remove(nil, true)
+						resync[inv] = true
 					end
-				else
-					for k, v in ipairs(inventory:GetItems()) do
-						if isAccept(recipe, v.uniqueID, uniqueID) then
+				end
+
+				if countRemoved == amount then
+					continue
+				end
+				
+				if IsValid(client.ixStation) then
+					for k, v in ipairs(client.ixStation.inventory:GetItems()) do
+						if isAccept(recipe, v, uniqueID) then
 							if (countRemoved + 1) > amount then continue end
 
 							countRemoved = countRemoved + 1
@@ -300,25 +334,9 @@ if SERVER then
 							resync[inv] = true
 						end
 					end
-
-					if countRemoved == amount then
-						continue
-					end
-					
-					if IsValid(client.ixStation) then
-						for k, v in ipairs(client.ixStation.inventory:GetItems()) do
-							if isAccept(recipe, v.uniqueID, uniqueID) then
-								if (countRemoved + 1) > amount then continue end
-
-								countRemoved = countRemoved + 1
-								local inv = v.inventory_id
-								v:Remove(nil, true)
-								resync[inv] = true
-							end
-						end
-					end
 				end
 			end
+		end
 		end
 
 		if recipe.tools then

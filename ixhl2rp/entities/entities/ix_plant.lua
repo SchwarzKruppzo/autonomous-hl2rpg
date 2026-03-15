@@ -244,6 +244,9 @@ if SERVER then
 		"special_breens_water",
 		"purified_water",
 	}
+
+	local WATER_POUR_AMOUNT = 66
+
 	function ENT:OnSelectRefill(client)
 		local waterItem
 
@@ -256,7 +259,7 @@ if SERVER then
 				if object and object.ixItemID then
 					local item = ix.Item.instances[object.ixItemID]
 
-					if table.HasValue(waterItems, item.uniqueID) and !item:GetData("closed") then
+					if table.HasValue(waterItems, item.uniqueID) and !item:IsClosed() and item.reagents and item.reagents.volume > 0.1 then
 						waterItem = item
 					end
 				end
@@ -267,56 +270,34 @@ if SERVER then
 			for k, v in ipairs(waterItems) do
 				local item = client:FindItem(v, "main")
 
-				if item and !item:GetData("closed") then
+				if item and !item:IsClosed() and item.reagents and item.reagents.volume > 0.1 then
 					waterItem = item
 				end
 			end
 		end
-		
+
 		if !waterItem then
 			return
 		end
 
-		local uses = waterItem:GetUses()
-		local waterPerUse = (waterItem.stats.thirst * 2)
-		local newWater = self:GetWater() + waterPerUse
+		local pourAmount = math.min(WATER_POUR_AMOUNT, waterItem.reagents.volume)
+		local waterValue = pourAmount * 0.3
+		local newWater = self:GetWater() + waterValue
 
 		if newWater > 150 then
 			return
 		end
 
-		client:GetCharacter():DoAction("farmingWater", 0.4 * waterPerUse, self.Plant)
+		client:GetCharacter():DoAction("farmingWater", 0.4 * waterValue, self.Plant)
 
 		self:EmitSound("ambient/water/water_spray1.wav")
-		
+
 		self:SetWater(math.Clamp(newWater, 0, 150))
 
-		if uses > 1 then
-			waterItem:SetData("uses", uses - 1)
-		else
-			local junk = waterItem.junk
-			local class = waterItem.uniqueID
+		ix.Reagents:Consume(waterItem.reagents, pourAmount, nil)
 
-			if IsValid(waterItem.entity) then
-				local pos, ang = waterItem.entity:GetPos(), waterItem.entity:GetAngles()
-
-				waterItem.entity:Remove()
-
-				if junk then
-					local new_item = ix.Item:Instance(junk)
-					new_item:SetData("class", class)
-
-					ix.Item:Spawn(pos, ang, new_item)
-				end
-			else
-				waterItem:Remove()
-
-				if junk then
-					local new_item = ix.Item:Instance(junk)
-					new_item:SetData("class", class)
-					client:AddItem(new_item)
-				end
-			end
+		if waterItem.reagents.volume <= 0.1 then
+			waterItem:OnDepleted()
 		end
 	end
 end

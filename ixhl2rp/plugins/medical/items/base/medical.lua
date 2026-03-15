@@ -94,8 +94,7 @@ function ItemMedical:Init()
 						item:Remove()
 
 						if junk then
-							local new_item = ix.Item:Instance(junk)
-							new_item:SetData("class", class)
+							local new_item = ix.Item:Instance(junk, {class = class})
 							client:AddItem(new_item)
 						end
 					else
@@ -190,8 +189,7 @@ function ItemMedical:Init()
 						item:Remove()
 
 						if junk then
-							local new_item = ix.Item:Instance(junk)
-							new_item:SetData("class", class)
+							local new_item = ix.Item:Instance(junk, {class = class})
 							client:AddItem(new_item)
 						end
 					else

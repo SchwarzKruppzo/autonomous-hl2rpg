@@ -10,9 +10,10 @@ ITEM.iconCam = {
 	fov = 2.3657538597959,
 }
 
+ITEM.volume = 330
+ITEM.sip_amount = 66
+ITEM.reagent_type = "coconut_cocktail"
+
 ITEM.stats.container = false
-ITEM.stats.thirst = 24
-ITEM.stats.hunger = 2
-ITEM.stats.uses = 5
 
 ITEM.rarity = 2

@@ -4,7 +4,11 @@ ITEM.model = "models/foodnhouseholditems/mcdburger.mdl"
 
 ITEM.stats.container = false
 
-ITEM.properties = { -- we'll keep this as an array to retain order
+ITEM.volume = 330
+ITEM.sip_amount = 66
+ITEM.reagent_type = "water"
+
+ITEM.properties = {
 	{"name", ix.type.string, "My Customizable Item"},
 	{"description", ix.type.string, "A brand-spankin' new item."},
 	{"model", ix.type.string, "models/props_junk/watermelon01.mdl"},
@@ -13,8 +17,8 @@ ITEM.properties = { -- we'll keep this as an array to retain order
 	{"rarity", ix.type.number, 0, 0, 4},
 	{"width", ix.type.number, 1, 0, 6},
 	{"height", ix.type.number, 1, 0, 6},
-	{"uses", ix.type.number, 10, 0, 10},
-	{"hunger", ix.type.number, 0, 0, 100},
-	{"thirst", ix.type.number, 0, 0, 100},
+	{"volume", ix.type.number, 330, 50, 5000},
+	{"sip_amount", ix.type.number, 66, 10, 500},
+	{"reagent_type", ix.type.string, "water"},
 	{"stamina", ix.type.number, 0, 0, 100},
 }

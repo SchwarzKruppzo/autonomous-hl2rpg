@@ -13,7 +13,9 @@ ITEM.iconCam = {
 	fov = 2.764431535241,
 }
 
+ITEM.volume = 300
+ITEM.portion_amount = 60
+
 ITEM.stats.container = false
 ITEM.stats.hunger = 5
-ITEM.stats.uses = 5
 ITEM.stats.expireTime = 43200 -- 12 hours

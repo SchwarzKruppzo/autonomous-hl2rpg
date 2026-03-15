@@ -11,6 +11,8 @@ ITEM.iconCam = {
 }
 
 
+ITEM.volume = 60
+ITEM.portion_amount = 20
+
 ITEM.stats.container = false
 ITEM.stats.hunger = 7
-ITEM.stats.uses = 3

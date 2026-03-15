@@ -10,10 +10,12 @@ ITEM.cost = 3
 ITEM.width = 1
 ITEM.height = 1
 
+ITEM.volume = 150
+ITEM.portion_amount = 75
+
 ITEM.stats.container = false
 ITEM.stats.thirst = -5
 ITEM.stats.hunger = 10
-ITEM.stats.uses = 2
 ITEM.stats.expireTime = 345600 -- 4 days
 
 ITEM.seed = "seed_potato"

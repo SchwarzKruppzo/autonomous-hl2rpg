@@ -10,10 +10,11 @@ ITEM.iconCam = {
 	fov = 2.1844782952648,
 }
 
+ITEM.volume = 500
+ITEM.sip_amount = 100
+ITEM.reagent_type = "old_soda"
+
 ITEM.stats.container = true
-ITEM.stats.thirst = 5.25
-ITEM.stats.hunger = 0
-ITEM.stats.uses = 8
 
 ITEM.rarity = 1
 ITEM.junk =  "empty_plastic_bottle"

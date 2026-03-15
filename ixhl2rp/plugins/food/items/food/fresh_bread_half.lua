@@ -10,6 +10,8 @@ ITEM.iconCam = {
 	fov = 2.3358700750901,
 }
 
+ITEM.volume = 250
+ITEM.portion_amount = 125
+
 ITEM.stats.container = false
 ITEM.stats.hunger = 7
-ITEM.stats.uses = 2

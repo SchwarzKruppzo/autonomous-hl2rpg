@@ -11,7 +11,7 @@ ItemCustomize.isCustomBase = true
 function ItemCustomize:Init()
 	ix.meta.ItemDrink.Init(self)
 
-	self.category = "Кастом"
+	self.category = "item.category.customize"
 
 	self:AddData("checksum", {
 		Transmit = ix.transmit.all,
@@ -42,9 +42,11 @@ function ItemCustomize:GetMaterial()
 end
 
 function ItemCustomize:PostCustomDeploy()
-	self.stats.uses = self.uses
-	self.stats.thirst = self.thirst
-	self.stats.hunger = self.hunger
+	if self.uses and self.thirst then
+		self.volume = self.volume or (self.uses * (self.sip_amount or 50))
+		self.sip_amount = self.sip_amount or (self.volume / self.uses)
+	end
+
 	self.stats.stamina = self.stamina
 end
 
@@ -58,9 +60,11 @@ function ItemCustomize:OnInstanced(isCreated)
 			end
 		end
 
-		self.stats.uses = self.uses
-		self.stats.thirst = self.thirst
-		self.stats.hunger = self.hunger
+		if self.uses and self.thirst then
+			self.volume = self.volume or (self.uses * (self.sip_amount or 50))
+			self.sip_amount = self.sip_amount or (self.volume / self.uses)
+		end
+
 		self.stats.stamina = self.stamina
 	end
 
