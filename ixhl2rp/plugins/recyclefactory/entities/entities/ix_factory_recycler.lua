@@ -316,6 +316,10 @@ local allowedEntities = {
 				for product, items in pairs(allowedItems) do
 					local has_item = items[itemTable.uniqueID]
 
+					if !has_item and itemTable.reusable and itemTable.junk and (itemTable:GetData("value") or 0) <= 0.1 then
+						has_item = items[itemTable.junk]
+					end
+
 					if has_item then
 						if (factory:GetProduct() == "") or factory:GetProduct() == product then
 							hasItem = has_item

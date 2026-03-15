@@ -37,6 +37,26 @@ function ENT:ShouldNotCollide(pPlayer)
 	return false
 end
 
+function ENT:FindEmptyRefillable(pPlayer)
+	for _, item in ipairs(pPlayer:GetInventory("main"):GetItems()) do
+		if item.isReagentHolder and ix.Reagents:IsRefillable(item) and (item:GetData("value") or 0) <= 0.1 then
+			return item
+		end
+	end
+end
+
+function ENT:FillReagentContainer(pPlayer, item, reagentType)
+	timer.Simple(1, function()
+		if !IsValid(pPlayer) or !item.reagents then return end
+
+		item.reagents:AddReagent(reagentType, item.reagents.max_volume, 300, true)
+		item.reagents:UpdateTotal()
+
+		pPlayer:ViewPunch(Angle(2, 0, 1))
+		pPlayer:EmitSound("needs/bottle/fill_bottle" .. math.random(1, 2) .. ".wav", 70)
+	end)
+end
+
 function ENT:FillContainer(pPlayer, item, resultItem)
 	timer.Simple(1, function()
 		pPlayer:TakeItem(item)
@@ -59,7 +79,13 @@ function ENT:Use(pPlayer)
 
 	pPlayer:ForceSequence("roofidle1")
 
-	if pPlayer:HasItem("empty_can") then
+	local emptyContainer = self:FindEmptyRefillable(pPlayer)
+
+	if emptyContainer then
+		self:FillReagentContainer(pPlayer, emptyContainer, "dirty_water")
+
+		ix.chat.Send(pPlayer, "me", "наполняет " .. emptyContainer.name .. " водой.")
+	elseif pPlayer:HasItem("empty_can") then
 		self:FillContainer(pPlayer, "empty_can", "dirty_water")
 
 		ix.chat.Send(pPlayer, "me", "наполняет пустую банку водой.")
@@ -81,7 +107,6 @@ function ENT:Use(pPlayer)
 			if pPlayer:Team() != FACTION_VORTIGAUNT then
 				character:SetRadLevel(character:GetRadLevel() + rad)
 			end
-			
 
 			ix.chat.Send(pPlayer, "me", "пьёт воду из туалета.")
 		end)
@@ -135,18 +160,24 @@ ENT.PopulateEntityInfo = true
 
 function ENT:OnPopulateEntityInfo(tooltip)
 	local client = LocalPlayer()
-	local emptyItems = {
-		"empty_can",
-		"empty_tin_can"
-	}
-
 	local hint = "[E] — пить (грязная вода)"
 
-	for _, item in ipairs(emptyItems) do
-		if client:HasItem(item) then
-			hint = "[E] — налить в пустую банку (грязная вода)"
-			break
+	local hasRefillable = false
+	local inventory = client:GetInventory("main")
+
+	if inventory then
+		for _, item in ipairs(inventory:GetItems()) do
+			if item.isReagentHolder and ix.Reagents:IsRefillable(item) and (item:GetData("value") or 0) <= 0.1 then
+				hasRefillable = true
+				break
+			end
 		end
+	end
+
+	if hasRefillable then
+		hint = "[E] — наполнить контейнер (грязная вода)"
+	elseif client:HasItem("empty_can") or client:HasItem("empty_tin_can") then
+		hint = "[E] — налить в пустую банку (грязная вода)"
 	end
 
 	local title = tooltip:AddRow("hint")
