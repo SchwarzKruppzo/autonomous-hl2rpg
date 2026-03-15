@@ -12,10 +12,11 @@ ITEM.iconCam = {
 	fov = 4.2342949823414,
 }
 
+ITEM.volume = 330
+ITEM.sip_amount = 66
+ITEM.reagent_type = "quasi_cola"
+
 ITEM.stats.container = true
-ITEM.stats.thirst = 15
-ITEM.stats.hunger = 5
-ITEM.stats.uses = 5
-ITEM.stats.stamina = 20
+ITEM.stats.stamina = 100
 
 ITEM.junk = "empty_can"

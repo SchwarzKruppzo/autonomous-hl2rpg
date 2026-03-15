@@ -11,9 +11,11 @@ ITEM.iconCam = {
 	fov = 1.6628369578245,
 }
 
+ITEM.volume = 150
+ITEM.portion_amount = 75
+
 ITEM.stats.container = false
 ITEM.stats.hunger = 7
-ITEM.stats.uses = 2
 ITEM.stats.expireTime = 345600 -- 4 days
 
 ITEM.seed = "seed_tomato"

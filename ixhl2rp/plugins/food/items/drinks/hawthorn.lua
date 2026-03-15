@@ -10,10 +10,11 @@ ITEM.iconCam = {
 	fov = 4.209127786796,
 }
 
+ITEM.volume = 330
+ITEM.sip_amount = 66
+ITEM.reagent_type = "hawthorn"
+
 ITEM.stats.container = true
-ITEM.stats.thirst = 7.5
-ITEM.stats.hunger = 0
-ITEM.stats.uses = 8
 
 ITEM.rarity = 2
 ITEM.junk =  "empty_glass_bottle"

@@ -10,9 +10,11 @@ ITEM.iconCam = {
 	fov = 4.093525037481,
 }
 
+ITEM.volume = 340
+ITEM.portion_amount = 113
+
 ITEM.stats.container = true
 ITEM.stats.hunger = 10
-ITEM.stats.uses = 3
 ITEM.stats.expireTime = 172800 -- 2 days
 
 ITEM.junk =  "empty_tin_can"

@@ -10,10 +10,11 @@ ITEM.cost = 18
 ITEM.width = 1
 ITEM.height = 2
 
+ITEM.volume = 1000
+ITEM.sip_amount = 200
+ITEM.reagent_type = "milk"
+
 ITEM.stats.container = true
-ITEM.stats.thirst = 10
-ITEM.stats.hunger = 0
-ITEM.stats.uses = 5
 
 ITEM.rarity = 1
 ITEM.junk =  "empty_carton"

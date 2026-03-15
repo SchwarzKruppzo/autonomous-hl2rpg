@@ -10,9 +10,10 @@ ITEM.iconCam = {
 	fov = 4.4412811355921,
 }
 
+ITEM.volume = 330
+ITEM.sip_amount = 66
+ITEM.reagent_type = "juniper"
+
 ITEM.stats.container = true
-ITEM.stats.thirst = 10
-ITEM.stats.hunger = 0
-ITEM.stats.uses = 5
 
 ITEM.rarity = 1

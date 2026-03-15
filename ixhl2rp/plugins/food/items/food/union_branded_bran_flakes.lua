@@ -5,10 +5,12 @@ ITEM.cost = 9
 ITEM.width = 1
 ITEM.height = 1
 
+ITEM.volume = 400
+ITEM.portion_amount = 40
+
 ITEM.stats.container = true
 ITEM.stats.thirst = -3
 ITEM.stats.hunger = 6
-ITEM.stats.uses = 10
 ITEM.stats.noExpire = true
 
 ITEM.rarity = 1

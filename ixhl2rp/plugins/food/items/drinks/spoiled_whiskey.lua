@@ -4,6 +4,9 @@ ITEM.model = "models/props_junk/garbage_glassbottle002a.mdl"
 ITEM.cost = 6
 ITEM.width = 1
 ITEM.height = 2
+ITEM.volume = 250
+ITEM.sip_amount = 50
+ITEM.reagent_type = "spoiled_whiskey"
 ITEM.iconCam = {
 	pos = Vector(185.46463012695, 163.83441162109, 74.682388305664),
 	ang = Angle(16.805486679077, 221.47225952148, 0),
@@ -11,14 +14,5 @@ ITEM.iconCam = {
 }
 
 ITEM.stats.container = true
-ITEM.stats.thirst = 9
-ITEM.stats.hunger = 0
-ITEM.stats.uses = 5
 
 ITEM.junk =  "empty_glass_bottle"
-
-function ITEM:CustomEffect(client, uses)
-	local health = client:GetCharacter():Health()
-
-	health:AddHediff("alcohol", 0, {severity = 0, effect = 5 * uses, tended_start = os.time(), tended_time = 60})
-end

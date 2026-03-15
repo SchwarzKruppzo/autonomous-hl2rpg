@@ -4,6 +4,9 @@ ITEM.model = "models/foodnhouseholditems/champagne.mdl"
 ITEM.cost = 47
 ITEM.width = 1
 ITEM.height = 2
+ITEM.volume = 750
+ITEM.sip_amount = 75
+ITEM.reagent_type = "wine"
 ITEM.iconCam = {
 	pos = Vector(184.68035888672, 165.88348388672, 42.104499816895),
 	ang = Angle(9.8359975814819, 221.96295166016, 0),
@@ -11,15 +14,6 @@ ITEM.iconCam = {
 }
 
 ITEM.stats.container = true
-ITEM.stats.thirst = 10
-ITEM.stats.hunger = 2
-ITEM.stats.uses = 10
 
 ITEM.rarity = 4
 ITEM.junk = "empty_glass_bottle"
-
-function ITEM:CustomEffect(client, uses)
-	local health = client:GetCharacter():Health()
-
-	health:AddHediff("alcohol", 0, {severity = 0, effect = 25 * uses, tended_start = os.time(), tended_time = 300})
-end

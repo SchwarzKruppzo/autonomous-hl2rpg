@@ -6,10 +6,12 @@ ITEM.cost = 10
 ITEM.width = 1
 ITEM.height = 1
 
+ITEM.volume = 300
+ITEM.portion_amount = 60
+
 ITEM.stats.container = true
 ITEM.stats.thirst = 1
 ITEM.stats.hunger = 8
-ITEM.stats.uses = 5
 
 ITEM.junk = "empty_tin_can"
 ITEM.rarity = 1

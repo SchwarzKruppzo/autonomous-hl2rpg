@@ -5,8 +5,10 @@ ITEM.cost = 6
 ITEM.width = 1
 ITEM.height = 1
 
+ITEM.volume = 250
+ITEM.sip_amount = 50
+ITEM.reagent_type = "green_tea"
+
 ITEM.stats.container = false
-ITEM.stats.thirst = 8
-ITEM.stats.hunger = 0
-ITEM.stats.uses = 5
+ITEM.reusable = true
 ITEM.stats.noExpire = true
