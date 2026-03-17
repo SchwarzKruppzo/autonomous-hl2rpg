@@ -1,7 +1,23 @@
-
 PLUGIN.name = "Recognition"
 PLUGIN.author = "Chessnut"
 PLUGIN.description = "Adds the ability to recognize people."
+
+ix.lang.AddTable("ru", {
+	["recognition.rememberTitle"] = "Запомнить персонажа",
+	["recognition.rememberPrompt"] = "Как вы хотите запомнить персонажа %s?",
+})
+ix.lang.AddTable("en", {
+	["recognition.rememberTitle"] = "Remember character",
+	["recognition.rememberPrompt"] = "How do you want to remember character %s?",
+})
+ix.lang.AddTable("fr", {
+	["recognition.rememberTitle"] = "Mémoriser le personnage",
+	["recognition.rememberPrompt"] = "Comment voulez-vous mémoriser le personnage %s?",
+})
+ix.lang.AddTable("es-es", {
+	["recognition.rememberTitle"] = "Recordar personaje",
+	["recognition.rememberPrompt"] = "¿Cómo quieres recordar al personaje %s?",
+})
 
 ix.Net:AddPlayerVar("hide", false, nil, ix.Net.Type.CharacterID)
 
@@ -158,7 +174,7 @@ if (CLIENT) then
 
 		local name = hook.Run("GetCharacterName", target, "ic")
 
-		Derma_StringRequest("Запомнить персонажа", "Как вы хотите запомнить персонажа "..name.."?", "", function(text)
+		Derma_StringRequest(L("recognition.rememberTitle"), string.format(L("recognition.rememberPrompt"), name), "", function(text)
 			ix.gui.recognize = nil
 
 			client.recognize = client.recognize or {}

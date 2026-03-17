@@ -100,14 +100,14 @@ function ENT:OnPopulateEntityInfo(container)
 	name:SizeToContents()
 
 	local description = container:AddRowAfter("name", "description")
-	description:SetText("Автономная Единица серии Сканнер-L. Оснащён анти-гравитационным двигателем, камерой наблюдения и лампой спереди корпуса для вспышки и подсветки. Металл имеет множество изъянов в виде ржавчины и сколов, что соответствует немалому пробегу сканнера. Издаёт приглушённые жужжания.")
+	description:SetText(L("scannerDescription"))
 	description:SizeToContents()
 end
 
 function ENT:GetEntityMenu(client)
 	if (PLUGIN:CanFoldScanner(client, self)) then
 		return {
-			["Сложить"] = function()
+			[L("scannerFold")] = function()
 				net.Start("ScannerFold")
 					net.WriteEntity(self)
 				net.SendToServer()

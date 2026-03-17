@@ -1,5 +1,5 @@
-RECIPE.name = "Пистолетная основа"
-RECIPE.category = "Оружие - компоненты"
+RECIPE.name = "recipe.crafting.pistol_frame_tier1"
+RECIPE.category = "recipe.category.weapon_components"
 RECIPE.requirements = {
 	mat_weaponparts = 3,
 	mat_screws = 2,

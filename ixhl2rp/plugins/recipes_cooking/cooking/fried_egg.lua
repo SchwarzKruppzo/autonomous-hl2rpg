@@ -1,5 +1,5 @@
-RECIPE.name = "Жареное яйцо"
-RECIPE.category = "Продукты"
+RECIPE.name = "recipe.cooking.fried_egg"
+RECIPE.category = "recipe.category.cooking.products"
 RECIPE.requirements = {
 	cook_egg = 1,
 }

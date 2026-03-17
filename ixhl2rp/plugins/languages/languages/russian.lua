@@ -1,0 +1,15 @@
+ix.Locale:Build("ru")
+
+cmdCharSetLanguage 				= "Добавить указанный язык в пользование персонажа."
+cmdCharCheckLanguageDesc			= "Проверить языки персонажа."
+cmdCharRemoveLanguageDesc			= "Забрать указанный язык из пользования персонажа."
+langVortShoutDesc					= "Взывает на языке Вортов, может покрыть собой половину игровой карты."
+lang.dontKnow = "Я не знаю этот язык.."
+lang.alreadyKnows = "Этот персонаж уже знает %s!"
+lang.addedLanguage = "Вы добавили персонажу %s язык %s"
+lang.doesntExist = "Этот язык несуществует!"
+lang.charNotFound = "Указанный персонаж не найден!"
+lang.doesntKnow = "Этот персонаж не знает %s!"
+lang.removedLanguage = "Вы забрали язык %s из использования персонажем %s."
+lang.learned = "Вы изучили %s язык!"
+lang.knowsLanguages = "%s знает следующие языки: %s"

@@ -1,5 +1,5 @@
-RECIPE.name = "Ткань"
-RECIPE.category = "Компоненты"
+RECIPE.name = "recipe.tailoring.cloth_reclaimed"
+RECIPE.category = "recipe.category.components"
 RECIPE.requirements = {
 	mat_cloth = 3,
 	box_of_needles = 1

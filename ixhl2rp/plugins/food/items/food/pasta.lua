@@ -1,5 +1,5 @@
-ITEM.name = "Макароны"
-ITEM.description = "Макароны с капелькой кетчупа на них а так же специй."
+ITEM.name = "item.pasta"
+ITEM.description = "item.pasta.desc"
 ITEM.model = "models/pennepasta01/pennepasta01.mdl"
 ITEM.cost = 20
 ITEM.width = 1

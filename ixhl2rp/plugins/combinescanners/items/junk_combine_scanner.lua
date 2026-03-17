@@ -1,5 +1,5 @@
-ITEM.name = "Сломанный сканнер Альянса"
-ITEM.description = "Некогда представляло из себя автономную единицу. Сейчас же от него до сих пор несёт добротной прожаркой. Ему хорошо досталось и потому сейчас это просто мусор."
+ITEM.name = "item.junk_combine_scanner"
+ITEM.description = "item.junk_combine_scanner.desc"
 ITEM.model = "models/gibs/scanner_gib05.mdl"
 ITEM.width = 2
 ITEM.height = 2

@@ -1,0 +1,31 @@
+ix.Locale:Build("es-es")
+
+
+pressSpeak 				= "Presiona [E] para hablar."
+
+r_mark_greetings_1f 		= "¿Qué puedo hacer por usted?"
+r_mark_greetings_2f 		= "¿Necesita algo?"
+r_mark_greetings_3f 		= "Le escucho."
+r_mark_greetings_1m 		= "¿Cómo puedo ayudarle?"
+r_mark_greetings_2m 		= "Le estoy escuchando."
+r_mark_greetings_3m 		= "¿Sí?"
+r_mark_neverseen 			= "Sí, es cierto.\nEl Departamento de Vivienda y Propiedad, junto con la administración de la ciudad, está preparando reformas en la ciudad, y por lo tanto hay cambios de personal continuos en todas partes. Un momento difícil, especialmente en tal crisis para la zona industrial de la ciudad. Estoy aquí ahora para la emisión de correo, y pronto - la redacción de documentos para el alquiler de apartamentos residenciales, negocios y otras propiedades...\nSe dice que quieren reiniciar la economía de la ciudad. En general, algo así."
+r_mark_rent 				= "Ahora no puedo hablar de eso. El departamento aún no está listo para esto, tal vez en otro momento."
+r_mark_rumours 			= "No. Todo está tranquilo."
+r_mark_checkmail 			= "De acuerdo. Su tarjeta de ciudadano, por favor."
+t_mail_check_id 			= "Le dio la tarjeta de ciudadano #%s."
+t_mark_neverseen_f 		= "Nunca le he visto aquí antes."
+t_mark_neverseen_m 		= "Nunca le he visto aquí antes."
+t_mark_rent_f 				= "Me gustaría hablar sobre el alquiler/compra de un local."
+t_mark_rent_m 				= "Me gustaría hablar sobre el alquiler/compra de un local."
+t_mark_checkmail_f 		= "Me gustaría revisar mi correo."
+t_mark_checkmail_m 		= "Me gustaría revisar mi correo."
+t_mark_rumours 			= "¿Ha oído algo últimamente?"
+t_generic_goodbye 			= "Hasta luego."
+t_checkmail_no_m 			= "Cambié de opinión."
+t_checkmail_no_f 			= "Cambié de opinión."
+r_rumour1 					= "Se rumorea que ocurrió un experimento fallido en la zona industrial, y ahora todos nos hemos quedado sin fases de trabajo. ¿Cuánto durará esto? Quién sabe.\nAlabado sea el Sindicato que nos paga prestaciones, de lo contrario podríamos morir de hambre..."
+
+npc.garbageReward 			= "Recibiste 10 fichas y 1x cupón \"Trabajador\"."
+npc.rationReward 			= "Recibiste %s fichas por el trabajo en la fábrica de raciones."
+npc.productionReward 		= "Recibiste %s fichas por la producción."

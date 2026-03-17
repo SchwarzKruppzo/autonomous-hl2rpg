@@ -1,6 +1,6 @@
-ITEM.name = "Чип Альянса"
-ITEM.description = "Сохранившаяся в целости и сохранности компонент продвинутой электроники Альянса."
-ITEM.category = "Базовые компоненты"
+ITEM.name = "item.combine_circuit"
+ITEM.description = "item.combine_circuit.desc"
+ITEM.category = "item.category.raw"
 ITEM.rarity = 2
 ITEM.model = "models/cellar/combine_circuit.mdl"
 ITEM.width = 2

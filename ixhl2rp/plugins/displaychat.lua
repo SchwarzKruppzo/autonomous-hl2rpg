@@ -4,17 +4,30 @@ PLUGIN.name = "Display Chat"
 PLUGIN.description = ""
 PLUGIN.author = ""
 
+ix.lang.AddTable("ru", {
+	["displaychat.category"] = "Чат над головой",
+})
+ix.lang.AddTable("en", {
+	["displaychat.category"] = "Overhead chat",
+})
+ix.lang.AddTable("fr", {
+	["displaychat.category"] = "Chat au-dessus de la tête",
+})
+ix.lang.AddTable("es-es", {
+	["displaychat.category"] = "Chat sobre la cabeza",
+})
+
 ix.option.Add("chatDisplayEnabled", ix.type.bool, true, {
-	category = "Чат над головой"
+	category = "displaychat.category"
 })
 
 ix.option.Add("chatDisplayLength", ix.type.number, 256, {
-	category = "Чат над головой",
+	category = "displaychat.category",
 	min = 10, max = 2048
 })
 
 ix.option.Add("chatDisplayDurationPerSymbol", ix.type.number, 0.5, {
-	category = "Чат над головой",
+	category = "displaychat.category",
 	min = 0.01, max = 1, decimals = 2
 })
 
@@ -39,7 +52,6 @@ function PLUGIN:MessageReceived(client, messageInfo)
 				color = class and class.color or color_white,
 				fadeTime = duration
 			}
-
 
 			if system.IsWindows() and !system.HasFocus() then
 				system.FlashWindow()

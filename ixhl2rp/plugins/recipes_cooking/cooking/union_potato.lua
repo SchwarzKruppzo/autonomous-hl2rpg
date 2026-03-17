@@ -1,5 +1,5 @@
-RECIPE.name = "Консервы Союза"
-RECIPE.category = "Продукты"
+RECIPE.name = "recipe.cooking.union_potato"
+RECIPE.category = "recipe.category.cooking.products"
 RECIPE.requirements = {
 	cook_spices = 1,
 	empty_tin_can = 1,

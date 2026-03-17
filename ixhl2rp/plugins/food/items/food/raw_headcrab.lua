@@ -1,5 +1,5 @@
-ITEM.name = "Сырое филе хедкраба"
-ITEM.description = "Вырезанное филе из самого неприятного существа, что можно встретить. Многие говорят, что мясо похоже на курицу, но вкус настолько непонятный и незнакомый." 
+ITEM.name = "item.raw_headcrab"
+ITEM.description = "item.raw_headcrab.desc" 
 ITEM.model = "models/foodnhouseholditems/meat5.mdl"
 ITEM.cost = 12
 ITEM.width = 1

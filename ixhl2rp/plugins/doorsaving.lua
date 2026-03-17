@@ -3,9 +3,58 @@ local PLUGIN = PLUGIN
 PLUGIN.name = "Door Commands"
 PLUGIN.author = "Schwarz Kruppzo"
 
+ix.lang.AddTable("ru", {
+	cmdDoorLockDesc = "Закрыть дверь",
+	cmdDoorUnlockDesc = "Открыть дверь",
+	cmdDoorSetAccessDesc = "Назначить игроку доступ (owner, tenant, guest) к двери на которую вы смотрите.",
+	cmdDoorRemoveAccessDesc = "Забрать у игрока доступ к двери на которую вы смотрите.",
+	cmdDoorResetAccessDesc = "Сбросить весь доступ дверям.",
+	dDoorLocked = "Вы успешно закрыли эту дверь.",
+	dDoorUnlocked = "Вы успешно открыли эту дверь.",
+	dAccessSet = "Вы успешно изменили доступ.",
+	dAccessRemoved = "Вы успешно забрали доступ.",
+	dAccessReset = "Вы успешно сбросили доступ.",
+})
+ix.lang.AddTable("en", {
+	cmdDoorLockDesc = "Lock the door.",
+	cmdDoorUnlockDesc = "Unlock the door.",
+	cmdDoorSetAccessDesc = "Set a player's access (owner, tenant, guest) to the door you're looking at.",
+	cmdDoorRemoveAccessDesc = "Remove a player's access to the door you're looking at.",
+	cmdDoorResetAccessDesc = "Reset all door access.",
+	dDoorLocked = "You have successfully locked this door.",
+	dDoorUnlocked = "You have successfully unlocked this door.",
+	dAccessSet = "You have successfully changed access.",
+	dAccessRemoved = "You have successfully removed access.",
+	dAccessReset = "You have successfully reset access.",
+})
+ix.lang.AddTable("fr", {
+	cmdDoorLockDesc = "Fermer la porte.",
+	cmdDoorUnlockDesc = "Ouvrir la porte.",
+	cmdDoorSetAccessDesc = "Définir l'accès d'un joueur (owner, tenant, guest) à la porte que vous regardez.",
+	cmdDoorRemoveAccessDesc = "Retirer l'accès d'un joueur à la porte que vous regardez.",
+	cmdDoorResetAccessDesc = "Réinitialiser tout accès aux portes.",
+	dDoorLocked = "Vous avez fermé cette porte.",
+	dDoorUnlocked = "Vous avez ouvert cette porte.",
+	dAccessSet = "Vous avez modifié l'accès.",
+	dAccessRemoved = "Vous avez retiré l'accès.",
+	dAccessReset = "Vous avez réinitialisé l'accès.",
+})
+ix.lang.AddTable("es-es", {
+	cmdDoorLockDesc = "Cerrar la puerta.",
+	cmdDoorUnlockDesc = "Abrir la puerta.",
+	cmdDoorSetAccessDesc = "Asignar acceso (owner, tenant, guest) al jugador para la puerta que miras.",
+	cmdDoorRemoveAccessDesc = "Quitar el acceso del jugador a la puerta que miras.",
+	cmdDoorResetAccessDesc = "Restablecer todo el acceso de las puertas.",
+	dDoorLocked = "Has cerrado esta puerta correctamente.",
+	dDoorUnlocked = "Has abierto esta puerta correctamente.",
+	dAccessSet = "Has cambiado el acceso correctamente.",
+	dAccessRemoved = "Has quitado el acceso correctamente.",
+	dAccessReset = "Has restablecido el acceso correctamente.",
+})
+
 do
 	ix.command.Add("DoorLock", {
-		description = "Закрыть дверь",
+		description = "@cmdDoorLockDesc",
 		privilege = "Manage Doors",
 		adminOnly = true,
 		OnRun = function(self, client)
@@ -20,7 +69,7 @@ do
 
 				entity:Fire("lock")
 
-				return "Вы успешно закрыли эту дверь."
+				return "@dDoorLocked"
 			else
 				return "@dNotValid"
 			end
@@ -28,7 +77,7 @@ do
 	})
 
 	ix.command.Add("DoorUnlock", {
-		description = "Открыть дверь",
+		description = "@cmdDoorUnlockDesc",
 		privilege = "Manage Doors",
 		adminOnly = true,
 		OnRun = function(self, client)
@@ -43,7 +92,7 @@ do
 
 				entity:Fire("unlock")
 
-				return "Вы успешно открыли эту дверь."
+				return "@dDoorUnlocked"
 			else
 				return "@dNotValid"
 			end
@@ -56,7 +105,7 @@ do
 		["guest"] = DOOR_GUEST,
 	}
 	ix.command.Add("DoorSetAccess", {
-		description = "Назначить игроку доступ (owner, tenant, guest) к двери на которую вы смотрите.",
+		description = "@cmdDoorSetAccessDesc",
 		privilege = "Manage Doors",
 		adminOnly = true,
 		arguments = {ix.type.character, bit.bor(ix.type.string, ix.type.optional)},
@@ -68,7 +117,7 @@ do
 
 				PLUGIN:DoorSetAccess(target:GetPlayer(), entity, a)
 
-				return "Вы успешно изменили доступ."
+				return "@dAccessSet"
 			else
 				return "@dNotValid"
 			end
@@ -76,7 +125,7 @@ do
 	})
 
 	ix.command.Add("DoorRemoveAccess", {
-		description = "Забрать у игрока доступ к двери на которую вы смотрите.",
+		description = "@cmdDoorRemoveAccessDesc",
 		privilege = "Manage Doors",
 		adminOnly = true,
 		arguments = {ix.type.character},
@@ -86,7 +135,7 @@ do
 			if IsValid(entity) and entity:IsDoor() then
 				PLUGIN:DoorRemoveAccess(target:GetPlayer(), entity)
 
-				return "Вы успешно забрали доступ."
+				return "@dAccessRemoved"
 			else
 				return "@dNotValid"
 			end
@@ -94,7 +143,7 @@ do
 	})
 
 	ix.command.Add("DoorResetAccess", {
-		description = "Сбросить весь доступ дверям.",
+		description = "@cmdDoorResetAccessDesc",
 		privilege = "Manage Doors",
 		adminOnly = true,
 		OnRun = function(self, client, target, acc)
@@ -103,7 +152,7 @@ do
 			if IsValid(entity) and entity:IsDoor() then
 				PLUGIN:DoorResetAccess(entity)
 
-				return "Вы успешно сбросили доступ."
+				return "@dAccessReset"
 			else
 				return "@dNotValid"
 			end

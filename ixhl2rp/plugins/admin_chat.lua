@@ -2,6 +2,43 @@ PLUGIN.name = "Admin Chat"
 PLUGIN.author = ""
 PLUGIN.description = ""
 
+ix.lang.AddTable("ru", {
+	["adminchat.prefix"] = "[А] ",
+	["adminchat.notAdmin"] = "Вы не администратор. Используйте '@сообщение' для создания тикета.",
+	cmdDiscordDesc = "Ссылка на дискорд сервера.",
+	cmdContentDesc = "Ссылка на контент сервера.",
+	cmdGuideDesc = "Ссылка на гайд сервера.",
+	cmdRulesDesc = "Ссылка на правила сервера.",
+	cmdVideoDesc = "Ссылка на видео-гайд сервера.",
+})
+ix.lang.AddTable("en", {
+	["adminchat.prefix"] = "[A] ",
+	["adminchat.notAdmin"] = "You aren't an admin. Use '@messagehere' to create a ticket.",
+	cmdDiscordDesc = "Link to server Discord.",
+	cmdContentDesc = "Link to server content.",
+	cmdGuideDesc = "Link to server guide.",
+	cmdRulesDesc = "Link to server rules.",
+	cmdVideoDesc = "Link to server video guide.",
+})
+ix.lang.AddTable("fr", {
+	["adminchat.prefix"] = "[A] ",
+	["adminchat.notAdmin"] = "Vous n'êtes pas admin. Utilisez '@message' pour créer un ticket.",
+	cmdDiscordDesc = "Lien vers le Discord du serveur.",
+	cmdContentDesc = "Lien vers le contenu du serveur.",
+	cmdGuideDesc = "Lien vers le guide du serveur.",
+	cmdRulesDesc = "Lien vers les règles du serveur.",
+	cmdVideoDesc = "Lien vers la vidéo guide du serveur.",
+})
+ix.lang.AddTable("es-es", {
+	["adminchat.prefix"] = "[A] ",
+	["adminchat.notAdmin"] = "No eres admin. Usa '@mensaje' para crear un ticket.",
+	cmdDiscordDesc = "Enlace al Discord del servidor.",
+	cmdContentDesc = "Enlace al contenido del servidor.",
+	cmdGuideDesc = "Enlace a la guía del servidor.",
+	cmdRulesDesc = "Enlace a las reglas del servidor.",
+	cmdVideoDesc = "Enlace al vídeo guía del servidor.",
+})
+
 if SERVER then
 	util.AddNetworkString("ixOpenURL")
 else
@@ -37,7 +74,7 @@ ix.chat.Register("adminchat", {
 	end,
 	OnCanSay = function(self, speaker, text)
 		if (CAMI.PlayerHasAccess(speaker, "Helix - Admin Chat", nil)) then
-			speaker:Notify("You aren't an admin. Use '@messagehere' to create a ticket.")
+			speaker:Notify(L("adminchat.notAdmin"))
 
 			return false
 		end
@@ -50,14 +87,14 @@ ix.chat.Register("adminchat", {
 		icon = Material(hook.Run("GetPlayerIcon", speaker) or icon)
 
 		if (CAMI.PlayerHasAccess(LocalPlayer(), "Helix - Admin Chat", nil) and CAMI.PlayerHasAccess(speaker, "Helix - Admin Chat", nil)) then
-			chat.AddText(icon, Color(255, 215, 0), "[А] ", Color(128, 0, 255, 255), (speaker:AnonSteamName() and "("..speaker:AnonSteamName()..") " or "")..speaker:Name(), ": ", Color(255, 255, 255), text)
+			chat.AddText(icon, Color(255, 215, 0), L("adminchat.prefix"), Color(128, 0, 255, 255), (speaker:AnonSteamName() and "("..speaker:AnonSteamName()..") " or "")..speaker:Name(), ": ", Color(255, 255, 255), text)
 		end
 	end,
 	prefix = "/a"
 })
 
 ix.command.Add("Discord", {
-	description = "Ссылка на дискорд сервера.",
+	description = "@cmdDiscordDesc",
 	OnRun = function(self, client)
 		net.Start("ixOpenURL")
 			net.WriteUInt(0, 3)
@@ -67,7 +104,7 @@ ix.command.Add("Discord", {
 })
 
 ix.command.Add("Content", {
-	description = "Ссылка на контент сервера.",
+	description = "@cmdContentDesc",
 	OnRun = function(self, client)
 		net.Start("ixOpenURL")
 			net.WriteUInt(1, 3)
@@ -76,7 +113,7 @@ ix.command.Add("Content", {
 })
 
 ix.command.Add("Guide", {
-	description = "Ссылка на гайд сервера.",
+	description = "@cmdGuideDesc",
 	OnRun = function(self, client)
 		net.Start("ixOpenURL")
 			net.WriteUInt(2, 3)
@@ -85,7 +122,7 @@ ix.command.Add("Guide", {
 })
 
 ix.command.Add("Rules", {
-	description = "Ссылка на правила сервера.",
+	description = "@cmdRulesDesc",
 	OnRun = function(self, client)
 		net.Start("ixOpenURL")
 			net.WriteUInt(3, 3)
@@ -94,7 +131,7 @@ ix.command.Add("Rules", {
 })
 
 ix.command.Add("Video", {
-	description = "Ссылка на видео-гайд сервера.",
+	description = "@cmdVideoDesc",
 	OnRun = function(self, client)
 		net.Start("ixOpenURL")
 			net.WriteUInt(4, 3)

@@ -1,5 +1,5 @@
-ITEM.name = "Шоколадный торт"
-ITEM.description = "Шоколадный тортик сделанный специально под особые случаи или праздники. Этому можно верить? Хороший вопрос."
+ITEM.name = "item.chocolate_cake"
+ITEM.description = "item.chocolate_cake.desc"
 ITEM.model = "models/foodnhouseholditems/cake_b.mdl"
 ITEM.cost = 40
 ITEM.width = 2

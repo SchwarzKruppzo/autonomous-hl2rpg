@@ -1,7 +1,7 @@
-ITEM.name = "Гайки"
-ITEM.description = "Куча разного вида гаек, которые можно использовать в производстве высококачественных изделий или кустарных изделиях."
+ITEM.name = "item.mat_nuts"
+ITEM.description = "item.mat_nuts.desc"
 ITEM.model = "models/synapse/misc_props/synapse_misc_nut2.mdl"
-ITEM.category = "Базовые компоненты"
+ITEM.category = "item.category.raw"
 ITEM.width = 1
 ITEM.height = 1
 ITEM.iconCam = {

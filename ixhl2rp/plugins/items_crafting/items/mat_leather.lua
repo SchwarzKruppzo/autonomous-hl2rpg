@@ -1,7 +1,7 @@
-ITEM.name = "Кожа"
-ITEM.description = ""
+ITEM.name = "item.mat_leather"
+ITEM.description = "item.mat_leather.desc"
 ITEM.model = "models/mosi/fallout4/props/junk/components/leather.mdl"
-ITEM.category = "Базовые компоненты"
+ITEM.category = "item.category.raw"
 ITEM.rarity = 1
 ITEM.width = 2
 ITEM.height = 1

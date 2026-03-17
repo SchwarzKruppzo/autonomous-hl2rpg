@@ -1,5 +1,5 @@
-RECIPE.name = "Респиратор"
-RECIPE.category = "Одежда - противогазы"
+RECIPE.name = "recipe.tailoring.gasmask_early"
+RECIPE.category = "recipe.category.gasmasks"
 RECIPE.requirements = {
 	mat_plastic = 2,
 	mat_resine = 3,

@@ -1,5 +1,5 @@
-RECIPE.name = "Апельсиновый сок"
-RECIPE.category = "Напитки"
+RECIPE.name = "recipe.cooking.orange_juice"
+RECIPE.category = "recipe.category.cooking.drinks"
 RECIPE.requirements = {
 	union_branded_orange = 3,
 }

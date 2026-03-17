@@ -1,7 +1,7 @@
-ITEM.name = "Стекло"
-ITEM.description = ""
+ITEM.name = "item.mat_glass"
+ITEM.description = "item.mat_glass.desc"
 ITEM.model = "models/mosi/fallout4/props/junk/components/glass.mdl"
-ITEM.category = "Базовые компоненты"
+ITEM.category = "item.category.raw"
 ITEM.width = 2
 ITEM.height = 1
 ITEM.iconCam = {

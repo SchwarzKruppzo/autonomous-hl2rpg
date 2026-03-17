@@ -1,5 +1,5 @@
-ITEM.name = "Основа ПП"
-ITEM.description = "Базовая основа для ПП. В умелых руках может стать чем угодно, что умеет стрелять."
+ITEM.name = "item.gun_smg_frame"
+ITEM.description = "item.gun_smg_frame.desc"
 ITEM.model = "models/cellar/craft/smg_frame.mdl"
 ITEM.width = 3
 ITEM.height = 1
@@ -8,5 +8,5 @@ ITEM.iconCam = {
 	ang = Angle(58.831272125244, 269.91931152344, 0),
 	fov = 4.3429515562353,
 }
-ITEM.category = "Части оружия"
+ITEM.category = "item.category.weapon_parts"
 ITEM.contraband = true

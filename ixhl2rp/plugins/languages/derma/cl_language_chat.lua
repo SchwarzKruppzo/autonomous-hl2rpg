@@ -27,12 +27,12 @@ function PANEL:Init()
 				chatLanguages[#chatLanguages + 1] = {name = info.name, icon = info.icon, tag = id}
 			end
 
-			chatLanguages[#chatLanguages + 1] = {name = "По-умолчанию", icon = "flags16/gb.png", tag = nil}
+			chatLanguages[#chatLanguages + 1] = {name = L("langDefault"), icon = "flags16/gb.png", tag = nil}
 
 			if !table.IsEmpty(chatLanguages) then
 				local menu = DermaMenu()
 				for k, v in ipairs(chatLanguages) do
-					local option = menu:AddOption(v.name, function()
+					local option = menu:AddOption(L(v.name), function()
 						net.Start("lang.change")
 							if v.tag then
 								net.WriteString(v.tag)

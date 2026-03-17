@@ -1,9 +1,9 @@
 local PLUGIN = PLUGIN
 
 netstream.Hook("QueryDeleteLanguageLearningProgress", function(languageName)
-	Derma_Query("I am already learning "..languageName..", delete progress?", "Languages", "Yes", function()
+	Derma_Query(L("langDeleteProgressConfirm", languageName), L("langTitle"), L("yes"), function()
 		netstream.Start("QueryDeleteLanguageSuccess")
-	end, "No")
+	end, L("no"))
 end)
 
 function PLUGIN:DoVortShout(speaker)
@@ -26,7 +26,7 @@ end
 
 function Derma_LanguageSelect(list, confirmCallback)
 	local panel = vgui.Create("DFrame")
-	panel:SetTitle("Дополнительный язык персонажа")
+	panel:SetTitle(L("langExtraLanguageTitle"))
 	panel:SetDraggable(false)
 	panel:ShowCloseButton(false)
 	panel:SetBackgroundBlur(true)
@@ -46,19 +46,18 @@ function Derma_LanguageSelect(list, confirmCallback)
 
 	for k, v in pairs(list) do
 		local btn = layout:Add( "DButton" )
-		btn:SetText(v.text)
+		btn:SetText(L(v.text))
 		btn:SetIcon(v.icon)
 		btn.DoClick = function()
 			Derma_Query(
-			"Вы точно хотите выбрать язык "..v.text.." дополнительным?",
-			"Подтверждение",
-			"Да",
-			function() 
+			L("langConfirmExtraLanguage", v.text),
+			L("langConfirmTitle"),
+			L("yes"),
+			function()
 				confirmCallback(v.value)
-
 				panel:Close()
 			end,
-			"Нет",
+			L("no"),
 			function() end
 			)
 		end

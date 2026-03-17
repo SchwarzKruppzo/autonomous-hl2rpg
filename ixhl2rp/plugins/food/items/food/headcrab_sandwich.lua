@@ -1,5 +1,5 @@
-ITEM.name = "Сэндвич из хедкраба"
-ITEM.description = "Самый простой сэндвич, но вместо какого-то привычного мяса в нем куски хедкраба. А это вкусно?"
+ITEM.name = "item.headcrab_sandwich"
+ITEM.description = "item.headcrab_sandwich.desc"
 ITEM.model = "models/foodnhouseholditems/sandwich.mdl"
 ITEM.cost = 20
 ITEM.width = 1

@@ -1,5 +1,5 @@
-ITEM.name = "Круассан"
-ITEM.description = "Чудо выпечки по французскому рецепту, пышное и вкусное тесто будет самым лучшим дополнением для обсуждения философии и искусства."
+ITEM.name = "item.croissant"
+ITEM.description = "item.croissant.desc"
 ITEM.model = "models/foodnhouseholditems/croissant.mdl"
 ITEM.cost = 12
 ITEM.width = 1

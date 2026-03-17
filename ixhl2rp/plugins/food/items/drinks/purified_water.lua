@@ -1,5 +1,5 @@
-ITEM.name = "Очищенная вода"
-ITEM.description = "Вода, которая прошла термообработку и при помощи фильтра очистилась. Не факт, что она теперь полностью чистая без всяких примесей, но это лучше чем грязная и вонючая вода с лужи.."
+ITEM.name = "item.purified_water"
+ITEM.description = "item.purified_water.desc"
 ITEM.model = "models/crunchy/props/contagion_props/plastic_bottle_1.mdl"
 ITEM.cost = 18
 ITEM.width = 1

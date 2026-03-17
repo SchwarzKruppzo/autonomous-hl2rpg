@@ -6,15 +6,6 @@ PLUGIN.description = ""
 
 ix.util.Include("sv_plugin.lua")
 
-ix.lang.AddTable("russian", {
-	psearchAlready = "Персонажа уже обыскивают!",
-	psearchPending = "Вы запросили обыск персонажа.",
-	psearchWait = "Подождите перед запросом!",
-	psearchAccept = "Вы согласились на обыск.",
-	psearchDecline = "Вы отказались от обыска!",
-	psearchDecline2 = "Персонаж отказался от обыска!",
-})
-
 
 local COMMAND = {}
 
@@ -49,11 +40,11 @@ if CLIENT then
 		local client = net.ReadEntity()
 
 		Derma_Query(
-    		"Персонаж "..client:GetName().." хочет обыскать Вас.",
-    		"Запрос обыска",
-    		"Разрешить",
+    		L("psearchRequestMessage", client:GetName()),
+    		L("psearchRequestTitle"),
+    		L("psearchAllow"),
     		function() Respond(true) end,
-			"Отклонить",
+			L("psearchDeclineBtn"),
 			function() Respond(false) end
 		)
 	end)
@@ -68,9 +59,9 @@ if CLIENT then
 		local name = hook.Run("GetCharacterName", target:IsRagdoll() and entityPlayer or target, "me")
 
 		if name then
-			ix.chat.Send(sender, "me", "забирает \""..L(item.name).."\" у "..name..".")
+			sender:Emote("me", "emoteConfiscateItemFrom", L(item.name), name)
 		else
-			ix.chat.Send(sender, "me", "забирает у вас \""..L(item.name).."\".")
+			sender:Emote("me", "emoteConfiscateItemFromYou", L(item.name))
 		end
 	end)
 end

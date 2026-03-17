@@ -1,5 +1,5 @@
-ITEM.name = "Рыбная похлебка"
-ITEM.description = "Кастрюля от которой отдает отчетливый запах рыбы, на деле это правда суп с рыбой."
+ITEM.name = "item.fish_soup"
+ITEM.description = "item.fish_soup.desc"
 ITEM.model = "models/mosi/fallout4/props/food/meats.mdl"
 ITEM.skin = 3
 ITEM.cost = 10

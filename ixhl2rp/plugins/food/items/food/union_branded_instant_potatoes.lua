@@ -1,5 +1,5 @@
-ITEM.name = "Консервы Союза"
-ITEM.description = "Жестяная банка со знаком Альянса на ней, заполненная коричневым печеным картофелем в томатном соусе."
+ITEM.name = "item.union_branded_instant_potatoes"
+ITEM.description = "item.union_branded_instant_potatoes.desc"
 ITEM.model = "models/mosi/fallout4/props/junk/tincan03.mdl"
 ITEM.skin = 2
 ITEM.cost = 10

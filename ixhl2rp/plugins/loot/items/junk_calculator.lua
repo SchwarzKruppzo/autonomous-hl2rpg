@@ -1,6 +1,6 @@
-ITEM.name = "Калькулятор"
-ITEM.description = "Небольшое устройство, обычно прямоугольной формы, выполненное из пластика. Имеет ряд кнопок, расположенных на панели передней части, каждая из которых обозначает цифру, операцию или функцию. На верхней части калькулятора расположен работающий дисплей."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_calculator"
+ITEM.description = "item.junk_calculator.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_office/calculator.mdl"
 ITEM.width = 1
 ITEM.height = 1

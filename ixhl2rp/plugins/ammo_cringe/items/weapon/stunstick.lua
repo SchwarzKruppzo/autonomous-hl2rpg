@@ -1,5 +1,5 @@
-ITEM.name = "Парализатор"
-ITEM.description = "Стандартный парализатор сотрудника Гражданской Обороны. Его медная катушка на кончике искрится белыми молниями, если переключить рычажок питания на ручке. Мощность дубинки при помощи маленькой кнопки с боку можно отрегулировать до 100 Киловольт. Бьет больно и часто."
+ITEM.name = "item.stunstick"
+ITEM.description = "item.stunstick.desc"
 ITEM.model = "models/weapons/w_stunbaton.mdl"
 ITEM.class = "arccw_stunstick"
 ITEM.weaponCategory = "melee"

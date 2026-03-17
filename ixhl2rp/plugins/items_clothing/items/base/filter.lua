@@ -36,7 +36,7 @@ function Item:SetFilterQuality(amount)
 end
 
 function Item:Init()
-	self.category = 'Фильтры'
+	self.category = "item.category.filter"
 
 	self.filterQuality = self.filterQuality or 100
 

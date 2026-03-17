@@ -1,5 +1,5 @@
-ITEM.name = "Фирменный арахис"
-ITEM.description = "Мешочек солёного арахиса. Знак Альянса напечатан на обоих сторонах пачки."
+ITEM.name = "item.union_branded_bag_of_peanuts"
+ITEM.description = "item.union_branded_bag_of_peanuts.desc"
 ITEM.model = "models/bioshockinfinite/rag_of_peanuts.mdl"
 ITEM.cost = 2
 ITEM.width = 1

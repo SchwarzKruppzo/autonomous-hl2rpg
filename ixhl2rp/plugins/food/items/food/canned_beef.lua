@@ -1,5 +1,5 @@
-ITEM.name = "Консервированная говядина"
-ITEM.description = "Вот это удача, это же тушенка из говядины! Внутри находится приятный жирок и волокнистое мясо, мир окончательно не потерян."
+ITEM.name = "item.canned_beef"
+ITEM.description = "item.canned_beef.desc"
 ITEM.model = "models/crunchy/props/eft_props/beefstew2.mdl"
 ITEM.cost = 12
 ITEM.width = 1

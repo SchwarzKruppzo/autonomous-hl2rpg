@@ -1,5 +1,5 @@
-RECIPE.name = "Напильник"
-RECIPE.category = "Инструменты"
+RECIPE.name = "recipe.crafting.tool_hacksaw"
+RECIPE.category = "recipe.category.tools"
 RECIPE.requirements = {
 	metal_reclaimed = 2,
 	mat_wood = 1

@@ -1,5 +1,5 @@
-RECIPE.name = "Флакон с биогелем"
-RECIPE.category = "Медицина"
+RECIPE.name = "recipe.medical.healthvial"
+RECIPE.category = "recipe.category.medical"
 RECIPE.requirements = {
 	chem_antiseptic = 2,
 	mat_plastic = 1,

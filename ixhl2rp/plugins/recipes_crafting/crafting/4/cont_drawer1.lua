@@ -1,5 +1,5 @@
-RECIPE.name = "Высокая тумбочка"
-RECIPE.category = "Контейнеры"
+RECIPE.name = "recipe.crafting.cont_drawer1"
+RECIPE.category = "recipe.category.containers"
 RECIPE.requirements = {
 	mat_wood = 8,
 	box_of_nails = 2,

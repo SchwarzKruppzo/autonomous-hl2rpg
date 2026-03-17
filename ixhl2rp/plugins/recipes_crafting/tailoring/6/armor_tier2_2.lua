@@ -1,5 +1,5 @@
-RECIPE.name = "Зеленая рубаха с бронежилетом"
-RECIPE.category = "Броня — тело"
+RECIPE.name = "recipe.tailoring.armor_tier2_2"
+RECIPE.category = "recipe.category.armor_body"
 RECIPE.requirements = {
 	gray_shirt = 1,
 	mat_armor_tier1 = 1,

@@ -1,6 +1,6 @@
-ITEM.name = "Раскладной стул"
-ITEM.description = "Обычный потрепанный стул изготовленый из металла, его поверхность покрыта слоем ржавчины. На спинке и сиденье есть заметные потертости и царапины, а в некоторых местах краска отслоилась, обнажив металлическую основу."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_chair"
+ITEM.description = "item.junk_chair.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_wasteland/controlroom_chair001a.mdl"
 ITEM.width = 3
 ITEM.height = 3

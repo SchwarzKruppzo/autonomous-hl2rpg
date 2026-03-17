@@ -1,6 +1,6 @@
-ITEM.name = "Сломанная CID карта"
-ITEM.description = "Эту карту кто-то намеренно сломал, из-за чего использовать ее более не предоставляется возможным. Бывший владелец также предусмотрительно стер с нее какие-либо данные. Более ничего интересного на ней нет."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_cid"
+ITEM.description = "item.junk_cid.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/vintagethief/cellarproject/cid_card.mdl"
 ITEM.width = 1
 ITEM.height = 1

@@ -1,5 +1,5 @@
-RECIPE.name = "Антисептик"
-RECIPE.category = "Химия"
+RECIPE.name = "recipe.medical.antiseptic"
+RECIPE.category = "recipe.category.chemistry"
 RECIPE.requirements = {
 	bottle_of_alcohol = 3,
 }

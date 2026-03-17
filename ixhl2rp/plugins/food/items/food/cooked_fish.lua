@@ -1,5 +1,5 @@
-ITEM.name = "Жареная рыба"
-ITEM.description = "Самая вкусная мякотка рыбы, что была добротно пожарена. В зубах после нее часто можно найти кости, но тут не пожалуешься."
+ITEM.name = "item.cooked_fish"
+ITEM.description = "item.cooked_fish.desc"
 ITEM.model = "models/foodnhouseholditems/fishsteak.mdl"
 ITEM.cost = 12
 ITEM.width = 1

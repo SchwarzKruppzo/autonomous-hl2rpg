@@ -77,7 +77,7 @@ if SERVER then
 				end
 			end
 		else
-			ix.chat.Send(client, "it", "Вы ничего не нашли в мусоре.", false, {client})
+			ix.chat.Send(client, "it", L("lootNothingFound"), false, {client})
 		end
 
 		hook.Run("OnPlayerClearGarbage", client, character)
@@ -120,7 +120,7 @@ if SERVER then
 		end
 
 		if !client:Crouching() then
-			client:NotifyLocalized("Вы должны присесть чтобы начать рыться в мусоре.")
+			client:NotifyLocalized("loot.mustCrouch")
 			return
 		end
 
@@ -145,7 +145,7 @@ if SERVER then
 				elseif !client:Crouching() then
 					timer.Remove(uniqueID)
 
-					self:OnFailed(client, "Вы должны присесть чтобы начать рыться в мусоре.")
+					self:OnFailed(client, "loot.mustCrouch")
 				elseif (timer.RepsLeft(uniqueID) == 0) then
 					self:OnSuccess(client)
 				end

@@ -1,5 +1,5 @@
-RECIPE.name = "Аммиачная селитра"
-RECIPE.category = "Химия"
+RECIPE.name = "recipe.medical.nitre"
+RECIPE.category = "recipe.category.chemistry"
 RECIPE.requirements = {
 	mat_acid = 2
 }

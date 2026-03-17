@@ -1,5 +1,5 @@
-RECIPE.name = "Эпинефрин"
-RECIPE.category = "Медицина"
+RECIPE.name = "recipe.medical.epinephrine"
+RECIPE.category = "recipe.category.medical"
 RECIPE.requirements = {
 	chem_medpile = 1,
 	chem_antiseptic = 2,

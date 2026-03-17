@@ -1,4 +1,4 @@
-ITEM.category = "Строительство - контейнеры"
+ITEM.category = "item.category.construction_containers"
 ITEM.model = "models/cellar/tool_crate_metal.mdl"
 ITEM.iconCam = {
 	pos = Vector(160.73175048828, -0.035080194473267, 752.37615966797),
@@ -8,6 +8,6 @@ ITEM.iconCam = {
 ITEM.width = 5
 ITEM.height = 4
 
-ITEM.name = "Сборка: металлический ящик"
-ITEM.description = "Ящик, снабженный специальными зажимами, обеспечивающими надежное закрепление крышки и предотвращающие несанкционированный доступ к содержимому."
+ITEM.name = "item.cont_ammocrate"
+ITEM.description = "item.cont_ammocrate.desc"
 ITEM.preview_model = "models/items/ammocrate_smg1.mdl"

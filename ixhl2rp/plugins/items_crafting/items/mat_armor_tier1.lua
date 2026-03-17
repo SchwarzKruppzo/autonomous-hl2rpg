@@ -1,7 +1,7 @@
-ITEM.name = "Бронежилет 1-го класса защиты"
-ITEM.description = ""
+ITEM.name = "item.mat_armor_tier1"
+ITEM.description = "item.mat_armor_tier1.desc"
 ITEM.model = "models/autonomous/armor_tier1.mdl"
-ITEM.category = "Производные компоненты"
+ITEM.category = "item.category.crafted"
 ITEM.rarity = 1
 ITEM.width = 2
 ITEM.height = 2

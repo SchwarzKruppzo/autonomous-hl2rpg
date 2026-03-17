@@ -1,5 +1,5 @@
-ITEM.name = "Апельсин"
-ITEM.description = "Аппетитно выглядящий апельсин с напечатанным знаком Альянса на нём. Тем не менее, он не пахнет столь же свежо, как его оригинальный аналог."
+ITEM.name = "item.union_branded_orange"
+ITEM.description = "item.union_branded_orange.desc"
 ITEM.model = "models/bioshockinfinite/hext_orange.mdl"
 ITEM.cost = 2
 ITEM.width = 1

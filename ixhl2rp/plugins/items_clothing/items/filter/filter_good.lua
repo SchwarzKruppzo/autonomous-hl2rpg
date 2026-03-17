@@ -1,5 +1,5 @@
-ITEM.name = "Фильтр Mk. I"
-ITEM.description = "Эти фильтры собирают на заводах Сити-8. Виднеется приятная матовая поверхность и множество отсеков для выхода отфильтрованного воздуха. На боку этого фильтра виднеется очень маленькая ватермарка, которая гласит: \"Сделано в Сити-8\". Обычно подобные фильтры используют сотрудники Гражданской Обороны."
+ITEM.name = "item.filter_good"
+ITEM.description = "item.filter_good.desc"
 ITEM.model = Model("models/vintagethief/items/filter.mdl")
 ITEM.width = 1
 ITEM.height = 1

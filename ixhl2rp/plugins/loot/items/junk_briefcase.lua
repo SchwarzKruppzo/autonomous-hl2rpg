@@ -1,6 +1,6 @@
-ITEM.name = "Старый саквояж"
-ITEM.description = "Изношенный кожаный саквояж темно-коричневого цвета с металлическими замками и ручками. На нем видны потертости и царапины, свидетельствующие о многих путешествиях."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_briefcase"
+ITEM.description = "item.junk_briefcase.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_c17/BriefCase001a.mdl"
 ITEM.width = 2
 ITEM.height = 2

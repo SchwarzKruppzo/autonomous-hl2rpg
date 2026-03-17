@@ -1,5 +1,5 @@
-ITEM.name = "Сырая пиявка"
-ITEM.description = "Отвратительный кусок мяса пиявки, что пришла из иного мира."
+ITEM.name = "item.raw_leech"
+ITEM.description = "item.raw_leech.desc"
 ITEM.model = "models/mosi/fallout4/props/food/prawn.mdl"
 ITEM.cost = 12
 ITEM.width = 1

@@ -1,5 +1,5 @@
-ITEM.name = "Канистра с топливом"
-ITEM.description = "Металлический контейнер красного оттенка. Его форма проста и функциональна, с зауженным горлом, позволяющим легко налить или вылить содержимое.  Внутри канистры - бензин."
+ITEM.name = "item.gascan"
+ITEM.description = "item.gascan.desc"
 ITEM.category = "Уникальное"
 ITEM.model = "models/props_junk/gascan001a.mdl"
 ITEM.width = 2

@@ -28,7 +28,7 @@ function Schema:InitializedChatClasses()
 
 			local bToYou = speaker:GetEyeTraceNoCursor().Entity == LocalPlayer()
 
-			chat.AddText(icon or "", color, ix.util.GetMaterial("cellar/chat/ic.png"), name, " говорит", langPrefix or "", bToYou and " (вам)" or "", color_white, string.format(self.format, text))
+			chat.AddText(icon or "", color, ix.util.GetMaterial("cellar/chat/ic.png"), name, L("chat.ic.says"), langPrefix or "", bToYou and L("chat.toYou") or "", color_white, string.format(self.format, text))
 			
 			return text
 		end
@@ -65,7 +65,7 @@ function Schema:InitializedChatClasses()
 
 			local bToYou = speaker:GetEyeTraceNoCursor().Entity == LocalPlayer()
 
-			chat.AddText(icon or "", color, ix.util.GetMaterial("cellar/chat/whisper.png"), name, " шепчет", langPrefix or "", bToYou and " (вам)" or "", color_white, string.format(self.format, text))
+			chat.AddText(icon or "", color, ix.util.GetMaterial("cellar/chat/whisper.png"), name, L("chat.w.whispers"), langPrefix or "", bToYou and L("chat.toYou") or "", color_white, string.format(self.format, text))
 			
 			return text
 		end
@@ -91,7 +91,7 @@ function Schema:InitializedChatClasses()
 				L"someone" or hook.Run("GetCharacterName", speaker, "y") or
 				(IsValid(speaker) and speaker:Name() or "Console")
 
-			chat.AddText(icon or "", self.color, ix.util.GetMaterial("cellar/chat/yell.png"), name, " кричит", langPrefix or "", color_white, string.format(self.format, text))
+			chat.AddText(icon or "", self.color, ix.util.GetMaterial("cellar/chat/yell.png"), name, L("chat.y.yells"), langPrefix or "", color_white, string.format(self.format, text))
 			
 			return text
 		end
@@ -100,7 +100,7 @@ function Schema:InitializedChatClasses()
 	-- dispatch broadcast
 	ix.chat.Register("dispatch", {
 		color = Color(200, 75, 75),
-		format = "Диспетчер транслирует \"%s\"",
+		format = "chat.dispatch.format",
 		CanSay = function(class, speaker, text)
 			if (!speaker:IsDispatch()) then
 				speaker:NotifyLocalized("notAllowed")
@@ -109,13 +109,13 @@ function Schema:InitializedChatClasses()
 			end
 		end,
 		OnChatAdd = function(class, speaker, text)
-			chat.AddText(class.color, ix.util.GetMaterial("cellar/chat/dispatch.png"), string.format(class.format, text))
+			chat.AddText(class.color, ix.util.GetMaterial("cellar/chat/dispatch.png"), string.format(L(class.format), text))
 		end
 	})
 
 	ix.chat.Register("dispatch_radio", {
 		color = Color(200, 0, 0),
-		format = "Dispatch radios on command: \"%s\"",
+		format = "chat.dispatch_radio.format",
 		bReceiveVoices = true,
 		CanSay = function(class, speaker, text)
 			if (!speaker:IsDispatch()) then
@@ -128,7 +128,7 @@ function Schema:InitializedChatClasses()
 			return listener:IsCombine()
 		end,
 		OnChatAdd = function(class, speaker, text)
-			chat.AddText(class.color, string.format(class.format, text))
+			chat.AddText(class.color, string.format(L(class.format), text))
 
 			surface.PlaySound("npc/overwatch/radiovoice/on3.wav")
 		end
@@ -157,7 +157,7 @@ function Schema:InitializedChatClasses()
 	-- admin broadcast
 	ix.chat.Register("broadcast", {
 		color = Color(150, 125, 175),
-		format = "%s транслирует \"%s\"",
+		format = "chat.broadcast.format",
 		CanSay = function(class, speaker, text)
 			local cid = speaker:GetIDCard()
 
@@ -174,7 +174,7 @@ function Schema:InitializedChatClasses()
 			end
 		end,
 		OnChatAdd = function(class, speaker, text)
-			chat.AddText(class.color, ix.util.GetMaterial("cellar/chat/broadcast.png"), string.format(class.format, IsValid(speaker) and speaker:Name() or "Broadcast", text))
+			chat.AddText(class.color, ix.util.GetMaterial("cellar/chat/broadcast.png"), string.format(L(class.format), IsValid(speaker) and speaker:Name() or "Broadcast", text))
 		end
 	})
 

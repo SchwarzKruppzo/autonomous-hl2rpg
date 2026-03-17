@@ -1,5 +1,5 @@
-RECIPE.name = "Комод"
-RECIPE.category = "Контейнеры"
+RECIPE.name = "recipe.crafting.cont_drawer3"
+RECIPE.category = "recipe.category.containers"
 RECIPE.requirements = {
 	mat_wood = 11,
 	box_of_nails = 3,

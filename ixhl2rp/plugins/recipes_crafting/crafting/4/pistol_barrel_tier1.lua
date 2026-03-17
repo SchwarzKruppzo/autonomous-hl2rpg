@@ -1,5 +1,5 @@
-RECIPE.name = "Ствол пистолета"
-RECIPE.category = "Оружие - компоненты"
+RECIPE.name = "recipe.crafting.pistol_barrel_tier1"
+RECIPE.category = "recipe.category.weapon_components"
 RECIPE.requirements = {
 	metal_reclaimed = 1,
 	mat_oil = 2,

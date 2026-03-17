@@ -1,5 +1,5 @@
-ITEM.name = "Томатный суп"
-ITEM.description = "Старый добрый томатный суп, что до Войны можно было увидеть в магазинах. Простенькое, но сытное блюдо, таким можно заполнить пустоту у вас в желудке легко."
+ITEM.name = "item.tomato_soup"
+ITEM.description = "item.tomato_soup.desc"
 ITEM.model = "models/crunchy/props/contagion_props/food/canned_soup.mdl"
 ITEM.cost = 12
 ITEM.width = 1

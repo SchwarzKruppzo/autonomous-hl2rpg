@@ -7,12 +7,32 @@ PLUGIN.author = "`impulse"
 PLUGIN.maxNameLength = 32
 PLUGIN.maxDescriptionLength = 256
 
-ix.lang.AddTable("english", {
+ix.lang.AddTable("en", {
 	notLookingAtProp = "You aren't looking at a valid prop!",
 	objectDescRemoved = "You have removed this prop's description.",
 	objectDescSet = "You have set this prop's description.",
-
 	cmdObjectSetDesc = "Sets the name and description of the prop you're looking at. Leave empty to remove a prop's description."
+})
+
+ix.lang.AddTable("ru", {
+	notLookingAtProp = "Вы не смотрите на валидный проп!",
+	objectDescRemoved = "Вы удалили описание этого пропа.",
+	objectDescSet = "Вы установили описание этого пропа.",
+	cmdObjectSetDesc = "Установить имя и описание пропа, на который вы смотрите. Оставьте пустым, чтобы удалить описание."
+})
+
+ix.lang.AddTable("fr", {
+	notLookingAtProp = "Vous ne regardez pas un prop valide !",
+	objectDescRemoved = "Vous avez supprimé la description de ce prop.",
+	objectDescSet = "Vous avez défini la description de ce prop.",
+	cmdObjectSetDesc = "Définit le nom et la description du prop que vous regardez. Laissez vide pour supprimer la description."
+})
+
+ix.lang.AddTable("es-es", {
+	notLookingAtProp = "¡No estás mirando un prop válido!",
+	objectDescRemoved = "Has eliminado la descripción de este prop.",
+	objectDescSet = "Has establecido la descripción de este prop.",
+	cmdObjectSetDesc = "Establece el nombre y la descripción del prop que miras. Deja vacío para eliminar la descripción."
 })
 
 if (SERVER) then

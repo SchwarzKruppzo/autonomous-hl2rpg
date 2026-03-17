@@ -91,7 +91,7 @@ if SERVER then
 				local ourSkill = character:GetSkillModified(skill)
 
 				if ourSkill < needed then
-					return false, string.format("Необходим навык %s %s!",  L(skillTable.name, client), needed)
+					return false, string.format(L("craftNeedSkill"), L(skillTable.name, client), needed)
 				end
 			end
 		end
@@ -108,7 +108,7 @@ if SERVER then
 				end
 
 				if !hasStation then
-					return false, "Необходимо использовать рабочее место!"
+					return false, L("craftNeedWorkstation")
 				end
 			else
 				local stationInfo = self.stations[recipe.station]
@@ -118,7 +118,7 @@ if SERVER then
 				end
 
 				if !hasStation then
-					return false, "Необходимо использовать "..stationInfo.name.."!"
+					return false, L("craftNeedStation", L(stationInfo.name))
 				end
 			end
 		end
@@ -136,7 +136,7 @@ if SERVER then
 		end
 
 		if !hasTools then
-			return false, "У вас нет необходимых инструментов!"
+			return false, L("craftNeedTools")
 		end
 
 		if recipe.isBreakdown then
@@ -213,7 +213,7 @@ if SERVER then
 		end
 		
 		if !hasItems then
-			return false, "У вас нет необходимых предметов!"
+			return false, L("craftNeedItems")
 		end
 
 		return true
@@ -473,7 +473,8 @@ if SERVER then
 		end
 
 		if recipe.skill then
-			client:Notify(string.format("Вы получили %s опыта за %s!", xp, recipe.isBreakdown and "разбор" or "создание"))
+			local activityKey = recipe.isBreakdown and "craft.breakdown" or "craft.creation"
+			client:NotifyLocalized("craft.xpGained", xp, L(activityKey, client))
 		end
 		
 		return true

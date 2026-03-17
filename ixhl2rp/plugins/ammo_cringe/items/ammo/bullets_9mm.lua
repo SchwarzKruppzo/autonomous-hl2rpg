@@ -1,6 +1,6 @@
-ITEM.name = "Патроны для пистолетов"
+ITEM.name = "item.bullets_9mm"
 ITEM.model = "models/crunchy/props/re2_props/loose/pistol_rounds.mdl"
-ITEM.description = "Небольшая коробка боеприпасов малого калибра для пистолетов."
+ITEM.description = "item.bullets_9mm.desc"
 ITEM.max_stack = 144
 ITEM.default_stack = 36
 ITEM.rarity = 1

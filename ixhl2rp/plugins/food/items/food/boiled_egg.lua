@@ -1,5 +1,5 @@
-ITEM.name = "Вареное яйцо"
-ITEM.description = "Сваренное яйцо вкрутую, внутри вкусный желток."
+ITEM.name = "item.boiled_egg"
+ITEM.description = "item.boiled_egg.desc"
 ITEM.model = "models/foodnhouseholditems/egg2.mdl"
 ITEM.cost = 12
 ITEM.width = 1

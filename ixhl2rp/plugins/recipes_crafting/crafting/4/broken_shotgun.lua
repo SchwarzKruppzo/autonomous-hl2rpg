@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Сломанный дробовик"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.broken_shotgun"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "broken_shotgun"
 RECIPE.results = {
 	mat_weaponparts = {2, 4},

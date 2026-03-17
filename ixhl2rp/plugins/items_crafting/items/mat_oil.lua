@@ -1,6 +1,6 @@
-ITEM.name = "Масло"
-ITEM.description = ""
-ITEM.category = "Базовые компоненты"
+ITEM.name = "item.mat_oil"
+ITEM.description = "item.mat_oil.desc"
+ITEM.category = "item.category.raw"
 ITEM.model = "models/crunchy/props/re8_props/re8_village_chem_fluid.mdl"
 ITEM.rarity = 1
 ITEM.width = 1

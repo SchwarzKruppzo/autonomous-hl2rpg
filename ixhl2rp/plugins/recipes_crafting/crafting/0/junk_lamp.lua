@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Перегоревший торшер"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_lamp"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_lamp"
 RECIPE.results = {
 	mat_plastic = 1,

@@ -4,7 +4,7 @@ do
 
 	-- radio
 	COMMAND = {
-		description = "Send a radio message out to other characters on your current radio channel.",
+		description = "@radioCmdRadio",
 		arguments = ix.type.text,
 		alias = "R",
 		indicator = "chatRadioning",
@@ -22,7 +22,7 @@ do
 
 	-- radio whisper
 	COMMAND = {
-		description = "Send a radio message out to other characters on your current radio channel.",
+		description = "@radioCmdRadioWhisper",
 		arguments = ix.type.text,
 		alias = "RW",
 		indicator = "chatRadioning",
@@ -40,7 +40,7 @@ do
 
 	-- radio yell
 	COMMAND = {
-		description = "Send a radio message out to other characters on your current radio channel.",
+		description = "@radioCmdRadioYell",
 		arguments = ix.type.text,
 		alias = "RY",
 		indicator = "chatRadioning",
@@ -58,7 +58,7 @@ do
 
 	-- set channel
 	COMMAND = {
-		description = "Sets the radio channel you are transmitting on.",
+		description = "@radioCmdSetChannel",
 		arguments = {
 			ix.type.string,
 			bit.bor(ix.type.number, ix.type.optional)
@@ -124,7 +124,7 @@ do
 
 	-- chartogglechannel
 	COMMAND = {
-		description = "Subcribes the player to a radio channel.",
+		description = "@radioCmdToggleChannel",
 		adminOnly = true,
 		arguments = {
 			ix.type.character,
@@ -148,10 +148,10 @@ do
 				channelList[channelID] = nil
 
 				if (player != target) then
-					player:Notify("You have unsubscribed "..target:GetName().." from '"..channelTable.name.."'.")
-					target:Notify(player:GetName().." has unsubscribed you from '"..channelTable.name.."'.")
+					player:NotifyLocalized("radioUnsubscribedOther", target:GetName(), channelTable.name)
+					target:NotifyLocalized("radioUnsubscribedYou", player:GetName(), channelTable.name)
 				else
-					player:Notify("You have been unsubscribed from '"..channelTable.name.."'.")
+					player:NotifyLocalized("radioUnsubscribedSelf", channelTable.name)
 				end
 			else
 				if (!channelNumber or channelTable.global) then
@@ -163,10 +163,10 @@ do
 				channelList[channelID] = channelNumber
 
 				if (player != target) then
-					player:Notify("You have subscribed "..target:GetName().." to '"..channelTable.name.."'.")
-					target:Notify(player:GetName().." has subscribed you to '"..channelTable.name.."'.")
+					player:NotifyLocalized("radioSubscribedOther", target:GetName(), channelTable.name)
+					target:NotifyLocalized("radioSubscribedYou", player:GetName(), channelTable.name)
 				else
-					player:Notify("You have been subscribed to '"..channelTable.name.."'.")
+					player:NotifyLocalized("radioSubscribedSelf", channelTable.name)
 				end
 			end
 
@@ -181,7 +181,7 @@ do
 
 	-- chartemptogglechannel
 	COMMAND = {
-		description = "Temporarily subcribes the player to a radio channel.",
+		description = "@radioCmdTempToggleChannel",
 		adminOnly = true,
 		arguments = {
 			ix.type.character,
@@ -205,10 +205,10 @@ do
 				channelList[channelID] = nil
 
 				if (player != target) then
-					player:Notify("You have unsubscribed "..target:GetName().." from '"..channelTable.name.."'.")
-					target:Notify(player:GetName().." has unsubscribed you from '"..channelTable.name.."'.")
+					player:NotifyLocalized("radioUnsubscribedOther", target:GetName(), channelTable.name)
+					target:NotifyLocalized("radioUnsubscribedYou", player:GetName(), channelTable.name)
 				else
-					player:Notify("You have been unsubscribed from '"..channelTable.name.."'.")
+					player:NotifyLocalized("radioUnsubscribedSelf", channelTable.name)
 				end
 			else
 				if (!channelNumber or channelTable.global) then
@@ -220,10 +220,10 @@ do
 				channelList[channelID] = channelNumber
 
 				if (player != target) then
-					player:Notify("You have temporarily subscribed "..target:GetName().." to '"..channelTable.name.."'.")
-					target:Notify(player:GetName().." has temporarily subscribed you to '"..channelTable.name.."'.")
+					player:NotifyLocalized("radioTempSubscribedOther", target:GetName(), channelTable.name)
+					target:NotifyLocalized("radioTempSubscribedYou", player:GetName(), channelTable.name)
 				else
-					player:Notify("You have temporarily been subscribed to '"..channelTable.name.."'.")
+					player:NotifyLocalized("radioTempSubscribedSelf", channelTable.name)
 				end
 			end
 

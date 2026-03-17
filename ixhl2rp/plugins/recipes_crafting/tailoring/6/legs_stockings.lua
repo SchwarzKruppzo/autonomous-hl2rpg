@@ -1,5 +1,5 @@
-RECIPE.name = "Синяя юбка с колготками"
-RECIPE.category = "Одежда — ноги"
+RECIPE.name = "recipe.tailoring.legs_stockings"
+RECIPE.category = "recipe.category.legs"
 RECIPE.requirements = {
 	mat_cloth_reclaimed = 2,
 	mat_resine = 3,

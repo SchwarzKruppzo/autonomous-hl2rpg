@@ -6,11 +6,11 @@ netstream.Hook("ixNotesSet", function(client, characterId, text)
 
     if (character) then
       character:SetNotes(text)
-      client:Notify("Запись успешно сохранена.")
+      client:NotifyLocalized("notes.saved")
     else
-      client:Notify("Персонаж не найден.")
+      client:NotifyLocalized("notes.charNotFound")
     end
   else
-    client:Notify("У вас нет прав для этого.")
+    client:NotifyLocalized("notes.noPermission")
   end
 end)

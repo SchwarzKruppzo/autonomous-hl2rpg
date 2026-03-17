@@ -19,11 +19,7 @@ ix.config.Add("radioNoclipEavesdrop", false, "Whether or not players in observer
 })
 
 ix.option.Add("radioHideFreq", ix.type.bool, false, {
-	category = "рация",
-})
-
-ix.lang.AddTable("russian", {
-	radioHideFreq = "Скрыть частоту рации в чате",
+	category = "radioCategory",
 })
 
 ix.Net:AddEntityVar("on", nil, ix.Net.Type.All)
@@ -42,10 +38,10 @@ ix.Net:AddPlayerVar("radioChannel", false, nil, ix.Net.Type.String)
 	radioFreqSet = "You have set your radio frequency to %s.",
 ]]
 
-local typeTexts = {
-	[1] = "говорит",
-	[2] = "кричит",
-	[3] = "шепчет"
+local typeTextKeys = {
+	[1] = "radioSpeaks",
+	[2] = "radioShouts",
+	[3] = "radioWhispers"
 }
 
 function PLUGIN:InitializedChatClasses()
@@ -53,7 +49,7 @@ function PLUGIN:InitializedChatClasses()
 
 	ix.chat.Register("radio", {
 		color = Color(75, 150, 50),
-		format = "[%s] %s %s по рации%s \"%s\"",
+		format = "radioFormat",
 		bReceiveVoices = true,
 		indicator = "chatRadioing",
 		OnChatAdd = function(class, speaker, text, bAnonymous, data)
@@ -91,8 +87,11 @@ function PLUGIN:InitializedChatClasses()
 				channel = "???.?"
 			end
 
-			chat.AddText(langIcon or "", data.color or class.color, icon, string.format(class.format,
-				channel, name, typeTexts[data.typeText] or typeTexts[1], langPrefix or "", text))
+			
+
+			local typeText = L(typeTextKeys[data.typeText] or typeTextKeys[1])
+			chat.AddText(langIcon or "", data.color or class.color, icon, L(class.format,
+				channel, name, typeText, L("radioVia"), langPrefix or "", text))
 
 			if (data.useSound and isstring(data.sound)) then
 				surface.PlaySound(data.sound)
@@ -105,7 +104,7 @@ function PLUGIN:InitializedChatClasses()
 	-- radio eavesdrop
 	ix.chat.Register("radio_eavesdrop", {
 		color = Color(255, 255, 150),
-		format = "%s %s по рации%s \"%s\"",
+		format = "radioFormatEavesdrop",
 		OnChatAdd = function(class, speaker, text, bAnonymous, data)
 			local langIcon, langPrefix
 
@@ -118,8 +117,9 @@ function PLUGIN:InitializedChatClasses()
 			data.useSound = false
 			hook.Run("AdjustRadioEavesdrop", data)
 
-			chat.AddText(langIcon or "", class.color, ix.util.GetMaterial("cellar/chat/eaves_radiohand.png"), string.format(class.format,
-				name, typeTexts[data.typeText] or typeTexts[1], langPrefix or "", text))
+			local typeText = L(typeTextKeys[data.typeText] or typeTextKeys[1])
+			chat.AddText(langIcon or "", class.color, ix.util.GetMaterial("cellar/chat/eaves_radiohand.png"), string.format(L(class.format),
+				name, typeText, L("radioVia"), langPrefix or "", text))
 
 			if (data.useSound and isstring(data.sound)) then
 				surface.PlaySound(data.sound)

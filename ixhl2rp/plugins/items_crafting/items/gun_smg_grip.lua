@@ -1,5 +1,5 @@
-ITEM.name = "Цевье ПП"
-ITEM.description = "Цевье, которое используется для создания пистолета-пулемета. При наличии напильника, встает абсолютно на все линейки Личного Оружия Самообороны."
+ITEM.name = "item.gun_smg_grip"
+ITEM.description = "item.gun_smg_grip.desc"
 ITEM.model = "models/cellar/craft/smg_grip.mdl"
 ITEM.width = 1
 ITEM.height = 1
@@ -8,5 +8,5 @@ ITEM.iconCam = {
 	ang = Angle(20.747987747192, 335.26657104492, 0),
 	fov = 2.7976876683753,
 }
-ITEM.category = "Части оружия"
+ITEM.category = "item.category.weapon_parts"
 ITEM.contraband = true

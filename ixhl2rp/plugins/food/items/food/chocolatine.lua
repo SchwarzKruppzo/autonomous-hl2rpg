@@ -1,5 +1,5 @@
-ITEM.name = "Рулет"
-ITEM.description = "Очень вкусная выпечка для любого времени суток, но не стоит злоупотреблять этим ночью."
+ITEM.name = "item.chocolatine"
+ITEM.description = "item.chocolatine.desc"
 ITEM.model = "models/foodnhouseholditems/chocolatine.mdl"
 ITEM.cost = 6
 ITEM.width = 1

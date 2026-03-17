@@ -48,9 +48,9 @@ function PANEL:Setup(points)
 
 	local pointFrame = self:Add("attribute.frame.info")
 	pointFrame:SetSize(Scale(300), h)
-	pointFrame:AddLabel("ДОСТУПНО", "char.create.button", ix.Palette.combineblue)
+	pointFrame:AddLabel(L("charcreate_available"), "char.create.button", ix.Palette.combineblue)
 	local PointsLabel = pointFrame:AddLabel("0", "attribute.maxpoints", ix.Palette.combineyellow)
-	pointFrame:AddLabel("СВОБОДНЫХ ОЧКОВ", "char.create.button", ix.Palette.combineyellow)
+	pointFrame:AddLabel(L("charcreate_freePoints"), "char.create.button", ix.Palette.combineyellow)
 	pointFrame:AlignLeft(Scale(80))
 
 	local availablePoints = points
@@ -216,7 +216,7 @@ function PANEL:Setup(points)
 	local padding = Scale(80)
 
 	local back = self:Add("ui.character.button")
-	back:SetText("ОТМЕНА")
+	back:SetText(L("cancel"))
 	back:SizeToContents()
 	back:AlignLeft(padding)
 	back:AlignBottom(padding)
@@ -227,7 +227,7 @@ function PANEL:Setup(points)
 	end
 
 	local proceed = self:Add("ui.character.button")
-	proceed:SetText("РАСПРЕДЕЛИТЬ ОЧКИ")
+	proceed:SetText(L("levelupDistributePoints"))
 	proceed:SizeToContents()
 	proceed:AlignRight(padding)
 	proceed:AlignBottom(padding)

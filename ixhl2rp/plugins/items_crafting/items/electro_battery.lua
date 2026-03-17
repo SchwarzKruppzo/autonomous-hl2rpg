@@ -1,6 +1,6 @@
-ITEM.name = "Батарейка"
-ITEM.description = "Совершенно обычная батарейка. Просто так не узнать, сколько в ней осталось заряда."
-ITEM.category = "Базовые компоненты"
+ITEM.name = "item.electro_battery"
+ITEM.description = "item.electro_battery.desc"
+ITEM.category = "item.category.raw"
 ITEM.model = "models/illusion/eftcontainers/aabattery.mdl"
 ITEM.width = 1
 ITEM.height = 1

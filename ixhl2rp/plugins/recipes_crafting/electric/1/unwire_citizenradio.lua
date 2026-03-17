@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Сгоревшее радио"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.electric.unwire_citizenradio"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_citizenradio"
 RECIPE.results = {
 	electro_circuit = {1, 2},

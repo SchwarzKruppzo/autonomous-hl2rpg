@@ -1,5 +1,5 @@
-RECIPE.name = "Сварочный аппарат"
-RECIPE.category = "Инструменты"
+RECIPE.name = "recipe.crafting.tool_welding"
+RECIPE.category = "recipe.category.tools"
 RECIPE.requirements = {
 	metal_reclaimed = 2,
 	mat_screws = 3,

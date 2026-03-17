@@ -1,5 +1,5 @@
-FACTION.name = "Combine Civil Authority"
-FACTION.description = "Рекрут большой системы CCA."
+FACTION.name = "faction.metropolice"
+FACTION.description = "faction.metropolice.desc"
 FACTION.color = Color(50, 100, 150)
 FACTION.isDefault = false
 FACTION.bCanUseRations = true

@@ -1,5 +1,5 @@
-ITEM.name = "Кружка чая"
-ITEM.description = "Сероватый чай, налитый в керамическую кружку. Эта кружка на столько плохо сделана, что вы можете заметить плавающие куски пластмассы на поверхности чая."
+ITEM.name = "item.cup_of_tea"
+ITEM.description = "item.cup_of_tea.desc"
 ITEM.model = "models/props_junk/garbage_coffeemug001a.mdl"
 ITEM.cost = 6
 ITEM.width = 1

@@ -1,6 +1,6 @@
-ITEM.name = "Комплект брони элитного солдата Патруля"
+ITEM.name = "item.ota_elite"
 ITEM.description = ""
-ITEM.category = "Одежда (ОТА)"
+ITEM.category = "item.category.clothing_ota"
 ITEM.model = "models/props_c17/SuitCase001a.mdl"
 ITEM.genderReplacement = {
 	[GENDER_MALE] = "models/cellar/characters/combine/elite_male.mdl",

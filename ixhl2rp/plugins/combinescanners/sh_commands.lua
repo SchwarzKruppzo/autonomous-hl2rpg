@@ -1,6 +1,6 @@
 do
 	local COMMAND = {}
-	COMMAND.description = "Stops controlling a Combine Scanner."
+	COMMAND.description = "@scannerEjectDesc"
 	
 	function COMMAND:OnRun(client, arguments)
 		if client:IsPilotScanner() then

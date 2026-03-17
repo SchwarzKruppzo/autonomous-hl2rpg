@@ -1,5 +1,5 @@
-ITEM.name = "Жареное мясо"
-ITEM.description = "Мясо покрытое специями, на вид пожаренное."
+ITEM.name = "item.fried_meat"
+ITEM.description = "item.fried_meat.desc"
 ITEM.model = "models/foodnhouseholditems/steak2.mdl"
 ITEM.cost = 32
 ITEM.width = 1

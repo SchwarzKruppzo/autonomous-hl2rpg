@@ -1,5 +1,5 @@
-ITEM.name = "Ножницы"
-ITEM.description = "Плоскогубцы? Нет, ножницы! Просто форма у них очень странная, ну или кто-то просто попытался выкрутиться.."
+ITEM.name = "item.tool_scissors"
+ITEM.description = "item.tool_scissors.desc"
 ITEM.model = "models/cellar/scissors.mdl"
 ITEM.width = 1
 ITEM.height = 1

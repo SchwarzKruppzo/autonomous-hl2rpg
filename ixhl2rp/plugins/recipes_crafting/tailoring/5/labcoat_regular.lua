@@ -1,5 +1,5 @@
-RECIPE.name = "Халат с свитером"
-RECIPE.category = "Одежда — тело"
+RECIPE.name = "recipe.tailoring.labcoat_regular"
+RECIPE.category = "recipe.category.body"
 RECIPE.requirements = {
 	mat_cloth_reclaimed = 3,
 	mat_leather = 5,

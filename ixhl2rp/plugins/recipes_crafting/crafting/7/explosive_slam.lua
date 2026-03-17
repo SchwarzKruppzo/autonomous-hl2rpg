@@ -1,5 +1,5 @@
-RECIPE.name = "S.L.A.M"
-RECIPE.category = "Взрывчатка"
+RECIPE.name = "recipe.crafting.explosive_slam"
+RECIPE.category = "recipe.category.explosives"
 RECIPE.requirements = {
 	metal_reclaimed = 2,
 	box_of_gunpowder = 2,

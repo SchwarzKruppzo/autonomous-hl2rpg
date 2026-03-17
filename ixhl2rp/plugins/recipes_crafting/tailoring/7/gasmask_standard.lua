@@ -1,5 +1,5 @@
-RECIPE.name = "Противогаз ГП-5"
-RECIPE.category = "Одежда - противогазы"
+RECIPE.name = "recipe.tailoring.gasmask_standard"
+RECIPE.category = "recipe.category.gasmasks"
 RECIPE.requirements = {
 	gasmask_early = 1,
 	mat_resine = 3,

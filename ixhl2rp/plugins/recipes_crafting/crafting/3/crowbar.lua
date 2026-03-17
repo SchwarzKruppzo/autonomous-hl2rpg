@@ -1,5 +1,5 @@
-RECIPE.name = "Монтировка"
-RECIPE.category = "Инструменты"
+RECIPE.name = "recipe.crafting.crowbar"
+RECIPE.category = "recipe.category.tools"
 RECIPE.requirements = {
 	metal_reclaimed = 1,
 	metal_armature = 1,

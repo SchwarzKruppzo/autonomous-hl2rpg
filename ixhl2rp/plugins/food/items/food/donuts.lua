@@ -1,5 +1,5 @@
-ITEM.name = "Пончики в коробке"
-ITEM.description = "Полосатая коробка с кучей душистых пончиков внутри. Внушает доверие к производителю."
+ITEM.name = "item.donuts"
+ITEM.description = "item.donuts.desc"
 ITEM.model = "models/bioshockinfinite/hext_cereal_box_cornflakes.mdl"
 ITEM.cost = 17
 ITEM.width = 1

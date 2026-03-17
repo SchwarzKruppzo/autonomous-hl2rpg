@@ -104,7 +104,7 @@ if SERVER then
 					if !hasTool then
 						client.nextOpenLoot = CurTime() + 5
 						local x_item = ix.Item:Get(self.info.Tool)
-						client:Notify(string.format("Вам нужна %s чтобы вскрыть этот контейнер!", x_item:GetName()))
+						client:NotifyLocalized("loot.needTool", x_item:GetName())
 						return
 					end
 
@@ -184,7 +184,7 @@ else
 		if info then
 			local title = tooltip:AddRow("name")
 			title:SetImportant()
-			title:SetText(info.Name)
+			title:SetText(L(info.Name))
 			title:SizeToContents()
 		end
 	end

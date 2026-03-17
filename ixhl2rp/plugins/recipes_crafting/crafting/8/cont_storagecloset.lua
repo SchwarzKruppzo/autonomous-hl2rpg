@@ -1,5 +1,5 @@
-RECIPE.name = "Металлический шкаф"
-RECIPE.category = "Контейнеры"
+RECIPE.name = "recipe.crafting.cont_storagecloset"
+RECIPE.category = "recipe.category.containers"
 RECIPE.requirements = {
 	mat_oil = 3,
 	metal_reclaimed = 20,

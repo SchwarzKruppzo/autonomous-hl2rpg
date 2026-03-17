@@ -1,5 +1,5 @@
-ITEM.name = "Бутылка рома"
-ITEM.description = "Cосуд с темно-коричневым напитком. Наполнен ароматом тропических фруктов и ванили, с теплыми нотами карамели и легким оттенком дыма. Здесь можно было пошутить про пиратов, но надеюсь у всей вашей компании достаточно интеллекта, чтобы так не шутить... Правда же?"
+ITEM.name = "item.rum"
+ITEM.description = "item.rum.desc"
 ITEM.cost = 10
 ITEM.model = "models/mosi/fallout4/props/alcohol/rum.mdl"
 ITEM.width = 1

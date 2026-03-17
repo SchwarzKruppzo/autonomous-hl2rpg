@@ -1,5 +1,5 @@
-ITEM.name = "Арбуз"
-ITEM.description = "Большой, зеленый синтетический фрукт, состоящий из силиконовой оболочки, скрывающей красный гель. Гель на вкус напоминает конфеты из арбуза."
+ITEM.name = "item.union_branded_melon"
+ITEM.description = "item.union_branded_melon.desc"
 ITEM.model = "models/props_junk/watermelon01.mdl"
 ITEM.cost = 16
 ITEM.width = 2

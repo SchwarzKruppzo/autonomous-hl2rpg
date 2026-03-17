@@ -1,5 +1,5 @@
-ITEM.name = "Апельсиновый сок"
-ITEM.description = "Кисло-сладкий апельсиновый сок, тут не понять, есть ли тут какие-то добавки, но это вкусно!"
+ITEM.name = "item.orange_juice"
+ITEM.description = "item.orange_juice.desc"
 ITEM.model = "models/crunchy/props/eft_props/juice.mdl"
 ITEM.skin = 2
 ITEM.cost = 12

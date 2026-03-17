@@ -1,7 +1,7 @@
-ITEM.name = "Мутировавшие корни"
-ITEM.description = "Эти корни кажутся обычными на первый взгляд, но при ближайшем рассмотрении можно заметить, что они слегка светятся и излучают слабую радиацию. Возможно, они подверглись воздействию неизвестных химических веществ или радиации, что привело к их мутации."
+ITEM.name = "item.chem_mutroot"
+ITEM.description = "item.chem_mutroot.desc"
 ITEM.model = "models/mosi/fallout4/props/plant/tatoflower.mdl"
-ITEM.category = "Химические компоненты"
+ITEM.category = "item.category.craft_chemical"
 ITEM.height = 1
 ITEM.max_stack = 4
 ITEM.default_stack = 1

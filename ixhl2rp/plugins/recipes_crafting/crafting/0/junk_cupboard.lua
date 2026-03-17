@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Деревянный шкафчик"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_cupboard"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_cupboard"
 RECIPE.results = {
 	mat_wood = 2

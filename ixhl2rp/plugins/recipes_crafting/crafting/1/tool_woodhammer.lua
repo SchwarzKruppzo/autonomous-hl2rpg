@@ -1,5 +1,5 @@
-RECIPE.name = "Деревянная киянка"
-RECIPE.category = "Инструменты"
+RECIPE.name = "recipe.crafting.tool_woodhammer"
+RECIPE.category = "recipe.category.tools"
 RECIPE.requirements = {
 	mat_wood = 3,
 }

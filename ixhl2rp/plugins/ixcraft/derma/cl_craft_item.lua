@@ -24,7 +24,7 @@ function PANEL:Init()
 	end
 
 	self.recipeButton:SetFont("ui.craft.large")
-	self.recipeButton:SetText(self.recipe.name)
+	self.recipeButton:SetText(self.recipe:GetName())
 	self.recipeButton:SetSize(self:GetParent().first:GetWide(), scale(20))
 	self.recipeButton.OnCursorEntered = function()
 		surface.PlaySound("helix/ui/rollover.wav")
@@ -69,7 +69,7 @@ function PANEL:Init()
 	if skillLevel > character:GetSkillModified(skillName) then
 		self.levelRequirement = self:Add("DLabel")
 		self.levelRequirement:SetFont("ui.craft.xp")
-		self.levelRequirement:SetText(skillLevel.." УР")
+		self.levelRequirement:SetText(skillLevel.." "..L("craftLevelShort"))
 		self.levelRequirement:SizeToContents()
 		self.levelRequirement:SetPos(self:GetWide() - self.levelRequirement:GetWide() - 15, self:GetTall() * 0.5 - self.levelRequirement:GetTall() * 0.5)
 	end
@@ -106,12 +106,12 @@ function PANEL:SetupCraft()
 	ix.gui.currentCraft = self.recipe.uniqueID
 	local parent = ix.gui.craftFrame
 
-	local title = string.utf8upper(self.recipe.name)
-	parent.craftTitle:SetText((self.recipe.isBreakdown and "РАЗОБРАТЬ: " or "") .. title)
+	local title = string.utf8upper(self.recipe:GetName())
+	parent.craftTitle:SetText((self.recipe.isBreakdown and L("craftDisassemblePrefix") or "") .. title)
 	parent.craftTitle:SetVisible(true)
 
 	if self.recipe.isBreakdown then
-		parent.button:SetText("РАЗОБРАТЬ")
+		parent.button:SetText(L("craftDisassemble"))
 
 		local client = LocalPlayer()
 		parent.itemIcon:Rebuild(self.recipe.requirements, 64)
@@ -139,7 +139,7 @@ function PANEL:SetupCraft()
 			end
 		end
 	else
-		parent.button:SetText("СОЗДАТЬ")
+		parent.button:SetText(L("craftCreate"))
 
 		parent.itemIcon.Think = nil
 		parent.itemIcon.PaintOver = nil
@@ -169,7 +169,7 @@ function PANEL:SetupCraft()
 	parent.itemIcon:Center()
 
 	if skill_scale >= 0 and self.recipe.skill then
-		parent.itemXP:SetText(skill_scale <= 1 and string.format("ПОВЫШЕНИЕ НАВЫКА НА %s XP", self.recipe.xp or 0) or "НЕДОСТАТОЧНЫЙ УРОВЕНЬ НАВЫКА")
+		parent.itemXP:SetText(skill_scale <= 1 and string.format(L("craftSkillXP"), self.recipe.xp or 0) or L("craftSkillLevelTooLow"))
 		parent.itemXP:SetTextColor(skill_color)
 		parent.itemXP:SizeToContents()
 		parent.itemXP:SetVisible(true)
@@ -195,10 +195,10 @@ function PANEL:SetupCraft()
 			for k, v in ipairs(self.recipe.station) do
 				local x = ix.Craft.stations[v]
 
-				name = name .. x.name .. ((k != #self.recipe.station) and " / " or "")
+				name = name .. L(x.name) .. ((k != #self.recipe.station) and " / " or "")
 			end
 		else
-			name = info.name
+			name = L(info.name)
 			clr = (self.recipe.station == (parent.station or {}).uniqueID) and Color(255, 255, 255, 255) or Color(255, 72, 72, 255)
 		end
 
@@ -224,11 +224,12 @@ function PANEL:SetupCraft()
 			local data = ix.Item.stored[itemID]
 
 			if data then
-				tools = tools .. data.name .. " "
+				local itemName = L(data.name)
+				tools = tools .. itemName .. " "
 
 				local tools = parent.toolsPanel:Add("DLabel")
 				tools:SetFont("craft.item.value")
-				tools:SetText(k > 1 and string.utf8lower(data.name) or data.name)
+				tools:SetText(k > 1 and string.utf8lower(itemName) or itemName)
 				tools:SetTextColor(LocalPlayer():HasItem(data.uniqueID) and Color(255, 255, 255, 255) or Color(255, 72, 72, 255))
 				tools:Dock(LEFT)
 				tools:SizeToContents()
@@ -251,9 +252,9 @@ function PANEL:SetupCraft()
 
 	if self.recipe.isBreakdown then
 		parent.componentsTitle:SetVisible(false)
-		parent.componentsTitle:SetText("БУДЕТ ПОЛУЧЕНО: ")
+		parent.componentsTitle:SetText(L("craftWillReceive"))
 	else
-		parent.componentsTitle:SetText("КОМПОНЕНТЫ: ")
+		parent.componentsTitle:SetText(L("craftComponents"))
 	end
 	
 	parent.componentsTitle:SetVisible(false)

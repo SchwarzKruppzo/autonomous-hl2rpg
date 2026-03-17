@@ -1,10 +1,10 @@
-ITEM.name = "Металлический прут"
-ITEM.description = "Весьма длинный, продолговатый металлический прут."
+ITEM.name = "item.metal_armature"
+ITEM.description = "item.metal_armature.desc"
 ITEM.model = "models/props_debris/rebar001a_32.mdl"
 ITEM.width = 1
 ITEM.height = 4
 ITEM.cost = 270
-ITEM.category = "Базовые компоненты"
+ITEM.category = "item.category.raw"
 ITEM.stackable = true
 ITEM.max_stack = 4
 ITEM.iconCam = {

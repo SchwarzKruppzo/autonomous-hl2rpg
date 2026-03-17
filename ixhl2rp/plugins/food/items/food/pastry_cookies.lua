@@ -1,5 +1,5 @@
-ITEM.name = "Печенье в обёртке"
-ITEM.description = "Печенье в красивой обёртке с символикой Альянса по бокам. Оно довольно хрупкое, можно заметить уже сломанные печеньки внутри. На вкус - как песок, но привыкнуть можно."
+ITEM.name = "item.pastry_cookies"
+ITEM.description = "item.pastry_cookies.desc"
 ITEM.model = "models/foodnhouseholditems/digestive.mdl"
 ITEM.cost = 5
 ITEM.width = 1

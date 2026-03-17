@@ -1,5 +1,5 @@
-ITEM.name = "Макароны с сыром"
-ITEM.description = "Классика европейской кухни! Сваренные макароны вместе с плавленным сыром! Дешево и вкусно."
+ITEM.name = "item.manchesse"
+ITEM.description = "item.manchesse.desc"
 ITEM.model = "models/macncheese01/macncheese01.mdl"
 ITEM.cost = 13
 ITEM.width = 1

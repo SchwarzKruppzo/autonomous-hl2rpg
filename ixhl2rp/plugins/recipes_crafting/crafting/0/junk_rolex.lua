@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Золотые часы"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_rolex"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_rolex"
 RECIPE.results = {
 	mat_plastic = 1,

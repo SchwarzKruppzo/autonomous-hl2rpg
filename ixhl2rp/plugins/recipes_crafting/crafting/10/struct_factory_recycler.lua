@@ -1,5 +1,5 @@
-RECIPE.name = "Переработчик мусора"
-RECIPE.category = "Структуры"
+RECIPE.name = "recipe.crafting.struct_factory_recycler"
+RECIPE.category = "recipe.category.structures"
 RECIPE.requirements = {
 	chain = 10,
 	electro_reclaimed = 15,

@@ -1,5 +1,5 @@
-RECIPE.name = "USP Match"
-RECIPE.category = "Оружие"
+RECIPE.name = "recipe.crafting.gun_uspmatch"
+RECIPE.category = "recipe.category.weapons"
 RECIPE.requirements = {
 	gun_pistol_frame = 1,
 	gun_pistol_barrel = 1,

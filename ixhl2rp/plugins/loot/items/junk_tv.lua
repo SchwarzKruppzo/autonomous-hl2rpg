@@ -1,6 +1,6 @@
-ITEM.name = "Сломанный телевизор"
-ITEM.description = "Старый кинескопический телевизор, покрытый пылью и мелкими царапинами на поверхности пластикового корпуса. Экран выглядит мутным, с трещинами и пятнами. Повреждения видны и на корпусе: уголки обломаны, а поверхность покрыта царапинами и пятнами."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_tv"
+ITEM.description = "item.junk_tv.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_c17/tv_monitor01.mdl"
 ITEM.width = 3
 ITEM.height = 3

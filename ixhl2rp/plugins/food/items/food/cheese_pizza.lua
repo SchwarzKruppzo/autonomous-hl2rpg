@@ -1,5 +1,5 @@
-ITEM.name = "Сырная пицца"
-ITEM.description = "Круглый пласт запеченного теста с толстым слоем из сыра. При каждом укусе сыр так тянется, что можно так в другую часть города. Есть только разогретой!"
+ITEM.name = "item.cheese_pizza"
+ITEM.description = "item.cheese_pizza.desc"
 ITEM.model = "models/cheesepizza02/cheesepizza02.mdl"
 ITEM.cost = 30
 ITEM.width = 2

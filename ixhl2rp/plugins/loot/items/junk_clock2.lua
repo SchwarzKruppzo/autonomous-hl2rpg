@@ -1,6 +1,6 @@
-ITEM.name = "Настенные часы"
-ITEM.description = "Обычные часы, но их стрелки застыли на случайном времени, а циферблат покрыт пылью. Cтекло отсутствует вовсе, позволяя видеть внутренние механизмы."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_clock2"
+ITEM.description = "item.junk_clock2.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_c17/clock01.mdl"
 ITEM.width = 1
 ITEM.height = 1

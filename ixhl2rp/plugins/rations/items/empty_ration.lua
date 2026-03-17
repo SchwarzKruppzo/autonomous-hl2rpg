@@ -1,5 +1,5 @@
 ITEM.name = "item.ration_empty"
-ITEM.category = "Хлам"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = Model("models/weapons/w_packate.mdl")
 ITEM.description = "item.ration_empty2.desc"
 

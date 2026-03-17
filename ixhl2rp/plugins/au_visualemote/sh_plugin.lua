@@ -37,7 +37,7 @@ ix.chat.Register("mev", {
 })
 
 ix.chat.Register("sv", {
-	format = "*** %s показывает, \"%s\"",
+	format = "*** %s %s",
 	color = Color(128, 128, 128, 255),
 	CanHear = function(self, speaker, listener)
 		if (speaker:GetEyeTraceNoCursor().Entity == listener or speaker == listener) then

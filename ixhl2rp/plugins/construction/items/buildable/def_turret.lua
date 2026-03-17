@@ -1,9 +1,9 @@
-ITEM.category = "Строительство - оборона"
+ITEM.category = "item.category.construction_defend"
 ITEM.model = "models/combine_turrets/floor_turret.mdl"
 ITEM.width = 2
 ITEM.height = 4
-ITEM.name = "Сборка: Турель"
-ITEM.description = "Оборонительная турель, предназначенная для установки на стратегически важных точках. Идеально подходит для защиты от врагов в любых условиях."
+ITEM.name = "item.def_turret"
+ITEM.description = "item.def_turret.desc"
 ITEM.preview_model = "models/combine_turrets/floor_turret.mdl"
 ITEM.iconCam = {
 	pos = Vector(147.71440124512, -66.506500244141, 42.786026000977),

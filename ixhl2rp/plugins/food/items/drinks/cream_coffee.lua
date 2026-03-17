@@ -1,5 +1,5 @@
-ITEM.name = "Стаканчик кофе со сливками"
-ITEM.description = "Самый вкусный вариант кофе, что можно найти. Добавленные белые сливки прекрасно скрашивают горький вкус нефильтрованного кофе. Это можно пить хоть целый день, правда после него зубы желтые."
+ITEM.name = "item.cream_coffee"
+ITEM.description = "item.cream_coffee.desc"
 ITEM.model = "models/shibcuppyhold.mdl"
 ITEM.cost = 7
 ITEM.width = 1

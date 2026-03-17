@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Сломанный счетчик Гейгера"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.electric.unwire_geiger"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_geiger"
 RECIPE.results = {
 	electro_circuit = 1,

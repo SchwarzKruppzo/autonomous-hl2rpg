@@ -1,5 +1,5 @@
-RECIPE.name = "Опиум"
-RECIPE.category = "Химия"
+RECIPE.name = "recipe.medical.opium"
+RECIPE.category = "recipe.category.chemistry"
 RECIPE.requirements = {
 	mat_acid = 3,
 }

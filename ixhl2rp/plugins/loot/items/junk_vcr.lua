@@ -1,6 +1,6 @@
-ITEM.name = "Видеомагнитофон"
-ITEM.description = "Видеомагнитофон, обросший пылью и потерявший свой блеск с годами. Открыв кассетное отделение, можно увидеть засохшие следы магнитной ленты, а механизм закрытия крышки щелкает с громким скрипом."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_vcr"
+ITEM.description = "item.junk_vcr.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_office/vcr.mdl"
 ITEM.width = 2
 ITEM.height = 3

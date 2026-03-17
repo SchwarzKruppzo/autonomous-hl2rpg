@@ -1,5 +1,5 @@
-ITEM.name = "Пищевые добавки \"Лоялист\""
-ITEM.description = "Небольшая упаковка, содержащая тонкую кашу с кусками мяса, хотя, при ближайшем рассмотрении, она явно синтетическая. Пластиковая ложка упакована рядом. Есть также три небольших кусочка хлеба и плитка фирменного шоколада."
+ITEM.name = "item.loyalist_supplements"
+ITEM.description = "item.loyalist_supplements.desc"
 ITEM.model = "models/mres/consumables/pag_mre.mdl"
 ITEM.cost = 31
 ITEM.width = 1

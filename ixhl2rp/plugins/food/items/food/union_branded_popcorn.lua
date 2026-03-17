@@ -1,5 +1,5 @@
-ITEM.name = "Попкорн Союза"
-ITEM.description = "Открытый пакет с попкорном, приготовленный по стандартам Альянса."
+ITEM.name = "item.union_branded_popcorn"
+ITEM.description = "item.union_branded_popcorn.desc"
 ITEM.model = "models/bioshockinfinite/topcorn_bag.mdl"
 ITEM.cost = 3
 ITEM.width = 1

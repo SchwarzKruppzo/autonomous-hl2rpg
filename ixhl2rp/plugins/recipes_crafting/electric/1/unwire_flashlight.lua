@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Фонарик"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.electric.unwire_flashlight"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "flashlight"
 RECIPE.results = {
 	electro_circuit = 1,

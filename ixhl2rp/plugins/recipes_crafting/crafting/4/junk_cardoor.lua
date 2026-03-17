@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Оторванная дверь"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_cardoor"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_cardoor"
 RECIPE.results = {
 	metal_scrap = {2, 3},

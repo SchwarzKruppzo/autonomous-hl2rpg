@@ -1,5 +1,5 @@
-ITEM.name = "Семена томата"
-ITEM.description = "Свежие семена томата, культивируемые где-то неподалеку. Позволяют выростить куст томата при должном уходе, если кто-то не попытается съесть его раньше вас."
+ITEM.name = "item.seed_tomato"
+ITEM.description = "item.seed_tomato.desc"
 ITEM.preview_model = "models/autonomous/farming/plant_tomato.mdl"
 ITEM.model = "models/autonomous/farming/seeds_package.mdl"
 ITEM.rarity = 1

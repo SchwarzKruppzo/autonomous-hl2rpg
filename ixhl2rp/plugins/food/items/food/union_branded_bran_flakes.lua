@@ -1,5 +1,5 @@
-ITEM.name = "Хлопья"
-ITEM.description = "Тщательно упакованный коричневый ящик, содержащий хлопья. Логотип Альянса напечатан на лицевой стороне."
+ITEM.name = "item.union_branded_bran_flakes"
+ITEM.description = "item.union_branded_bran_flakes.desc"
 ITEM.model = "models/bioshockinfinite/hext_cereal_box_cornflakes.mdl"
 ITEM.cost = 9
 ITEM.width = 1

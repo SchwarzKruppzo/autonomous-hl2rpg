@@ -1,5 +1,5 @@
-ITEM.name = "Жареное яйцо"
-ITEM.description = "Куриное яйцо которое было пожарено, самое то для белковой диеты."
+ITEM.name = "item.fried_egg"
+ITEM.description = "item.fried_egg.desc"
 ITEM.model = "models/foodnhouseholditems/egg.mdl"
 ITEM.cost = 12
 ITEM.width = 1

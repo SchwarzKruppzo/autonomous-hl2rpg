@@ -1,5 +1,5 @@
-ITEM.name = "Фирменный сыр"
-ITEM.description = "Сыр производства Союза. Веет искусственным запахом!"
+ITEM.name = "item.union_branded_cheese_wheel"
+ITEM.description = "item.union_branded_cheese_wheel.desc"
 ITEM.model = "models/bioshockinfinite/pound_cheese.mdl"
 ITEM.cost = 12
 ITEM.width = 2

@@ -1,5 +1,5 @@
-ITEM.name = "Пусковая камера Внеземного оружия"
-ITEM.description = "Небольшой цилиндр футуристичного вида из неизвестного материала. Является стволом и затвором одновременно."
+ITEM.name = "item.gun_pulse_barrel"
+ITEM.description = "item.gun_pulse_barrel.desc"
 ITEM.model = "models/cellar/craft/pulse_barrel.mdl"
 ITEM.width = 2
 ITEM.height = 1
@@ -9,5 +9,5 @@ ITEM.iconCam = {
 	fov = 3.5292958414235,
 }
 ITEM.rarity = 3
-ITEM.category = "Части оружия"
+ITEM.category = "item.category.weapon_parts"
 ITEM.contraband = true

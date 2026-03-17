@@ -1,5 +1,5 @@
-ITEM.name = "Пустая консервная банка"
-ITEM.description = "Старая пустая консервная банка, все надписи стёрты."
+ITEM.name = "item.empty_tin_can"
+ITEM.description = "item.empty_tin_can.desc"
 ITEM.model = "models/props_junk/garbage_metalcan001a.mdl"
 ITEM.width = 1
 ITEM.height = 1

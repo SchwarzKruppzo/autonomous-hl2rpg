@@ -186,7 +186,7 @@ function SWEP:PrimaryAttack()
 
 	if v_thirst < 0 or v_hunger < 0 then
 		if SERVER then
-			self.Owner:NotifyLocalized("Вы слишком слабы, чтобы использовать свои силы!")
+			self.Owner:NotifyLocalized("vort.tooWeak")
 		end
 
 		return

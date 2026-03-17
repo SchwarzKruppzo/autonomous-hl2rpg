@@ -364,7 +364,7 @@ function PANEL:Error(message)
 		surface.SetMaterial(dGrad)
 		surface.DrawTexturedRect(0, 25, w, 10)
 
-		draw.SimpleText("ОШИБКА", "TerminalClock", w * 0.5, 0, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+		draw.SimpleText(L("terminalError"), "TerminalClock", w * 0.5, 0, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 		draw.DrawText(message, "TerminalClock", w * 0.5, h * 0.35, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end
 
@@ -444,12 +444,12 @@ function PANEL:ShowInfoPanel(loadTime)
 		surface.DrawRect(80, 80, w - 80 * 2, 2)
 		surface.DrawRect(80, 85, w - 80 * 2, 2)
 
-		draw.SimpleText("СТАТУС: "..PLUGIN.status, "TerminalTextSmall3", 80, 90, semiBlue, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
-		draw.SimpleText("ЗАРЕГИСТРИРОВАН: "..PLUGIN.aparts, "TerminalTextSmall4", 80, 112, semiBlue, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+		draw.SimpleText(L("terminalStatusLabel", PLUGIN.status), "TerminalTextSmall3", 80, 90, semiBlue, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+		draw.SimpleText(L("terminalRegisteredLabel", PLUGIN.aparts), "TerminalTextSmall4", 80, 112, semiBlue, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 
-		draw.SimpleText("У Вас", "TerminalTextPointsBig", w * 0.5, h * 0.35, semiBlue, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText(L("terminalYouHave"), "TerminalTextPointsBig", w * 0.5, h * 0.35, semiBlue, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		draw.SimpleText(PLUGIN.points, "TerminalLargePointsLarge", w * 0.5, h * 0.5, pointColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-		draw.SimpleText("очков лояльности", "TerminalTextPointsSmalll", w * 0.5, h * 0.65, semiBlue, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText(L("terminalLoyaltyPoints"), "TerminalTextPointsSmalll", w * 0.5, h * 0.65, semiBlue, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end
 
 	local buttonWide, buttonTall = self:GetWide() / 2.8, 60
@@ -461,7 +461,7 @@ function PANEL:ShowInfoPanel(loadTime)
 	self.requestButton:SetTextColor(Color(16, 240, 255, 225))
 	self.requestButton:SetTextHighlightColor(Color(16, 240, 255))
 	self.requestButton:SetPaintedManually(true)
-	self.requestButton:SetText("ВЫЗВАТЬ ОФИЦЕРА")
+	self.requestButton:SetText(L("terminalCallOfficer"))
 	self.requestButton:SetMouseInputEnabled(true)
 	self.requestButton:SetPos(self:GetWide() * 0.5 - buttonWide * 0.5, self:GetTall() - buttonTall - 60)
 	self.requestButton.DoClick = function(button)
@@ -474,14 +474,14 @@ function PANEL:ShowInfoPanel(loadTime)
 		surface.PlaySound("terminals/click.wav")
 
 		if (CurTime() < (LocalPlayer().nextRequest or 0)) then
-			self:Error(Format("ERR: Must wait %s second(s) before\nrequesting another officer!", math.floor(LocalPlayer().nextRequest - CurTime())))
+			self:Error(L("terminalWaitBeforeRequest", math.floor(LocalPlayer().nextRequest - CurTime())))
 
 			return
 		end
 
 		LocalPlayer().nextRequest = CurTime() + 300
 
-		LocalPlayer():Notify("Сотрудники ГО получили ваш вызов, ожидайте.")
+		LocalPlayer():NotifyLocalized("terminal.callSent")
 		
 		net.Start("ixTerminalRequest")
 		net.SendToServer()
@@ -540,10 +540,10 @@ function PANEL:ShowMainMenu(loadTime)
 	self.menuPanel.Paint = function(s, w, h)
 		surface.SetDrawColor(0, 175, 200, 180)
 		surface.DrawRect(0, 80, w, 80)
-		draw.SimpleText("ТЕРМИНАЛ", "TerminalTitleLight", w * 0.5, 80, offWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+		draw.SimpleText(L("terminalTitle"), "TerminalTitleLight", w * 0.5, 80, offWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 
 		render.OverrideBlend(true, 4, 1, BLENDFUNC_ADD, 4, 1, BLENDFUNC_ADD)
-		draw.SimpleText("Нажмите чтобы продолжить", "TerminalSubTitleLightAlt", w * 0.5, h * 0.5, clr, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		draw.SimpleText(L("terminalPressToContinue"), "TerminalSubTitleLightAlt", w * 0.5, h * 0.5, clr, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 		render.OverrideBlend(false)
 	end
 
@@ -569,7 +569,7 @@ function PANEL:OnMousePressed(key)
 		end
 
 		if (!item) then
-			self:Error("ERR: 13, NO CARD SWIPED")
+			self:Error(L("terminalNoCardSwiped"))
 		end
 	end
 end

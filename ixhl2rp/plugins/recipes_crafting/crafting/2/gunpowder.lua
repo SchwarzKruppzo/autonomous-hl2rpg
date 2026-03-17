@@ -1,5 +1,5 @@
-RECIPE.name = "Порох"
-RECIPE.category = "Компоненты"
+RECIPE.name = "recipe.crafting.gunpowder"
+RECIPE.category = "recipe.category.components"
 RECIPE.requirements = {
 	mat_nitre = 1,
 	mat_sulfur = 1,

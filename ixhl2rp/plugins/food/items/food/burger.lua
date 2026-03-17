@@ -1,5 +1,5 @@
-ITEM.name = "Бургер"
-ITEM.description = "Склеяный из разных частей бургер напоминает о былых временах. Жаль, что с тех времен осталась только горечь химикатов."
+ITEM.name = "item.burger"
+ITEM.description = "item.burger.desc"
 ITEM.model = "models/foodnhouseholditems/mcdburger.mdl"
 ITEM.cost = 22
 ITEM.width = 1

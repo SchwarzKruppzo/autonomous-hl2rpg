@@ -1,5 +1,5 @@
-ITEM.name = "Пистолетный затвор"
-ITEM.description = "Одновременно и завтор и верхняя крышка для огнестрельного оружия. Функционирование оружия без нее невозможно."
+ITEM.name = "item.gun_pistol_receiver"
+ITEM.description = "item.gun_pistol_receiver.desc"
 ITEM.model = "models/cellar/craft/pistol_receiver.mdl"
 ITEM.width = 1
 ITEM.height = 1
@@ -8,5 +8,5 @@ ITEM.iconCam = {
 	ang = Angle(14.473078727722, 345.60302734375, 0),
 	fov = 1.8094523499595,
 }
-ITEM.category = "Части оружия"
+ITEM.category = "item.category.weapon_parts"
 ITEM.contraband = true

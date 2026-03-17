@@ -23,5 +23,7 @@ item.morphine					= "Morphine"
 item.morphine.desc				= "Morphine Autoinjector. Used for intramuscular injection to manage severe pain such as those from fractures."
 item.painkiller					= "Painkillers"
 item.painkiller.desc			= "A moderate painkiller suitable for regular use of relief of pain and inflammation caused by moderate wounds."
+item.syringe						= "Syringe"
+item.syringe.desc					= "A syringe that can hold up to 100 ml."
 
 entities.medical.bed 			= "Bed"

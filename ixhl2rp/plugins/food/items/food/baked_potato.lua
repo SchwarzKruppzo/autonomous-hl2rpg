@@ -1,5 +1,5 @@
-ITEM.name = "Печенный картофель"
-ITEM.description = "Картошка которая внутри добротно вся запеклась. Надо снять только подгоревшую шкурку."
+ITEM.name = "item.baked_potato"
+ITEM.description = "item.baked_potato.desc"
 ITEM.cost = 3
 ITEM.width = 1
 ITEM.height = 1

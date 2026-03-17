@@ -1,7 +1,7 @@
-ITEM.name = "Обработанный пластик"
-ITEM.description = "Пластик, лишенный лишних приместей и готовый к дальнейшей эксплуатации в разных причудливых устройствах."
+ITEM.name = "item.mat_plastic"
+ITEM.description = "item.mat_plastic.desc"
 ITEM.model = "models/mosi/fallout4/props/junk/components/plastic.mdl"
-ITEM.category = "Производные компоненты"
+ITEM.category = "item.category.crafted"
 ITEM.rarity = 1
 ITEM.width = 2
 ITEM.height = 1

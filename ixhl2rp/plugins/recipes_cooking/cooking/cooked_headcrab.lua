@@ -1,5 +1,5 @@
-RECIPE.name = "Жареное мясо хедкраба"
-RECIPE.category = "Мясо"
+RECIPE.name = "recipe.cooking.cooked_headcrab"
+RECIPE.category = "recipe.category.cooking.meat"
 RECIPE.requirements = {
 	raw_headcrab = 1,
 }

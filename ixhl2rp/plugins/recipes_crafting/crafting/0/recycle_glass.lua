@@ -1,5 +1,5 @@
-RECIPE.name = "Стекло"
-RECIPE.category = "Переработка"
+RECIPE.name = "recipe.crafting.recycle_glass"
+RECIPE.category = "recipe.category.recycling"
 RECIPE.requirements = {
 	empty_glass_bottle = 4
 }

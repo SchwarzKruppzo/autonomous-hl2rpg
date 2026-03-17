@@ -1,5 +1,5 @@
-ITEM.name = "Гавайская пицца"
-ITEM.description = "Шедевр итаяльнской и гавайской кулинарии, пицца с курицей и круглыми ломтиками ананаса! Многие скажут, что это отвратительно, но ценители точно не останутся равнодушными."
+ITEM.name = "item.pineapple_pizza"
+ITEM.description = "item.pineapple_pizza.desc"
 ITEM.model = "models/workspizza01/workspizza01.mdl"
 ITEM.cost = 30
 ITEM.width = 2

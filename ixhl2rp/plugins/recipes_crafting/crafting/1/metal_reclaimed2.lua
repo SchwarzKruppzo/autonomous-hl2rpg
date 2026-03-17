@@ -1,5 +1,5 @@
-RECIPE.name = "Восстановленный металл"
-RECIPE.category = "Переработка"
+RECIPE.name = "recipe.crafting.metal_reclaimed2"
+RECIPE.category = "recipe.category.recycling"
 RECIPE.requirements = {
 	metal_scrap = 3,
 	mat_charcoal = 1

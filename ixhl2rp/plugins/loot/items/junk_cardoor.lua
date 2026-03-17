@@ -1,6 +1,6 @@
-ITEM.name = "Оторванная дверь"
-ITEM.description = "Представляет собой тяжелую металлическую дверь от автомобиля. Она с измятой поверхностью, испещренная царапинами и пятнами ржавчины, а также поврежденные петли и ручку."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_cardoor"
+ITEM.description = "item.junk_cardoor.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_vehicles/carparts_door01a.mdl"
 ITEM.width = 3
 ITEM.height = 3

@@ -1,6 +1,6 @@
-ITEM.name = "Импульсный заряд"
+ITEM.name = "item.bullets_ar2alt"
 ITEM.model = "models/Items/combine_rifle_ammo01.mdl"
-ITEM.description = "Капсула мощного импульсного заряда, используемая некоторым вооружением Альянса."
+ITEM.description = "item.bullets_ar2alt.desc"
 ITEM.max_stack = 5
 ITEM.default_stack = 1
 ITEM.rarity = 2

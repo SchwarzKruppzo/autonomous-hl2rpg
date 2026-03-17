@@ -66,7 +66,7 @@ ix.command.Add("lvlreset", {
 			char:SetData("levelup", true)
 		end*/
 
-		client:Notify("Сброс характеристик временно отключен, обратитесь к старшей администрации.")
+		client:NotifyLocalized("skillsResetDisabled")
 	end
 })
 

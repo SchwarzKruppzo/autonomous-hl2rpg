@@ -34,7 +34,7 @@ local function Read_Durability(item)
 end
 
 function Item:Init()
-	self.category = 'Оружие'
+	self.category = "item.category.weapon"
 
 	self.class = self.class or "weapon_pistol"
 	self.weaponCategory = self.weaponCategory or 'primary'
@@ -97,7 +97,7 @@ function Item:Init()
 	}
 
 	self.functions.unloadMagazine = {
-		name = "Разрядить",
+		name = "weapon.unloadMagazine",
 		icon = "icon16/page_go.png",
 		OnRun = function(item)
 			local primary = baseclass.Get(item.class).Primary
@@ -130,7 +130,7 @@ function Item:Init()
 	self.functions.examine = {
 		tip = "examineTip",
 		OnRun = function(item)
-			item.player:ChatNotify('Серийный номер оружия: '..item:GetData("regid"))
+			item.player:ChatNotifyLocalized("weaponSerialNumber", item:GetData("regid"))
 		end,
 		OnCanRun = function(item)
 			return true
@@ -479,12 +479,12 @@ end
 
 if CLIENT then
 	local durability_state = {
-		[0] = {"неисправно", 0.15},
-		[1] = {"сильный износ", 0.25},
-		[2] = {"средний износ", 0.4},
-		[3] = {"небольшой износ", 0.6},
-		[4] = {"новое", 0.9},
-		[5] = {"сломано", 0}
+		[0] = {"weaponConditionFaulty", 0.15},
+		[1] = {"weaponConditionHeavyWear", 0.25},
+		[2] = {"weaponConditionMediumWear", 0.4},
+		[3] = {"weaponConditionLightWear", 0.6},
+		[4] = {"weaponConditionNew", 0.9},
+		[5] = {"weaponConditionBroken", 0}
 	}
 
 	local greenClr = Color(50, 200, 50)
@@ -516,12 +516,7 @@ if CLIENT then
 		return 1
 	end
 
-	local dmg = "УРОН: %i"
-	local rpm = "ВЫСТРЕЛОВ В МИНУТУ: %i"
-	local attackspeed = "СКОРОСТЬ АТАКИ: %i"
-
-	local penetration = "БРОНЕПРОБИВАЕМОСТЬ:"
-	local armorx = "КЛАСС БРОНИ %i: %s%%"
+	local penetration = L("weaponArmorPenetrationHeader")
 	local redClr = Color(200, 50, 50)
 	function Item:PopulateTooltip(tooltip)
 		if self.isGrenadeARC9 or self.isGrenade then
@@ -532,7 +527,7 @@ if CLIENT then
 		
 		if hasLock then
 			local lock = tooltip:AddRowAfter("name", "lock")
-			lock:SetText("Имеется защита от несанкционированного использования биологического типа")
+			lock:SetText(L("weaponHasBiolock"))
 			lock:SetBackgroundColor(redClr)
 			lock:SizeToContents()
 		end
@@ -543,7 +538,7 @@ if CLIENT then
 			local info = durability_state[durability]
 			local panel = tooltip:AddRowAfter(hasLock && "lock" || "name", "durability")
 			panel:SetBackgroundColor(HSVToColor(120 * info[2], 1, 1))
-			panel:SetText("Состояние: " .. info[1])
+			panel:SetText(L("weaponConditionLabel", L(info[1])))
 			panel:SizeToContents()
 		end
 
@@ -557,12 +552,12 @@ if CLIENT then
 				damage = damage * weapon.Primary.NumShots
 			end
 			
-			StatRow("base", string.format(dmg, damage), color_white, tooltip, true)
+			StatRow("base", L("weaponStatDamage", damage), color_white, tooltip, true)
 
 			if weapon.Primary.RPM and !isMelee then
-				StatRow("rpm", string.format(rpm, weapon.Primary.RPM), color_white, tooltip, true)
+				StatRow("rpm", L("weaponStatRPM", weapon.Primary.RPM), color_white, tooltip, true)
 			elseif weapon.Primary.RPM and isMelee then
-				StatRow("attackspeed", string.format(attackspeed, math.Round(weapon.Primary.RPM / 60, 1)), color_white, tooltip, true)
+				StatRow("attackspeed", L("weaponStatAttackSpeed", math.Round(weapon.Primary.RPM / 60, 1)), color_white, tooltip, true)
 			end
 
 			if weapon.armor then
@@ -577,7 +572,7 @@ if CLIENT then
 					table.SortByMember(coverages, "type")
 
 					for k, v in ipairs(coverages) do
-						StatRow("hit"..k, string.format(armorx, v.type, (v.factor > 0 and "+" or "")..v.factor), v.factor > 0 and greenClr or redClr, tooltip)
+						StatRow("hit"..k, L("weaponArmorClassLine", v.type, (v.factor > 0 and "+" or "")..v.factor), v.factor > 0 and greenClr or redClr, tooltip)
 					end
 				end
 			end

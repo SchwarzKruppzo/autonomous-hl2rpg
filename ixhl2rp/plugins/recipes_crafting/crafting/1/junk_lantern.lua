@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Масляная лампа"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_lantern"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_lantern"
 RECIPE.results = {
 	metal_scrap = 1,

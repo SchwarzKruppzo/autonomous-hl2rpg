@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Рваная ткань"
-RECIPE.category = "Переработка"
+RECIPE.name = "recipe.crafting.cloth"
+RECIPE.category = "recipe.category.recycling"
 RECIPE.requirements = "mat_leather"
 RECIPE.results = {
 	mat_cloth = {0, 2},

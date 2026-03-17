@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Монитор"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_monitor"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_monitor"
 RECIPE.results = {
 	mat_plastic = 1,

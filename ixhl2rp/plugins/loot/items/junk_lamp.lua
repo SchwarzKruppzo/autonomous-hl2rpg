@@ -1,6 +1,6 @@
-ITEM.name = "Перегоревший торшер"
-ITEM.description = "Старый металлический торшер с пылью и паутиной. От его верхней части отсутствует тканный плафон, который когда-то, вероятно, сиял мягким светом, но теперь осталась лишь черная угольная пятна и запах горелой проволоки."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_lamp"
+ITEM.description = "item.junk_lamp.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_interiors/furniture_lamp01a.mdl"
 ITEM.width = 2
 ITEM.height = 4

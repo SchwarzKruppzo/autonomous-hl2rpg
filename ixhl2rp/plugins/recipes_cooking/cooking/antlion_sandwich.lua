@@ -1,5 +1,5 @@
-RECIPE.name = "Сэндвич из муравьиного льва"
-RECIPE.category = "Продукты"
+RECIPE.name = "recipe.cooking.antlion_sandwich"
+RECIPE.category = "recipe.category.cooking.products"
 RECIPE.requirements = {
 	fresh_bread = 1,
 	cooked_antlion = 1,

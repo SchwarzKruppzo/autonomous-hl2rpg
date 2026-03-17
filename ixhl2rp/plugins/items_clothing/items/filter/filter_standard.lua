@@ -1,5 +1,5 @@
-ITEM.name = "Довоенный фильтр"
-ITEM.description = "Этот фильтр, похоже, был вытащен из сырого арсенала еще до Семичасовой войны. От него так и несет ржавчиной, а в противогаз то и дело будут попадать пылинки от его древности, но, в целом, не на долго его хватит."
+ITEM.name = "item.filter_standard"
+ITEM.description = "item.filter_standard.desc"
 ITEM.model = Model("models/vintagethief/items/filter.mdl")
 ITEM.width = 1
 ITEM.height = 1

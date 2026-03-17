@@ -1,5 +1,5 @@
-ITEM.name = "Тако со свининой"
-ITEM.description = "Прохладное тако, внутри которого находится небольшой кусок свинного мяса, а так же огромное количество всевозможных химических специй, которые очень плохо переносит организм."
+ITEM.name = "item.taco"
+ITEM.description = "item.taco.desc"
 ITEM.model = "models/props_canteen/taco.mdl"
 ITEM.cost = 11
 ITEM.width = 1

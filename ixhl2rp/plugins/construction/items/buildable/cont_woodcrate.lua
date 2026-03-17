@@ -1,4 +1,4 @@
-ITEM.category = "Строительство - контейнеры"
+ITEM.category = "item.category.construction_containers"
 ITEM.model = "models/cellar/tool_crate_wood.mdl"
 ITEM.iconCam = {
 	pos = Vector(160.73175048828, -0.035080194473267, 752.37615966797),
@@ -8,6 +8,6 @@ ITEM.iconCam = {
 ITEM.width = 5
 ITEM.height = 4
 
-ITEM.name = "Сборка: ящик"
-ITEM.description = "Универсальный контейнер, изготовленный из древесины, предназначенный для хранения и транспортировки различных товаров и предметов."
+ITEM.name = "item.cont_woodcrate"
+ITEM.description = "item.cont_woodcrate.desc"
 ITEM.preview_model = "models/props_junk/wood_crate001a.mdl"

@@ -1,5 +1,5 @@
-ITEM.name = "Шампанское"
-ITEM.description = "Большая бутылка с жёлтой жидкостью внутри."
+ITEM.name = "item.champagne"
+ITEM.description = "item.champagne.desc"
 ITEM.model = "models/foodnhouseholditems/champagne3.mdl"
 ITEM.cost = 47
 ITEM.width = 1

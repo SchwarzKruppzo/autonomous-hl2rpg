@@ -1,6 +1,6 @@
-ITEM.name = "Старая газета"
-ITEM.description = "Полусвернутая, покрытая пылью и пятнами возраста. Ее бумага потеряла белизну, буквы на заголовках и статьях обрывочно читаемы, словно. Страницы легко осыпаются при касании, оставляя следы пыли на руках."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_newspaper"
+ITEM.description = "item.junk_newspaper.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_junk/garbage_newspaper001a.mdl"
 ITEM.width = 1
 ITEM.height = 1

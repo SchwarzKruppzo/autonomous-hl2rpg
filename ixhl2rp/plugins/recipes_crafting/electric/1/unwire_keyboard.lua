@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Клавиатура"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.electric.unwire_keyboard"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_keyboard"
 RECIPE.results = {
 	electro_circuit = 2,

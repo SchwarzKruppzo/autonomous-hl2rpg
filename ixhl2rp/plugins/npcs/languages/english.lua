@@ -1,0 +1,31 @@
+ix.Locale:Build("en")
+
+
+pressSpeak 				= "Press [E] to talk."
+
+r_mark_greetings_1f 		= "What can I do for you?"
+r_mark_greetings_2f 		= "Do you need something?"
+r_mark_greetings_3f 		= "I'm listening."
+r_mark_greetings_1m 		= "How can I help you?"
+r_mark_greetings_2m 		= "I am listening to you."
+r_mark_greetings_3m 		= "Yes?"
+r_mark_neverseen 			= "Yes, that's true.\nThe Department of Housing and Property, together with the city administration, is preparing reforms in the city, and therefore there are continuous personnel shifts everywhere. A difficult time, especially in such a crisis for the city's industrial zone. I'm here now for I am responding to the issuance of mail, and soon - drawing up documents for the rental of residential apartments, places of business and other property...\nIt is said that they want to restart the city's economy. In general, somehow."
+r_mark_rent 				= "Now I can't talk about it. The department is not ready for this yet, maybe another time."
+r_mark_rumours 			= "No. Everything is quiet."
+r_mark_checkmail 			= "Okay. Citizen card please."
+t_mail_check_id 			= "Gave him citizen card #%s."
+t_mark_neverseen_f 		= "I've never seen you here before."
+t_mark_neverseen_m 		= "I've never seen you here before."
+t_mark_rent_f 				= "I would like to talk about renting / buying a room."
+t_mark_rent_m 				= "I would like to talk about renting / buying a room."
+t_mark_checkmail_f 		= "I would like to check my mail."
+t_mark_checkmail_m 		= "I would like to check my mail."
+t_mark_rumours 			= "Have you heard anything lately?"
+t_generic_goodbye 			= "See you."
+t_checkmail_no_m 			= "I changed my mind."
+t_checkmail_no_f 			= "I changed my mind."
+r_rumour1 					= "It is rumored that some unsuccessful experiment took place in the industrial zone, and now we are all left without working phases! How long will it last, damn him.\nPraise to the Union that we are paid benefits, otherwise it's possible die of hunger..."
+
+npc.garbageReward 			= "You received 10 tokens and 1x \"Workforce\" coupon."
+npc.rationReward 			= "You received %s tokens for work at the ration factory."
+npc.productionReward 		= "You received %s tokens for production."

@@ -1,6 +1,6 @@
-ITEM.name = "Статуэтка"
-ITEM.description = "Маленький гипсовый памятник, потрескавшийся на несколько кусочков. Кажется, она изображает человека, но все равно даже из-за повреждений можно определить его тучную фигуру одного из деятелей Сити-8."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_gurevich"
+ITEM.description = "item.junk_gurevich.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/fless/hellstorm/statue_02.mdl"
 ITEM.width = 1
 ITEM.height = 1

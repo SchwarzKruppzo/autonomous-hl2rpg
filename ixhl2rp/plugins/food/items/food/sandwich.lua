@@ -1,5 +1,5 @@
-ITEM.name = "Сэндвич"
-ITEM.description = "Готовый к употреблению сэндвич. Он состоит из чёрствого хлеба, сомнительного мяса и затухшей зелени. Что ещё нужно для счастья?"
+ITEM.name = "item.sandwich"
+ITEM.description = "item.sandwich.desc"
 ITEM.model = "models/foodnhouseholditems/sandwich.mdl"
 ITEM.cost = 6
 ITEM.width = 1

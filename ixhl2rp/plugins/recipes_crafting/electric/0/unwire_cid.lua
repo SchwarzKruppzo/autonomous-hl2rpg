@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Сломанная CID карта"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.electric.unwire_cid"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_cid"
 RECIPE.results = {
 	electro_circuit = 1,

@@ -1,6 +1,6 @@
-ITEM.name = "Зажигалка 'Zippo'"
-ITEM.description = "Пустая и разобранная изнутри зажигалка фирмы 'Zippo'. Ныне ею не зажечь ни одной сигареты, но, кто знает, может быть какой-нибудь умелец сможет вернуть ее к жизни?"
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_zippo"
+ITEM.description = "item.junk_zippo.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/freeman/zippo.mdl"
 ITEM.width = 1
 ITEM.height = 1

@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Велосипед"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_bicycle"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_bicycle"
 RECIPE.results = {
 	metal_scrap = {3, 4},

@@ -67,7 +67,7 @@ local function CanSay(self, speaker, text)
 		return true
 	end
 
-	speaker:NotifyLocalized("Я не знаю этот язык..")
+	speaker:NotifyLocalized("lang.dontKnow")
 	return false
 end
 
@@ -89,7 +89,7 @@ if (CLIENT) then
 				end
 			end
 
-			return icon, " на "..language.chat, text
+			return icon, L("langChatPrefixOn", L(language.chat)), text
 		else
 			if language.gibberish then
 				if istable(language.gibberish) then
@@ -128,12 +128,12 @@ if (CLIENT) then
 						local editCapital = string.utf8sub(text, 1, 1)
 						text = (string.utf8upper(editCapital)..string.utf8sub(text, 2, string.utf8len(text)))
 
-						return icon, " на "..language.chat, text
+						return icon, L("langChatPrefixOn", L(language.chat)), text
 					end
 				end
 			end
 
-			return icon, " что-то на "..language.chat, ""
+			return icon, L("langChatSomethingOn", L(language.chat)), ""
 		end
 	end
 end
@@ -152,7 +152,7 @@ function ix.languages:Register(language)
 		languageClassShout.CanHear = ix.config.Get("chatRange", 280) * 20
 		languageClassShout.indicator = "chatYelling"
 		languageClassShout.prefix = "/vortshout"
-		languageClassShout.description = "Взывает на языке Вортов, может покрыть собой половину игровой карты."
+		languageClassShout.description = "@langVortShoutDesc"
 		languageClassShout.langID = language.uniqueID
 		languageClassShout.CanSay = CanSay
 		languageClassShout.color = Color(150, 125, 175)
@@ -165,7 +165,7 @@ function ix.languages:Register(language)
 					L"someone" or hook.Run("GetCharacterName", speaker, "y") or
 					(IsValid(speaker) and speaker:Name() or "Console")
 
-				chat.AddText(icon or "", self.color, ix.util.GetMaterial("cellar/chat/broadcast.png"), name, " взывает", langPrefix or "", color_white, string.format(self.format, text))
+				chat.AddText(icon or "", self.color, ix.util.GetMaterial("cellar/chat/broadcast.png"), name, " "..L("langVortShoutVerb"), langPrefix or "", color_white, string.format(self.format, text))
 			end
 		end
 
@@ -189,10 +189,11 @@ function ix.languages:FindByID(identifier)
 		local language = nil
 
 		for _, v in pairs(self.stored) do
-			local languageName = v.name
+			-- L() may be unavailable or unsafe on server (no client locale context)
+			local languageName = SERVER and v.name or L(v.name)
 
 			if (string.find(string.utf8lower(languageName), lowerName)
-			and (!language or string.utf8len(languageName) < string.utf8len(language.name))) then
+			and (!language or string.utf8len(languageName) < string.utf8len(SERVER and language.name or L(language.name)))) then
 				language = v
 			end
 		end
@@ -233,7 +234,7 @@ function ix.languages:PlayerCanSpeakLanguage(language, client)
 end
 
 ix.command.Add("CharCheckLanguage", {
-	description = "Проверить языки персонажа.",
+	description = "@cmdCharCheckLanguageDesc",
 	adminOnly = true,
 	arguments = {
 		ix.type.character
@@ -247,16 +248,16 @@ ix.command.Add("CharCheckLanguage", {
 			for k, v in pairs(knownLanguages) do
 				local lang = ix.languages:FindByID(v)
 
-				langs = langs .. lang.name .. ((k != #knownLanguages) and ", " or "")
+				langs = langs .. L(lang.name) .. ((k != #knownLanguages) and ", " or "")
 			end
 
-			client:ChatNotify(target:GetName() .. " знает следующие языки: "..langs)
+			client:ChatNotifyLocalized("lang.knowsLanguages", target:GetName(), langs)
 		end
 	end
 })
 
 ix.command.Add("CharSetLanguage", {
-	description = "Добавить указанный язык в пользование персонажа.",
+	description = "@cmdCharSetLanguage",
 	adminOnly = true,
 	arguments = {ix.type.character, ix.type.text},
 	alias = "CharSetBilingual",
@@ -266,26 +267,26 @@ ix.command.Add("CharSetLanguage", {
 			if (language) then
 				local knownLanguages = character:GetLanguages()
 				if (table.HasValue(knownLanguages, language.uniqueID)) then
-					client:NotifyLocalized("Этот персонаж уже знает "..language.name.."!")
+					client:NotifyLocalized("lang.alreadyKnows", L(language.name))
 					return false
 				else
 					table.insert(knownLanguages, language.uniqueID)
 					character:SetLanguages(knownLanguages)
-					client:NotifyLocalized("Вы добавили персонажу "..character:GetName().." язык "..language.name)
+					client:NotifyLocalized("lang.addedLanguage", character:GetName(), L(language.name))
 				end
 			else
-				client:NotifyLocalized("Этот язык несуществует!")
+				client:NotifyLocalized("lang.doesntExist")
 				return false
 			end
 		else
-			client:NotifyLocalized("Указанный персонаж не найден!")
+			client:NotifyLocalized("lang.charNotFound")
 			return false
 		end
 	end
 })
 
 ix.command.Add("CharRemoveLanguage", {
-	description = "Забрать указанный язык из пользования персонажа.",
+	description = "@cmdCharRemoveLanguageDesc",
 	adminOnly = true,
 	arguments = {ix.type.character, ix.type.text},
 	OnRun = function(self, client, character, lang)
@@ -294,19 +295,19 @@ ix.command.Add("CharRemoveLanguage", {
 			if (language) then
 				local knownLanguages = character:GetLanguages()
 				if (!table.HasValue(knownLanguages, language.uniqueID)) then
-					client:NotifyLocalized("Этот персонаж не знает "..language.name.."!")
+					client:NotifyLocalized("lang.doesntKnow", L(language.name))
 					return false
 				else
 					table.RemoveByValue(knownLanguages, language.uniqueID)
 					character:SetLanguages(knownLanguages)
-					client:NotifyLocalized("Вы забрали язык "..language.name.." из использования персонажем "..character:GetName()..".")
+					client:NotifyLocalized("lang.removedLanguage", L(language.name), character:GetName())
 				end
 			else
-				client:NotifyLocalized("Этот язык несуществует!")
+				client:NotifyLocalized("lang.doesntExist")
 				return false
 			end
 		else
-			client:NotifyLocalized("Указанный персонаж не найден!")
+			client:NotifyLocalized("lang.charNotFound")
 			return false
 		end
 	end

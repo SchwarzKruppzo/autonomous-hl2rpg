@@ -1,5 +1,5 @@
-ITEM.name = "Кастрюля"
-ITEM.description = "Крупная и глубокая емкость с ручками. В нее можно залить воду и что-то варить, чтобы что-то жарить - совсем не подойдет."
+ITEM.name = "item.tool_pot"
+ITEM.description = "item.tool_pot.desc"
 ITEM.model = "models/props_c17/metalPot001a.mdl"
 ITEM.cost = 12
 ITEM.width = 2

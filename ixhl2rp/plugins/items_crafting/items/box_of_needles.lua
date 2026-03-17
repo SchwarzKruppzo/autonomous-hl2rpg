@@ -1,6 +1,6 @@
-ITEM.name = "Коробочка с иголками"
-ITEM.description = "Маленькая коробочка с кучей разных иголок, которые подойдут любому мастеру по пошиву одежды или чего еще покруче."
-ITEM.category = "Базовые компоненты"
+ITEM.name = "item.box_of_needles"
+ITEM.description = "item.box_of_needles.desc"
+ITEM.category = "item.category.raw"
 ITEM.model = "models/mosi/fallout4/props/junk/components/fiberglass.mdl"
 ITEM.width = 1
 ITEM.height = 1

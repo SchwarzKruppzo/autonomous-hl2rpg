@@ -89,8 +89,9 @@ if CLIENT then
 
 		local function HUDPaint()
 			if not preview then return end
-			draw.DrawText("[ЛКМ/ПКМ] — поставить/отменить", "ixMediumFont", ScrW() * 0.5 + 1, ScrH() * 0.95 + 1, color_black, TEXT_ALIGN_CENTER)
-			draw.DrawText("[ЛКМ/ПКМ] — поставить/отменить", "ixMediumFont", ScrW() * 0.5, ScrH() * 0.95, color_white, TEXT_ALIGN_CENTER)
+			local text = L("buildHintPlaceCancel")
+			draw.DrawText(text, "ixMediumFont", ScrW() * 0.5 + 1, ScrH() * 0.95 + 1, color_black, TEXT_ALIGN_CENTER)
+			draw.DrawText(text, "ixMediumFont", ScrW() * 0.5, ScrH() * 0.95, color_white, TEXT_ALIGN_CENTER)
 		end
 
 		local buildCallback
@@ -113,7 +114,7 @@ if CLIENT then
 
 					ix.Item:BuildPreview(false)
 				else
-					chat.AddText(Color(255, 0, 0), "Невозможно разместить объект здесь!")
+					chat.AddText(Color(255, 0, 0), L("buildInvalidPlacement"))
 				end
 				return true
 			end
@@ -208,18 +209,18 @@ else
 end
 
 function Item:Init()
-	self.category = 'Строительство'
+	self.category = "item.category.construction"
 	self.preview_model = self.preview_model or ""
 	self.isEntity = self.isEntity or false
 
 	self.functions.place = {
-		name = "Разместить",
+		name = "use.place",
 		OnRun = function(item)
 			if item.factionLock then
 				local client = item.player
 
 				if !item.factionLock[client:Team()] then
-					client:Notify("Вы не можете этим пользоваться!")
+					client:NotifyLocalized("buildable.cantUse")
 					return
 				end
 			end
@@ -323,7 +324,7 @@ if CLIENT then
 		if data then
 			local size = tooltip:AddRowAfter("name")
 			size:SetBackgroundColor(derma.GetColor("Success", tooltip))
-			size:SetText(string.format("Вместимость: %s", tostring(data.width).."x"..tostring(data.height)))
+			size:SetText(L("containerCapacityLabel", tostring(data.width).."x"..tostring(data.height)))
 		end
 	end
 end

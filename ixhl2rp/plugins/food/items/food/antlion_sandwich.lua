@@ -1,5 +1,5 @@
-ITEM.name = "Сэндвич из муравьиного льва"
-ITEM.description = "Соедините два куска хлеба вместе с куском мяса муравьиного льва между ними, и вы получите сэндвич."
+ITEM.name = "item.antlion_sandwich"
+ITEM.description = "item.antlion_sandwich.desc"
 ITEM.model = "models/foodnhouseholditems/sandwich.mdl"
 ITEM.cost = 20
 ITEM.width = 1

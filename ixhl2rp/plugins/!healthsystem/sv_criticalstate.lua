@@ -197,17 +197,17 @@ net.Receive("crit.use", function(len, client)
 	end
 
 	if admins <= 0 then
-		client:Notify("На сервере нет администраторов!")
+		client:Notify(L("health.noAdmins", client))
 		return
 	end
 
 	if client:GetCharacter():GetLevel() < 10 then
-		client:Notify("Недостаточный уровень! Требуется 10-ый.")
+		client:Notify(L("health.needLevel10", client))
 		return
 	end
 
 	if !isSlay and client:GetCharacter():GetLevel() < 20 then
-		client:Notify("Недостаточный уровен! Требуется 20-ый.")
+		client:Notify(L("health.needLevel20", client))
 		return
 	end
 

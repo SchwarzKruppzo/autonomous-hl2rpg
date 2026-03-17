@@ -1,5 +1,5 @@
-ITEM.name = "Стейк из муравьиного льва"
-ITEM.description = "Зажаренный кусок мяса из туши льва, на углях и огне это выходит действительно вкусно. Вспоминатеся старое доброе барбекю." 
+ITEM.name = "item.antlion_steak"
+ITEM.description = "item.antlion_steak.desc" 
 ITEM.model = "models/mosi/fallout4/props/food/radroachsteak.mdl"
 ITEM.cost = 12
 ITEM.width = 1

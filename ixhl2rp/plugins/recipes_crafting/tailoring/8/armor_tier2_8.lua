@@ -1,5 +1,5 @@
-RECIPE.name = "Довоенная форма с бронежилетом PASGT"
-RECIPE.category = "Броня — тело"
+RECIPE.name = "recipe.tailoring.armor_tier2_8"
+RECIPE.category = "recipe.category.armor_body"
 RECIPE.requirements = {
 	mat_kevlar = 6,
 	mat_armor_tier2 = 1,

@@ -1,5 +1,5 @@
-RECIPE.name = "Очищенная вода"
-RECIPE.category = "Напитки"
+RECIPE.name = "recipe.cooking.purified_water1"
+RECIPE.category = "recipe.category.cooking.drinks"
 RECIPE.requirements = {
 	canned_water = 1,
 }

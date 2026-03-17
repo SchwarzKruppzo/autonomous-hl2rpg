@@ -1,5 +1,5 @@
-ITEM.name = "Шашлык из хедкраба"
-ITEM.description = "Насаженный на шпажку порезанные кубики из филе хедкраба, вроде вкусно, но немного." 
+ITEM.name = "item.grilled_headcrab"
+ITEM.description = "item.grilled_headcrab.desc" 
 ITEM.model = "models/mosi/fallout4/props/food/squirrelonastick.mdl"
 ITEM.cost = 12
 ITEM.width = 1

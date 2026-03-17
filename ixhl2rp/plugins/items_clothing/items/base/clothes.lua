@@ -9,7 +9,7 @@ ItemCloth.category = 'Clothes'
 function ItemCloth:Init()
 	ix.meta.ItemEquipable.Init(self)
 
-	self.category = 'Одежда'
+	self.category = "item.category.clothing"
 
 	self:AddData("filter", {
 		Transmit = ix.transmit.none,

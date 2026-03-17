@@ -1,6 +1,6 @@
-ITEM.name = "Кожаный чемодан"
-ITEM.description = "Старый и потрепанный чемодан, покрытый тонким слоем пыли и грязи. Кожаная поверхность облезла на многих местах, а зацепки и замки уже давно перестали надежно функционировать."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_suitcase"
+ITEM.description = "item.junk_suitcase.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_c17/SuitCase001a.mdl"
 ITEM.width = 3
 ITEM.height = 2

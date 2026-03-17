@@ -1,4 +1,4 @@
-ITEM.category = "Строительство - контейнеры"
+ITEM.category = "item.category.construction_containers"
 ITEM.model = "models/cellar/tool_crate_metal.mdl"
 ITEM.iconCam = {
 	pos = Vector(160.73175048828, -0.035080194473267, 752.37615966797),
@@ -8,6 +8,6 @@ ITEM.iconCam = {
 ITEM.width = 5
 ITEM.height = 4
 
-ITEM.name = "Сборка: шкафчики"
-ITEM.description = "Металлические шкафчики, обычно использующиеся, чтобы в них слаживали личные вещи или недоеденный сэндвич."
+ITEM.name = "item.cont_locker"
+ITEM.description = "item.cont_locker.desc"
 ITEM.preview_model = "models/props_c17/lockers001a.mdl"

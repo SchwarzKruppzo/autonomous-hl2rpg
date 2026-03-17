@@ -1,5 +1,5 @@
-ITEM.name = "Бутылка красного вина"
-ITEM.description = "Бутылка ну очень старого вина, которое производилось ещё до войны. Открытие этой бутылки создаёт настоящий праздник, а на вкус это вино - как слёзы ангелов."
+ITEM.name = "item.red_wine"
+ITEM.description = "item.red_wine.desc"
 ITEM.model = "models/foodnhouseholditems/champagne2.mdl"
 ITEM.cost = 47
 ITEM.width = 1

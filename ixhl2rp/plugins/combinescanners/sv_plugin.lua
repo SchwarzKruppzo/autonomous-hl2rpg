@@ -126,21 +126,21 @@ function PLUGIN:DeployScanner(client, terminal, isPortable)
 	local item = client:FindItem("combine_scanner")
 
 	if (!item) then
-		return false, "Необходим сканнер для размещения!"
+		return false, "@scannerNeedItemToDeploy"
 	end
 
 	local scanner = self:SpawnScanner(true)
 
 	if (!IsValid(scanner)) then
-		return false, "Невозможно определить точку спавна сканнера!"
+		return false, "@scannerNoSpawnPoint"
 	end
 
 	local res = self:ConnectScannerToPlayer(client, scanner, terminal)
 
-	if (!res) then
-		SafeRemoveEntity(scanner)
-		return false, "Не удалось подключиться к сканнеру!"
-	end
+		if (!res) then
+			SafeRemoveEntity(scanner)
+			return false, "@scanner.connectionFailed"
+		end
 
 	item:Remove()
 
@@ -191,10 +191,14 @@ net.Receive("ScannerTerminalDeploy", function(len, player)
 
 	local result, err, scanner = PLUGIN:DeployScanner(player, terminal)
 	if (!result) then
-		return player:Notify(err)
+		if err and err:sub(1, 1) == "@" then
+			return player:NotifyLocalized(err:sub(2))
+		else
+			return player:Notify(err or "")
+		end
 	end
 
-	player:Notify(Format("Присвоено название: %s", scanner:GetScannerName()))
+	player:NotifyLocalized("scanner.nameAssigned", scanner:GetScannerName())
 end)
 
 net.Receive("ScannerFold", function(len, player)
@@ -214,7 +218,7 @@ net.Receive("ScannerEnter", function(len, player)
 	if (IsValid(terminal)) then
 		local result = PLUGIN:ConnectScannerToPlayer(player, scanner, terminal)
 		if (!result) then
-			player:Notify("Не удалось подключиться к сканнеру!")
+			player:NotifyLocalized("scanner.connectionFailed")
 		end
 	end
 	// TODO: Available to enter scanner from portable device

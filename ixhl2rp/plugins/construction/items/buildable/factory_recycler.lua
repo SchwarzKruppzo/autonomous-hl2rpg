@@ -1,4 +1,4 @@
-ITEM.category = "Строительство - переработчик мусора"
+ITEM.category = "item.category.construction_factory1"
 ITEM.model = "models/cellar/tool_crate_metal.mdl"
 ITEM.iconCam = {
 	pos = Vector(160.73175048828, -0.035080194473267, 752.37615966797),
@@ -8,8 +8,8 @@ ITEM.iconCam = {
 ITEM.width = 5
 ITEM.height = 4
 
-ITEM.name = "Сборка: переработчик мусора"
-ITEM.description = ""
+ITEM.name = "item.factory_recycler"
+ITEM.description = "item.factory_recycler.desc"
 ITEM.preview_model = "models/props_mining/elevator_winch_empty.mdl"
 
 function ITEM:OnPlace(client, pos, angle)

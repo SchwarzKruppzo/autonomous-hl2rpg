@@ -1,4 +1,4 @@
-ITEM.name = "Черные брюки с ремнем"
+ITEM.name = "item.legs_suitjacket"
 ITEM.model = "models/tnb/halflife2/citizens/items/world_suitjacket_legs.mdl"
 ITEM.skin = 3
 ITEM.width = 2
@@ -9,22 +9,27 @@ ITEM.iconCam = {
 	fov = 4.0238345864177,
 }
 ITEM.rarity = 3
-ITEM.description = "Стильные черные брюки с прочным кожаным ремнем. Идеально подходят под пальто."
+ITEM.description = "item.legs_suitjacket.desc"
 ITEM.equip_inv = 'legs'
 ITEM.equip_slot = nil
-ITEM.bodyGroups = {
-	[2] = 7
-}
 
-function ITEM:GetOutfitData()
-    return {
-        slot = "legs",
-        model = {
-        	[GENDER_MALE] = "models/tnb/halflife2/male_legs_suitjacket.mdl",
-            [GENDER_FEMALE] = "models/tnb/halflife2/female_legs_suitjacket.mdl",
-        }
+
+--ITEM.bodyGroups = {
+--	[2] = 7
+--}
+
+ITEM.displayID = ix.Appearance:New("suitjacket_legs", {
+    slot = ix.Appearance.Slot.Legs,
+    layer = ix.Appearance.Layer.Bottom,
+    variants = {
+        male = {
+            model = "models/tnb/halflife2/male_legs_suitjacket.mdl"
+        },
+        female = {
+            model = "models/tnb/halflife2/female_legs_suitjacket.mdl"
+        },
     }
-end
+})
 
 ITEM.BreakDown = true
 ITEM.BreakDownType = "cloth"

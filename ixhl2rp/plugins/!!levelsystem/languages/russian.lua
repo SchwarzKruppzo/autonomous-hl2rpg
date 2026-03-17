@@ -10,6 +10,7 @@ chat.skill.increased 			= "Ваш навык %s повышен до %s!"
 chat.skill.decreased 			= "Ваш навык %s понижен до %s!"
 
 cmd.dice 						= "Бросок кубика с заданными параметрами."
+cmdCharSetLevel 					= "Установить уровень персонажа."
 
 cmd.notify.lvlChanged 			= "Вы успешно изменили уровень персонажа."
 cmd.notify.lvlAdded 			= "Вы успешно добавили уровни персонажу."

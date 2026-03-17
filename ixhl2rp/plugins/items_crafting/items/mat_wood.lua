@@ -1,7 +1,7 @@
-ITEM.name = "Древесина"
-ITEM.description = "Кусок увесистой и прочной древисины, которую можно использовать в разного рода изысканиях."
+ITEM.name = "item.mat_wood"
+ITEM.description = "item.mat_wood.desc"
 ITEM.model = "models/mosi/fallout4/props/junk/components/wood.mdl"
-ITEM.category = "Базовые компоненты"
+ITEM.category = "item.category.raw"
 ITEM.width = 2
 ITEM.height = 1
 ITEM.cost = 5

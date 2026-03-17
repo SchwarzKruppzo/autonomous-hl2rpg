@@ -1,5 +1,5 @@
-ITEM.name = "Сковорода"
-ITEM.description = "Тяжелая чугунная сковорода для готовки пищи. Она настолько тяжелая, что ею и убить можно."
+ITEM.name = "item.tool_pan"
+ITEM.description = "item.tool_pan.desc"
 ITEM.model = "models/props_c17/metalpot002a.mdl"
 ITEM.cost = 12
 ITEM.width = 2

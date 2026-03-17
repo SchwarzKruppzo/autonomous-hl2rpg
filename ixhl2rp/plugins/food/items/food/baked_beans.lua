@@ -1,5 +1,5 @@
-ITEM.name = "Запечённые бобы"
-ITEM.description = "Очень подозрительные светлые бобы. Надеюсь, что я не облучусь, если съем их. По сей видимости, их готовили в ядерном реакторе. Тем не менее, они очень вкусные!"
+ITEM.name = "item.baked_beans"
+ITEM.description = "item.baked_beans.desc"
 ITEM.model = "models/mosi/fallout4/props/food/porknbeans.mdl"
 ITEM.cost = 6
 ITEM.width = 1

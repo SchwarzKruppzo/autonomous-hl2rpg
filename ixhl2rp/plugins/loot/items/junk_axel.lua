@@ -1,6 +1,6 @@
-ITEM.name = "Автомобильный вал"
-ITEM.description = "Гладкий и массивный часть трансмиссии машины, изготовленный из прочного металла. Его форма напоминает цилиндр с заостренными концами. На поверхности видны небольшие выступы и углубления, предназначенные для лучшего сцепления с другими частями механизма."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_axel"
+ITEM.description = "item.junk_axel.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_vehicles/carparts_axel01a.mdl"
 ITEM.width = 6
 ITEM.height = 3

@@ -1,5 +1,5 @@
-RECIPE.name = "Бронированные синие джинсы"
-RECIPE.category = "Броня — ноги"
+RECIPE.name = "recipe.tailoring.padded_blue_jeans"
+RECIPE.category = "recipe.category.armor_legs"
 RECIPE.requirements = {
 	mat_kevlar = 2,
 	mat_cloth_reclaimed = 2,

@@ -1,7 +1,7 @@
-ITEM.name = "Детоксикатор"
-ITEM.description = "Химический порошок в гранулах, обеспечивает быстрое и эффективное очищение от вредных веществ."
+ITEM.name = "item.chem_detoxic"
+ITEM.description = "item.chem_detoxic.desc"
 ITEM.model = "models/crunchy/props/nmrih_props/item_phalanx.mdl"
-ITEM.category = "Химические компоненты"
+ITEM.category = "item.category.craft_chemical"
 ITEM.height = 1
 ITEM.max_stack = 4
 ITEM.default_stack = 1

@@ -1,6 +1,6 @@
-ITEM.name = "Детская кукла"
-ITEM.description = "Очень старая пластиковая кукла с которой когда-то раньше игрались дети, сейчас лишь видно что краски выцвели, поверхность покрыта мелкими царапинами и потертостями."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_doll"
+ITEM.description = "item.junk_doll.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_c17/doll01.mdl"
 ITEM.width = 1
 ITEM.height = 1

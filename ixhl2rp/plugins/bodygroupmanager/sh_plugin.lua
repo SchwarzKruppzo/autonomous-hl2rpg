@@ -7,13 +7,6 @@ PLUGIN.description = "Allows players and administration to have an easier time c
 
 ix.flag.Add("b", "Ability to edit your bodygroups.")
 
-ix.lang.AddTable("english", {
-	cmdEditBodygroup = "Bodygroup editor."
-})
-ix.lang.AddTable("russian", {
-	cmdEditBodygroup = "Редактор бодигрупп."
-})
-
 ix.command.Add("CharEditBodygroup", {
 	description = "@cmdEditBodygroup",
 	adminOnly = false,

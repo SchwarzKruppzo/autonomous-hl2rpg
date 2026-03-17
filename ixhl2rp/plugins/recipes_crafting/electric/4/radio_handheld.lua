@@ -1,5 +1,5 @@
-RECIPE.name = "Рация"
-RECIPE.category = "Коммуникация"
+RECIPE.name = "recipe.electric.radio_handheld"
+RECIPE.category = "recipe.category.communication"
 RECIPE.requirements = {
 	junk_radio = 1,
 	electro_reclaimed = 1,

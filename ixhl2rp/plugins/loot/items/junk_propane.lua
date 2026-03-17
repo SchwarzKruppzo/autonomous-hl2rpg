@@ -1,6 +1,6 @@
-ITEM.name = "Пустой баллон"
-ITEM.description = "Верхняя часть баллона закрыта крышкой с резьбой, а нижняя часть имеет плоское основание. Имеет круглую форму, с закругленными краями и небольшим клапаном на вершине. Вес был легким, так как внутри отсутствует газ."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_propane"
+ITEM.description = "item.junk_propane.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_junk/propanecanister001a.mdl"
 ITEM.width = 2
 ITEM.height = 2

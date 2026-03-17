@@ -1,5 +1,5 @@
-ITEM.name = "Мороженое"
-ITEM.description = "Шоколадная мороженка, которая по каким-то причинам не хочет таять при такой ужасной жаре как у нас. На вкус - действительно шоколад, но что-то с ним не так. Оно не холодное!"
+ITEM.name = "item.ice_cream"
+ITEM.description = "item.ice_cream.desc"
 ITEM.model = "models/foodnhouseholditems/icecream.mdl"
 ITEM.cost = 19
 ITEM.width = 1

@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Ржавое ведро"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_metalbucket"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_metalbucket"
 RECIPE.results = {
 	metal_scrap = 1

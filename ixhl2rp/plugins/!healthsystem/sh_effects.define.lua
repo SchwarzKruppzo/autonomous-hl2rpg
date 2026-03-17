@@ -357,11 +357,11 @@ function TEMPLATE:OnUpdate(newStage)
 		else
 			if client == LocalPlayer() then
 				if stage.id == 2 then
-					ix.chat.Send(client, "it", "Вы ощущаете себя немного навеселе!")
+					ix.chat.Send(client, "it", L("alcoholStageTipsy"), false, {client})
 				elseif stage.id == 3 then
-					ix.chat.Send(client, "it", "Алкоголь сильно ударяет вам в голову. Вы расслабляетесь.")
+					ix.chat.Send(client, "it", L("alcoholStageDrunk"), false, {client})
 				elseif stage.id == 4 then
-					ix.chat.Send(client, "it", "Неожиданно, вы почувствовали резкую боль в области почки... Может, достаточно алкоголя на сегодня?")
+					ix.chat.Send(client, "it", L("alcoholStageKidneyPain"), false, {client})
 				end
 			end
 		end
@@ -493,7 +493,7 @@ function TEMPLATE:OnAdded(health)
 	local client = character:GetPlayer()
 
 	if IsValid(client) and client == LocalPlayer() then
-		ix.chat.Send(client, "it", "Вы ощущаете себя немного навеселе!")
+		ix.chat.Send(client, "it", L("alcoholStageTipsy"), false, {client})
 	end
 end
 

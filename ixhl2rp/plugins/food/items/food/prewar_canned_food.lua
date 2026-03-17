@@ -1,5 +1,5 @@
-ITEM.name = "Довоенные консервы"
-ITEM.description = "Довоенные консервы, этикетка давным давно сорвана, но, судя по консистенции, внутри есть мясо. Дырки по бокам консервов настораживают, что этот консерв может быть испорчен."
+ITEM.name = "item.prewar_canned_food"
+ITEM.description = "item.prewar_canned_food.desc"
 ITEM.model = "models/props_junk/garbage_metalcan001a.mdl"
 ITEM.cost = 25
 ITEM.width = 1

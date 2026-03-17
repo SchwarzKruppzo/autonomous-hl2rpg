@@ -1,6 +1,6 @@
-ITEM.name = "Высококачественный сплав"
-ITEM.description = "Сплав, созданный при помощи смолы и стали. Такую сталь используют силы Альянса для строительства баррикад, стен и даже Цитаделей. Способен выдерживать критические нагрузки и обходится без трещин. Очень сложен в обработке за счет своих свойств."
-ITEM.category = "Производные компоненты"
+ITEM.name = "item.combine_metal"
+ITEM.description = "item.combine_metal.desc"
+ITEM.category = "item.category.crafted"
 ITEM.rarity = 3
 ITEM.model = "models/autonomous/mat_cmb_metal.mdl"
 ITEM.width = 2

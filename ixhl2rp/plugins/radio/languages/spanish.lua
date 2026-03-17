@@ -1,0 +1,62 @@
+ix.Locale:Build("es-es")
+
+
+radioFormat 				= "[%s] %s %s %s%s \"%s\""
+radioFormatEavesdrop 		= "%s %s %s%s \"%s\""
+radioVia 					= "por radio"
+radioSpeaks 				= "dice"
+radioShouts 				= "grita"
+radioWhispers 				= "susurra"
+
+radioNoAccess 				= "¡No tienes acceso a ese canal!"
+radioNoChannel 			= "¡No estás en un canal válido!"
+radioChannelSet 			= "Has configurado tu canal a '%s'."
+radioChannelSetSub 		= "Has configurado tu canal a '%s' (#%d)."
+radioChannelInvalid 		= "¡%s no es un canal válido!"
+
+chatRadioing 				= "Hablando por radio..."
+
+radioHideFreq 				= "Ocultar la frecuencia de radio en el chat"
+radioCategory 				= "Radio"
+
+item.radio_handheld        = "Radio de mano"
+item.radio_handheld.desc   = "Una radio de mano estándar con frecuencia ajustable."
+
+item.stationary_radio      = "Radio estacionaria"
+item.stationary_radio.desc = "Una radio estacionaria con sintonizador de frecuencia."
+
+item.radio_cp              = "Radio de Protección Civil"
+item.radio_cp.desc         = "Una radio especializada con canal cifrado y bloqueo biométrico para unidades de Protección Civil."
+
+item.radio_cwu             = "Radio del Sindicato de Trabajadores Civiles"
+item.radio_cwu.desc        = "Una radio especializada con canal cifrado y bloqueo biométrico para el personal del Sindicato."
+
+radioSetFrequency          = "Ajustar frecuencia"
+radioFrequencyTitle        = "Frecuencia"
+radioFrequencyPrompt       = "Introduce una nueva frecuencia de radio"
+radioFrequencyLabel        = "Frecuencia: %s"
+radioStationaryChannelSet  = "Has configurado el canal de esta radio fija en '%s'."
+radioStationaryCannotTune  = "¡Esta radio fija no puede sintonizar ese canal!"
+radioStationaryFrequencySet = "Has configurado la frecuencia de esta radio fija en %s."
+radioFrequencyRange        = "¡La frecuencia debe estar entre 100.0 y 999.9!"
+radioFrequencyFormat       = "¡La frecuencia de la radio debe tener el formato xxx.x!"
+radioSetFrequency         = "Ajustar frecuencia"
+radioSetFrequencyPrompt   = "Introduce la frecuencia de esta radio."
+radioChannelsLabel        = "Canales: %s"
+radioTransmittingLabel    = "Transmitiendo en: %s"
+radioItemFrequencySet     = "Has configurado la frecuencia de esta radio en %s."
+radioCmdRadio             = "Enviar un mensaje por radio en tu canal actual."
+radioCmdRadioWhisper      = "Susurrar un mensaje por radio en tu canal actual."
+radioCmdRadioYell         = "Gritar un mensaje por radio en tu canal actual."
+radioCmdSetChannel        = "Establece el canal de radio en el que transmites."
+radioCmdToggleChannel     = "Suscribir o cancelar a un personaje de un canal de radio."
+radioCmdTempToggleChannel = "Suscribir temporalmente a un personaje a un canal de radio."
+radioUnsubscribedOther    = "Has cancelado a %s del canal '%s'."
+radioUnsubscribedYou      = "%s te ha cancelado del canal '%s'."
+radioUnsubscribedSelf     = "Has sido cancelado del canal '%s'."
+radioSubscribedOther      = "Has suscrito a %s al canal '%s'."
+radioSubscribedYou        = "%s te ha suscrito al canal '%s'."
+radioSubscribedSelf       = "Has sido suscrito al canal '%s'."
+radioTempSubscribedOther  = "Has suscrito temporalmente a %s al canal '%s'."
+radioTempSubscribedYou    = "%s te ha suscrito temporalmente al canal '%s'."
+radioTempSubscribedSelf   = "Has sido suscrito temporalmente al canal '%s'."

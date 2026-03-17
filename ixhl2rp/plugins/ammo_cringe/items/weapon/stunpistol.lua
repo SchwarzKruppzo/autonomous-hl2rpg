@@ -1,5 +1,5 @@
-ITEM.name = "Травматический пистолет"
-ITEM.description = "Этот пистолет явно отличается от других. Он был довольно легок, а при стрельбе из него не выходит какого-либо дыма. Выглядит стильно, но судя по его частям он не может убить - лишь ранить, нанеся огромное количество гематом на тело врага. Главное - не целиться в глаза и другие мягкие части тела!"
+ITEM.name = "item.stunpistol"
+ITEM.description = "item.stunpistol.desc"
 ITEM.model = "models/weapons/bordelzio/arccw/hkvp70/wmodel/w_hk_vp70.mdl"
 ITEM.class = "arccw_traumapistol"
 ITEM.weaponCategory = "sidearm"

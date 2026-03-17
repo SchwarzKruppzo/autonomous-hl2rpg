@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Сломанный сканнер Альянса"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.electric.junk_combine_scanner"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_combine_scanner"
 RECIPE.results = {
 	combine_resine = {1, 2},

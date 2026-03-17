@@ -1,7 +1,7 @@
-ITEM.name = "Металлолом"
-ITEM.description = "Небольшая кучка железяк, которые нынче ни на что не годны. Полагается, кучка бесполезная, но если собрать таких побольше и как-нибудь переработать, то этот металл мог бы стать чем-то более полезным?.."
+ITEM.name = "item.metal_scrap"
+ITEM.description = "item.metal_scrap.desc"
 ITEM.model = "models/props_debris/metal_panelchunk02d.mdl"
-ITEM.category = "Производные компоненты"
+ITEM.category = "item.category.crafted"
 ITEM.rarity = 1
 ITEM.width = 2
 ITEM.height = 2

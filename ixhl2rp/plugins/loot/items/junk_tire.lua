@@ -1,6 +1,6 @@
-ITEM.name = "Шина"
-ITEM.description = "Изодранный кусок резины, обрывки проволоки торчат из поврежденного бока. Следы песка и грязи на шине свидетельствуют о несчастном случае или долгом пути."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_tire"
+ITEM.description = "item.junk_tire.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_vehicles/carparts_tire01a.mdl"
 ITEM.width = 2
 ITEM.height = 2

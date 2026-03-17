@@ -1,5 +1,5 @@
-ITEM.name = "Сырой картофель"
-ITEM.description = "Простая сырая картошка. Можно приготовить."
+ITEM.name = "item.union_branded_potato"
+ITEM.description = "item.union_branded_potato.desc"
 ITEM.model = "models/foodnhouseholditems/potato.mdl"
 ITEM.iconCam = {
 	pos = Vector(75.648536682129, 194.7908782959, 126.34627532959),
@@ -28,7 +28,7 @@ ITEM.functions.zfarm = {
 		local chanceSkill = math.Remap(skill, 0, 10, 0, 75)
 
 		if skill <= 0 then
-			client:Notify("Необходим навык фермерства 1 и выше!")
+			client:NotifyLocalized("farming.needSkill")
 			return
 		end
 		
@@ -41,7 +41,7 @@ ITEM.functions.zfarm = {
 				ix.Item:Spawn(client, nil, new_item)
 			end
 		else
-			client:Notify("Вам не удалось подготовить семена!")
+			client:NotifyLocalized("farming.seedFailed")
 			return
 		end
 

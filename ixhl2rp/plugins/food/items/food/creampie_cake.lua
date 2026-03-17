@@ -1,5 +1,5 @@
-ITEM.name = "Кремовый торт"
-ITEM.description = "Самое вкусное, что вы могли увидеть. Высокий торт с пропитанными коржами из очень сладного крема и такой же сладкой глазурью. С днем рождения, да?"
+ITEM.name = "item.creampie_cake"
+ITEM.description = "item.creampie_cake.desc"
 ITEM.model = "models/foodnhouseholditems/cake.mdl"
 ITEM.cost = 40
 ITEM.width = 2

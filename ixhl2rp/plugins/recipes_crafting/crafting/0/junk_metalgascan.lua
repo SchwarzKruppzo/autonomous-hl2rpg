@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Пустая канистра"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_metalgascan"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_metalgascan"
 RECIPE.results = {
 	metal_scrap = 2,

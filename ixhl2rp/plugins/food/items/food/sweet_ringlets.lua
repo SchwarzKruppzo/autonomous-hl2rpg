@@ -1,5 +1,5 @@
-ITEM.name = "Сладкие колечки"
-ITEM.description = "Картонная коробка, содержащая в себе кучу разноцветных сладких колечек. На вкус они хоть и сладкие, но до жути кислые. Есть можно, но лучше запивать это дело молоком."
+ITEM.name = "item.sweet_ringlets"
+ITEM.description = "item.sweet_ringlets.desc"
 ITEM.model = "models/foodnhouseholditems/cheerios.mdl"
 ITEM.cost = 7
 ITEM.width = 1

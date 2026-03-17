@@ -1,5 +1,5 @@
-ITEM.name = "Бутылка коньяка"
-ITEM.description = "Бутылка с коричневой жидкость с золотистыми отблесками обладает богатым вкусом с нотами шоколада, пряностей и древесины. Настоящий выбор для какого-то приславутого аристократа."
+ITEM.name = "item.cognac"
+ITEM.description = "item.cognac.desc"
 ITEM.cost = 10
 ITEM.model = "models/cellar/liquid/bottle_cognac.mdl"
 ITEM.width = 1

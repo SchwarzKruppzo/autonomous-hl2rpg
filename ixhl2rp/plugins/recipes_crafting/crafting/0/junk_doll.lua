@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Детская кукла"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_doll"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_doll"
 RECIPE.results = {
 	mat_wood = 1

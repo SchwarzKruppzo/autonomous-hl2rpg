@@ -1,5 +1,5 @@
-RECIPE.name = "MP7"
-RECIPE.category = "Оружие"
+RECIPE.name = "recipe.crafting.mp7"
+RECIPE.category = "recipe.category.weapons"
 RECIPE.requirements = {
 	gun_smg_frame = 1,
 	gun_smg_grip = 1,

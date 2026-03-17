@@ -1,7 +1,7 @@
 local ItemJunkDynamic = class("ItemJunkDynamic"):implements("Item")
 
 function ItemJunkDynamic:Init()
-	self.category = "Хлам"
+	self.category = "loot.categoryJunk"
 
 	self:AddData("class", {
 		Transmit = ix.transmit.owner,

@@ -1,5 +1,5 @@
-ITEM.name = "Жареный муравьиный лев"
-ITEM.description = "Приготовленный кусок инопланетного жука, что не так уж и плох. Протеин в мясе насытит ваш организм ничем не хуже, чем какая-то курица." 
+ITEM.name = "item.cooked_antlion"
+ITEM.description = "item.cooked_antlion.desc" 
 ITEM.model = "models/mosi/fallout4/props/food/cricketmeat.mdl"
 ITEM.cost = 12
 ITEM.width = 1

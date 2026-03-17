@@ -1,5 +1,5 @@
-ITEM.name = "M67"
-ITEM.description = "Осколочная граната старого мира."
+ITEM.name = "item.m67_grenade"
+ITEM.description = "item.m67_grenade.desc"
 ITEM.model = "models/weapons/arc9/darsu_eft/w_m67_unthrowed.mdl"
 ITEM.class = "cellar_nade_m67"
 ITEM.weaponCategory = "grenade"
@@ -17,7 +17,7 @@ if CLIENT then
 		end
 
 		local skill = tooltip:AddRow("skill")
-		skill:SetText("Тип: взрывчатка")
+		skill:SetText(L("weaponTypeLabel", L("weaponTypeExplosive")))
 		skill:SetBackgroundColor(grayClr)
 		skill:SizeToContents()
 	end

@@ -245,7 +245,7 @@ function PANEL:SetLocalInventory()
 			backpackInventory.panel = self.back_inventory
 		end
 
-		self.local_inventory:SetTitle("ИНВЕНТАРЬ")
+		self.local_inventory:SetTitle(L("inv"))
 		self.local_inventory:SetSlotSize(64, 64)
 		self.local_inventory:SetInventoryID(inventory.id)
 		self.local_inventory:Rebuild()

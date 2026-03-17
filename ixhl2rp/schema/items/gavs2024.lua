@@ -1,5 +1,5 @@
-ITEM.name = "Надувной Генерал Гавс"
-ITEM.description = "Прямиком из будки."
+ITEM.name = "item.gavs2024"
+ITEM.description = "item.gavs2024.desc"
 ITEM.model = "models/balloons/balloon_dog.mdl"
 ITEM.width = 1
 ITEM.height = 1

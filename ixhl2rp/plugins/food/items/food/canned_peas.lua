@@ -1,5 +1,5 @@
-ITEM.name = "Консервированный горошек"
-ITEM.description = "Скромная баночка с жидкостью внутри и маленьким зеленым горошком, как дополнение к чему-то - пойдет, но просто этим не наешься."
+ITEM.name = "item.canned_peas"
+ITEM.description = "item.canned_peas.desc"
 ITEM.model = "models/crunchy/props/eft_props/peas.mdl"
 ITEM.cost = 12
 ITEM.width = 1

@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Автомобильный глушитель"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_muffler"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_muffler"
 RECIPE.results = {
 	metal_scrap = 3,

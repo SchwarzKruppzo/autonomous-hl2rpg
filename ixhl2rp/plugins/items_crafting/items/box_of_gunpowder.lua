@@ -1,6 +1,6 @@
-ITEM.name = "Порох"
-ITEM.description = "Небольшая коробочка, в которую вытряхнули порох из патронов. Не рассыпьте!"
-ITEM.category = "Производные компоненты"
+ITEM.name = "item.box_of_gunpowder"
+ITEM.description = "item.box_of_gunpowder.desc"
+ITEM.category = "item.category.crafted"
 ITEM.rarity = 1
 ITEM.model = "models/crunchy/props/re8_props/re8_village_gunpowder.mdl"
 ITEM.width = 1

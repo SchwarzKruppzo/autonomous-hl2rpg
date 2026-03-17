@@ -47,19 +47,19 @@ else
 
 	function ENT:GetEntityMenu()
 		local options = {
-			["Deploy"] = function()
+			[L("scannerTerminalDeploy")] = function()
 				net.Start("ScannerTerminalDeploy")
 					net.WriteEntity(self)
 				net.SendToServer()
 
 				return false
 			end,
-			["View Active Scanners"] = function()
+			[L("scannerTerminalViewActive")] = function()
 				timer.Simple(0, function()
 					local options = {}
 					local localPlayer = LocalPlayer()
 					for k,v in ipairs(PLUGIN:GetActiveScanners())do
-						options[Format("%s [%s]", v:GetScannerName(), PLUGIN:CanEnterToScanner(localPlayer, v, self) && "СВОБОДЕН" || "ЗАНЯТ")] = function()
+						options[Format("%s [%s]", v:GetScannerName(), PLUGIN:CanEnterToScanner(localPlayer, v, self) and L("scannerStatusFree") or L("scannerStatusBusy"))] = function()
 							net.Start("ScannerEnter")
 								net.WriteEntity(v)
 								net.WriteEntity(self)
@@ -79,7 +79,7 @@ else
 
 	function ENT:OnPopulateEntityInfo(tooltip)
 		local name = tooltip:AddRow("name")
-		name:SetText("<:: Scanner Controlling Station ::>")
+		name:SetText(L("scannerTerminalTitle"))
 		name:SizeToContents()
 	end
 end

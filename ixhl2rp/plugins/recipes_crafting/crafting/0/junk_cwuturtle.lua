@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Рваная черепашка ГСР"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_cwuturtle"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_cwuturtle"
 RECIPE.results = {
 	mat_cloth = 2,

@@ -1,5 +1,5 @@
-ITEM.name = "Бутылка бурбона"
-ITEM.description = "Напиток с янтарным оттенком и крепким алкогольным привкусом, многие скажут, так это виски! Дайте им этой бутылкой по голове, ведь это настоящий бурбон из кукурузного солода! Кентукки с любовью."
+ITEM.name = "item.bourbon"
+ITEM.description = "item.bourbon.desc"
 ITEM.cost = 10
 ITEM.model = "models/mosi/fallout4/props/alcohol/bourbon.mdl"
 ITEM.width = 1

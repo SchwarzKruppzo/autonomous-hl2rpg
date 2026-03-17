@@ -1,6 +1,6 @@
-ITEM.name = "Клавиатура"
-ITEM.description = "На её поверхности видны явные следы износа: выцветшие клавиши, потертые буквы и цифры, мелкие царапины и потертости по всему корпусу. В некоторых частях еще отсутствую клавиши."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_keyboard"
+ITEM.description = "item.junk_keyboard.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_c17/computer01_keyboard.mdl"
 ITEM.width = 1
 ITEM.height = 2

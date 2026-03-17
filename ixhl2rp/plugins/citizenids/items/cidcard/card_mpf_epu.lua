@@ -1,4 +1,4 @@
-ITEM.name = "CID карта офицера ГО"
+ITEM.name = "item.cid_mpf_epu"
 ITEM.model = Model("models/vintagethief/cellarproject/cid_card.mdl")
 ITEM.width = 1
 ITEM.height = 1

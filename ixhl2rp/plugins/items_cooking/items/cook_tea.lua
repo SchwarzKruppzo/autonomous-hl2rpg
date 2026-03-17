@@ -1,7 +1,7 @@
-ITEM.name = "Пачка с чаем"
-ITEM.description = "Старая картонная упаковка, внутри которой несколько пакетиков с чаем."
+ITEM.name = "item.cook_tea"
+ITEM.description = "item.cook_tea.desc"
 ITEM.model = "models/probs_misc/tobbcco_box-1.mdl"
-ITEM.category = "Кулинарные компоненты"
+ITEM.category = "item.category.cooking"
 ITEM.width = 1
 ITEM.height = 1
 ITEM.iconCam = {

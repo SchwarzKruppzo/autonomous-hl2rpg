@@ -1,5 +1,5 @@
-RECIPE.name = "Печеный картофель"
-RECIPE.category = "Продукты"
+RECIPE.name = "recipe.cooking.baked_potato"
+RECIPE.category = "recipe.category.cooking.products"
 RECIPE.requirements = {
 	union_branded_potato = 1,
 }

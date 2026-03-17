@@ -1,6 +1,6 @@
-ITEM.name = "Настольная лампа"
-ITEM.description = "Она обладает металлическим корпусом с пластиковым абажуром, состоит из прочной основы, обеспечивающей стабильность, и опорного стержня. Опора лампы, хоть и немного наклонена, все еще устойчиво держит свою позицию, а старые провода, обмотанные липким скотчем, пробегают вдоль нее."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_desklamp"
+ITEM.description = "item.junk_desklamp.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_lab/desklamp01.mdl"
 ITEM.width = 1
 ITEM.height = 2

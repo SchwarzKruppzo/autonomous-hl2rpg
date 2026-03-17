@@ -79,7 +79,13 @@ do
 		if character then
 			character:AddLevelXP(xp)
 
-			self:NotifyLocalized("xp.reward", xp, text)
+			local reason = text
+
+			if isstring(text) then
+				reason = L(text, self) or text
+			end
+
+			self:NotifyLocalized("xp.reward", xp, reason)
 		end
 	end
 end

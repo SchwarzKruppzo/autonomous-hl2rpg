@@ -1,5 +1,5 @@
-ITEM.name = "Консервированные картофельные чипсы"
-ITEM.description = "Ого! Это же картофельные чипсы в консерве! На вкус они горькие и сырые, просто закинуть в рот и забыть."
+ITEM.name = "item.canned_crisp"
+ITEM.description = "item.canned_crisp.desc"
 ITEM.model = "models/mosi/fallout4/props/food/potatocrisps.mdl"
 ITEM.cost = 12
 ITEM.width = 1

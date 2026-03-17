@@ -1,5 +1,5 @@
-ITEM.name = "Довоенная вода"
-ITEM.description = "Банка с военными маркировками, но однозначно можно понять, что это чистая питьевая вода."
+ITEM.name = "item.canned_water"
+ITEM.description = "item.canned_water.desc"
 ITEM.model = "models/mosi/fallout4/props/drink/water.mdl"
 ITEM.cost = 12
 ITEM.width = 1

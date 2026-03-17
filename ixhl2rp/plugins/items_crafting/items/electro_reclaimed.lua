@@ -1,7 +1,7 @@
-ITEM.name = "Восстановленная электроника"
-ITEM.description = "Эта аппаратура была аккуратно собрана из самых разных вещей. Выглядит достойно, но, конечно, с заводским аналогом оно не сравнится. Уже может быть использовано для создания чего-то более полезного."
+ITEM.name = "item.electro_reclaimed"
+ITEM.description = "item.electro_reclaimed.desc"
 ITEM.model = "models/illusion/eftcontainers/circuitboard.mdl"
-ITEM.category = "Производные компоненты"
+ITEM.category = "item.category.crafted"
 ITEM.rarity = 1
 ITEM.width = 2
 ITEM.height = 2

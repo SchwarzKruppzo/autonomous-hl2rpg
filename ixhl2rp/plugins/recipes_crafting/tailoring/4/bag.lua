@@ -1,5 +1,5 @@
-RECIPE.name = "Рюкзак"
-RECIPE.category = "Сумки"
+RECIPE.name = "recipe.tailoring.bag"
+RECIPE.category = "recipe.category.bags"
 RECIPE.requirements = {
 	mat_cloth_reclaimed = 2,
 	mat_resine = 1,

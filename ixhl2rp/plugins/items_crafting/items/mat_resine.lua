@@ -1,7 +1,7 @@
-ITEM.name = "Резина"
-ITEM.description = "Кусок резины полученный путём разрыва шины или иного резинового изделия."
+ITEM.name = "item.mat_resine"
+ITEM.description = "item.mat_resine.desc"
 ITEM.model = "models/mosi/fallout4/props/junk/components/rubber.mdl"
-ITEM.category = "Базовые компоненты"
+ITEM.category = "item.category.raw"
 ITEM.width = 2
 ITEM.height = 1
 ITEM.cost = 15

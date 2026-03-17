@@ -3,7 +3,7 @@ local ItemRepairKit = class("ItemRepairKit"):implements("Item")
 ItemRepairKit = ix.meta.ItemRepairKit
 
 function ItemRepairKit:Init()
-	self.category = 'Ремонтные наборы'
+	self.category = "item.category.repairkit"
 
 	self.stats = {
 		uses = 5,
@@ -11,7 +11,7 @@ function ItemRepairKit:Init()
 
 	self.combine = self.combine or {}
 	self.combine.repair = {
-		name = "Отремонтировать",
+		name = "repairkit.repair",
 		OnRun = function(item, targetItem, items)
 			local client = item.player
 			local character = client:GetCharacter()
@@ -25,7 +25,7 @@ function ItemRepairKit:Init()
 				targetItem:AddDurability(50)
 				character:DoAction("repairSuccess")
 			else
-				client:Notify("Вам не удалось отремонитровать это!")
+				client:NotifyLocalized("repairkit.failed")
 				character:DoAction("repairFailed")
 			end
 

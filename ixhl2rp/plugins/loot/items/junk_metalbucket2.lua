@@ -1,6 +1,6 @@
-ITEM.name = "Стальной таз"
-ITEM.description = "Круглый сосуд, изготовленный из прочной стали. Он имеет гладкую поверхность и высокие бортики, образующие вместительное пространство внутри."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_metalbucket2"
+ITEM.description = "item.junk_metalbucket2.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_junk/metalbucket02a.mdl"
 ITEM.width = 2
 ITEM.height = 3

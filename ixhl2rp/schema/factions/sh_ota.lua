@@ -1,4 +1,4 @@
-FACTION.name = "Солдат Патруля"
+FACTION.name = "faction.ota"
 FACTION.isDefault = false
 FACTION.color = Color(150, 50, 50, 255)
 FACTION.scoreboardClass = "scOTA"

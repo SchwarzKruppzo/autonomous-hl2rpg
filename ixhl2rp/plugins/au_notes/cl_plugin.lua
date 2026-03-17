@@ -6,7 +6,7 @@ function PLUGIN:CreateNotesTab(characterId, charNotes)
 
     local frame = vgui.Create("DFrame")
     frame:SetSize(ScrW() * 0.4, ScrH() * 0.4)
-    frame:SetTitle(characterId != nil and "Админ Записи" or "Личные Записи")
+    frame:SetTitle(characterId != nil and L("notesAdminTitle") or L("notesPersonalTitle"))
     frame:Center()
     frame:MakePopup()
 
@@ -36,7 +36,7 @@ function PLUGIN:CreateNotesTab(characterId, charNotes)
 
     if (!text) then
         frame:Remove()
-        LocalPlayer():Notify("Невозможно открыть записи персонажа.")
+        LocalPlayer():NotifyLocalized("notes.cantOpen")
         return
     end
     
@@ -44,13 +44,13 @@ function PLUGIN:CreateNotesTab(characterId, charNotes)
 
     local submitButton = vgui.Create("DButton", frame)
     submitButton:Dock(BOTTOM)
-    submitButton:SetText("Submit")
+    submitButton:SetText(L("notesSubmit"))
     submitButton.DoClick = function(self)
         if (characterId) then
             netstream.Start("ixNotesSet", characterId, utf8.sub(textEntry:GetValue(), 1, maxLen))
         else
             ix.data.Set(dataKey, textEntry:GetValue(), true, true)
-            LocalPlayer():Notify("Записи успешно сохранены.")
+            LocalPlayer():NotifyLocalized("notes.saved")
         end
     end
 end

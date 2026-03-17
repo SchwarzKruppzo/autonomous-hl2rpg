@@ -27,7 +27,7 @@ else
 	function ENT:OnPopulateEntityInfo(tooltip)
 		local title = tooltip:AddRow("name")
 		title:SetImportant()
-		title:SetText("Касса")
+		title:SetText(L("propertyCashRegister"))
 		title:SizeToContents()
 	end
 end

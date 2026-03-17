@@ -1,5 +1,5 @@
-ITEM.name = "Собачий корм"
-ITEM.description = "Старая и ржавая консерва с этикеткой, на которой можно понять, что это корм для собак. Запах овтратный, вид отвратный и на вкус так же отвратно, что сразу хочется навсегда забыть об этом. Но погодите, это все может быть едой?"
+ITEM.name = "item.canned_dogfood"
+ITEM.description = "item.canned_dogfood.desc"
 ITEM.model = "models/mosi/fallout4/props/food/dogfood.mdl"
 ITEM.cost = 12
 ITEM.width = 1

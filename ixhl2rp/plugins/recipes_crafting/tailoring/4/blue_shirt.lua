@@ -1,5 +1,5 @@
-RECIPE.name = "Синяя рубашка рабочего"
-RECIPE.category = "Одежда — тело"
+RECIPE.name = "recipe.tailoring.blue_shirt"
+RECIPE.category = "recipe.category.body"
 RECIPE.requirements = {
 	mat_cloth_reclaimed = 3,
 	box_of_needles = 1,

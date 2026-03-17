@@ -9,14 +9,14 @@ ItemJunkContainer.useSound = {"npc/barnacle/barnacle_gulp1.wav", "npc/barnacle/b
 function ItemJunkContainer:Init()
 	ix.meta.ItemReagentContainer.Init(self)
 
-	self.category = "Хлам"
+	self.category = "loot.categoryJunk"
 
 	self:AddData("class", {
 		Transmit = ix.transmit.owner,
 	})
 
 	self.functions.use = {
-		name = "Отпить",
+		name = "loot.useSip",
 		OnRun = function(item)
 			local client = item.player
 			local character = client:GetCharacter()
@@ -42,7 +42,7 @@ function ItemJunkContainer:Init()
 	}
 
 	self.functions.useall = {
-		name = "Отпить всё",
+		name = "loot.useSipAll",
 		OnRun = function(item)
 			local client = item.player
 			local character = client:GetCharacter()
@@ -67,7 +67,7 @@ function ItemJunkContainer:Init()
 	}
 
 	self.functions.pour = {
-		name = "Вылить содержимое",
+		name = "loot.pourContents",
 		OnRun = function(item)
 			if item.reagents then
 				item.reagents:Clear()

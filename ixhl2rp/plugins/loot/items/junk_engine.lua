@@ -1,6 +1,6 @@
-ITEM.name = "Двигатель"
-ITEM.description = "Крупный механизм с множеством перемычек, зубчатых колес и трубопроводов. Кажется, что части двигателя сборочные, но разбросаны и разрушены, в центре можно разглядеть фрагменты поршней и металлических стержней, которые когда-то работали."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_engine"
+ITEM.description = "item.junk_engine.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_c17/trappropeller_engine.mdl"
 ITEM.width = 5
 ITEM.height = 4

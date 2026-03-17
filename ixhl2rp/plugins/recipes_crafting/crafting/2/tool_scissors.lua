@@ -1,5 +1,5 @@
-RECIPE.name = "Ножницы"
-RECIPE.category = "Инструменты"
+RECIPE.name = "recipe.crafting.tool_scissors"
+RECIPE.category = "recipe.category.tools"
 RECIPE.requirements = {
 	metal_reclaimed = 2,
 	mat_nuts = 2

@@ -1,5 +1,5 @@
-RECIPE.name = "Пакет физраствора"
-RECIPE.category = "Медицина"
+RECIPE.name = "recipe.medical.ivbag"
+RECIPE.category = "recipe.category.medical"
 RECIPE.requirements = {
 	bottle_of_alcohol = 2,
 	mat_acid = 3,

@@ -12,7 +12,7 @@ ItemDrink.reagent_type = "water"
 function ItemDrink:Init()
 	ix.meta.ItemReagentContainer.Init(self)
 
-	self.category = "Напитки"
+	self.category = "categoryDrink"
 
 	self.stats = {
 		container = false,
@@ -25,7 +25,7 @@ function ItemDrink:Init()
 	}
 
 	self.functions.open = {
-		name = "Вскрыть",
+		name = "useOpen",
 		OnRun = function(item)
 			item:SetData("closed", false)
 			item:StartRotProgress()
@@ -47,7 +47,7 @@ function ItemDrink:Init()
 	}
 
 	self.functions.use = {
-		name = "Отпить",
+		name = "useDrink",
 		OnRun = function(item)
 			local client = item.player
 			local character = client:GetCharacter()
@@ -93,7 +93,7 @@ function ItemDrink:Init()
 	}
 
 	self.functions.useall = {
-		name = "Отпить всё",
+		name = "useDrinkAll",
 		OnRun = function(item)
 			local client = item.player
 			local character = client:GetCharacter()
@@ -137,7 +137,7 @@ function ItemDrink:Init()
 	}
 
 	self.functions.pour = {
-		name = "Вылить содержимое",
+		name = "pourContents",
 		OnRun = function(item)
 			if item.reagents then
 				item.reagents:Clear()
@@ -336,7 +336,7 @@ if CLIENT then
 					expDateT = tooltip:AddRowAfter("name", "expirationDate")
 					expDateT:SetBackgroundColor(derma.GetColor("Error", tooltip))
 					expDateT:SetTextColor(derma.GetColor("Warning", expDateT))
-					expDateT:SetText("Испортится через: " .. ParseDuration((expirationDate - os.time()) / 60))
+					expDateT:SetText(L("expirationDatePrefix") .. ParseDuration((expirationDate - os.time()) / 60))
 				end
 			end
 

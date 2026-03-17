@@ -1,5 +1,5 @@
-ITEM.name = "Заряд RPG"
-ITEM.description = "Заряд для ракетного гранатомета."
+ITEM.name = "item.rpg_missile"
+ITEM.description = "item.rpg_missile.desc"
 ITEM.model = "models/weapons/w_missile_closed.mdl"
 ITEM.width = 2
 ITEM.height = 1

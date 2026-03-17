@@ -1,5 +1,5 @@
-RECIPE.name = "Вареное яйцо"
-RECIPE.category = "Продукты"
+RECIPE.name = "recipe.cooking.boiled_egg"
+RECIPE.category = "recipe.category.cooking.products"
 RECIPE.requirements = {
 	cook_egg = 1,
 }

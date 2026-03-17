@@ -1,6 +1,6 @@
-ITEM.name = "Сломанная импульсная винтовка"
-ITEM.description = "Это оружие явно было когда-то сконструировано из неземных материалов, но сейчас же - лишь неработающая груда металла."
-ITEM.category = "Базовые компоненты"
+ITEM.name = "item.broken_ar2"
+ITEM.description = "item.broken_ar2.desc"
+ITEM.category = "item.category.raw"
 ITEM.model = "models/weapons/w_irifle.mdl"
 ITEM.rarity = 1
 ITEM.width = 4

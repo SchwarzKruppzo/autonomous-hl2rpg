@@ -1,5 +1,5 @@
-RECIPE.name = "Пистолетный затвор"
-RECIPE.category = "Оружие - компоненты"
+RECIPE.name = "recipe.crafting.pistol_receiver_tier1"
+RECIPE.category = "recipe.category.weapon_components"
 RECIPE.requirements = {
 	metal_reclaimed = 1,
 	mat_weaponparts = 1,

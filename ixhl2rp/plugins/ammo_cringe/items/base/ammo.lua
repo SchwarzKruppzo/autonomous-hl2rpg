@@ -7,7 +7,7 @@ ItemAmmo.contraband = true
 function ItemAmmo:Init()
 	ix.meta.ItemStackable.Init(self)
 
-	self.category = 'Патроны'
+	self.category = "item.category.ammo"
 end
 
 return ItemAmmo

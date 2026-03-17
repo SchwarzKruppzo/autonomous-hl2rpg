@@ -1,6 +1,6 @@
-ITEM.name = "Рваные перчатки"
-ITEM.description = ""
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_gloves"
+ITEM.description = "item.junk_gloves.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/tnb/items/gloves.mdl"
 ITEM.width = 1
 ITEM.height = 1

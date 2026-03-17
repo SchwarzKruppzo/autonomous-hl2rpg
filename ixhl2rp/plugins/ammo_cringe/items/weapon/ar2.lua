@@ -1,5 +1,5 @@
-ITEM.name = "Импульсная винтовка Патруля Mk. I"
-ITEM.description = "Это оружие явно было сконструировано из неземных материалов. Прочный корпус, необычный патрон, который невозможно собрать кустарными способами и огромная убойная мощь - это то, что делает это оружие по-истине великолепным инструментом убийства."
+ITEM.name = "item.ar2"
+ITEM.description = "item.ar2.desc"
 ITEM.model = "models/weapons/w_irifle.mdl"
 ITEM.class = "arccw_ar2"
 ITEM.weaponCategory = "primary"

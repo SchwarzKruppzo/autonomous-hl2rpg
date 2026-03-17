@@ -1,5 +1,5 @@
-RECIPE.name = "Противогаз М40"
-RECIPE.category = "Одежда - противогазы"
+RECIPE.name = "recipe.tailoring.gasmask_m40"
+RECIPE.category = "recipe.category.gasmasks"
 RECIPE.requirements = {
 	mat_kevlar = 4,
 	gasmask_standard = 1,

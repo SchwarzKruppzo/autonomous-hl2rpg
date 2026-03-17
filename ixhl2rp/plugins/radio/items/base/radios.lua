@@ -14,10 +14,10 @@ function Item:Init()
 	self.frequency = self.frequency or "main"
 	self.frequencyID = self.frequencyID or "freq_main"
 
-	self.category = 'Коммуникация'
+	self.category = "item.category.comm"
 
 	self.functions.toggle = {
-		name = "Переключить",
+		name = "use.toggle",
 		OnRun = function(item)
 			item:SetData("on", !item:GetData("on", false))
 
@@ -90,7 +90,7 @@ if CLIENT then
 	function Item:PopulateTooltip(tooltip)
 		local panel = tooltip:AddRowAfter("rarity", "frequency")
 		panel:SetBackgroundColor(derma.GetColor(self:GetData("on", false) and "Success" or "Error", tooltip))
-		panel:SetText("Частота: " .. self:GetFrequency())
+			panel:SetText(L("radioFrequencyLabel", self:GetFrequency()))
 		panel:SizeToContents()
 	end
 end

@@ -1,5 +1,5 @@
-ITEM.name = "Овощной суп"
-ITEM.description = "Овощная похлебка из самых разнообразных овощей, что можно найти в этом мире. Таким можно наеться и напиться, но точно много сил не даст."
+ITEM.name = "item.vegetable_soup"
+ITEM.description = "item.vegetable_soup.desc"
 ITEM.model = "models/mosi/fallout4/props/food/vegetablesoup.mdl"
 ITEM.cost = 12
 ITEM.width = 1

@@ -1,5 +1,5 @@
-ITEM.name = "Блин"
-ITEM.description = "Самый настоящий блин, или же соизвольте сказать - панкейк. Приятен в употреблении с какой-то начинкой."
+ITEM.name = "item.pancake"
+ITEM.description = "item.pancake.desc"
 ITEM.model = "models/foodnhouseholditems/pancake.mdl"
 ITEM.cost = 12
 ITEM.width = 1

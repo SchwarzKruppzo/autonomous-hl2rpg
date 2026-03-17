@@ -1,5 +1,5 @@
-ITEM.name = "Револьвер .357"
-ITEM.description = "Револьвер \"Colt Python\", использующий калибр .357. Аккуратно отшлифован и начищен, из-за чего на его гранях можно увидеть как собственное отражение, так и отражение своих врагов. Стреляет громко и убивает быстро, но малая вместительность барабана делают из этого оружия, скорее, лишние понты, нежели полезное оружие."
+ITEM.name = "item.magnum"
+ITEM.description = "item.magnum.desc"
 ITEM.model = "models/weapons/tfa_mmod/w_357.mdl"
 ITEM.class = "arccw_357"
 ITEM.weaponCategory = "secondary"

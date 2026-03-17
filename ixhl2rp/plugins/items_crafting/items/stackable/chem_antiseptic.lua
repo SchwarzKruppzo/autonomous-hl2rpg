@@ -1,7 +1,7 @@
-ITEM.name = "Антисептик"
-ITEM.description = "Средство для дезинфекции кожи и поверхностей, убивающее бактерии, вирусы и грибки. Подходит для ежедневного использования в целях гигиены и профилактики инфекционных заболеваний."
+ITEM.name = "item.chem_antiseptic"
+ITEM.description = "item.chem_antiseptic.desc"
 ITEM.model = "models/mosi/fallout4/props/junk/components/antiseptic.mdl"
-ITEM.category = "Химические компоненты"
+ITEM.category = "item.category.craft_chemical"
 ITEM.height = 1
 ITEM.max_stack = 4
 ITEM.default_stack = 1

@@ -1,5 +1,5 @@
-RECIPE.name = "Джинсы с резиновыми сапогами"
-RECIPE.category = "Одежда — ноги"
+RECIPE.name = "recipe.tailoring.cargo_pants"
+RECIPE.category = "recipe.category.legs"
 RECIPE.requirements = {
 	mat_cloth_reclaimed = 2
 }

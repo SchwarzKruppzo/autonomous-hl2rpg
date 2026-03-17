@@ -125,8 +125,8 @@ if SERVER then
 				self:SetDisplay(self.cid and 2 or 1)
 			end)
 
-			client:ChatNotify("*** Раздатчик вновь замигал белым индикатором в ожидании следующего купона.")
-			client:ChatNotify("Не забудьте забрать карту из устройства: внимательно присмотритесь.")
+			client:ChatNotifyLocalized("ration.dispenserReady")
+			client:ChatNotifyLocalized("ration.rememberCard")
 		end)
 	end
 
@@ -186,11 +186,11 @@ if SERVER then
 
 			self.cid = item
 
-			client:ChatNotify("*** Вы вставили идентификационную карту в разьём раздатчика.")
+			client:ChatNotifyLocalized("ration.insertedCard")
 
 			timer.Simple(3, function()
-				client:ChatNotify("*** Раздатчик замигал белым индикатором, судя по всему, в ожидании купона Альянса.")
-				client:ChatNotify("Возьмите купон в руки и воспользуйтесь раздатчиком через [TAB], используя [ПКМ].")
+				client:ChatNotifyLocalized("ration.waitingCoupon")
+				client:ChatNotifyLocalized("ration.useCoupon")
 			end)
 
 			self:SetDisplay(2)

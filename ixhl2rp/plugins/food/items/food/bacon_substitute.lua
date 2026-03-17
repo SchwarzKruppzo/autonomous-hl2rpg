@@ -1,5 +1,5 @@
-ITEM.name = "Заменитель бекона"
-ITEM.description = "Имеет желтоватый оттенок, из-за чего вызывает недоверие. На вкус - палочка соли, но вкус какого-то мяса присутствует."
+ITEM.name = "item.bacon_substitute"
+ITEM.description = "item.bacon_substitute.desc"
 ITEM.model = "models/foodnhouseholditems/bacon.mdl"
 ITEM.cost = 11
 ITEM.width = 1

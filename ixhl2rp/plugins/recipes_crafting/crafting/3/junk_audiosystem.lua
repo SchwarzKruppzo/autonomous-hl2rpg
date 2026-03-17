@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Разобранная аудиосистема"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_audiosystem"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_audiosystem"
 RECIPE.results = {
 	metal_scrap = 1,

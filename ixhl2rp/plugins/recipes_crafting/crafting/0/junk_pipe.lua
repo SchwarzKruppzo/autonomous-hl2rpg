@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Ржавая труба"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_pipe"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_pipe"
 RECIPE.results = {
 	metal_scrap = {1, 2}

@@ -1,5 +1,5 @@
-ITEM.name = "Кружка зеленого чая"
-ITEM.description = "Зеленый чай в керамической кружке. Вы можете вдохнуть приятный запах каких-то трав, словно находитесь на китайском чаепитии. Очень успокаивает нервы и снимает тревогу в чертовом мире."
+ITEM.name = "item.green_tea_mug"
+ITEM.description = "item.green_tea_mug.desc"
 ITEM.model = "models/props_junk/garbage_coffeemug001a.mdl"
 ITEM.cost = 6
 ITEM.width = 1

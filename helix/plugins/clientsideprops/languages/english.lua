@@ -1,16 +1,16 @@
 ix.Locale:Build("en")
 
 
-option.csRenderSpeed  			= "Скорость прорисовки клиентских пропов"
-option.csRenderSpeed.desc 		= "Сколько клиентских пропов просчитывается одновременно за кадр. Более низкие значения = больше FPS, но медленнее, более высокие значения = меньше FPS, но быстрее."
+option.csRenderSpeed  			= "Clientside prop render speed"
+option.csRenderSpeed.desc 		= "How many clientside props are processed per frame. Lower values = more FPS but slower loading, higher values = less FPS but faster loading."
 
-option.category.performance 	= "производительность"
+option.category.performance 	= "Performance"
 
-cmd.clientprops.remove 			= "Удалить все клиентские пропы в радиусе вокруг вас."
+cmd.clientprops.remove 			= "Remove all clientside props within a radius around you."
 
-clientprops.invalidRadius 		= "Радиус должен быть положительным числом!"
-clientprops.removed 			= "Удалены все клиентские пропы в радиусе %s юнитов."
-clientprops.outOfBound 			= "Этот проп не может быть конвертирован, так как он за пределами игрового мира."
-clientprops.permaall 			= "Необходимо убрать проп из Perma All, прежде чем конвертировать его."
+clientprops.invalidRadius 		= "The radius must be a positive number!"
+clientprops.removed 			= "Removed all clientside props within a %s unit radius."
+clientprops.outOfBound 			= "This prop cannot be converted as it is outside the game world."
+clientprops.permaall 			= "You must remove the prop from Perma All before converting it."
 
-property.makeClientside 		= "Сделать клиентским пропом"
+property.makeClientside 		= "Make clientside prop"

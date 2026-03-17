@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Калькулятор"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_calculator"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_calculator"
 RECIPE.results = {
 	electro_circuit = 1,

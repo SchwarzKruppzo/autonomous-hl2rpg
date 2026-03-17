@@ -1,5 +1,5 @@
-RECIPE.name = "Морфин"
-RECIPE.category = "Медицина"
+RECIPE.name = "recipe.medical.morphine"
+RECIPE.category = "recipe.category.medical"
 RECIPE.requirements = {
 	chem_medpile = 1,
 	chem_antiseptic = 1,

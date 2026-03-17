@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Сгоревшее радио"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_citizenradio"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_citizenradio"
 RECIPE.results = {
 	metal_scrap = 1,

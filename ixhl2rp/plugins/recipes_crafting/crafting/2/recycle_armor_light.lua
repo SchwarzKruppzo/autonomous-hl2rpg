@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Сломанный легкий бронежилет"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.recycle_armor_light"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "broken_armor_light"
 RECIPE.results = {
 	mat_kevlar = {1, 2}

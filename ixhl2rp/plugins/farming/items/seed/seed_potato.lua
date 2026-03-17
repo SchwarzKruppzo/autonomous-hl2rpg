@@ -1,5 +1,5 @@
-ITEM.name = "Семена картофеля"
-ITEM.description = "Свежие семена картофеля, культивируемые где-то неподалеку. Позволяют выростить куст картофеля при должном уходе, если кто-то не попытается съесть его раньше вас."
+ITEM.name = "item.seed_potato"
+ITEM.description = "item.seed_potato.desc"
 ITEM.preview_model = "models/autonomous/farming/plant_potato.mdl"
 ITEM.model = "models/autonomous/farming/seeds_package.mdl"
 ITEM.rarity = 1

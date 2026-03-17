@@ -1,5 +1,5 @@
-ITEM.name = "Медицинская сумка"
-ITEM.description = ""
+ITEM.name = "item.medicbag"
+ITEM.description = "item.medicbag.desc"
 ITEM.model = "models/cellar/prop_pack_medic.mdl"
 ITEM.rarity = 1
 ITEM.iconCam = {
@@ -16,9 +16,4 @@ ITEM.inventory_data = {
 	multislot = true
 }
 
-function ITEM:GetOutfitData()
-	return {
-		slot = "backpack",
-		model = "models/cellar/pack_medic.mdl"
-	}
-end
+ITEM.displayID = "backpack_medic"

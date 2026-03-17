@@ -7,18 +7,32 @@ MOOD_RELAXED = 1
 MOOD_HEADSTRONG = 2
 MOOD_FRUSTRATED = 3
 
-ix.lang.AddTable("english", {
+ix.Locale:AddTable("en", {
 	moodDefault = "Default",
 	moodRelaxed = "Relaxed",
 	moodHeadstr = "Headstrong",
 	moodFrustr = "Frustrated",
 })
 
-ix.lang.AddTable("russian", {
-	moodDefault = "Default",
-	moodRelaxed = "Relaxed",
-	moodHeadstr = "Headstrong",
-	moodFrustr = "Frustrated",
+ix.Locale:AddTable("ru", {
+	moodDefault = "По умолчанию",
+	moodRelaxed = "Расслабленный",
+	moodHeadstr = "Упрямый",
+	moodFrustr = "Раздражённый",
+})
+
+ix.Locale:AddTable("fr", {
+	moodDefault = "Par défaut",
+	moodRelaxed = "Détendu",
+	moodHeadstr = "Obstiné",
+	moodFrustr = "Frustré",
+})
+
+ix.Locale:AddTable("es-es", {
+	moodDefault = "Por defecto",
+	moodRelaxed = "Relajado",
+	moodHeadstr = "Obstinado",
+	moodFrustr = "Frustrado",
 })
 
 PLUGIN.MoodTextTable = {

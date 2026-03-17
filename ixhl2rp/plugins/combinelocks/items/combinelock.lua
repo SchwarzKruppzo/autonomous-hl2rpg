@@ -1,5 +1,5 @@
-ITEM.name = "Combine Lock"
-ITEM.description = "A metal apparatus applied to doors."
+ITEM.name = "item.combinelock"
+ITEM.description = "item.combinelock.desc"
 ITEM.model = Model("models/props_combine/combine_lock01.mdl")
 ITEM.width = 1
 ITEM.height = 2
@@ -11,8 +11,10 @@ ITEM.iconCam = {
 }
 
 ITEM.functions.Place = {
+	name = "combinelockPlace",
+	
 	OnClick = function(item)
-		Derma_StringRequest("Access", "What would you like to set the access to?", "cmbMpfAll", function(access)
+		Derma_StringRequest(L("combinelockAccessTitle"), L("combinelockAccessPrompt"), "cmbMpfAll", function(access)
 			netstream.Start("ixCombineLockPlace", item:GetID(), access)
 		end)
 	end,

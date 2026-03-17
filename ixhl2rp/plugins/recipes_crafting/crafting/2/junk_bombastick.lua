@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Бутылка \"Бомбастик\""
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_bombastick"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_bombastick"
 RECIPE.results = {
 	mat_acid = {0, 2},

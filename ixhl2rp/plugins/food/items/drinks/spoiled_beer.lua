@@ -1,5 +1,5 @@
-ITEM.name = "Бутылка испорченного пива"
-ITEM.description = "Бутылка, в которую налито светлое пиво. Оно уже очень старое, без газа, но на вкус довольно сносно. Даже немного пьянит."
+ITEM.name = "item.spoiled_beer"
+ITEM.description = "item.spoiled_beer.desc"
 ITEM.model = "models/props_junk/garbage_glassbottle001a.mdl"
 ITEM.cost = 4
 ITEM.width = 1

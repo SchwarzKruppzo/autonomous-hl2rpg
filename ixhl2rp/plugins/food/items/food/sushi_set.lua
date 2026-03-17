@@ -1,5 +1,5 @@
-ITEM.name = "Суши-сет"
-ITEM.description = "Выглядит не так свежо на первый взгляд, но довольно аппетитно."
+ITEM.name = "item.sushi_set"
+ITEM.description = "item.sushi_set.desc"
 ITEM.model = "models/nt/props_street/sushiplate.mdl"
 ITEM.cost = 25
 ITEM.width = 1

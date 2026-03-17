@@ -1,5 +1,5 @@
-ITEM.name = "Клубничное мороженное"
-ITEM.description = "Ведерко с мороженным внутри, хоть вы и знаете, что от мороженного тут только одно название. Само оно розового цвета, с мягким вкусом клубнички! Сладкий рай."
+ITEM.name = "item.icecream_strawberry"
+ITEM.description = "item.icecream_strawberry.desc"
 ITEM.model = "models/foodnhouseholditems/icecream3.mdl"
 ITEM.cost = 12
 ITEM.width = 1

@@ -1,5 +1,5 @@
-RECIPE.name = "Серая шапка"
-RECIPE.category = "Одежда — голова"
+RECIPE.name = "recipe.tailoring.gray_beanie"
+RECIPE.category = "recipe.category.head"
 RECIPE.requirements = {
 	mat_cloth = 3,
 	box_of_needles = 1

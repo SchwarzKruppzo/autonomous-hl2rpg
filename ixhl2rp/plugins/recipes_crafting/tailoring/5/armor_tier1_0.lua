@@ -1,5 +1,5 @@
-RECIPE.name = "Униформа медика с бронежилетом"
-RECIPE.category = "Броня — тело"
+RECIPE.name = "recipe.tailoring.armor_tier1_0"
+RECIPE.category = "recipe.category.armor_body"
 RECIPE.requirements = {
 	shirt_white = 1,
 	mat_armor_tier1 = 1,

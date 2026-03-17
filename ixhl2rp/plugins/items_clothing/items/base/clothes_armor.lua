@@ -10,7 +10,7 @@ ItemArmor = ix.meta.ItemClothArmor
 function ItemArmor:Init()
 	ix.meta.ItemCloth.Init(self)
 
-	self.category = 'Одежда (Броня)'
+	self.category = "item.category.clothing_armor"
 
 	self:AddData("value", {
 		Transmit = ix.transmit.owner,
@@ -76,7 +76,7 @@ function ItemArmor:OnEquipped(client)
 	if strength then
 		client.char_outfit.armor[self] = true
 	else
-		client:ChatNotify("У вас недостаточно сил для ношения этого типа брони.")
+		client:ChatNotify(L("armor.notEnoughStrength", client))
 	end
 
 	if self.equip_inv == 'torso' then
@@ -156,34 +156,25 @@ if CLIENT then
 	end
 	
 	local hit_groups = {
-		[HITGROUP_HEAD] = "%i%% голова",
-		[HITGROUP_CHEST] = "%i%% торс",
-		[HITGROUP_STOMACH] = "%i%% пах",
-		[HITGROUP_LEFTARM] = "%i%% левая рука",
-		[HITGROUP_RIGHTARM] = "%i%% правая рука",
-		[HITGROUP_LEFTLEG] = "%i%% левая нога",
-		[HITGROUP_RIGHTLEG] = "%i%% правая нога"
+		[HITGROUP_HEAD] = "armorHitHead",
+		[HITGROUP_CHEST] = "armorHitChest",
+		[HITGROUP_STOMACH] = "armorHitStomach",
+		[HITGROUP_LEFTARM] = "armorHitLeftArm",
+		[HITGROUP_RIGHTARM] = "armorHitRightArm",
+		[HITGROUP_LEFTLEG] = "armorHitLeftLeg",
+		[HITGROUP_RIGHTLEG] = "armorHitRightLeg"
 	}
 	local damage_types = {
-		bullet = "пуля",
-		impulse = "энергетическое",
-		buckshot = "дробь",
-		explosive = "осколочное",
-		burn = "огонь",
-		poison = "яд",
-		slash = "режущее",
-		club = "дробящее",
-		fists = "рукопашный бой"
+		bullet = "armorDmgBullet",
+		impulse = "armorDmgImpulse",
+		buckshot = "armorDmgBuckshot",
+		explosive = "armorDmgExplosive",
+		burn = "armorDmgBurn",
+		poison = "armorDmgPoison",
+		slash = "armorDmgSlash",
+		club = "armorDmgClub",
+		fists = "armorDmgFists"
 	}
-
-	local radiation = "+%i%% к сопротивлению радиации"
-	local armor_class = "КЛАСС БРОНИ %i"
-	local coverage = "ПОКРЫТИЕ:"
-	local durability = "ПРОЧНОСТЬ: %i/%i"
-	local factor = "ТОЛЩИНА: %i%%"
-	local damage = "ЭФФЕКТИВНОСТЬ:"
-	local damage_text = "%s%% %s"
-	local penetration = "БРОНЕПРОБИТИЕ:"
 
 	function ItemArmor:PopulateTooltip(tooltip)
 		if self.armor then
@@ -199,7 +190,7 @@ if CLIENT then
 				local s = tooltip:AddRowAfter("name", "stat")
 				s:SetTextColor(stat_color)
 				s:SetFont("item.stats.bold2")
-			    s:SetText("Необходимо: СИЛА "..st_need)
+			    s:SetText(L("armorStrengthRequired", st_need))
 				s:SizeToContents()
 				s.Paint = function(_, w, h)
 					surface.SetDrawColor(clr)
@@ -207,18 +198,18 @@ if CLIENT then
 				end
 			end
 
-			StatRow("armor", string.format(armor_class, self.armor.class), color_white, tooltip, true)
+			StatRow("armor", string.format(L("armorClass"), self.armor.class), color_white, tooltip, true)
 
 			if self.armor.density then
-				StatRow("density",  string.format(factor, 100 * self.armor.density), color_white, tooltip, true, true)
+				StatRow("density", string.format(L("armorFactor"), 100 * self.armor.density), color_white, tooltip, true, true)
 			end
 
 			if self.inventory_id then
-				StatRow("durability",  string.format(durability, (self:GetData("value") or 1) * self.armor.max_durability, self.armor.max_durability), color_white, tooltip, true, true)
+				StatRow("durability", string.format(L("armorDurability"), (self:GetData("value") or 1) * self.armor.max_durability, self.armor.max_durability), color_white, tooltip, true, true)
 			end
 			
 			if self.armor.coverage then
-				StatRow("coverage", coverage, yellowClr, tooltip, true, true)
+				StatRow("coverage", L("armorCoverage"), yellowClr, tooltip, true, true)
 
 				local coverages = {}
 				for k, v in pairs(self.armor.coverage) do
@@ -230,12 +221,12 @@ if CLIENT then
 				table.SortByMember(coverages, "factor")
 
 				for k, v in ipairs(coverages) do
-					StatRow("hit"..k, string.format(v.type, v.factor), yellowClr, tooltip)
+					StatRow("hit"..k, string.format(L(v.type), v.factor), yellowClr, tooltip)
 				end
 			end
 
 			if self.armor.damage then
-				StatRow("damage", damage, greenClr, tooltip, true, true)
+				StatRow("damage", L("armorDamage"), greenClr, tooltip, true, true)
 
 				local damages = {}
 				for k, v in pairs(self.armor.damage) do
@@ -250,12 +241,12 @@ if CLIENT then
 				table.SortByMember(damages, "factor")
 
 				for k, v in ipairs(damages) do
-					StatRow("dmg"..k, string.format(damage_text, (v.factor > 0 and "+" or "")..tostring(100 * v.factor), v.type), v.factor > 0 and greenClr or redClr, tooltip)
+					StatRow("dmg"..k, string.format(L("armorDamageText"), (v.factor > 0 and "+" or "")..tostring(100 * v.factor), L(v.type)), v.factor > 0 and greenClr or redClr, tooltip)
 				end
 			end
 
 			if self.armor.penetration then
-				StatRow("penetration", penetration, greenClr, tooltip, true, true)
+				StatRow("penetration", L("armorPenetration"), greenClr, tooltip, true, true)
 
 				local damages = {}
 				for k, v in pairs(self.armor.penetration) do
@@ -270,7 +261,7 @@ if CLIENT then
 				table.SortByMember(damages, "factor")
 
 				for k, v in ipairs(damages) do
-					StatRow("dmgx"..k, string.format(damage_text, tostring(100 * v.factor), v.type), v.factor > 1 and redClr or greenClr, tooltip)
+					StatRow("dmgx"..k, string.format(L("armorDamageText"), tostring(100 * v.factor), L(v.type)), v.factor > 1 and redClr or greenClr, tooltip)
 				end
 			end
 		end

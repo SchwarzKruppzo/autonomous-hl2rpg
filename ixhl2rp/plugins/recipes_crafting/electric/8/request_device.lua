@@ -1,5 +1,5 @@
-RECIPE.name = "Устройство запроса"
-RECIPE.category = "Коммуникация"
+RECIPE.name = "recipe.electric.request_device"
+RECIPE.category = "recipe.category.communication"
 RECIPE.requirements = {
 	mat_resine = 1,
 	electro_reclaimed = 2,

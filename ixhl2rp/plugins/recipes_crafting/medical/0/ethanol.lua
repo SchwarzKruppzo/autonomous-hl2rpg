@@ -1,5 +1,5 @@
-RECIPE.name = "Этанол"
-RECIPE.category = "Химия"
+RECIPE.name = "recipe.medical.ethanol"
+RECIPE.category = "recipe.category.chemistry"
 RECIPE.requirements = {
 	beer = 1,
 }

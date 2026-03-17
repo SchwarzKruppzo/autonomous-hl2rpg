@@ -1,5 +1,5 @@
-RECIPE.name = "Пуховик \"Everva\""
-RECIPE.category = "Дорогая одежда — тело"
+RECIPE.name = "recipe.tailoring.jacket_everva"
+RECIPE.category = "recipe.category.expensive_body"
 RECIPE.requirements = {
 	mat_cloth_reclaimed = 5,
 	mat_leather = 3,

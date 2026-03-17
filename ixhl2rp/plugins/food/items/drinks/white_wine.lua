@@ -1,5 +1,5 @@
-ITEM.name = "Бутылка белого вина"
-ITEM.description = "Бутылка белого вина в аккуратной обёртке с величественным знаком Альянса на этикетках. Очень хорошо пахнет розами и персиками. На вкус - довольно праздно. Альянс заботится о своих подданых!"
+ITEM.name = "item.white_wine"
+ITEM.description = "item.white_wine.desc"
 ITEM.model = "models/foodnhouseholditems/champagne.mdl"
 ITEM.cost = 47
 ITEM.width = 1

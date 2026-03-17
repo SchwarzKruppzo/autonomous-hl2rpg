@@ -235,7 +235,7 @@ else
 			end
 
 			if !client.lastCommEmote or CurTime() >= client.lastCommEmote then
-				ix.chat.Send(client, "me", "тянется рукой к рации, собираясь что-то сказать.")
+				client:Emote("me", "emoteRadioUse")
 
 				client.lastCommEmote = CurTime() + 15
 			end
@@ -246,7 +246,7 @@ else
 			end
 
 			if !client.lastCommEmote or CurTime() >= client.lastCommEmote then
-				ix.chat.Send(client, "me", "тянется рукой к устройству запроса.")
+				client:Emote("me", "emoteRequestDeviceUse")
 
 				client.lastCommEmote = CurTime() + 15
 			end

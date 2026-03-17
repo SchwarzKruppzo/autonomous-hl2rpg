@@ -1,5 +1,5 @@
-ITEM.name = "Ремонтный набор"
-ITEM.description = ""
+ITEM.name = "item.repair_kit"
+ITEM.description = "item.repair_kit.desc"
 ITEM.model = "models/mosi/fallout4/props/junk/modcrate.mdl"
 ITEM.width = 3
 ITEM.height = 1

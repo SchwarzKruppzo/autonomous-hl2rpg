@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Статуэтка"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_gurevich"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_gurevich"
 RECIPE.results = {
 	mat_plastic = 1,

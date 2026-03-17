@@ -1,5 +1,5 @@
-ITEM.name = "Деревянная киянка"
-ITEM.description = "Деревянный молоток из тех времен, когда заниматься ремонтом самостоятельно было незазорно."
+ITEM.name = "item.tool_woodhammer"
+ITEM.description = "item.tool_woodhammer.desc"
 ITEM.model = "models/autonomous/items/woodhammer.mdl"
 ITEM.width = 2
 ITEM.height = 1

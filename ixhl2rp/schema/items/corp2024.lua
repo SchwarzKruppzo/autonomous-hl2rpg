@@ -1,5 +1,5 @@
-ITEM.name = "Фишка Корпората"
-ITEM.description = "Вы не знаете откуда оно у вас, но на нем выгравировано \"37\"."
+ITEM.name = "item.corp2024"
+ITEM.description = "item.corp2024.desc"
 ITEM.model = "models/freeman/owain_casino_chip.mdl"
 ITEM.width = 1
 ITEM.height = 1

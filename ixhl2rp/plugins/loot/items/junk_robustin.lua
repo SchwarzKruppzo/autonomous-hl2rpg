@@ -1,6 +1,6 @@
-ITEM.name = "Моющее средство \"Робастин\""
-ITEM.description = "\"Робастин\" представляют собой бутылку с средством для очистки различных поверхностей. Она обладает сильным очищающим действием, но если попадет на кожу, то кожа точно слезет."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_robustin"
+ITEM.description = "item.junk_robustin.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_junk/garbage_plasticbottle002a.mdl"
 ITEM.width = 1
 ITEM.height = 2

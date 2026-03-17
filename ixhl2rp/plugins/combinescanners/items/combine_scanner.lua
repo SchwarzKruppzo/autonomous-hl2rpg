@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
-ITEM.name = "Автономный сканнер Альянса"
-ITEM.description = "Сложенный по направляющим сканнер Альянса, разъём OBD-II позволяет связаться с ним через CAN протокол для дальнейшего программирования. После активации поддерживает только удалённое управление по защищённой сети."
+ITEM.name = "item.combine_scanner"
+ITEM.description = "item.combine_scanner.desc"
 ITEM.model = "models/Combine_Scanner.mdl"
 ITEM.rarity = 2
 ITEM.width = 2
@@ -13,7 +13,7 @@ ITEM.iconCam = {
 }
 
 ITEM.functions.activateScanner = {
-	name = "Активировать",
+	name = "scannerActivate",
 	OnRun = function(item)
 		return PLUGIN:ActivateScannerAsItem(item)
 	end,

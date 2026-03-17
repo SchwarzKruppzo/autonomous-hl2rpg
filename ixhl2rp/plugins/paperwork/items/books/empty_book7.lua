@@ -1,2 +1,2 @@
-ITEM.description = "Книга в обычной обложке зеленого цвета."
+ITEM.description = "item.empty_book7.desc"
 ITEM.skin = 6

@@ -1,7 +1,7 @@
-ITEM.name = "Болты"
-ITEM.description = "Куча разного вида болтов, которые можно использовать в высокоточных или кустарных производствах."
+ITEM.name = "item.mat_screws"
+ITEM.description = "item.mat_screws.desc"
 ITEM.model = "models/synapse/misc_props/synapse_misc_screw2.mdl"
-ITEM.category = "Базовые компоненты"
+ITEM.category = "item.category.raw"
 ITEM.width = 1
 ITEM.height = 1
 ITEM.iconCam = {

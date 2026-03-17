@@ -1,5 +1,5 @@
-RECIPE.name = "Серый пуховик"
-RECIPE.category = "Одежда — тело"
+RECIPE.name = "recipe.tailoring.gray_raincoat"
+RECIPE.category = "recipe.category.body"
 RECIPE.requirements = {
 	mat_cloth_reclaimed = 3,
 	mat_resine = 1

@@ -1,5 +1,5 @@
-ITEM.name = "Самогон"
-ITEM.description = "Очень крепкий напиток, что обжигает ваше горло. Если много пить, то можно ослепнуть, стоит ли проверять?"
+ITEM.name = "item.moonshine"
+ITEM.description = "item.moonshine.desc"
 ITEM.model = "models/mosi/fallout4/props/alcohol/moonshine.mdl"
 ITEM.cost = 12
 ITEM.width = 1

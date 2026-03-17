@@ -1,6 +1,6 @@
-ITEM.name = "Аккумулятор"
-ITEM.description = "Автомобильный аккумулятор с плоскими, вытекшими из него кислотными пятнами на корпусе. Из него исходит слабый запах серы, а положительные и отрицательные контакты покрыты слоем окиси."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_carbattery"
+ITEM.description = "item.junk_carbattery.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/items/car_battery01.mdl"
 ITEM.width = 2
 ITEM.height = 2

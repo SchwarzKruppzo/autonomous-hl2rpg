@@ -1,5 +1,5 @@
-ITEM.name = "Пустая картонная упаковка"
-ITEM.description = "Пустая картонная упаковка из под молока."
+ITEM.name = "item.empty_carton"
+ITEM.description = "item.empty_carton.desc"
 ITEM.model = "models/props_junk/garbage_milkcarton002a.mdl"
 ITEM.width = 1
 ITEM.height = 2

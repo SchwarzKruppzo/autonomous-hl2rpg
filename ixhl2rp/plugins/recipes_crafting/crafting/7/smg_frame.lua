@@ -1,5 +1,5 @@
-RECIPE.name = "Основа ПП"
-RECIPE.category = "Оружие - компоненты"
+RECIPE.name = "recipe.crafting.smg_frame"
+RECIPE.category = "recipe.category.weapon_components"
 RECIPE.requirements = {
 	mat_weaponparts = 5,
 	mat_screws = 3,

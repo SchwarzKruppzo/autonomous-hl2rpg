@@ -1,5 +1,5 @@
-RECIPE.name = "Сварочная маска"
-RECIPE.category = "Одежда — лицо"
+RECIPE.name = "recipe.tailoring.mask_welding"
+RECIPE.category = "recipe.category.face"
 RECIPE.requirements = {
 	metal_scrap = 2,
 	mat_resine = 1,

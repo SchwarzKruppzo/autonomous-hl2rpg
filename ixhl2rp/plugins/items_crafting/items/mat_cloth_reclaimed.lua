@@ -1,7 +1,7 @@
-ITEM.name = "Ткань"
-ITEM.description = "Чистый моток обработанной ткани."
+ITEM.name = "item.mat_cloth_reclaimed"
+ITEM.description = "item.mat_cloth_reclaimed.desc"
 ITEM.model = "models/mosi/fallout4/props/junk/components/cloth.mdl"
-ITEM.category = "Производные компоненты"
+ITEM.category = "item.category.crafted"
 ITEM.rarity = 1
 ITEM.width = 2
 ITEM.height = 1

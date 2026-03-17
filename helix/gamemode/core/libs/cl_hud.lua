@@ -102,7 +102,7 @@ function ix.hud.PopulateItemTooltip(tooltip, item)
 
 	if item.contraband then
 		local contraband = tooltip:AddRow("contraband")
-		contraband:SetText("Является контрабандой: хранение и транспортировка запрещена.")
+		contraband:SetText(L("itemContrabandWarning"))
 		contraband:SetBackgroundColor(ColorAlpha(redClr, 64))
 		contraband:SetTextColor(redClr)
 		contraband:SetFont("item.contraband")

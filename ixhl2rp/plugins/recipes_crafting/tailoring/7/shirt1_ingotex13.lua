@@ -1,5 +1,5 @@
-RECIPE.name = "Темно-синяя рубашка \"Ingotex-13\""
-RECIPE.category = "Дорогая одежда — тело"
+RECIPE.name = "recipe.tailoring.shirt1_ingotex13"
+RECIPE.category = "recipe.category.expensive_body"
 RECIPE.requirements = {
 	mat_cloth_reclaimed = 5,
 	mat_leather = 2,

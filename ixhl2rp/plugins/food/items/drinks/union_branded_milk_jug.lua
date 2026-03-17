@@ -1,5 +1,5 @@
-ITEM.name = "Кувшин молока"
-ITEM.description = "Закрытый, пластиковый кувшин с ручкой, заполненный синтетическим молоком. Немного неаппетитное, но хороший источник кальция..."
+ITEM.name = "item.union_branded_milk_jug"
+ITEM.description = "item.union_branded_milk_jug.desc"
 ITEM.model = "models/props_junk/garbage_milkcarton001a.mdl"
 ITEM.cost = 17
 ITEM.width = 1

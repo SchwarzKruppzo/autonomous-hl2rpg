@@ -1,5 +1,5 @@
-RECIPE.name = "Цевье ПП"
-RECIPE.category = "Оружие - компоненты"
+RECIPE.name = "recipe.crafting.smg_grip"
+RECIPE.category = "recipe.category.weapon_components"
 RECIPE.requirements = {
 	metal_reclaimed = 1,
 	mat_screws = 1,

@@ -1,5 +1,5 @@
-FACTION.name = "Сотрудник ГСР"
-FACTION.description = "Вы представляете собой организацию, обеспечивающая занятость населения."
+FACTION.name = "faction.cwu_clerk"
+FACTION.description = "faction.cwu_clerk.desc"
 FACTION.color = Color(255, 215, 0, 255)
 FACTION.isDefault = false
 FACTION.bHumanVoices = true

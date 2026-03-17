@@ -1,5 +1,5 @@
-ITEM.name = "Коробка крэкеров"
-ITEM.description = "Сухие, соленые крэкеры подойдут под любое блюдо: чай, мясо, суп. Их можно и просто так съесть, так и покрошить в любое блюдо, чтобы скрасить скуку вкуса."
+ITEM.name = "item.crackers"
+ITEM.description = "item.crackers.desc"
 ITEM.model = "models/food/crackers_box_1.mdl"
 ITEM.cost = 12
 ITEM.width = 1

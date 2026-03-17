@@ -1,5 +1,5 @@
-ITEM.name = "Стаканчик кофе"
-ITEM.description = "Стаканчик, наполненный нефильтрованым кофе. На поверхности самого кофе плавает что-то странное. На вкус очень горькое месиво."
+ITEM.name = "item.coffee_mug"
+ITEM.description = "item.coffee_mug.desc"
 ITEM.model = "models/shibcuppy.mdl"
 ITEM.cost = 7
 ITEM.width = 1

@@ -1,5 +1,5 @@
-RECIPE.name = "Бандана"
-RECIPE.category = "Одежда — лицо"
+RECIPE.name = "recipe.tailoring.bandana"
+RECIPE.category = "recipe.category.face"
 RECIPE.requirements = {
 	mat_cloth = 3
 }

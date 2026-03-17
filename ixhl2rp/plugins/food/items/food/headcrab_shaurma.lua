@@ -1,5 +1,5 @@
-ITEM.name = "Хэдкрабья шаурма на углях"
-ITEM.description = "Приятный кусок лаваша с сытной начинкой внутри, но ой, что это?! Хедкраб? А это вкусно.."
+ITEM.name = "item.headcrab_shaurma"
+ITEM.description = "item.headcrab_shaurma.desc"
 ITEM.model = "models/foodnhouseholditems/chicken_wrap.mdl"
 ITEM.cost = 20
 ITEM.width = 1

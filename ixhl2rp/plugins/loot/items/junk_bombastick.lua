@@ -1,6 +1,6 @@
-ITEM.name = "Бутылка \"Бомбастик\""
-ITEM.description = "Белый пластиковый контейнер с яркой голубой крышечкой, содержащий едкую кислотную щелочь. На этикетке виден яркий символ опасности и предупреждение о содержании вредных химических веществ. Детям не давать."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_bombastick"
+ITEM.description = "item.junk_bombastick.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_junk/garbage_plasticbottle001a.mdl"
 ITEM.width = 1
 ITEM.height = 2

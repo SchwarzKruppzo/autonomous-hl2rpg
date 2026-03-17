@@ -1,5 +1,5 @@
-RECIPE.name = "SPAS-12"
-RECIPE.category = "Оружие"
+RECIPE.name = "recipe.crafting.shotgun"
+RECIPE.category = "recipe.category.weapons"
 RECIPE.requirements = {
 	gun_shotgun_frame = 1,
 	gun_shotgun_grip = 1,

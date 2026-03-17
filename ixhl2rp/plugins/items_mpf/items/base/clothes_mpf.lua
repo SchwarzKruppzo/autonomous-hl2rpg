@@ -29,7 +29,7 @@ function ItemClothMPF:Init()
 	self.secondaryVisor = self.secondaryVisor or vector_origin
 	self.specialization = self.specialization or nil
 
-	self.category = 'Одежда (MPF)'
+	self.category = "item.category.clothing_mpf"
 
 	self:AddData("armband", {
 		Transmit = ix.transmit.owner,
@@ -40,7 +40,7 @@ function ItemClothMPF:Init()
 	})
 
 	self.functions.devEdit = {
-		name = "Сделать Захваченной",
+		name = "item.mpf_devMakeCaptured",
 		icon = "icon16/wrench.png",
 		OnClick = function(item)
 			
@@ -149,7 +149,7 @@ function ItemClothMPF:PopulateTooltip(tooltip)
 		local s = tooltip:AddRowAfter("name", "captured")
 		s:SetTextColor(yellowClr)
 		s:SetFont("item.stats.bold2")
-	    s:SetText("На униформе присутствуют опозновательные знаки Сопротивления.")
+	    s:SetText(L("mpfCapturedInsignia"))
 		s:SizeToContents()
 		s.Paint = function(_, w, h)
 			surface.SetDrawColor(clr)

@@ -1,7 +1,7 @@
-ITEM.name = "Дрожжи"
-ITEM.description = "Пакет с живыми дрожжами, служащие для заделки теста."
+ITEM.name = "item.cook_yeast"
+ITEM.description = "item.cook_yeast.desc"
 ITEM.model = "models/foodnhouseholdaaaaa/combirationb.mdl"
-ITEM.category = "Кулинарные компоненты"
+ITEM.category = "item.category.cooking"
 ITEM.width = 1
 ITEM.height = 1
 ITEM.max_stack = 8

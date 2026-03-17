@@ -10,18 +10,6 @@ end
 
 ix.util.Include("sv_hooks.lua")
 
-ix.lang.AddTable("russian", {
-	poiNotFound = "Вы не находитесь в предприятии!",
-	poiStarted = "Вы начали смену на предприятии!",
-	poiClosed = "Вы завершили смену на предприятии! Всего посетителей за день: %i",
-	cmdPoiStart = "Позволяет начать смену на предприятии, в котором вы находитесь. Каждый уникальный посетитель принесет 10 жетоны в кассу после окончания смены.",
-	cmdPoiEnd = "Позволяет завершить смену на предприятии, в котором вы находитесь.",
-	cmdPoiCash = "Забрать вырученные за активность предприятия жетоны. Необходимо находиться рядом с кассой.",
-	poiAlready = "Сначала необходимо завершить смену!",
-	poiNoAccess = "У вас нет доступа к кассе!",
-	poiNoAccess2 = "Необходимо стоять возле кассы!",
-})
-
 ix.command.Add("OpenBusiness", {
 	description = "@cmdPoiStart",
 	OnRun = function(self, client)
@@ -65,7 +53,7 @@ ix.command.Add("OpenBusiness", {
 					
 					return "@poiStarted"
 				else
-					return (poi.active:GetName().." уже находится на смене этого предприятия.")
+					return "@poiAlreadyActive", poi.active:GetName()
 				end
 			end
 		else
@@ -76,13 +64,12 @@ ix.command.Add("OpenBusiness", {
 	end
 })
 
-local formatx = "Property ID: %s; кассир: %s; посетителей: %s (прибыль: %s, в кассе: %s); открытий: %s; общее время: %s сек."
 ix.command.Add("BusinessInfo", {
 	description = "",
 	OnRun = function(self, client)
 		for k, v in pairs(ix.poi) do
 			if v.log then
-				client:ChatNotify(string.format(formatx,
+				client:ChatNotify(string.format(L("businessInfoFormat"),
 					k,
 					v.log.owner,
 					v.log.visitors,

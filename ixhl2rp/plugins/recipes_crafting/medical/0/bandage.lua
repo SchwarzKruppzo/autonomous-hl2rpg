@@ -1,5 +1,5 @@
-RECIPE.name = "Бинт"
-RECIPE.category = "Бинты"
+RECIPE.name = "recipe.medical.bandage"
+RECIPE.category = "recipe.category.bandages"
 RECIPE.requirements = {
 	mat_cloth = 3,
 }

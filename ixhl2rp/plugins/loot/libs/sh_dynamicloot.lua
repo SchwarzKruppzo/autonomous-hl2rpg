@@ -214,7 +214,7 @@ else
 
 	netstream.Hook("dynamic.loot.open", function(inventoryID, entity, name, inventory)
 		local x = vgui.Create("ui.dynamic.loot")
-		x:Rebuild(inventory, name)
+		x:Rebuild(inventory, L(name))
 	end)
 
 	netstream.Hook("dynamic.loot.sync", function(inventoryID, inventory)

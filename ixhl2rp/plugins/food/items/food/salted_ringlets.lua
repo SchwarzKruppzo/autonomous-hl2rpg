@@ -1,5 +1,5 @@
-ITEM.name = "Солёные колечки"
-ITEM.description = "Сухие солёные колечки, вкус у них как будто бы ешь сухую кашу. Обратная этикетка указывает на то, что в колечках возможно образование твёрдых частичек. Можно сломать зубы."
+ITEM.name = "item.salted_ringlets"
+ITEM.description = "item.salted_ringlets.desc"
 ITEM.model = "models/foodnhouseholditems/applejacks.mdl"
 ITEM.cost = 7
 ITEM.width = 1

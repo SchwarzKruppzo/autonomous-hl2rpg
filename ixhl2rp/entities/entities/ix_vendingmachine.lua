@@ -27,42 +27,43 @@ function ENT:GetAllStock()
 end
 
 hook.Add("InitializeCities", "VendingMachines", function()
-	ix.City:RegisterRestock("ix_vendingmachine", function(city, entity)
-		local stock = city.stock
+	-- Legacy citysystem integration kept for compatibility if ix.City exists
+	if ix.City and ix.City.RegisterRestock then
+		ix.City:RegisterRestock("ix_vendingmachine", function(city, entity)
+			local stock = city.stock
 
-		entity.isFirstRestock = entity.isFirstRestock
-		entity.supplyOrders = entity.supplyOrders or {}
-		entity.demandOrders = entity.demandOrders or {}
+			entity.isFirstRestock = entity.isFirstRestock
+			entity.supplyOrders = entity.supplyOrders or {}
+			entity.demandOrders = entity.demandOrders or {}
 
-		print("Is Not First Restock?", entity.isFirstRestock)
+			for i = 1, #entity.Items do
+				local item = entity.Items[i]
+				local itemClass = item[2]
 
-		for i = 1, #entity.Items do
-			local item = entity.Items[i]
-			local itemClass = item[2]
+				local supplyOrder, demandOrder = entity.supplyOrders[i], entity.demandOrders[i]
 
-			local supplyOrder, demandOrder = entity.supplyOrders[i], entity.demandOrders[i]
+				if not entity.isFirstRestock then
+					supplyOrder = stock:AddSupplyOrder(itemClass)
+					demandOrder = stock:AddDemandOrder(itemClass)
 
-			if !entity.isFirstRestock then
-				supplyOrder = stock:AddSupplyOrder(itemClass)
-				demandOrder = stock:AddDemandOrder(itemClass)
+					entity.supplyOrders[i] = supplyOrder
+					entity.demandOrders[i] = demandOrder
+				end
 
-				entity.supplyOrders[i] = supplyOrder
-				entity.demandOrders[i] = demandOrder
+				local stored = entity:GetStock(i)
+				local neededToRefill = math.max(entity.MaxStock - stored, 0)
+
+				if neededToRefill > 0 then
+					supplyOrder:Add(neededToRefill)
+					entity:SetStock(i, stored + neededToRefill)
+				end
 			end
 
-			local stored = entity:GetStock(i)
-			local neededToRefill = math.max(entity.MaxStock - stored, 0)
-
-			print("Needed to Refill", itemClass, neededToRefill)
-
-			supplyOrder:Add(neededToRefill)
-			entity:SetStock(i, stored + neededToRefill)
-		end
-
-		if !entity.isFirstRestock then
-			entity.isFirstRestock = true
-		end
-	end)
+			if not entity.isFirstRestock then
+				entity.isFirstRestock = true
+			end
+		end)
+	end
 end)
 
 function ENT:Initialize()
@@ -79,6 +80,49 @@ function ENT:Initialize()
 		self:SetSkin(math.random(0, self:SkinCount() - 1))
 		self.nextUseTime = 0
 		self:SetNetVar("stock", {})
+
+		if ix and ix.CityEcon and ix.CityEcon.RegisterInfrastructureAgent then
+			local agentID = "vending:" .. self:EntIndex()
+			self.cityAgentID = agentID
+
+			ix.CityEcon:RegisterInfrastructureAgent({
+				id = agentID,
+				cityID = self.city or "main",
+				kind = "vending",
+				items = (function(ent)
+					local map = {}
+					for index, info in ipairs(ent.Items) do
+						local class = info[2]
+						map[class] = {
+							targetStock = ent.MaxStock,
+							maxStock = ent.MaxStock,
+							basePrice = 1,
+							sellPrice = info[3]
+						}
+					end
+					return map
+				end)(self),
+				usesCityBudget = true,
+				usesLocalBudget = false,
+				GetCurrentStock = function(_, itemID)
+					for i, info in ipairs(self.Items) do
+						if info[2] == itemID then
+							return self:GetStock(i)
+						end
+					end
+					return 0
+				end,
+				ApplyRefill = function(_, itemID, amount)
+					for i, info in ipairs(self.Items) do
+						if info[2] == itemID then
+							local stored = self:GetStock(i)
+							self:SetStock(i, stored + amount)
+							break
+						end
+					end
+				end
+			})
+		end
 	else
 		sound.PlayFile("sound/vendingmachinehum_loop.wav", "3d noplay noblock", function(station, errCode, errStr)
 			if IsValid(station) then
@@ -104,7 +148,10 @@ if SERVER then
 		vendor:Activate()
 
 		vendor.city = "main"
-		ix.City:Restock(vendor)
+
+		if ix.City and ix.City.Restock then
+			ix.City:Restock(vendor)
+		end
 
 		Schema:SaveVendingMachines()
 		return vendor
@@ -159,10 +206,28 @@ if SERVER then
 	function ENT:RemoveStock(id)
 		self:SetStock(id, self:GetStock(id) - 1)
 
-		local demandOrder = self.demandOrders[id]
-		demandOrder:Add(1)
+		local itemInfo = self.Items[id]
+		if not itemInfo then return end
 
-		print("Player->Buy Water #"..id, "Demand Value:", demandOrder.value)
+		local itemClass = itemInfo[2]
+		local price = itemInfo[3]
+
+		if ix and ix.CityEcon and ix.CityEcon.GetInfrastructureAgent and self.cityAgentID then
+			local agent = ix.CityEcon:GetInfrastructureAgent(self.cityAgentID)
+
+			if agent and agent.OnPlayerBuy then
+				agent:OnPlayerBuy(itemClass, 1, price, { reasonID = "retail_vending" })
+				return
+			end
+		end
+
+		if ix and ix.CityEcon and ix.CityEcon.AddDemand then
+			ix.CityEcon:AddDemand(self.city or "main", itemClass, 1, {
+				reasonID = "retail_vending",
+				price = price,
+				tokensDelta = price
+			})
+		end
 	end
 
 	function ENT:Use(client)
@@ -212,6 +277,10 @@ if SERVER then
 	end
 
 	function ENT:OnRemove()
+		if self.cityAgentID and ix and ix.CityEcon and ix.CityEcon.UnregisterInfrastructureAgent then
+			ix.CityEcon:UnregisterInfrastructureAgent(self.cityAgentID)
+		end
+
 		if (!ix.shuttingDown) then
 			Schema:SaveVendingMachines()
 		end

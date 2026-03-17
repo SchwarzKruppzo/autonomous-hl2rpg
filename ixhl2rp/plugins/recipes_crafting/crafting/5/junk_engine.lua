@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Двигатель"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_engine"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_engine"
 RECIPE.results = {
 	mat_resine = 2,

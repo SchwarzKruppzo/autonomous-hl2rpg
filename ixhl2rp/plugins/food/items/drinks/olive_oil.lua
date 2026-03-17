@@ -1,5 +1,5 @@
-ITEM.name = "Старая бутылка оливкового масла"
-ITEM.description = "Старое, бесвкусное, вонючее оливковое масло, которое широко использовали домохозяйки до войны. Его практически не возможно пить, но, если постараться, и из этого дерьма можно получить что-то действительно полезное."
+ITEM.name = "item.olive_oil"
+ITEM.description = "item.olive_oil.desc"
 ITEM.model = "models/props_junk/garbage_plasticbottle002a.mdl"
 ITEM.cost = 4
 ITEM.width = 1

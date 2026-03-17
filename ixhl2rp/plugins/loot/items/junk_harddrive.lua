@@ -1,6 +1,6 @@
-ITEM.name = "Системный блок"
-ITEM.description = "Металлический корпус блока обветшал, отчего видны следы времени и небрежного обращения. Внутренности усыпаны разноцветными проводами, пластиковыми деталями и металлическими компонентами, выглядят как запутанный клубок технологических деталей и чипов."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_harddrive"
+ITEM.description = "item.junk_harddrive.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_lab/harddrive01.mdl"
 ITEM.width = 2
 ITEM.height = 3

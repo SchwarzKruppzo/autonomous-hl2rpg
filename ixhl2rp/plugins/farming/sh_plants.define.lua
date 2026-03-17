@@ -1,8 +1,8 @@
 local Farming = ix.Farming
 
 Farming:RegisterPlant("tomato", {
-	Name = "Куст томата",
-	Description = "Томат в процессе выращивания. Еще формируемые плоды томата уже свисают с растения, они явно меньше в размере нежели их довоенные аналоги - но выглядят как лучший ужин что вы можете себе позволить за пределами города.",
+	Name = "plant.tomato",
+	Description = "plant.tomato.desc",
 	Model = "models/autonomous/farming/plant_tomato.mdl",
 	Stages = {
 		{
@@ -36,8 +36,8 @@ Farming:RegisterPlant("tomato", {
 })
 
 Farming:RegisterPlant("potato", {
-	Name = "Куст картофеля",
-	Description = "Картофель в процессе выращивания. Еще формируемые клубни картофеля уже выглядывают из-под земли, они явно меньше в размере нежели их довоенные аналоги - но выглядят как лучший ужин что вы можете себе позволить за пределами города.",
+	Name = "plant.potato",
+	Description = "plant.potato.desc",
 	Model = "models/autonomous/farming/plant_potato.mdl",
 	Stages = {
 		{

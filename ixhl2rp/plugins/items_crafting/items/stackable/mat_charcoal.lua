@@ -1,7 +1,7 @@
-ITEM.name = "Уголь"
-ITEM.description = "Кусок сожженой древисины, который можно преобразовать в пыль и использовать в создании пороха.. ну или просто использовать как топливо для костра."
+ITEM.name = "item.mat_charcoal"
+ITEM.description = "item.mat_charcoal.desc"
 ITEM.model = "models/autonomous/charcoal.mdl"
-ITEM.category = "Производные компоненты"
+ITEM.category = "item.category.crafted"
 ITEM.width = 1
 ITEM.height = 1
 ITEM.iconCam = {

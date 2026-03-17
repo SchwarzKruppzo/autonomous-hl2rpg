@@ -1,9 +1,9 @@
-ITEM.category = "Строительство - оборона"
+ITEM.category = "item.category.construction_defend"
 ITEM.model = "models/props_combine/combine_mine01.mdl"
 ITEM.width = 2
 ITEM.height = 2
-ITEM.name = "Сборка: Мина"
-ITEM.description = "Оборонительная мина, предназначенная для минирования на стратегически важных точках. Идеально подходит для защиты от врагов в любых условиях."
+ITEM.name = "item.def_combinemine"
+ITEM.description = "item.def_combinemine.desc"
 ITEM.preview_model = "models/props_combine/combine_mine01.mdl"
 ITEM.iconCam = {
 	pos = Vector(341.85171508789, 23.053094863892, 620.81555175781),

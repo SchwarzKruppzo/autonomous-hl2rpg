@@ -1,5 +1,5 @@
-ITEM.name = "Кукуруза"
-ITEM.description = "Кукуруза со штампом Альянса на ней. У неё искусственный запах."
+ITEM.name = "item.union_branded_corn_cob"
+ITEM.description = "item.union_branded_corn_cob.desc"
 ITEM.model = "models/bioshockinfinite/porn_on_cob.mdl"
 ITEM.cost = 7
 ITEM.width = 1

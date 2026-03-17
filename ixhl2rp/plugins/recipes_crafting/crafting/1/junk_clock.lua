@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Настольные часы"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_clock"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_clock"
 RECIPE.results = {
 	chain = 1

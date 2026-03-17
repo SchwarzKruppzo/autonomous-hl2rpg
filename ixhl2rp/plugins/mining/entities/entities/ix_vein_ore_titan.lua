@@ -180,7 +180,7 @@ if SERVER then
 
 					if IsValid(activeWeapon) and item then
 						if item:GetData("durability", 4) <= 0 then
-							client:Notify("Кирка сломана и не дает какого-либо результата!")
+							client:NotifyLocalized("mining.notify.pickaxeBroken")
 							return
 						end
 
@@ -225,7 +225,7 @@ if SERVER then
 						client:RewardXP(10, "добычу ресурсов")
 					end
 				else
-					client:Notify("Эта жила истощена!")
+					client:NotifyLocalized("mining.notify.emptyOre")
 				end
 			end
 		end
