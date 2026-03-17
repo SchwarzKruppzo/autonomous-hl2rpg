@@ -1,5 +1,5 @@
-ITEM.name = "Тост"
-ITEM.description = "Хорошо поджаренный ломоть хлеба для вашего завтра или вкусного бутерброда."
+ITEM.name = "item.toast"
+ITEM.description = "item.toast.desc"
 ITEM.model = "models/foodnhouseholditems/toast.mdl"
 ITEM.cost = 12
 ITEM.width = 1

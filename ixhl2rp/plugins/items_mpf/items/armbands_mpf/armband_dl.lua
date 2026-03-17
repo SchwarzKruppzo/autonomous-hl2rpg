@@ -1,2 +1,2 @@
-ITEM.name = "Ранговая повязка: RC"
+ITEM.name = "item.armband_dl"
 ITEM.armband = 6

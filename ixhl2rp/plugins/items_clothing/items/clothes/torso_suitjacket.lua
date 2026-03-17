@@ -1,4 +1,4 @@
-ITEM.name = "Черный пиджак с пальто"
+ITEM.name = "item.torso_suitjacket"
 ITEM.model = "models/tnb/halflife2/citizens/items/world_suitjacket.mdl"
 ITEM.skin = 3
 ITEM.width = 2
@@ -9,22 +9,28 @@ ITEM.iconCam = {
 	fov = 4.0238345864177,
 }
 ITEM.rarity = 3
-ITEM.description = "Стильный черный пиджак, дополненный длинным пальто, который отлично подходит для города. Идеально сочетается с классическими брюками и обувью."
+ITEM.description = "item.torso_suitjacket.desc"
 ITEM.equip_inv = 'torso'
 ITEM.equip_slot = nil
-ITEM.bodyGroups = {
-	[1] = 31
-}
+--ITEM.bodyGroups = {
+--	[1] = 31
+--}
 
-function ITEM:GetOutfitData()
-    return {
-        slot = "torso",
-        model = {
-        	[GENDER_MALE] = "models/tnb/halflife2/male_torso_suitjacket.mdl",
-            [GENDER_FEMALE] = "models/tnb/halflife2/female_torso_suitjacket.mdl",
-        }
+
+ITEM.displayID = ix.Appearance:New("suitjacket", {
+    slot = ix.Appearance.Slot.Torso,
+    layer = ix.Appearance.Layer.Top,
+    bodyMask = "Torso_OnlyHands",
+    variants = {
+        male = {
+            model = "models/tnb/halflife2/male_torso_suitjacket.mdl"
+        },
+        female = {
+            model = "models/tnb/halflife2/female_torso_suitjacket.mdl"
+        },
     }
-end
+})
+
 
 ITEM.BreakDown = true
 ITEM.BreakDownType = "cloth"

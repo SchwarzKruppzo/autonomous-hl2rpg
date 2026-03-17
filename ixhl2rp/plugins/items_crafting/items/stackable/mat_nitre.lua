@@ -1,6 +1,6 @@
-ITEM.name = "Аммиачная селитра"
-ITEM.description = "Горстка аммиачной селитры. Лучше всего держать ее подальше, поскольку от нее несет очень неприятным запахом."
-ITEM.category = "Производные компоненты"
+ITEM.name = "item.mat_nitre"
+ITEM.description = "item.mat_nitre.desc"
+ITEM.category = "item.category.crafted"
 ITEM.rarity = 1
 ITEM.model = "models/crunchy/props/re4_props/herb_mix_triple.mdl"
 ITEM.width = 1

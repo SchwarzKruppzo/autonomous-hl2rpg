@@ -1,5 +1,5 @@
-ITEM.name = "Синтетическое мясо"
-ITEM.description = "Синтетический кусок непонятно чего, что очень похоже изделека на кусок мяса. Но в близи становится понятно, что это не то, что за себя выдает."
+ITEM.name = "item.synth_meat"
+ITEM.description = "item.synth_meat.desc"
 ITEM.model = "models/foodnhouseholditems/steak1.mdl"
 ITEM.cost = 12
 ITEM.width = 1

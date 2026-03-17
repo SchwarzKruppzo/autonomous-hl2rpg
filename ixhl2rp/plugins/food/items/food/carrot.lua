@@ -1,5 +1,5 @@
-ITEM.name = "Морковь"
-ITEM.description = "Морковь красного цвета, выглядит довольно сморщеной. Наврядли из нее можно получить какие-либо витамины, тем не менее жуётся довольно легко, чем её настоящий аналог."
+ITEM.name = "item.carrot"
+ITEM.description = "item.carrot.desc"
 ITEM.model = "models/foodnhouseholditems/carrot.mdl"
 ITEM.cost = 3
 ITEM.width = 1

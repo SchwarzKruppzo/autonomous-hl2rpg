@@ -1,5 +1,5 @@
-ITEM.name = "Верхний Ресивер Внеземного оружия"
-ITEM.description = "Верхний ресивер футуристичного вида. Используется как рельса-направляющая для установки пусковой камеры внеземного оружия. Достаточно массивный."
+ITEM.name = "item.gun_pulse_receiver"
+ITEM.description = "item.gun_pulse_receiver.desc"
 ITEM.model = "models/cellar/craft/pulse_receiver.mdl"
 ITEM.width = 5
 ITEM.height = 2
@@ -9,5 +9,5 @@ ITEM.iconCam = {
 	fov = 8.8550564866883,
 }
 ITEM.rarity = 3
-ITEM.category = "Части оружия"
+ITEM.category = "item.category.weapon_parts"
 ITEM.contraband = true

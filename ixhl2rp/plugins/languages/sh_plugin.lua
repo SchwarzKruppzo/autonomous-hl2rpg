@@ -16,16 +16,6 @@ function PLUGIN:AdjustCreationPayload(client, payload, newPayload)
 	newPayload.data.language = nil
 end*/
 
-ix.lang.AddTable("english", {
-	optLanguageFlagsEnabled = "Enable Language Flags",
-	optdLanguageFlagsEnabled = "Enable chat icons to indicate the language in which something is spoken for non-english language IC text."
-})
-
-ix.lang.AddTable("spanish", {
-	optLanguageFlagsEnabled = "Activa las Flags de Idiomas",
-	optdLanguageFlagsEnabled = "Activa los iconos de para indicar el idioma de cosas habladas en otro idioma que no sea español dentro del chat IC."
-})
-
 ix.Net:AddPlayerVar("lang", true, nil, ix.Net.Type.String)
 
 ix.char.RegisterVar("languages", {
@@ -81,9 +71,9 @@ end
 do
 	-- Vortigese
 	local language = ix.languages:New()
-	language.name = "Язык Вортигонтов"
-	language.chat = "языке Ворт"
 	language.uniqueID = "vort"
+	language.name = "language.name.vort"
+	language.chat = "language.chat.vort"
 	language.color = Color(51, 153, 51)
 	language.notSelectable = true
 	function language:PlayerCanSpeakLanguage(client)
@@ -104,9 +94,9 @@ end
 do
 	-- Danish
 	local language = ix.languages:New()
-	language.name = "Датский"
-	language.chat = "датском"
 	language.uniqueID = "dan"
+	language.name = "language.name.dan"
+	language.chat = "language.chat.dan"
 	language.icon = "flags16/dk.png"
 	language.gibberish = {"alt", "hænder", "ingen", "enig", "mange", "større", "afsted", "hånden", "pludselig", "sød", "tilfreds", "ordre", "færdig", "menneske", "hurtigt", "voksen", "spillede", "papirer",
 	"valgt", "lkke", "seks", "sherif", "ringe", "dronning", "opmærksomhed", "kæft", "kiggede", "fald", "morder", "sammen", "forsvinder", "hop", "forsøge", "kaldte", "oberst", "mødte", "brugte",
@@ -119,9 +109,9 @@ end
 do
 	-- Japanese
 	local language = ix.languages:New()
-	language.name = "Японский"
-	language.chat = "японском"
 	language.uniqueID = "jap"
+	language.name = "language.name.jap"
+	language.chat = "language.chat.jap"
 	language.icon = "flags16/jp.png"
 	language.gibberish = {"通り", "危険", "全部", "ある", "見つかる", "聞こえる", "すわる", "あめ", "料理", "返す", "準備", "被る", "ひも", "など", "やくしょ、役所", "二日", "まず", "下げる",
 	"通る", "つもり", "低い", "ひくい", "選ぶ", "だの", "降る", "相談", "エンジニア", "朝", "残念", "うるさい", "うるさい", "勉強", "年間", "みせ、店", "大切", "たいせつ", "あれ", "買い物", "歯",
@@ -134,9 +124,9 @@ end
 do
 	-- Korean. It is very awkward for Koreans in real life. Change to Medieval Korean
 	local language = ix.languages:New()
-	language.name = "Корейский"
-	language.chat = "корейском"
 	language.uniqueID = "kor"
+	language.name = "language.name.kor"
+	language.chat = "language.chat.kor"
 	language.icon = "flags16/kr.png"
 	language.gibberish = {"력황도가", "빈니산", "상단포", "광참은", "녈하", "홀퍄이", "샤도", "듕귁", "댤하", "나랃말", "싸미", "수므며", "서르", "사맏띠", "젼차", "뜨들", "몯할", "이랄", "어엳삐",
 	"해여", "날로", "쑤메", "뼌안킈", "하고져", "녀려신", "머리곰", "노코시라", "졈그", "셰라", "비취오", "시라", "옌니응", "샤미", "회신", "향주", "탼명", "추자", "한두", "대막간", "오행", "세존",
@@ -149,9 +139,9 @@ end
 do
 	-- Chinese
 	local language = ix.languages:New()
-	language.name = "Китайский"
-	language.chat = "китайском"
 	language.uniqueID = "chi"
+	language.name = "language.name.chi"
+	language.chat = "language.chat.chi"
 	language.icon = "flags16/cn.png"
 	language.gibberish = {"相对", "服务", "认识", "普遍", "假如", "只是", "改变", "报纸", "然而", "王", "部", "具", "展开", "政策", "教育部", "理论", "国际", "其", "保持", "培养",
 	"非常", "感到", "算是", "以", "台大", "博物馆", "全球", "担心", "北京", "词", "好像", "设", "差异", "观点", "间", "属", "宇宙", "公斤", "欢迎", "教", "无论", "股票", "照顾",
@@ -164,9 +154,9 @@ end
 do
 	-- Spanish
 	local language = ix.languages:New()
-	language.name = "Испанский"
-	language.chat = "испанском"
 	language.uniqueID = "spa"
+	language.name = "language.name.spa"
+	language.chat = "language.chat.spa"
 	language.icon = "flags16/es.png"
 	language.gibberish = {"listos", "tarjeta", "ayudarte", "parecen", "siempre", "si", "gustó", "minuto", "tanto", "cuarto", "ios", "quedarse", "regreso", "caso", "tengas", "dan", "vuelto", "dejó",
 	"llamada", "fuiste", "haberte", "aquellos", "terminar", "déjeme", "con", "traje", "habéis", "nosotras", "posición", "negra", "tony", "línea", "metros", "debió", "caballeros", "dedos", "abuela",
@@ -179,9 +169,9 @@ end
 do
 	-- Russian
 	local language = ix.languages:New()
-	language.name = "Русский"
-	language.chat = "русском"
 	language.uniqueID = "rus"
+	language.name = "language.name.rus"
+	language.chat = "language.chat.rus"
 	language.icon = "flags16/ru.png"
 	language.gibberish = {"поделиться", "хитрость", "посвистывать", "схема", "развиться", "однородный", "беспокоить", "правление", "торжественно", "пять", "пень", "венок", "обедня", "неизбежный",
 	"неразрывно", "дружина", "зрелище", "мозг", "раздел", "как", "скульптор", "март", "платить", "развести", "тень", "сгорание", "лепёшка", "пронестись", "скопление", "пятнадцать", "хрусталь",
@@ -194,9 +184,9 @@ end
 do
 	-- Ukrainian
 	local language = ix.languages:New()
-	language.name = "Украинский"
-	language.chat = "украинском"
 	language.uniqueID = "ukr"
+	language.name = "language.name.ukr"
+	language.chat = "language.chat.ukr"
 	language.icon = "flags16/ua.png"
 	language.gibberish = {"бавитися", "любов", "милий", "друже", "зачекай", "здурiв", "можливо", "струнко", "сiрий", "нiчний",
 	"божевільна", "зрештою", "вирішує", "зiрка", "нiяк", "неможливо", "добрэ", "зрозумiло", "дякую", "звiдки", "гледай", "коя", "поговоря", "чу", "момента", "защото", "някакво", "направил", "излизай", "големите", "спра", "сила", "светлина", "намери", "обратно", "срещу", "връщам",
@@ -209,9 +199,9 @@ end
 do
 	-- Bulgarian
 	local language = ix.languages:New()
-	language.name = "Болгарский"
-	language.chat = "болгарском"
 	language.uniqueID = "bul"
+	language.name = "language.name.bul"
+	language.chat = "language.chat.bul"
 	language.icon = "flags16/bg.png"
 	language.gibberish = {"гледай", "коя", "поговоря", "чу", "момента", "защото", "някакво", "направил", "излизай", "големите", "спра", "сила", "светлина", "намери", "обратно", "срещу", "връщам",
 	"мои", "вид", "малката", "бизнеса", "отиде", "дълго", "песен", "надявам", "маса", "направим", "използва", "отвън", "направят", "казвам", "бива", "свят", "имаме", "живи", "честит", "дядо", "шеф",
@@ -224,9 +214,9 @@ end
 do
 	-- German
 	local language = ix.languages:New()
-	language.name = "Немецкий"
-	language.chat = "немецком"
 	language.uniqueID = "ger"
+	language.name = "language.name.ger"
+	language.chat = "language.chat.ger"
 	language.icon = "flags16/de.png"
 	language.gibberish = {"durchsuchen", "gerecht", "draußen", "zusehen", "international", "behalten", "verbrannt", "deswegen", "geführt", "dahinter", "abhalten", "blödsinn", "rache", "als",
 	"die Untersuchung", "der Brauch", "immer", "beinahe", "erscheinen", "Schuld", "endlich", "dass", "riechen", "unterscheiden", "kollege", "fahrer", "beziehung", "reissen", "kleider",
@@ -239,9 +229,9 @@ end
 do
 	-- French
 	local language = ix.languages:New()
-	language.name = "Французский"
-	language.chat = "французском"
 	language.uniqueID = "fre"
+	language.name = "language.name.fre"
+	language.chat = "language.chat.fre"
 	language.icon = "flags16/fr.png"
 	language.gibberish = {"plénier", "hier", "caresser", "charge", "huitième", "journée", "bras", "commerçant", "aspiration", "hélas", "pétrole", "succéder", "marche", "talent", "vérification",
 	"rigoler", "contribuable", "vraisemblablement", "différence", "recherche", "efficace", "d'ailleurs", "domine", "radio", "survenir", "naval", "gouverneur", "relever", "vieillard", "déchirer",
@@ -254,9 +244,9 @@ end
 do
 	-- Arabic
 	local language = ix.languages:New()
-	language.name = "Арабский"
-	language.chat = "арабском"
 	language.uniqueID = "ara"
+	language.name = "language.name.ara"
+	language.chat = "language.chat.ara"
 	language.icon = "flags16/sa.png"
 	language.gibberish = {"الابتسامة", "منزلي", "ولكني", "مجرد", "فقرة", "اللعنة", "للغاية", "الشعر", "أسفل", "سمعت", "الولادة", "حصة",
 	"الوحيدة", "سيدى", "كتلة", "السليم", "الموقف", "منا", "المقبل", "الجحيم", "موقف", "غذاء", "الطعام", "سيئة", "النار", "انتهت", "خطأ", "سيحدث",
@@ -270,9 +260,9 @@ end
 do
 	-- Italian
 	local language = ix.languages:New()
-	language.name = "Итальянский"
-	language.chat = "итальянском"
 	language.uniqueID = "ita"
+	language.name = "language.name.ita"
+	language.chat = "language.chat.ita"
 	language.icon = "flags16/it.png"
 	language.gibberish = {"che", "nostro", "qualsiasi", "oro", "vuoi", "siediti", "new", "last", "capelli", "terribile", "danneggiare", "alcuni", "un po'", "qualche", "testa", "guerra", "povero",
 	"niente", "mettere", "caso", "ho", "dirmi", "vestire", "attraverso", "dovere", "unica", "tieni", "peccato", "già", "chiave", "persone", "apparire", "lasciami", "felice", "circa", "vedi", "prima",
@@ -285,9 +275,9 @@ end
 do
 	-- Dutch
 	local language = ix.languages:New()
-	language.name = "Голландский"
-	language.chat = "голландском"
 	language.uniqueID = "dut"
+	language.name = "language.name.dut"
+	language.chat = "language.chat.dut"
 	language.icon = "flags16/nl.png"
 	language.gibberish = {"ik", "toen", "werk", "vandaag", "enige", "buiten", "probleem", "krijgt", "minuten", "blij", "vergeten", "mevrouw", "betekent", "belangrijk", "verloren", "ervoor", "acht",
 	"getrouwd", "kantoor", "vliegtuig", "boot", "vliegen", "voorstellen", "mocht", "bekend", "paard", "gebouw", "broek", "and", "club", "bereiken", "lot", "hoeven", "aandacht", "neuken", "hoelang",
@@ -300,9 +290,9 @@ end
 do
 	-- Finnish
 	local language = ix.languages:New()
-	language.name = "Финский"
-	language.chat = "финском"
 	language.uniqueID = "fin"
+	language.name = "language.name.fin"
+	language.chat = "language.chat.fin"
 	language.icon = "flags16/fi.png"
 	language.gibberish = {"kaikki", "kädet", "ei mitään", "olla samaa mieltä", "monta", "suurempi", "vinossa", "käsi", "yhtäkkiä", "makea", "tyytyväinen", "tilaus", "tehty", "ihminen", "nopeasti", "aikuinen", "soitti", "paperit",
 	"valitut", "ei", "kuusi", "sheriffi", "soittaa puhelimella", "kuningatar", "huomio", "turpa kiinni", "vähennä", "tappaja", "yhdessä", "hypätä", "yrittää", "nimeltään", "eversti", "tavannut", "käytetty",
@@ -315,9 +305,9 @@ end
 do
 	-- Swedish
 	local language = ix.languages:New()
-	language.name = "Шведский"
-	language.chat = "шведском"
 	language.uniqueID = "swe"
+	language.name = "language.name.swe"
+	language.chat = "language.chat.swe"
 	language.icon = "flags16/se.png"
 	language.gibberish = {"aldrig", "alla", "andra", "andra", "att", "att", "av", "bara", "barn", "bli", "bra", "de", "dem", "den", "denna", "det", "detta", "dig", "dom", "du", "då", "där", "efter", "eller", "en", "ett", "finnas",
 	"från", "få", "för", "gå", "göra", "ha", "han", "helt", "hon", "honom", "hur", "här", "i", "idag", "innan", "inte", "jag", "ju", "kanske", "komma", "kunna", "lite", "man", "med", "men", "mig", "min",
@@ -330,9 +320,9 @@ end
 do
 	-- Greek
 	local language = ix.languages:New()
-	language.name = "Греческий"
-	language.chat = "греческом"
 	language.uniqueID = "gre"
+	language.name = "language.name.gre"
+	language.chat = "language.chat.gre"
 	language.icon = "flags16/gr.png"
 	language.gibberish = {"έτος", "εβδομάδα", "σήμερα", "αύριο", "χθες", "ημερολόγιο", "δευτερόλεπτο", "ώρα", "λεπτό", "η ώρα", "μια ώρα", "μπορώ", "χρησιμοποιώ", "κάνω", "πηγαίνω", "έρχομαι", "γελάω", "φτιάχνω", "βλέπω", "μακρινός",
 	"μικρός", "καλός", "όμορφος", "άσχημος", "δύσκολος", "εύκολος", "κακός", "κοντινός", "Χαίρω πολύ", "Γειά", "Καλημέρα", "Καλησπέρα", "Καλησπέρα", "Καληνύχτα", "Τι κάνεις", "Σ' ευχαριστώ", "Όχι", "Νόστιμο", "Αντίο", "Ναι", "Δευτέρα",
@@ -344,9 +334,9 @@ end
 do
 	-- Hindi
 	local language = ix.languages:New()
-	language.name = "Индийский"
-	language.chat = "индийском"
 	language.uniqueID = "hin"
+	language.name = "language.name.hin"
+	language.chat = "language.chat.hin"
 	language.icon = "flags16/in.png"
 	language.gibberish = {"हां", "नहीं", "नमस्ते", "आप कैसे हैं", "परीक्षण", "बेवकूफ", "क्या", "कैसे", "कब", "क्यों", "कहा पे", "आप कैसे हैं", "शिखर सम्मेलन", "प्रेम", "घृणा", "दिलकश", "विचार", "कल्पना करना", "सर्वर", "कौन",
 	"करना", "मैं", "बटन", "मौजूद", "गूगल", "अनुवाद करना", "संघ", "जोड़ना", "जादू", "जिंदगी", "पेड़", "घास", "खोलना", "बंद करे", "कप", "कांच", "पुस्तक", "सेब", "पाई", "चापलूसी", "घृणा",
@@ -358,9 +348,9 @@ end
 do
 	-- Croatian
 	local language = ix.languages:New()
-	language.name = "Хорватский"
-	language.chat = "хорватском"
 	language.uniqueID = "cro"
+	language.name = "language.name.cro"
+	language.chat = "language.chat.cro"
 	language.icon = "flags16/hr.png"
 	language.gibberish = {"Unija", "Kombinirati", "emitirati", "Univerzalni", "Obrazovanje", "Tko", "Kada", "Gdje", "Što", "Zašto", "postojati", "Postojanje", "Opstanak", "Trava", "Zemljište", "Drvo", "Nebo", "More", "Voda", "Više",
 	"Dodvoravanje", "Život", "Smrt", "Pametan", "Glup", "glazba, muzika", "Koncert", "Ljubavnici", "Mrziti", "Mržnja", "Bolest", "Zemlja", "Prevedi", "Jezik", "stranica", "Ne", "Da", "Stol", "Stolica", "Glumi", "mreža"}
@@ -371,9 +361,9 @@ end
 do
 	-- Serbian
 	local language = ix.languages:New()
-	language.name = "Сербский"
-	language.chat = "сербском"
 	language.uniqueID = "ser"
+	language.name = "language.name.ser"
+	language.chat = "language.chat.ser"
 	language.icon = "flags16/rs.png"
 	language.gibberish = {"Здраво", "Иди", "Зашто", "Шта", "Љубав", "Спринт", "Изађи", "Интеллигенце", "Оверватцх трансхуман арм", "Цивилна заштита", "Зомбие", "Мртав", "Трцати", "ти", "ја", "изговор",
 	"Извињавам се", "Ауто", "Не", "Вода", "кафу", "Живот", "Комбинујте", "Цити", "Остави", "Требао би", "Није у реду", "Изађи одавде", "Ш'а има", "Нешто"}
@@ -384,9 +374,9 @@ end
 do
 	-- Turkish
 	local language = ix.languages:New()
-	language.name = "Турецкий"
-	language.chat = "турецком"
 	language.uniqueID = "tur"
+	language.name = "language.name.tur"
+	language.chat = "language.chat.tur"
 	language.icon = "flags16/tr.png"
 	language.gibberish = {"Merhaba", "Sayın", "Koşmak", "sürat koşusu", "yakın", "Nasılsın", "programcı", "kafa", "ayak", "tavuk", "satıcı", "bira", "güzel", "gülmek", "Yapabilmek", "kullanmak", "Yapmak",
 	"takvim", "yarın", "bugün", "Ev", "Menşei", "Ülke", "vatandaş", "Gün batımı", "Şehir", "Güneş", "Sivil Savunma", "birleştir", "Aşk"}
@@ -397,9 +387,9 @@ end
 do
 	-- Romanian
 	local language = ix.languages:New()
-	language.name = "Румынский"
-	language.chat = "румынском"
 	language.uniqueID = "rom"
+	language.name = "language.name.rom"
+	language.chat = "language.chat.rom"
 	language.icon = "flags16/ro.png"
 	language.gibberish = {"Buna ziua", "păsări", "farfurie", "drept", "spațiu", "în mare măsură", "mai puțin", "sector", "cerere", "pâine", "dispus", "origine", "curat", "bunic", "date", "domnișoară", "furtună",
 	"petrece", "risc", "îngrijire", "militar", "relief", "tigru", "conveni", "îndepărta", "vecin", "apărea", "elefant", "prezice", "scump"}
@@ -410,9 +400,9 @@ end
 do
 	-- Irish
 	local language = ix.languages:New()
-	language.name = "Ирландский"
-	language.chat = "ирландском"
 	language.uniqueID = "gai"
+	language.name = "language.name.gai"
+	language.chat = "language.chat.gai"
 	language.icon = "flags16/ie.png"
 	language.gibberish = {"Ar chuala", "Tá a lán", "Tráthnóna ciúin", "Tá súil", "gcloiseann", "tú sinn", "chóras Londain", "chun báis", "bhfaca tú ár", "Massacre Phádraig",
 	"chathair", "rudaí i gcuimhne", "Uaireanta", "smaoiním", "páirceanna", "dúchais", "cúis imní dúinn", "gcéad", "ghlúin", "súil", "atá", "caite", "chách", "thubaiste",
@@ -425,9 +415,9 @@ end
 do
 	-- Albanian
 	local language = ix.languages:New()
-	language.name = "Албанский"
-	language.chat = "албанском"
 	language.uniqueID = "alb"
+	language.name = "language.name.alb"
+	language.chat = "language.chat.alb"
 	language.icon = "flags16/al.png"
 	language.gibberish = {"viti", "javë", "sot", "nesër", "dje", "kalendar", "sekonda", "orë", "minutë", "orë", "një orë", "mund", "përdor", "bëj", "shko", "vij", "qesh", "bëj", "shih", "i largët", "i vogël", "mirë", "i bukur", "i keq", "i vështirë", "i lehtë", "i keq", "i afërt", "I gëzohem të njohesh", "Përshëndetje", "Mirëmbrëma", "Mirëmbrëma", "Mirëmbajtje", "Si je", "Faleminderit", "Jo", "I shijshëm", "Përshëndetje", "Po", "E hënë", "E martë", "E mërkurë", "E enjte", "E premte", "një", "zero", "dy", "bira", "çaj"}
 
@@ -437,9 +427,9 @@ end
 do
 	-- Bosnian
 	local language = ix.languages:New()
-	language.name = "Боснийский"
-	language.chat = "боснийском"
 	language.uniqueID = "bos"
+	language.name = "language.name.bos"
+	language.chat = "language.chat.bos"
 	language.icon = "flags16/ba.png"
 	language.gibberish = {"godina", "tjedan", "danas", "sutra", "jučer", "kalendar", "sekunda", "sat", "minuta", "sat", "jedan sat", "može", "koristiti", "učiniti", "ići", "doći", "smijati se", "napraviti", "vidjeti", "daleko", "mali", "dobar", "lijep", "ružan", "teško", "lako", "loše", "blizu", "Lijepo te upoznati", "Pozdrav", "Dobro jutro", "Dobar dan", "Dobro veče", "Dobro jutro", "Kako si", "Hvala", "Ne", "Užitak", "Doviđenja", "Da", "Ponedjeljak", "Utorak", "Srijeda", "Četvrtak", "Subota", "jedan", "nula", "dva", "pivo", "čaj"}
 
@@ -449,9 +439,9 @@ end
 do
 	-- Polish
 	local language = ix.languages:New()
-	language.name = "Польский"
-	language.chat = "польском"
 	language.uniqueID = "pol"
+	language.name = "language.name.pol"
+	language.chat = "language.chat.pol"
 	language.icon = "flags16/pl.png"
 	language.gibberish = {"rok", "tydzień", "dzisiaj", "jutro", "wczoraj", "kalendarz", "sekunda", "godzina", "minuta", "godzina", "jedna godzina", "może", "użyć", "robić", "iść", "przyjść", "śmiać się", "robić", "widzieć", "daleko", "mały", "dobry", "piękny", "brzydki", "trudny", "łatwy", "zły", "blisko", "Miło Cię poznać", "Cześć", "Dzień dobry", "Dzień dobry", "Dobry wieczór", "Dobranoc", "Jak się masz", "Dziękuję", "Nie", "Smaczne", "Do widzenia", "Tak", "Poniedziałek", "Wtorek", "Środa", "Czwartek", "Sobota", "jeden", "zero", "dwa", "piwo", "herbata"}
 
@@ -461,9 +451,9 @@ end
 do
 	-- Portuguese
 	local language = ix.languages:New()
-	language.name = "Португальский"
-	language.chat = "португальском"
 	language.uniqueID = "por"
+	language.name = "language.name.por"
+	language.chat = "language.chat.por"
 	language.icon = "flags16/pt.png"
 	language.gibberish = {"ano", "semana", "hoje", "amanhã", "ontem", "calendário", "segundo", "hora", "minuto", "em ponto", "uma hora", "pode", "usar", "fazer", "ir", "vir", "rir", "fazer", "ver", "longe", "pequeno", "bom", "bonito", "feio", "difícil", "fácil", "ruim", "perto", "Prazer em conhecê-lo", "Olá", "Bom dia", "Boa tarde", "Boa noite", "Boa noite", "Como vai você", "Obrigado", "Não", "Delicioso", "Tchau", "Sim", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sábado", "um", "zero", "dois", "cerveja", "chá"}
 
@@ -473,9 +463,9 @@ end
 do
 	-- Indonesian
 	local language = ix.languages:New()
-	language.name = "Индонезийский"
-	language.chat = "индонезийском"
 	language.uniqueID = "ind"
+	language.name = "language.name.ind"
+	language.chat = "language.chat.ind"
 	language.icon = "flags16/id.png"
 	language.gibberish = {"tahun", "minggu", "hari ini", "besok", "kemarin", "kalender", "detik", "jam", "menit", "jam", "satu jam", "bisa", "gunakan", "lakukan", "pergi", "datang", "tertawa", "buat", "lihat", "jauh", "kecil", "baik", "indah", "jelek", "sulit", "mudah", "buruk", "dekat", "Senang bertemu Anda", "Halo", "Selamat pagi", "Selamat siang", "Selamat sore", "Selamat malam", "Bagaimana kabarmu", "Terima kasih", "Tidak", "Enak", "Selamat tinggal", "Ya", "Senin", "Selasa", "Rabu", "Kamis", "Sabtu", "satu", "nol", "dua", "bir", "teh"}
 
@@ -485,9 +475,9 @@ end
 do
 	-- Czech
 	local language = ix.languages:New()
-	language.name = "Чешский"
-	language.chat = "чешском"
 	language.uniqueID = "cze"
+	language.name = "language.name.cze"
+	language.chat = "language.chat.cze"
 	language.icon = "flags16/cz.png"
 	language.gibberish = {"rok", "týden", "dnes", "zítra", "včera", "kalendář", "sekunda", "hodina", "minuta", "hodin", "jedna hodina", "může", "použít", "dělat", "jít", "přijít", "smát se", "udělat", "vidět", "daleko", "malý", "dobrý", "krásný", "hrozný", "těžký", "lehký", "špatný", "blízko", "Příjemné vás poznat", "Ahoj", "Dobré ráno", "Dobré odpoledne", "Dobrý večer", "Dobrou noc", "Jak se máš", "Děkuji", "Ne", "Chutná", "Nashledanou", "Ano", "Pondělí", "Úterý", "Středa", "Čtvrtek", "Sobota", "jeden", "nula", "dva", "pivo", "čaj"}
 
@@ -497,9 +487,9 @@ end
 do
 	-- Hungarian
 	local language = ix.languages:New()
-	language.name = "Венгерский"
-	language.chat = "венгерском"
 	language.uniqueID = "hun"
+	language.name = "language.name.hun"
+	language.chat = "language.chat.hun"
 	language.icon = "flags16/hu.png"
 	language.gibberish = {"év", "hét", "ma", "holnap", "tegnap", "naptár", "másodperc", "óra", "perc", "óra", "egy óra", "tud", "használ", "csinál", "megy", "jön", "nevet", "csinál", "lát", "messze", "kicsi", "jó", "szép", "csúnya", "nehez", "könnyű", "rossz", "közel", "Örülök, hogy találkoztunk", "Szia", "Jó reggelt", "Jó napot", "Jó estét", "Jó éjszakát", "Hogy vagy", "Köszönöm", "Nem", "Finom", "Viszlát", "Igen", "Hétfő", "Kedd", "Szerda", "Csütörtök", "Szombat", "egy", "nulla", "kettő", "sör", "tea"}
 
@@ -509,9 +499,9 @@ end
 do
 	-- Mongolian
 	local language = ix.languages:New()
-	language.name = "Монгольский"
-	language.chat = "монгольском"
 	language.uniqueID = "mon"
+	language.name = "language.name.mon"
+	language.chat = "language.chat.mon"
 	language.icon = "flags16/mn.png"
 	language.gibberish = {"жил", "долоо хоног", "өнөөдөр", "маргааш", "өчигдөр", "хуанли", "секунд", "цаг", "минут", "нэг цаг", "чадна", "ашиглах", "хийх", "явах", "ирэх", "инээх", "харах", "хол", "жижиг", "сайн", "сайхан", "муухай", "хүнд", "хялбар", "муу", "ойрхон", "Уулзсандаа таатай байна", "Сайн уу", "Өглөөний мэнд", "Өдрийн мэнд", "Оройн мэнд", "Сайхан амраарай", "Юу байна", "Баярлалаа", "Үгүй", "Амттай", "Баяртай", "Тийм", "Даваа гараг", "Мягмар гараг", "Лхагва гараг", "Пүрэв гараг", "Бямба гараг", "нэг", "тэг", "хоёр", "шар айраг", "цай", "ус", "хоол", "гурил", "талх", "жүрж", "алим", "ногоо", "мах", "өндөг", "цаг агаар", "гэр", "машин", "гудамж", "эмнэлэг", "сургууль", "их сургууль", "дэлгүүр", "зах", "ном", "кино", "театр", "аялал", "амралт", "ажил", "албан газар", "компьютер", "утас", "телевизор", "музeй", "цэцэрлэг", "ногоон", "хөх", "улаан", "шар", "цэнхэр", "цагаан", "хар"}
 
@@ -521,9 +511,9 @@ end
 do
 	-- Vietnamese
 	local language = ix.languages:New()
-	language.name = "Вьетнамский"
-	language.chat = "вьетнамском"
 	language.uniqueID = "vie"
+	language.name = "language.name.vie"
+	language.chat = "language.chat.vie"
 	language.icon = "flags16/vn.png"
 	language.gibberish = {"năm", "tuần", "hôm nay", "ngày mai", "hôm qua", "lịch", "giây", "giờ", "phút", "một giờ", "có thể", "sử dụng", "làm", "đi", "đến", "cười", "nhìn", "xa", "nhỏ", "tốt", "đẹp", "xấu", "nặng", "dễ", "tồi", "gần", "Rất vui được gặp bạn", "Xin chào", "Chào buổi sáng", "Chào buổi chiều", "Chào buổi tối", "Chúc ngủ ngon", "Bạn khỏe không", "Cảm ơn", "Không", "Ngon", "Tạm biệt", "Có", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ bảy", "một", "không", "hai", "bia", "trà", "nước", "thức ăn", "bột mì", "bánh mì", "cam", "táo", "rau", "thịt", "trứng", "thời tiết", "nhà", "xe hơi", "đường phố", "bệnh viện", "trường học", "đại học", "cửa hàng", "chợ", "sách", "phim", "rạp hát", "du lịch", "kỳ nghỉ", "công việc", "văn phòng", "máy tính", "điện thoại", "tivi", "bảo tàng", "vườn", "xanh lá cây", "xanh dương", "đỏ", "vàng", "xanh nước biển", "trắng", "đen"}
 
@@ -533,9 +523,9 @@ end
 do
 	-- Latin
 	local language = ix.languages:New()
-	language.name = "Латинский"
-	language.chat = "латинском"
 	language.uniqueID = "lat"
+	language.name = "language.name.lat"
+	language.chat = "language.chat.lat"
 	language.icon = "flags16/va.png"
 	language.gibberish = {"alibi", "vox", "mater", "factum", "ego", "magnus", "solus", "bellum", "venire", "deus", "mors", "civis", "terra", "angio", "ortho", "neuron", "soma", "pyon", "vici", "dies", "liberta", "ad", "faber", "est", "victoriam", "incepto", "ex", "vincit", "qui", "ardua"}
 
@@ -545,9 +535,9 @@ end
 do
 	-- Hebrew
 	local language = ix.languages:New()
-	language.name = "Иврит"
-	language.chat = "иврите"
 	language.uniqueID = "heb"
+	language.name = "language.name.heb"
+	language.chat = "language.chat.heb"
 	language.icon = "flags16/il.png"
 	language.gibberish = {"שנה", "שבוע", "היום", "מחר", "אתמול", "לוח שנה", "שנייה", "שעה", "דקה", "שעון", "שעה אחת", "יכול", "להשתמש", "לעשות", "ללכת", "לבוא", "לצחוק", "לעשות", "לראות", "רחוק", "קטן", "טוב", "יפה", "גרוע", "קשה", "קל", "רע", "קרוב", "נחמד להכיר אותך", "שלום", "בוקר טוב", "צהריים טובים", "ערב טוב", "לילה טוב", "איך אתה", "תודה", "לא", "נהדר", "להתראות", "כן", "יום שני", "יום שלישי", "יום רביעי", "יום חמישי", "יום שישי", "אחד", "אפס", "שתיים", "בירה", "תה"}
 
@@ -557,9 +547,9 @@ end
 do
 	-- Norway
 	local language = ix.languages:New()
-	language.name = "Норвежский"
-	language.chat = "норвежском"
 	language.uniqueID = "now"
+	language.name = "language.name.now"
+	language.chat = "language.chat.now"
 	language.icon = "flags16/no.png"
 	language.gibberish = {"kunne", "bruke", "gjøre", "gå", "komme", "le", "lage", "se", "langt", "liten",
 	"god", "vakker", "stygg", "vanskelig", "dårlig", "nære", "hallo", "takk", "nei", "deilig", "sig",
@@ -571,9 +561,9 @@ end
 do
 	-- Alien
 	local language = ix.languages:New()
-	language.name = "Зен"
-	language.chat = "языке Зен"
 	language.uniqueID = "xen"
+	language.name = "language.name.xen"
+	language.chat = "language.chat.xen"
 	language.icon = "icon16/briefcase.png"
 	language.notSelectable = true
 	language.color = Color(92, 29, 5)
@@ -591,9 +581,9 @@ end
 do
 	-- Combine
 	local language = ix.languages:New()
-	language.name = "Язык Альянса"
-	language.chat = "внеземном"
 	language.uniqueID = "imp"
+	language.name = "language.name.imp"
+	language.chat = "language.chat.imp"
 	language.icon = "icon16/briefcase.png"
 	language.notSelectable = true
 	language.color = Color(145, 45, 6)
@@ -611,14 +601,22 @@ end
 
 function PLUGIN:InitializedPlugins()
 	for _, v in pairs(ix.languages.stored) do
-		if v.name != "Зен" and v.name != "Язык Альянса" and v.name != "Язык Вортигонтов" then
+		if v.uniqueID != "xen" and v.uniqueID != "imp" and v.uniqueID != "vort" then
 			for i = 1, 5 do
 				local ITEM = ix.meta.Item:New("langbook_"..i..v.uniqueID)
 				ITEM:Base("skillbook")
 
-				ITEM.name = string.format("Учебник \"%s язык\" - ч. "..i, v.name)
-				ITEM.description = "Серия образовательных книг из 5 частей, посвященная изучению иностранного языка."
-				ITEM.category = "Учебники ч. "..i
+				ITEM.langID = v.uniqueID
+				ITEM.part = i
+				ITEM.name = "langbook.name"
+				ITEM.description = "langbook.desc"
+				ITEM.category = "langbook.category"
+				function ITEM:GetName()
+					return L("langbook.nameFormat", L("language.name."..self.langID), self.part)
+				end
+				function ITEM:GetCategory()
+					return L("langbook.categoryFormat", self.part)
+				end
 				ITEM.model = "models/n_models/n_book.mdl"
 				ITEM.skin = 5
 				ITEM.bookTime = 30 * 60
@@ -643,7 +641,7 @@ function PLUGIN:InitializedPlugins()
 						else
 							table.insert(knownLanguages, v.uniqueID)
 							character:SetLanguages(knownLanguages)
-							client:NotifyLocalized("Вы изучили "..v.name.." язык! ")
+							client:NotifyLocalized("lang.learned", L(v.name))
 						end
 					end
 				end

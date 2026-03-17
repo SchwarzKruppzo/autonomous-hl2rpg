@@ -1,5 +1,5 @@
-ITEM.name = "Бутылка со старой газировкой"
-ITEM.description = "Коричневая бутылка со старой газировкой внутри. Она уже давным давно выдохлась, но сладковатый вкус покрывает этот неприятный недостаток."
+ITEM.name = "item.old_soda"
+ITEM.description = "item.old_soda.desc"
 ITEM.model = "models/props_junk/garbage_plasticbottle003a.mdl"
 ITEM.cost = 7
 ITEM.width = 1

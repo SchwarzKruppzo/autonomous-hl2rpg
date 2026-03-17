@@ -1,5 +1,5 @@
-ITEM.name = "Пицца"
-ITEM.description = "Ещё тёплая пицца в белой картонной коробке. От нее веет запах былых времен и теста. Чёрные полоски на дне пиццы указывают на то, что она была приготовлена не в печи."
+ITEM.name = "item.pizza"
+ITEM.description = "item.pizza.desc"
 ITEM.model = "models/props_canteen/pizza_box.mdl"
 ITEM.cost = 24
 ITEM.width = 2

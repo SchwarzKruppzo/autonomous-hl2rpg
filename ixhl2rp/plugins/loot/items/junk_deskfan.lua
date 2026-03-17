@@ -1,6 +1,6 @@
-ITEM.name = "Настольный вентилятор"
-ITEM.description = "Обычная настольная модель с металлической основой и пластиковыми лопастями. Он выглядит изношенным и сломанным: лопасти повреждены, несколько из них отсутствуют, а корпус помят."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_deskfan"
+ITEM.description = "item.junk_deskfan.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_office/deskfan.mdl"
 ITEM.width = 1
 ITEM.height = 2

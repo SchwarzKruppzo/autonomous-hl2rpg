@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Шина"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_tire"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_tire"
 RECIPE.results = {
 	mat_resine = {2, 3}

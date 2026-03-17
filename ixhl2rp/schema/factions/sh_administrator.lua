@@ -1,5 +1,5 @@
-FACTION.name = "Городской Администратор"
-FACTION.description = "Человеческое представительство Альянса на нашей планете."
+FACTION.name = "faction.administrator"
+FACTION.description = "faction.administrator.desc"
 FACTION.color = Color(255, 200, 100, 255)
 FACTION.bHumanVoices = true
 FACTION.bCanUseRations = true

@@ -1,0 +1,2 @@
+ix.Locale:Build("fr")
+

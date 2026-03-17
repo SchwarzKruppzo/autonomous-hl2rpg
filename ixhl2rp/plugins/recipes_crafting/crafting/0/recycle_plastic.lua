@@ -1,5 +1,5 @@
-RECIPE.name = "Обработанный пластик"
-RECIPE.category = "Переработка"
+RECIPE.name = "recipe.crafting.recycle_plastic"
+RECIPE.category = "recipe.category.recycling"
 RECIPE.requirements = {
 	empty_plastic_can = 4
 }

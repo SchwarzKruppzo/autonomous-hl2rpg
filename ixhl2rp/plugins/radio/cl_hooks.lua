@@ -63,8 +63,8 @@ function PLUGIN:PostChatboxDraw(width, height, alpha)
 		local color = ColorAlpha(color_white, alpha)
 
 		DisableClipping(true)
-			draw.SimpleText("Radio channels: "..listeningOn, "BudgetLabel", 0, -fontHeight * 2, color)
-			draw.SimpleText("Transmitting on: "..transmittingOn, "BudgetLabel", 0, -fontHeight, color)
+			draw.SimpleText(L("radioChannelsLabel", listeningOn), "BudgetLabel", 0, -fontHeight * 2, color)
+			draw.SimpleText(L("radioTransmittingLabel", transmittingOn), "BudgetLabel", 0, -fontHeight, color)
 		DisableClipping(false)
 	end
 end
@@ -81,7 +81,7 @@ netstream.Hook("ixSetChannel", function(channelID, channelNumber)
 end)
 
 netstream.Hook("ixRadioFrequency", function(itemID, default)
-	Derma_StringRequest("Frequency", "What would you like to set the frequency to?", default, function(text)
+	Derma_StringRequest(L("radioFrequencyTitle"), L("radioFrequencyPrompt"), default, function(text)
 		netstream.Start("ixRadioFrequency", itemID, text)
 	end)
 end)

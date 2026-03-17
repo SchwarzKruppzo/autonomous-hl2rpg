@@ -1,9 +1,9 @@
-ITEM.name = "AR-11X"
-ITEM.description = "[Уникальный внешний вид для M4A4]"
+ITEM.name = "item.riff_m4"
+ITEM.description = "item.riff_m4.desc"
 ITEM.model = "models/tnb/trpweapons/w_tc_syndicate.mdl"
 ITEM.class = "riff_m4"
 ITEM.weaponCategory = "primary"
-ITEM.category = "Уникальное"
+ITEM.category = "item.category.unique"
 ITEM.rarity = 2
 ITEM.width = 4
 ITEM.height = 2

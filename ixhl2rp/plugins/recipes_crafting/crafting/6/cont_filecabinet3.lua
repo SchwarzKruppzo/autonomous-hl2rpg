@@ -1,5 +1,5 @@
-RECIPE.name = "Высокая картотека"
-RECIPE.category = "Контейнеры"
+RECIPE.name = "recipe.crafting.cont_filecabinet3"
+RECIPE.category = "recipe.category.containers"
 RECIPE.requirements = {
 	mat_oil = 2,
 	metal_reclaimed = 9,

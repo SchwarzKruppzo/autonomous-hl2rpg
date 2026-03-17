@@ -1,6 +1,6 @@
-ITEM.name = "Сгоревшая сковорода"
-ITEM.description = "Поверхность сковородки покрыта потертостями и небольшими вмятинами, следы длительного использования. Ручка ободрана, исцарапана и немного сколота на краю. На дне сковороды видны яркие следы гари и пригоревших кусков пищи."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_metalpot"
+ITEM.description = "item.junk_metalpot.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_c17/metalpot002a.mdl"
 ITEM.width = 1
 ITEM.height = 2

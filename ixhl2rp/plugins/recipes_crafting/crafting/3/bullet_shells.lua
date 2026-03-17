@@ -1,5 +1,5 @@
-RECIPE.name = "Коробочка с гильзами"
-RECIPE.category = "Компоненты"
+RECIPE.name = "recipe.crafting.bullet_shells"
+RECIPE.category = "recipe.category.components"
 RECIPE.requirements = {
 	metal_reclaimed = 1
 }

@@ -1,5 +1,5 @@
-ITEM.name = "Ресивер ПП"
-ITEM.description = "Верхний ресивер для ПП. Таит в себе не только крышку ствольной коробки, но и различные компоненты автоматики оружия."
+ITEM.name = "item.gun_smg_receiver"
+ITEM.description = "item.gun_smg_receiver.desc"
 ITEM.model = "models/cellar/craft/smg_receiver.mdl"
 ITEM.width = 3
 ITEM.height = 1
@@ -8,5 +8,5 @@ ITEM.iconCam = {
 	ang = Angle(71.582366943359, -79.481315612793, 0),
 	fov = 4.201101652903,
 }
-ITEM.category = "Части оружия"
+ITEM.category = "item.category.weapon_parts"
 ITEM.contraband = true

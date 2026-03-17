@@ -1,5 +1,5 @@
-ITEM.name = "Бутылированное кола"
-ITEM.description = "Довольно забавно видеть такую шипучку в таком тёмном месте, как этот город. Но, тем не менее, эта кола даже лучше, чем то, что было раньше!"
+ITEM.name = "item.cola"
+ITEM.description = "item.cola.desc"
 ITEM.model = "models/bioshockinfinite/dickle_jar.mdl"
 ITEM.cost = 9
 ITEM.width = 1

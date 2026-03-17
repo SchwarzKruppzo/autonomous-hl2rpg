@@ -1,5 +1,5 @@
-RECIPE.name = "Самодельное топливо"
-RECIPE.category = "Топливо"
+RECIPE.name = "recipe.crafting.gascan"
+RECIPE.category = "recipe.category.fuel"
 RECIPE.requirements = {
 	bottle_of_alcohol = 3,
 	mat_acid = 5,

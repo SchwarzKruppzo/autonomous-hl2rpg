@@ -1,5 +1,5 @@
-RECIPE.name = "Детоксикатор"
-RECIPE.category = "Химия"
+RECIPE.name = "recipe.medical.detoxic"
+RECIPE.category = "recipe.category.chemistry"
 RECIPE.requirements = {
 	mat_acid = 1,
 	chem_mutroot = 2,

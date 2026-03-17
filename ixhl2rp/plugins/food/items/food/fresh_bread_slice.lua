@@ -1,5 +1,5 @@
-ITEM.name = "Ломтик хлеба"
-ITEM.description = "Порезанный хлеб на один единственный ломтик, универсальная основа для всего. Можно положить хоть мясо, хоть салат, хоть сыр."
+ITEM.name = "item.fresh_bread_slice"
+ITEM.description = "item.fresh_bread_slice.desc"
 ITEM.model = "models/foodnhouseholditems/bread_slice.mdl"
 ITEM.cost = 12
 ITEM.width = 1

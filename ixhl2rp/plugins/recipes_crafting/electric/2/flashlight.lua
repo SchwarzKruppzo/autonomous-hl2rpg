@@ -1,5 +1,5 @@
-RECIPE.name = "Фонарик"
-RECIPE.category = "Разное"
+RECIPE.name = "recipe.electric.flashlight"
+RECIPE.category = "recipe.category.misc"
 RECIPE.requirements = {
 	mat_plastic = 1,
 	electro_reclaimed = 1,

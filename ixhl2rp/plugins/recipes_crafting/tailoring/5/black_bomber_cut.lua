@@ -1,5 +1,5 @@
-RECIPE.name = "Черный бомбер-безрукавка"
-RECIPE.category = "Одежда — тело"
+RECIPE.name = "recipe.tailoring.black_bomber_cut"
+RECIPE.category = "recipe.category.body"
 RECIPE.requirements = {
 	mat_cloth_reclaimed = 1,
 	mat_leather = 2,

@@ -199,7 +199,7 @@ function SWEP:PrimaryAttack()
 
 	if self.Owner:Health() <= 50 or value < 0 or !HasFood(self.Owner, 15) then
 		if SERVER then
-			self.Owner:NotifyLocalized("Вы слишком слабы, чтобы использовать свои силы!")
+			self.Owner:NotifyLocalized("vort.tooWeak")
 		end
 
 		return

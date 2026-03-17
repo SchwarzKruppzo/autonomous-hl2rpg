@@ -1,6 +1,6 @@
-ITEM.name = "Кевлар"
-ITEM.description = "Сложная ткань, созданная на одно из местных химических предприятий. Очень прочная. Обычно используется при производстве бронежилетов."
-ITEM.category = "Базовые компоненты"
+ITEM.name = "item.mat_kevlar"
+ITEM.description = "item.mat_kevlar.desc"
+ITEM.category = "item.category.raw"
 ITEM.model = "models/autonomous/kevlar.mdl"
 ITEM.width = 2
 ITEM.height = 1

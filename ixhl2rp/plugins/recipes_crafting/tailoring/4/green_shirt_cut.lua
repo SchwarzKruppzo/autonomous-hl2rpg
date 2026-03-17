@@ -1,5 +1,5 @@
-RECIPE.name = "Зеленая рабочая безрукавка"
-RECIPE.category = "Одежда — тело"
+RECIPE.name = "recipe.tailoring.green_shirt_cut"
+RECIPE.category = "recipe.category.body"
 RECIPE.requirements = {
 	mat_cloth_reclaimed = 2,
 	box_of_needles = 1,

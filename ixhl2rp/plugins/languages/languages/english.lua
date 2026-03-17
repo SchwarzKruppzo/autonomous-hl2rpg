@@ -1,0 +1,15 @@
+ix.Locale:Build("en")
+
+cmdCharSetLanguage 				= "Add the specified language to the character's available languages."
+cmdCharCheckLanguageDesc			= "Check the character's languages."
+cmdCharRemoveLanguageDesc			= "Remove the specified language from the character."
+langVortShoutDesc					= "Calls out in Vortigaunt; can be heard across half the map."
+lang.dontKnow = "I don't know this language."
+lang.alreadyKnows = "This character already knows %s!"
+lang.addedLanguage = "You added to character %s the %s language"
+lang.doesntExist = "This language doesn't exist!"
+lang.charNotFound = "The specified character was not found!"
+lang.doesntKnow = "This character doesn't know %s!"
+lang.removedLanguage = "You removed %s language from character %s."
+lang.learned = "You have learned %s!"
+lang.knowsLanguages = "%s knows the following languages: %s"

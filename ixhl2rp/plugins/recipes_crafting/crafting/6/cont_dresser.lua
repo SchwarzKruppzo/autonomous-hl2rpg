@@ -1,5 +1,5 @@
-RECIPE.name = "Шкаф для одежды"
-RECIPE.category = "Контейнеры"
+RECIPE.name = "recipe.crafting.cont_dresser"
+RECIPE.category = "recipe.category.containers"
 RECIPE.requirements = {
 	mat_wood = 16,
 	box_of_nails = 3,

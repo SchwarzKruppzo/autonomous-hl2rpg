@@ -1,5 +1,5 @@
-ITEM.name = "Помидор"
-ITEM.description = "Синтетический, а может и натуральный помидор, что внутри настолько сочный, что при укусе весь сок разлетается в разные стороны."
+ITEM.name = "item.tomato"
+ITEM.description = "item.tomato.desc"
 ITEM.model = "models/foodnhouseholditems/tomato.mdl"
 ITEM.cost = 12
 ITEM.width = 1
@@ -28,7 +28,7 @@ ITEM.functions.zfarm = {
 		local chanceSkill = math.Remap(skill, 0, 10, 0, 75)
 
 		if skill <= 0 then
-			client:Notify("Необходим навык фермерства 1 и выше!")
+			client:NotifyLocalized("farming.needSkill")
 			return
 		end
 		
@@ -41,7 +41,7 @@ ITEM.functions.zfarm = {
 				ix.Item:Spawn(client, nil, new_item)
 			end
 		else
-			client:Notify("Вам не удалось подготовить семена!")
+			client:NotifyLocalized("farming.seedFailed")
 			return
 		end
 

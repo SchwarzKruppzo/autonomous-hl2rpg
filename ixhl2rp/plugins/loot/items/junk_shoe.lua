@@ -1,6 +1,6 @@
-ITEM.name = "Башмак"
-ITEM.description = "Установить где находится левый не получилось, да и сам ботинок явно видал лучшие времена - порванная кожа и отсутствующие элементы ботинка дают явно понять, что его лучше выкинуть, чем пытаться чинить."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_shoe"
+ITEM.description = "item.junk_shoe.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_junk/shoe001a.mdl"
 ITEM.width = 1
 ITEM.height = 1

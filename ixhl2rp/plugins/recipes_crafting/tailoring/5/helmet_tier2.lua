@@ -1,5 +1,5 @@
-RECIPE.name = "Каска"
-RECIPE.category = "Броня — голова"
+RECIPE.name = "recipe.tailoring.helmet_tier2"
+RECIPE.category = "recipe.category.armor_head"
 RECIPE.requirements = {
 	mat_kevlar = 3,
 	metal_reclaimed = 2,

@@ -12,7 +12,7 @@ ItemFood.reagent_flags = ix.Reagents.holder.injectable
 function ItemFood:Init()
 	ix.meta.ItemReagentContainer.Init(self)
 
-	self.category = "Еда"
+	self.category = "categoryFood"
 
 	self.stats = {
 		container = false,
@@ -27,7 +27,7 @@ function ItemFood:Init()
 	}
 
 	self.functions.open = {
-		name = "Вскрыть",
+		name = "useOpen",
 		OnRun = function(item)
 			item:SetData("closed", false)
 			item:StartRotProgress()
@@ -39,7 +39,7 @@ function ItemFood:Init()
 	}
 
 	self.functions.use = {
-		name = "Съесть",
+		name = "useFood",
 		OnRun = function(item)
 			local client = item.player
 			local character = client:GetCharacter()
@@ -90,7 +90,7 @@ function ItemFood:Init()
 	}
 
 	self.functions.useall = {
-		name = "Съесть всё",
+		name = "useFoodAll",
 		OnRun = function(item)
 			local client = item.player
 			local character = client:GetCharacter()
@@ -321,7 +321,7 @@ if CLIENT then
 					expDateT = tooltip:AddRowAfter("name", "expirationDate")
 					expDateT:SetBackgroundColor(derma.GetColor("Error", tooltip))
 					expDateT:SetTextColor(derma.GetColor("Warning", expDateT))
-					expDateT:SetText("Испортится через: " .. ParseDuration((expirationDate - os.time()) / 60))
+					expDateT:SetText(L("expirationDatePrefix") .. ParseDuration((expirationDate - os.time()) / 60))
 				end
 			end
 

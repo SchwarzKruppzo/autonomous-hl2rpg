@@ -1,4 +1,4 @@
-ITEM.name = "Довоенная форма с бронежилетом PASGT"
+ITEM.name = "item.torso_nato_tier2"
 ITEM.model = "models/cellar/prop_torso_nato.mdl"
 ITEM.width = 2
 ITEM.height = 2
@@ -8,12 +8,12 @@ ITEM.iconCam = {
 	fov = 2.9430843245987,
 }
 ITEM.rarity = 1
-ITEM.description = ""
+ITEM.description = "item.torso_nato_tier2.desc"
 ITEM.equip_inv = 'torso'
 ITEM.equip_slot = nil
-ITEM.bodyGroups = {
-	[1] = 31
-}
+--ITEM.bodyGroups = {
+--	[1] = 31
+--}
 ITEM.armor = {
 	class = 2,
 	max_durability = 900,
@@ -49,12 +49,17 @@ ITEM.armor = {
 }
 ITEM.contraband = true
 
-function ITEM:GetOutfitData()
-	return {
-		slot = "torso",
-		model = {
-			[GENDER_MALE] = "models/cellar/male_torso_nato.mdl",
-			[GENDER_FEMALE] = "models/cellar/female_jacket_nato.mdl",
-		}
+
+ITEM.displayID = ix.Appearance:New("nato_torso", {
+	slot = ix.Appearance.Slot.Torso,
+	layer = ix.Appearance.Layer.Top,
+	bodyMask = "Torso_OnlyHands",
+	variants = {
+		male = {
+			model = "models/cellar/male_torso_nato.mdl"
+		},
+		female = {
+            model = "models/cellar/female_jacket_nato.mdl"
+        },
 	}
-end
+})

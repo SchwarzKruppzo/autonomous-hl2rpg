@@ -125,7 +125,7 @@ if SERVER then
 end
 
 ix.command.Add("CharSetLevel", {
-	description = "",
+	description = "@cmdCharSetLevel",
 	privilege = "Manage Character Levels",
 	adminOnly = true,
 	arguments = {

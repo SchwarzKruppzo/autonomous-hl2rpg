@@ -1,9 +1,9 @@
-ITEM.category = "Строительство - оборона"
+ITEM.category = "item.category.construction_defend"
 ITEM.model = "models/props_combine/combine_barricade_short01a.mdl"
 ITEM.width = 4
 ITEM.height = 3
-ITEM.name = "Сборка: Баррикада"
-ITEM.description = "Эти баррикады предназначены для создания прочных преград, которые эффективно защищают ключевые участки и укрепляют оборону."
+ITEM.name = "item.def_barricade"
+ITEM.description = "item.def_barricade.desc"
 ITEM.preview_model = "models/props_combine/combine_barricade_short01a.mdl"
 ITEM.iconCam = {
 	pos = Vector(903.61859130859, -25.899921417236, -69.370834350586),

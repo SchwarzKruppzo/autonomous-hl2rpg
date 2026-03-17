@@ -1,5 +1,5 @@
-ITEM.name = "Монтировка"
-ITEM.description = "Цельнометаллическая монтировка, скованная в пучине войны, которой не суждено закончиться. Обладает приличным весом, боевым окрасом и смыслом, который многим еще только предстоит узнать, если те доживут до момента в будущем, который обязательно случится."
+ITEM.name = "item.crowbar"
+ITEM.description = "item.crowbar.desc"
 ITEM.model = "models/weapons/tfa_nmrih/w_me_crowbar.mdl"
 ITEM.class = "tfa_nmrih_crowbar"
 ITEM.weaponCategory = "melee"

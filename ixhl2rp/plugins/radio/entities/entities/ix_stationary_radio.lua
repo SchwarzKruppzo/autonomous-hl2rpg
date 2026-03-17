@@ -58,9 +58,9 @@ if (SERVER) then
 			if (channelTable.stationaryCanAccess) then
 				self:SetFrequency(channelTable.uniqueID)
 
-				client:Notify("You have set this stationary radio's channel to "..channelTable.name..".")
+				client:NotifyLocalized("radioStationaryChannelSet", channelTable.name)
 			else
-				client:Notify("This stationary radio cannot tune in on that channel!")
+				client:NotifyLocalized("radioStationaryCannotTune")
 			end
 		elseif (self:GetChannelTuningEnabled() and string.find(frequency, "^%d%d%d%.%d$")) then
 			local first = string.match(frequency, "(%d)%d%d%.%d")
@@ -77,12 +77,12 @@ if (SERVER) then
 				netstream.Start(nil, "ixCreateItemRadioChannel", "freq " .. frequency, freqID)
 				self:SetFrequency(freqID)
 
-				client:Notify("You have set this stationary radio's frequency to " .. frequency .. ".")
+				client:NotifyLocalized("radioStationaryFrequencySet", frequency)
 			else
-				client:Notify("The frequency must be between 100.0 and 999.9!")
+				client:NotifyLocalized("radioFrequencyRange")
 			end
 		else
-			client:Notify("The radio frequency must look like xxx.x!")
+			client:NotifyLocalized("radioFrequencyFormat")
 		end
 	end
 else
@@ -92,7 +92,7 @@ else
 
 	function ENT:GetEntityMenu()
 		local options = {
-			["Toggle"] = function()
+			[L("use.toggle")] = function()
 				ix.menu.NetworkChoice(self, "Toggle")
 
 				return false
@@ -100,9 +100,8 @@ else
 		}
 
 		if (self:GetChannelTuningEnabled()) then
-			options["Set Frequency"] = function()
-				-- we'll manually network it because we want to send custom data over
-				Derma_StringRequest("Set Frequency", "Please enter the frequency of this radio.", "", function(text)
+			options[L("radioSetFrequency")] = function()
+				Derma_StringRequest(L("radioSetFrequency"), L("radioSetFrequencyPrompt"), "", function(text)
 					ix.menu.NetworkChoice(self, "Set Frequency", text)
 				end)
 
@@ -119,7 +118,7 @@ else
 
 		local name = tooltip:AddRow("name")
 		name:SetImportant()
-		name:SetText("Радио")
+		name:SetText(L("item.stationary_radio"))
 		name:SetBackgroundColor(color)
 		name:SizeToContents()
 
@@ -130,7 +129,7 @@ else
 
 			local freq = tooltip:AddRowAfter("name")
 			freq:SetBackgroundColor(derma.GetColor("Warning", tooltip))
-			freq:SetText("Частота: " .. first .. "." .. second)
+			freq:SetText(L("radioFrequencyLabel", first .. "." .. second))
 			freq:SizeToContents()
 		end
 	end

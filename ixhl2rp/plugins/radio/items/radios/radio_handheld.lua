@@ -1,5 +1,5 @@
-ITEM.name = "Рация"
-ITEM.description = "Обычная портативная рация с регулятором частоты."
+ITEM.name = "item.radio_handheld"
+ITEM.description = "item.radio_handheld.desc"
 ITEM.price = 50
 ITEM.stationaryCanAccess = true
 ITEM.contraband = true
@@ -9,9 +9,9 @@ ITEM:AddData("frequency", {
 })
 
 ITEM.functions.Frequency = {
-	name = "Выставить частоту",
+	name = "radioSetFrequency",
 	OnClick = function(item)
-		Derma_StringRequest("Частота", "Введите новую частоту рации", item:GetData("frequency", "100.0"), function(text)
+		Derma_StringRequest(L("radioFrequencyTitle"), L("radioFrequencyPrompt"), item:GetData("frequency", "100.0"), function(text)
 			netstream.Start("ixRadioFrequency", item:GetID(), text)
 		end)
 	end,

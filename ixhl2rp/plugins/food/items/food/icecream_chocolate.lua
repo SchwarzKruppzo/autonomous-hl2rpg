@@ -1,5 +1,5 @@
-ITEM.name = "Шоколадное мороженное"
-ITEM.description = "Шоколадный бум! Ведерко с мороженным внутри, хоть вы и знаете, что от мороженного тут только одно название. Но с шоколадом не обманули, он правда тут есть!"
+ITEM.name = "item.icecream_chocolate"
+ITEM.description = "item.icecream_chocolate.desc"
 ITEM.model = "models/foodnhouseholditems/icecream4.mdl"
 ITEM.cost = 12
 ITEM.width = 1

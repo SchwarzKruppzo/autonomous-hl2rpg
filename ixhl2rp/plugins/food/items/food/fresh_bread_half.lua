@@ -1,5 +1,5 @@
-ITEM.name = "Половина буханки"
-ITEM.description = "Свежая порезанная буханка хлеба из ржаной муки, тем более он сделан своими руками."
+ITEM.name = "item.fresh_bread_half"
+ITEM.description = "item.fresh_bread_half.desc"
 ITEM.model = "models/foodnhouseholditems/bread_half.mdl"
 ITEM.cost = 12
 ITEM.width = 1

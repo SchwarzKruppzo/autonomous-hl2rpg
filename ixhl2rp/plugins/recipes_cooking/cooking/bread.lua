@@ -1,5 +1,5 @@
-RECIPE.name = "Хлеб"
-RECIPE.category = "Выпечка"
+RECIPE.name = "recipe.cooking.bread"
+RECIPE.category = "recipe.category.cooking.baking"
 RECIPE.requirements = {
 	cook_flour = 1,
 	cook_yeast = 1,

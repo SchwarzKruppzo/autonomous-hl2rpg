@@ -1,6 +1,6 @@
-ITEM.name = "Химические реагенты"
-ITEM.description = ""
-ITEM.category = "Базовые компоненты"
+ITEM.name = "item.mat_acid"
+ITEM.description = "item.mat_acid.desc"
+ITEM.category = "item.category.raw"
 ITEM.model = "models/props_lab/chemjar01.mdl"
 ITEM.width = 1
 ITEM.height = 1

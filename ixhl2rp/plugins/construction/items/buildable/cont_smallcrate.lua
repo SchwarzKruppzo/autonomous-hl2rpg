@@ -1,4 +1,4 @@
-ITEM.category = "Строительство - контейнеры"
+ITEM.category = "item.category.construction_containers"
 ITEM.model = "models/cellar/tool_crate_wood.mdl"
 ITEM.iconCam = {
 	pos = Vector(160.73175048828, -0.035080194473267, 752.37615966797),
@@ -8,6 +8,6 @@ ITEM.iconCam = {
 ITEM.width = 5
 ITEM.height = 4
 
-ITEM.name = "Сборка: небольшой ящик"
-ITEM.description = "Изготовленный из прочной древесины, ящик предназначен для транспортировки в самые трудные места."
+ITEM.name = "item.cont_smallcrate"
+ITEM.description = "item.cont_smallcrate.desc"
 ITEM.preview_model = "models/Items/item_item_crate.mdl"

@@ -1,5 +1,5 @@
-RECIPE.name = "Коричневый плащ"
-RECIPE.category = "Одежда — тело"
+RECIPE.name = "recipe.tailoring.brown_coat"
+RECIPE.category = "recipe.category.body"
 RECIPE.requirements = {
 	mat_cloth = 5,
 	mat_resine = 1,

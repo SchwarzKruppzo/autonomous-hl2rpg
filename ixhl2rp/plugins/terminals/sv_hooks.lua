@@ -69,7 +69,7 @@ net.Receive("ixTerminalRequest", function(len, player)
 
 	local waypoint = {
 		pos = terminal:GetPos() + terminal:GetUp() * 20 + terminal:GetForward() * 10,
-		text = string.format("Вызов [%s #%s]", b:GetData("name", "UNKNOWN"), b:GetData("cid", 0)),
+		text = L("terminalWaypointCall", b:GetData("name", "UNKNOWN"), b:GetData("cid", 0)),
 		color = Color(255, 180, 0),
 		addedBy = player,
 		time = CurTime() + 300

@@ -1,5 +1,5 @@
-RECIPE.name = "Строительная каска"
-RECIPE.category = "Одежда — голова"
+RECIPE.name = "recipe.tailoring.helmet_worker"
+RECIPE.category = "recipe.category.head"
 RECIPE.requirements = {
 	mat_plastic = 2,
 	mat_resine = 1,

@@ -1,8 +1,8 @@
-ITEM.name = "MP-443"
-ITEM.description = "[Уникальный внешний вид для USP Match]"
+ITEM.name = "item.mp443"
+ITEM.description = "item.mp443.desc"
 ITEM.model = "models/weapons/tfa_ins2/mp443/w_mp443.mdl"
 ITEM.class = "arccw_usp_mp443"
-ITEM.category = "Уникальное"
+ITEM.category = "item.category.unique"
 ITEM.weaponCategory = "sidearm"
 ITEM.width = 2
 ITEM.height = 1

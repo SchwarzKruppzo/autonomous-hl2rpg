@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Перегоревшая электроника"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.electric.unwire_circuit"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_circuit"
 RECIPE.results = {
 	electro_circuit = {0, 1},

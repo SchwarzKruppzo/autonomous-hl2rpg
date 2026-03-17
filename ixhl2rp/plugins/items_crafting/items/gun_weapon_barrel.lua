@@ -1,5 +1,5 @@
-ITEM.name = "Ствол"
-ITEM.description = "Стандартная заготовка для длинного ствола. Пусть он и старый, но все еще не бесполезный."
+ITEM.name = "item.gun_weapon_barrel"
+ITEM.description = "item.gun_weapon_barrel.desc"
 ITEM.model = "models/cellar/craft/weapon_barrel.mdl"
 ITEM.width = 3
 ITEM.height = 1
@@ -8,5 +8,5 @@ ITEM.iconCam = {
 	ang = Angle(91.326133728027, -90.263740539551, 0),
 	fov = 5.9380955341222,
 }
-ITEM.category = "Части оружия"
+ITEM.category = "item.category.weapon_parts"
 ITEM.contraband = true

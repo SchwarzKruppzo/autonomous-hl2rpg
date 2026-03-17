@@ -1,5 +1,5 @@
-ITEM.name = "Хот-дог"
-ITEM.description = "Буквально сосиска в тесте. Правда, само тесто больше похоже на песок, а сосиска больше похожа на резину. С кетчупом пойдёт."
+ITEM.name = "item.hot_dog"
+ITEM.description = "item.hot_dog.desc"
 ITEM.model = "models/foodnhouseholditems/hotdog.mdl"
 ITEM.cost = 8
 ITEM.width = 1

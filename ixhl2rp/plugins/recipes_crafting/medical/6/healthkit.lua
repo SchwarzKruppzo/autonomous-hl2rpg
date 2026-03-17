@@ -1,5 +1,5 @@
-RECIPE.name = "Аптечка Альянса"
-RECIPE.category = "Медицина"
+RECIPE.name = "recipe.medical.healthkit"
+RECIPE.category = "recipe.category.medical"
 RECIPE.requirements = {
 	chem_medpile = 1,
 	bandage = 1,

@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Золотые часы"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.electric.unwire_rolex"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_rolex"
 RECIPE.results = {
 	electro_circuit = {0, 1},

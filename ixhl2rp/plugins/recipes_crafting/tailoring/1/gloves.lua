@@ -1,5 +1,5 @@
-RECIPE.name = "Перчатки без пальцев"
-RECIPE.category = "Одежда — руки"
+RECIPE.name = "recipe.tailoring.gloves"
+RECIPE.category = "recipe.category.hands"
 RECIPE.requirements = {
 	mat_cloth = 2,
 	box_of_needles = 1

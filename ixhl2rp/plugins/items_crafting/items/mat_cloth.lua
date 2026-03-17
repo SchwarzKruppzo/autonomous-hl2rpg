@@ -1,7 +1,7 @@
-ITEM.name = "Рваная ткань"
-ITEM.description = "Моток ткани, полученный при разрыве какого-то элемента одежды."
+ITEM.name = "item.mat_cloth"
+ITEM.description = "item.mat_cloth.desc"
 ITEM.model = "models/illusion/eftcontainers/bandage.mdl"
-ITEM.category = "Базовые компоненты"
+ITEM.category = "item.category.raw"
 ITEM.width = 1
 ITEM.height = 1
 ITEM.cost = 5

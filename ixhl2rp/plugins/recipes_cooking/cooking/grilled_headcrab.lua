@@ -1,5 +1,5 @@
-RECIPE.name = "Шашлык из хедкраба"
-RECIPE.category = "Продукты"
+RECIPE.name = "recipe.cooking.grilled_headcrab"
+RECIPE.category = "recipe.category.cooking.products"
 RECIPE.requirements = {
 	cook_spices = 1,
 	raw_headcrab = 1,

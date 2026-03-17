@@ -1,5 +1,5 @@
-ITEM.name = "Жареная пиявка"
-ITEM.description = "Подгоревшая на огне пиявка с местных водоемов, таким особо не насытишься, но это лучше чем умереть с голода."
+ITEM.name = "item.cooked_leech"
+ITEM.description = "item.cooked_leech.desc"
 ITEM.model = "models/mosi/fallout4/props/food/prawn.mdl"
 ITEM.skin = 1
 ITEM.cost = 10

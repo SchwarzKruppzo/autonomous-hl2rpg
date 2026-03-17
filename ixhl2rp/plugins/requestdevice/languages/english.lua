@@ -12,6 +12,6 @@ request_device.gui.cancel 	= "CANCEL"
 
 rdNotFound 					= "Request device with assigned CID is not found!"
 
-request_device.chat.request 	= "Запрос от %s, #%s - \"%s\""
+request_device.chat.request 	= "Request from %s, #%s - \"%s\""
 request_device.chat.eavesdrop 	= "%s requests \"%s\""
-request_device.chat.loopback 	= "Устройство запроса передает \"%s\""
+request_device.chat.loopback 	= "Request device transmits \"%s\""

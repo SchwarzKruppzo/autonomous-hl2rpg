@@ -1,5 +1,5 @@
-ITEM.name = "Чемодан"
-ITEM.description = "Простой темно-коричневый чемодан."
+ITEM.name = "item.suitcase"
+ITEM.description = "item.suitcase.desc"
 ITEM.model = Model("models/weapons/w_suitcase_passenger.mdl")
 ITEM.rarity = 1
 ITEM.width = 4

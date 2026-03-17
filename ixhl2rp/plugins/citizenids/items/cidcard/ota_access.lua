@@ -1,4 +1,4 @@
-ITEM.name = "Доступ Сверхчеловеческого Надзора"
+ITEM.name = "item.ota_access"
 ITEM.model = Model("models/vintagethief/cellarproject/cid_card.mdl")
 ITEM.width = 1
 ITEM.height = 1

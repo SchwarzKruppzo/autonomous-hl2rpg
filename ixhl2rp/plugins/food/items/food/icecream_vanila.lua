@@ -1,5 +1,5 @@
-ITEM.name = "Ванильное мороженное"
-ITEM.description = "Ведерко с ванильным мороженным внутри, хоть вы и знаете, что от мороженного тут только одно название. Но с ванилью не обманули, она правда имеет такой вкус!"
+ITEM.name = "item.icecream_vanila"
+ITEM.description = "item.icecream_vanila.desc"
 ITEM.model = "models/foodnhouseholditems/icecream2.mdl"
 ITEM.cost = 12
 ITEM.width = 1

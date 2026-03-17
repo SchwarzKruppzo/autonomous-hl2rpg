@@ -1,6 +1,6 @@
-ITEM.name = "Ржавая труба"
-ITEM.description = "Металлический цилиндр с поверхностью, покрытой коричневым слоем ржавчины, по которому когда-то шла вода. Сейчас такое лишь может пригодиться для удара кому-то по голове."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_pipe"
+ITEM.description = "item.junk_pipe.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_canal/mattpipe.mdl"
 ITEM.width = 4
 ITEM.height = 1

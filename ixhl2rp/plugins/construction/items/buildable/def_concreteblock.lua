@@ -1,9 +1,9 @@
-ITEM.category = "Строительство - оборона"
+ITEM.category = "item.category.construction_defend"
 ITEM.model = "models/props_c17/concrete_barrier001a.mdl"
 ITEM.width = 5
 ITEM.height = 4
-ITEM.name = "Cборка: Бетонное укрепление"
-ITEM.description = "Массивный бетонный блок, предназначенный для создания оборонительных сооружений. Идеален для установки на строительных площадках и обеспечивания надежной защиты."
+ITEM.name = "item.def_concreteblock"
+ITEM.description = "item.def_concreteblock.desc"
 ITEM.preview_model = "models/props_c17/concrete_barrier001a.mdl"
 ITEM.iconCam = {
 	pos = Vector(1453.16015625, -26.780908584595, 292.10592651367),

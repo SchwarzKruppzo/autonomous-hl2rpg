@@ -1,5 +1,5 @@
-RECIPE.name = "Черная униформа гражданина"
-RECIPE.category = "Одежда — тело"
+RECIPE.name = "recipe.tailoring.black_shirt"
+RECIPE.category = "recipe.category.body"
 RECIPE.requirements = {
 	mat_cloth_reclaimed = 2,
 	mat_leather = 2,

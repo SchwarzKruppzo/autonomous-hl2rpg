@@ -47,7 +47,7 @@ end
 function Item:Init()
 	ix.meta.ItemEquipable.Init(self)
 
-	self.category = 'Citizen ID'
+	self.category = "item.category.cid"
 
 	self.functions.devEdit = {
 		name = "Admin Edit",
@@ -132,14 +132,14 @@ if CLIENT then
 		if cid then
 			local panel = tooltip:AddRowAfter("rarity", "cid")
 			panel:SetBackgroundColor(derma.GetColor("Warning", tooltip))
-			panel:SetText("Citizen ID: #" .. cid)
+			panel:SetText(L("cidCitizenIdLabel", cid))
 			panel:SizeToContents()
 		end
 
 		if number then
 			local panel = tooltip:AddRowAfter("rarity", "number")
 			panel:SetBackgroundColor(derma.GetColor("Warning", tooltip))
-			panel:SetText("Card ID: #" .. number)
+			panel:SetText(L("cidCardIdLabel", number))
 			panel:SizeToContents()
 		end
 

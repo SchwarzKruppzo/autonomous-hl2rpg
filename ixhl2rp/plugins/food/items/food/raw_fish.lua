@@ -1,5 +1,5 @@
-ITEM.name = "Сырая рыба"
-ITEM.description = "Неустановленный вид рыбы, что скорее всего мутировал до неузнаваемости. Внутри рыбки достаточно мясо, но сама по себе она костлявая." 
+ITEM.name = "item.raw_fish"
+ITEM.description = "item.raw_fish.desc" 
 ITEM.model = "models/foodnhouseholditems/fishcatfish.mdl"
 ITEM.cost = 12
 ITEM.width = 1

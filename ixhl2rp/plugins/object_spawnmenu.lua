@@ -4,6 +4,43 @@ PLUGIN.name = "Object Spawnmenu"
 PLUGIN.author = "Schwarz Kruppzo"
 PLUGIN.description = ""
 
+ix.lang.AddTable("ru", {
+	["objspawn.containers"] = "Контейнеры",
+	["objspawn.beds"] = "Кровати",
+	["objspawn.lootPoints"] = "Точки лута",
+	["objspawn.tab"] = "Объекты",
+	["objspawn.typeNormal"] = "Обычная",
+	["objspawn.typeGood"] = "Хорошая",
+	["objspawn.typeMedical"] = "Медицинская",
+})
+ix.lang.AddTable("en", {
+	["objspawn.containers"] = "Containers",
+	["objspawn.beds"] = "Beds",
+	["objspawn.lootPoints"] = "Loot points",
+	["objspawn.tab"] = "Objects",
+	["objspawn.typeNormal"] = "Normal",
+	["objspawn.typeGood"] = "Good",
+	["objspawn.typeMedical"] = "Medical",
+})
+ix.lang.AddTable("fr", {
+	["objspawn.containers"] = "Conteneurs",
+	["objspawn.beds"] = "Lits",
+	["objspawn.lootPoints"] = "Points de butin",
+	["objspawn.tab"] = "Objets",
+	["objspawn.typeNormal"] = "Normal",
+	["objspawn.typeGood"] = "Bon",
+	["objspawn.typeMedical"] = "Médical",
+})
+ix.lang.AddTable("es-es", {
+	["objspawn.containers"] = "Contenedores",
+	["objspawn.beds"] = "Camas",
+	["objspawn.lootPoints"] = "Puntos de botín",
+	["objspawn.tab"] = "Objetos",
+	["objspawn.typeNormal"] = "Normal",
+	["objspawn.typeGood"] = "Buena",
+	["objspawn.typeMedical"] = "Médica",
+})
+
 if SERVER then
 	return
 end
@@ -13,7 +50,7 @@ spawnmenu.AddContentType("ixContainer", function(container, data)
 
 	icon:SetContentType("ixItem")
 	icon:SetSpawnName(data[1])
-	icon:SetName(string.format("%s (%sx%s)", data[2], data[3], data[4]))
+	icon:SetName(string.format("%s (%sx%s)", L(data[2]), data[3], data[4]))
 
 	icon.model = vgui.Create("ModelImage", icon)
 	icon.model:SetMouseInputEnabled(false)
@@ -36,9 +73,9 @@ spawnmenu.AddContentType("ixContainer", function(container, data)
 end)
 
 local types = {
-	[0] = "Обычная",
-	[1] = "Хорошая",
-	[3] = "Медицинская",
+	[0] = "objspawn.typeNormal",
+	[1] = "objspawn.typeGood",
+	[3] = "objspawn.typeMedical",
 }
 
 spawnmenu.AddContentType("ixBed", function(container, data)
@@ -46,7 +83,7 @@ spawnmenu.AddContentType("ixBed", function(container, data)
 
 	icon:SetContentType("ixItem")
 	icon:SetSpawnName(data[1])
-	icon:SetName(string.format("%s (x%s)", types[data[2]], data[3]))
+	icon:SetName(string.format("%s (x%s)", L(types[data[2]]), data[3]))
 
 	icon.model = vgui.Create("ModelImage", icon)
 	icon.model:SetMouseInputEnabled(false)
@@ -101,7 +138,7 @@ local function CreateObjectPanel()
 	local base = vgui.Create("SpawnmenuContentPanel")
 	local tree = base.ContentNavBar.Tree
 
-	local containers = tree:AddNode("Контейнеры", "icon16/package.png")
+	local containers = tree:AddNode(L("objspawn.containers"), "icon16/package.png")
 	function containers:DoPopulate()
 		if (self.Container) then return end
 
@@ -126,7 +163,7 @@ local function CreateObjectPanel()
 		base:SwitchPanel(self.Container)
 	end
 
-	local beds = tree:AddNode("Кровати", "icon16/heart.png")
+	local beds = tree:AddNode(L("objspawn.beds"), "icon16/heart.png")
 	function beds:DoPopulate()
 		if (self.Container) then return end
 
@@ -150,7 +187,7 @@ local function CreateObjectPanel()
 		base:SwitchPanel(self.Container)
 	end
 
-	local loots = tree:AddNode("Точки лута", "icon16/heart.png")
+	local loots = tree:AddNode(L("objspawn.lootPoints"), "icon16/heart.png")
 	function loots:DoPopulate()
 		if (self.Container) then return end
 
@@ -184,7 +221,7 @@ local function CreateObjectPanel()
 	return base
 end
 
-spawnmenu.AddCreationTab("Объекты", CreateObjectPanel, "icon16/script_key.png")
+spawnmenu.AddCreationTab(L("objspawn.tab"), CreateObjectPanel, "icon16/script_key.png")
 
 timer.Simple(0, function()
 	RunConsoleCommand("spawnmenu_reload")

@@ -170,12 +170,12 @@ netstream.Hook("ixRadioFrequency", function(player, id, freq)
 				itemTable:SetData("frequency", freq)
 				ix.radio:SetPlayerChannels(player)
 			
-				player:Notify("You have set this radio's frequency to "..freq..".")
+				player:NotifyLocalized("radioItemFrequencySet", freq)
 			else
-				player:Notify("The frequency must be between 100.0 and 999.9!")
+				player:NotifyLocalized("radioFrequencyRange")
 			end
 		else
-			player:Notify("The radio frequency must look like xxx.x!")
+			player:NotifyLocalized("radioFrequencyFormat")
 		end
 	end
 end)

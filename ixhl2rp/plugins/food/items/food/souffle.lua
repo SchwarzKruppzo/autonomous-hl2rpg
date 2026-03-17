@@ -1,5 +1,5 @@
-ITEM.name = "Суфле"
-ITEM.description = "Десерт из муки и взбитых яиц, что береженно был выпечен и вроде даже не подгорел. Универсальная основа для любой начинки."
+ITEM.name = "item.souffle"
+ITEM.description = "item.souffle.desc"
 ITEM.model = "models/mosi/fallout4/props/food/deathclawsouffle.mdl"
 ITEM.cost = 25
 ITEM.width = 1

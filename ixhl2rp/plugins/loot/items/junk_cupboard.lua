@@ -1,6 +1,6 @@
-ITEM.name = "Деревянный шкафчик"
-ITEM.description = "Кусочек природы, превращенный в функциональный и привлекательный предмет мебели. Дерево, некогда теплое и прочное, теперь обветшало и ослаблено, гниль и трещины расползаются по поверхности."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_cupboard"
+ITEM.description = "item.junk_cupboard.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_c17/furniturecupboard001a.mdl"
 ITEM.width = 2
 ITEM.height = 2

@@ -1,6 +1,6 @@
-ITEM.name = "Рваная одежда"
-ITEM.description = ""
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_clothes"
+ITEM.description = "item.junk_clothes.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/cmbfdr/items/shirt_citizen1_old.mdl"
 ITEM.width = 2
 ITEM.height = 2

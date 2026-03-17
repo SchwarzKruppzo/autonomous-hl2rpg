@@ -1,5 +1,5 @@
-ITEM.name = "Бутылка испорченного виски"
-ITEM.description = "Бутылка, обернутая в толстый слой бумаги для скрытия содержимого. Наполнено горьким виски, который практически невозможно пить, разве что только ради эффекта 'дежа вю'"
+ITEM.name = "item.spoiled_whiskey"
+ITEM.description = "item.spoiled_whiskey.desc"
 ITEM.model = "models/props_junk/garbage_glassbottle002a.mdl"
 ITEM.cost = 6
 ITEM.width = 1

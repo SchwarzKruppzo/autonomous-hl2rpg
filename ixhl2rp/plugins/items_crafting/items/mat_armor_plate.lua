@@ -1,6 +1,6 @@
-ITEM.name = "Бронепластина"
-ITEM.description = "Универсальная бронепластина, используемая для создания полноценного бронежилета низкого класса защиты или починки бронежилетов, исключая внеземные аналоги."
-ITEM.category = "Производные компоненты"
+ITEM.name = "item.mat_armor_plate"
+ITEM.description = "item.mat_armor_plate.desc"
+ITEM.category = "item.category.crafted"
 ITEM.model = "models/combine_helicopter/bomb_debris_3.mdl"
 ITEM.width = 2
 ITEM.height = 2

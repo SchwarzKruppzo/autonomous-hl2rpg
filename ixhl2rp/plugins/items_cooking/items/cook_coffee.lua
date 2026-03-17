@@ -1,7 +1,7 @@
-ITEM.name = "Пачка кофе"
-ITEM.description = "Пачка внутри с растворимым кофе, нужно только залить водой и помешать."
+ITEM.name = "item.cook_coffee"
+ITEM.description = "item.cook_coffee.desc"
 ITEM.model = "models/bioshockinfinite/xoffee_mug_closed.mdl"
-ITEM.category = "Кулинарные компоненты"
+ITEM.category = "item.category.cooking"
 ITEM.width = 1
 ITEM.height = 1
 ITEM.iconCam = {

@@ -1,5 +1,5 @@
-RECIPE.name = "Черный жилет с серым свитером"
-RECIPE.category = "Одежда — тело"
+RECIPE.name = "recipe.tailoring.jacket_gray"
+RECIPE.category = "recipe.category.body"
 RECIPE.requirements = {
 	mat_leather = 6,
 	mat_resine = 3,

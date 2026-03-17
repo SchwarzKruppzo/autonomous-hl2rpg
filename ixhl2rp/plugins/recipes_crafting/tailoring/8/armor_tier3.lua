@@ -1,5 +1,5 @@
-RECIPE.name = "Бронежилет 3-го класса защиты"
-RECIPE.category = "Компоненты"
+RECIPE.name = "recipe.tailoring.armor_tier3"
+RECIPE.category = "recipe.category.components"
 RECIPE.requirements = {
 	mat_kevlar = 8,
 	mat_armor_tier2 = 1,

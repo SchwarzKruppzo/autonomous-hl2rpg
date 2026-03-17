@@ -1,6 +1,6 @@
-ITEM.name = "Разобранная аудиосистема"
-ITEM.description = "Корпус из лугкого материала с простыми линиями и множеством разъемов. Внутренности раскрыты, динамики вынуты из корпуса, провода неряшливо сплетены в клубок."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_audiosystem"
+ITEM.description = "item.junk_audiosystem.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_c17/consolebox01a.mdl"
 ITEM.width = 2
 ITEM.height = 4

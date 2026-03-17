@@ -1,6 +1,6 @@
-ITEM.name = "Комплект брони смотрителя Надзора"
+ITEM.name = "item.mpf_overseer"
 ITEM.description = ""
-ITEM.category = "Одежда (ОТА)"
+ITEM.category = "item.category.clothing_ota"
 ITEM.genderReplacement = {
 	[GENDER_MALE] = "models/kruppzo/mpf_overseer.mdl",
 	[GENDER_FEMALE] = "models/kruppzo/mpf_overseer.mdl"

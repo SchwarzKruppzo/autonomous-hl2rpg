@@ -1,7 +1,7 @@
-ITEM.name = "Коробок спичек"
-ITEM.description = "Довоенный коробочек со спичками. Внутри спичек хватит, быть может, на пару раз."
+ITEM.name = "item.tool_matches"
+ITEM.description = "item.tool_matches.desc"
 ITEM.model = "models/illusion/eftcontainers/matches.mdl"
-ITEM.category = "Базовые компоненты"
+ITEM.category = "item.category.raw"
 ITEM.width = 1
 ITEM.height = 1
 ITEM.cost = 20

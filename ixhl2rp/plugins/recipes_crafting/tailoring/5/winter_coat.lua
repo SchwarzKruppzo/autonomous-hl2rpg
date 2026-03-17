@@ -1,5 +1,5 @@
-RECIPE.name = "Зимний пуховик"
-RECIPE.category = "Одежда — тело"
+RECIPE.name = "recipe.tailoring.winter_coat"
+RECIPE.category = "recipe.category.body"
 RECIPE.requirements = {
 	mat_cloth_reclaimed = 1,
 	mat_leather = 3,

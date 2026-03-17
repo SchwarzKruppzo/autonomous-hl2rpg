@@ -1,5 +1,5 @@
-RECIPE.name = "Спортивные штаны"
-RECIPE.category = "Одежда — ноги"
+RECIPE.name = "recipe.tailoring.jogging_pants"
+RECIPE.category = "recipe.category.legs"
 RECIPE.requirements = {
 	mat_cloth = 4,
 	box_of_needles = 1

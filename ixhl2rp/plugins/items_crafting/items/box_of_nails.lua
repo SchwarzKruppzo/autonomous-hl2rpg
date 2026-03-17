@@ -1,6 +1,6 @@
-ITEM.name = "Коробочка с гвоздями"
-ITEM.description = "Открыв коробочку, вы обнаружите большое количество гвоздей."
-ITEM.category = "Базовые компоненты"
+ITEM.name = "item.box_of_nails"
+ITEM.description = "item.box_of_nails.desc"
+ITEM.category = "item.category.raw"
 ITEM.model = "models/illusion/eftcontainers/nailpack.mdl"
 ITEM.width = 1
 ITEM.height = 1

@@ -1,6 +1,6 @@
-ITEM.name = "Автомобильный глушитель"
-ITEM.description = "Металлическое устройство, предназначенное для уменьшения шума, создаваемого выхлопными газами двигателя автомобиля. Видимо после вторжения мало уже кому нужны автомобили, так что от этой детали прока нет, скорее всего."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_muffler"
+ITEM.description = "item.junk_muffler.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_vehicles/carparts_muffler01a.mdl"
 ITEM.width = 6
 ITEM.height = 2

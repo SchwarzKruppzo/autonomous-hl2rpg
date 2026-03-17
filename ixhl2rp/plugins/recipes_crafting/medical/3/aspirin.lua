@@ -1,5 +1,5 @@
-RECIPE.name = "Болеутоляющее"
-RECIPE.category = "Медицина"
+RECIPE.name = "recipe.medical.aspirin"
+RECIPE.category = "recipe.category.medical"
 RECIPE.requirements = {
 	mat_acid = 2,
 	chem_opium = 1,

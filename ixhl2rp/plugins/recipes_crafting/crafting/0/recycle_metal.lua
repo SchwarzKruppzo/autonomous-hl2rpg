@@ -1,5 +1,5 @@
-RECIPE.name = "Металлолом"
-RECIPE.category = "Переработка"
+RECIPE.name = "recipe.crafting.recycle_metal"
+RECIPE.category = "recipe.category.recycling"
 RECIPE.requirements = {
 	empty_can = 4
 }

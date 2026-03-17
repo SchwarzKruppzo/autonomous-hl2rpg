@@ -1,5 +1,5 @@
-ITEM.name = "S.L.A.M"
-ITEM.description = "Противопехотная мина старого мира."
+ITEM.name = "item.slam_mine"
+ITEM.description = "item.slam_mine.desc"
 ITEM.model = "models/weapons/w_slam.mdl"
 ITEM.class = "cellar_nade_landmines"
 ITEM.weaponCategory = "mine"
@@ -21,7 +21,7 @@ if CLIENT then
 		end
 
 		local skill = tooltip:AddRow("skill")
-		skill:SetText("Тип: мина")
+		skill:SetText(L("weaponTypeLabel", L("weaponTypeMine")))
 		skill:SetBackgroundColor(grayClr)
 		skill:SizeToContents()
 	end

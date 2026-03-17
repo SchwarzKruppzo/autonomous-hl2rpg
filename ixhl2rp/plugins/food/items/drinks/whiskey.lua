@@ -1,5 +1,5 @@
-ITEM.name = "Бутылка виски"
-ITEM.description = "Янтарный оттенок содержимого и богатый вкус с оттенками дуба и ванили манит к себе всех городских алкоголиков из высшего класса. Настоящий американский выбор."
+ITEM.name = "item.whiskey"
+ITEM.description = "item.whiskey.desc"
 ITEM.cost = 10
 ITEM.model = "models/mosi/fallout4/props/alcohol/whiskey.mdl"
 ITEM.width = 1

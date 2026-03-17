@@ -1,5 +1,5 @@
-ITEM.name = "Тушка муравьиного льва"
-ITEM.description = "Обрезанная мякотка муравьиного льва без всяких лап и хитина, тут точно надо думать, что делать с таким количеством мяса." 
+ITEM.name = "item.antlion_corpse"
+ITEM.description = "item.antlion_corpse.desc" 
 ITEM.model = "models/gibs/antlion_gib_large_3.mdl"
 ITEM.cost = 12
 ITEM.width = 2

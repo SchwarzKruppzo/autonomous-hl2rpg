@@ -1,6 +1,6 @@
-ITEM.name = "Сгоревшее радио"
-ITEM.description = "Старый портативный радиоприемник, покрытый слоями грязи, пыли и сажи. Кнопки и регуляторы выглядят изношенными и залипшими от долгой эксплуатации. На передней панели видны размытые надписи и цифры, часть из которых стерлась или обуглилась."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_citizenradio"
+ITEM.description = "item.junk_citizenradio.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_lab/citizenradio.mdl"
 ITEM.width = 2
 ITEM.height = 1

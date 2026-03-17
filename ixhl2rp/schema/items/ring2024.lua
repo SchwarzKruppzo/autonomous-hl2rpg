@@ -1,5 +1,5 @@
-ITEM.name = "Памятное кольцо 2024"
-ITEM.description = "Вы не знаете откуда оно у вас, но на нем выгравировано \"Бо Боман\"."
+ITEM.name = "item.ring2024"
+ITEM.description = "item.ring2024.desc"
 ITEM.model = "models/items/magic/ring_protectfire/ring_protectfire.mdl"
 ITEM.width = 1
 ITEM.height = 1

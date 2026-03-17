@@ -154,8 +154,8 @@ ix.util.IncludeDir("core/hooks")
 ix.Locale:LoadFromDir("helix/gamemode/languages")
 ix.Item:LoadFromDir("helix/gamemode/items")
 
-ix.BodyTypes:Load()
-ix.Races:Load()
+//ix.BodyTypes:Load()
+//ix.Races:Load()
 
 ix.Net:AddPlayerVar("holdingObject", true, nil, ix.Net.Type.Entity)
 ix.Net:AddPlayerVar("bIsHoldingObject", true, nil, ix.Net.Type.Bool)

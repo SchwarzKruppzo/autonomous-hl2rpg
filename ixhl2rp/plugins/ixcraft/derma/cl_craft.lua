@@ -48,7 +48,7 @@ function PANEL:CacheRecipeNeeds(stationID, stationInventory)
 					for uniqueID, amount in pairs(recipe.requirements or {}) do
 						local count = 0
 						local stored = ix.Item:Get(uniqueID)
-
+						
 						if stored.stackable_legacy then
 							for k, v in ipairs(client:GetInventory("main"):GetItems()) do
 								if v.uniqueID == uniqueID then
@@ -186,7 +186,7 @@ function PANEL:BuildCraftPanel()
 	stationsPanel:SetVisible(false)
 		local stationsTitle = stationsPanel:Add("DLabel")
 		stationsTitle:SetFont("craft.item.key")
-		stationsTitle:SetText("РАБОЧЕЕ МЕСТО: ")
+		stationsTitle:SetText(L("craftStationKey"))
 		stationsTitle:SetTextColor(Color(0, 225, 255, 255))
 		stationsTitle:Dock(LEFT)
 		stationsTitle:SizeToContents()
@@ -208,7 +208,7 @@ function PANEL:BuildCraftPanel()
 	toolsPanel:SetVisible(false)
 		local toolsTitle = toolsPanel:Add("DLabel")
 		toolsTitle:SetFont("craft.item.key")
-		toolsTitle:SetText("ИНСТРУМЕНТЫ: ")
+		toolsTitle:SetText(L("craftToolsKey"))
 		toolsTitle:SetTextColor(Color(0, 225, 255, 255))
 		toolsTitle:Dock(LEFT)
 		toolsTitle:SizeToContents()
@@ -220,7 +220,7 @@ function PANEL:BuildCraftPanel()
 	componentsTitle:Dock(TOP)
 	componentsTitle:DockMargin(15, 10, 0, 0)
 	componentsTitle:SetVisible(false)
-	componentsTitle:SetText("КОМПОНЕНТЫ:")
+	componentsTitle:SetText(L("craftComponentsKey"))
 	componentsTitle:SetTextColor(Color(0, 225, 255, 255))
 	componentsTitle:SizeToContents()
 

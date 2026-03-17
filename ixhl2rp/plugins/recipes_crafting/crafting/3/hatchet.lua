@@ -1,5 +1,5 @@
-RECIPE.name = "Топорик"
-RECIPE.category = "Холодное оружие"
+RECIPE.name = "recipe.crafting.hatchet"
+RECIPE.category = "recipe.category.melee"
 RECIPE.requirements = {
 	metal_reclaimed = 1,
 	mat_wood = 1,

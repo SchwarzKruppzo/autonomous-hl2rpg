@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Раскладной стул"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_chair"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_chair"
 RECIPE.results = {
 	metal_scrap = 1,

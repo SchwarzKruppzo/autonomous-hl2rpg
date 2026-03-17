@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Зажигалка 'Zippo'"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_zippo"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_zippo"
 RECIPE.results = {
 	mat_oil = 1

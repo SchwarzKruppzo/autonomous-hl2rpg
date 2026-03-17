@@ -1,5 +1,5 @@
-ITEM.name = "Овощная икра"
-ITEM.description = "Для многих знакомое, для многих непонятное блюдо. Внутри самое настоящее пюре из овощей, что можно есть и так, и с хлебом."
+ITEM.name = "item.canned_squash"
+ITEM.description = "item.canned_squash.desc"
 ITEM.model = "models/crunchy/props/eft_props/squash.mdl"
 ITEM.cost = 6
 ITEM.width = 1

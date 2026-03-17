@@ -1,5 +1,5 @@
-ITEM.name = "Шаурма"
-ITEM.description = "Выглядит не так свежо на первый взгляд, но довольно аппетитно."
+ITEM.name = "item.kebab"
+ITEM.description = "item.kebab.desc"
 ITEM.model = "models/foodnhouseholditems/chicken_wrap.mdl"
 ITEM.cost = 11
 ITEM.width = 1

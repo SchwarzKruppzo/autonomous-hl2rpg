@@ -1,5 +1,5 @@
-RECIPE.name = "Очищенная вода"
-RECIPE.category = "Напитки"
+RECIPE.name = "recipe.cooking.purified_water"
+RECIPE.category = "recipe.category.cooking.drinks"
 RECIPE.requirements = {
 	dirty_water = 1,
 	mat_charcoal = 1,

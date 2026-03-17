@@ -1,5 +1,5 @@
-ITEM.name = "Консервированный овощной суп"
-ITEM.description = "Глубокая консерва, внутри которой бултыхается жидкость. При открытии можно почувствовать резкий запах настоящих овощей и светлую густую жидкость. Напоминает о доме."
+ITEM.name = "item.canned_veg_soup"
+ITEM.description = "item.canned_veg_soup.desc"
 ITEM.model = "models/food/spam_3.mdl"
 ITEM.cost = 12
 ITEM.width = 1

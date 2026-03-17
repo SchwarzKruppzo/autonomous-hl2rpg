@@ -6,10 +6,10 @@ ItemSeed = ix.meta.ItemSeed
 function ItemSeed:Init()
 	ix.meta.ItemBuildable.Init(self)
 
-	self.category = 'Семена'
+	self.category = "item.category.seed"
 
 	self.functions.place = {
-		name = "Посадить",
+		name = "use.plant",
 		OnRun = function(item)
 			if item.preview_model then
 				net.Start("build.place")

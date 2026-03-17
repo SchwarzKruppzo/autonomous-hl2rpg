@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Настольная лампа"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_desklamp"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_desklamp"
 RECIPE.results = {
 	mat_glass = 1,

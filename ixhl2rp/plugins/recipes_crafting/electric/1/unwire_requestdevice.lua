@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Устройство запроса"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.electric.unwire_requestdevice"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "request_device"
 RECIPE.results = {
 	electro_circuit = 1,

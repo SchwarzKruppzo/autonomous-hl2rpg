@@ -1,5 +1,5 @@
-RECIPE.name = "Черные джинсы"
-RECIPE.category = "Одежда — ноги"
+RECIPE.name = "recipe.tailoring.black_jeans"
+RECIPE.category = "recipe.category.legs"
 RECIPE.requirements = {
 	mat_cloth = 4,
 	box_of_needles = 1

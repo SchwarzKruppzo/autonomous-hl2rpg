@@ -28,7 +28,7 @@ local entries = {
 		reward = function(client)
 			rewardItem(client, (math.random(1, 2) == 1 and "creampie_cake" or "chocolate_cake"))
 			
-			client:ChatNotify("Поздравляем! Вы выиграли 1х Торт!")
+			client:ChatNotify(L("loot.prizeCake", client))
 		end
 	},
 	{ 
@@ -37,7 +37,7 @@ local entries = {
 		reward = function(client)	
 			rewardItem(client, "champagne")
 			
-			client:ChatNotify("Поздравляем! Вы выиграли 1х Шампанское!")
+			client:ChatNotify(L("loot.prizeChampagne", client))
 		end
 	},
 	{ 
@@ -46,7 +46,7 @@ local entries = {
 		reward = function(client)
 			rewardItem(client, "procenko_coin")
 
-			client:ChatNotify("Поздравляем! Вы выиграли 1х Загадочная монета!")
+			client:ChatNotify(L("loot.prizeCoin", client))
 		end
 	},
 	{ 
@@ -55,7 +55,7 @@ local entries = {
 		reward = function(client)
 			client:GetCharacter():GiveMoney(200)
 
-			client:ChatNotify("Поздравляем! Вы выиграли 200 токенов!")
+			client:ChatNotify(L("loot.prizeTokens", client))
 		end
 	},
 	{ 
@@ -64,7 +64,7 @@ local entries = {
 		reward = function(client)
 			rewardItem(client, "coupon_resort")
 
-			client:ChatNotify("Поздравляем! Вы выиграли 1х Купон 'Стимулирующий отдых'")
+			client:ChatNotify(L("loot.prizeCoupon", client))
 		end
 	},
 	{ 
@@ -73,7 +73,7 @@ local entries = {
 		reward = function(client)
 			rewardItem(client, "ring2024")
 
-			client:ChatNotify("Поздравляем! Вы выиграли 1х Памятное кольцо 2024!")
+			client:ChatNotify(L("loot.prizeRing", client))
 		end
 	},
 	{ 
@@ -87,7 +87,7 @@ local entries = {
 			local tbl = ix.skills.list[skill]
 			
 			client:GetCharacter():IncreaseSkill(skill, xp)
-			client:ChatNotify("Поздравляем! Вы выиграли 3000 опыта на навык "..L(tbl.name, client).."!")
+			client:ChatNotify(L("loot.prizeXp", client, L(tbl.name, client)))
 		end
 	},
 	{ 
@@ -96,10 +96,10 @@ local entries = {
 		reward = function(client)
 			if !client:IsDonator() then
 				ix.plugin.list["subscription"]:SetDonateSubscription(client:SteamID64(), os.time() + 1296000)
-				client:ChatNotify("Поздравляем! Вы выиграли 15 дней игровой подписки!")
+				client:ChatNotify(L("loot.prizeSubscription", client))
 			else
 				ix.plugin.list["subscription"]:AddDonateSubscription(client:SteamID64(), 1296000)
-				client:ChatNotify("Поздравляем! Вы выиграли 15 дней продления вашей подписки!")
+				client:ChatNotify(L("loot.prizeSubscriptionExtend", client))
 			end
 		end
 	},
@@ -107,21 +107,21 @@ local entries = {
 		name = "15 мегабайт кастомной модели",
 		weight = 30, 
 		reward = function(client)
-			client:ChatNotify(string.format("Поздравляем! Вы выиграли бесплатные 15 мегабайт для кастомной модели. Сохраните код '%s'.", client:SteamID64().."-"..util.CRC(client:SteamID64().."x")))
+			client:ChatNotify(L("loot.prizeCustomModel", client, client:SteamID64().."-"..util.CRC(client:SteamID64().."x")))
 		end
 	},
 	{ 
 		name = "7 дней с хедкрабом",
 		weight = 10, 
 		reward = function(client)
-			client:ChatNotify("Поздравляем! Вы выиграли 7 дней с хедкрабом!")
+			client:ChatNotify(L("loot.prizeHeadcrab", client))
 		end
 	},
 	{ 
 		name = "тайную информацию",
 		weight = 10, 
 		reward = function(client)
-			client:ChatNotify("Поздравляем! Вы узнали о существовании тайной конференции, где Вульпус и Маска обсирают хеллшторма.")
+			client:ChatNotify(L("loot.prizeSecret", client))
 		end
 	},
 	{ 
@@ -130,7 +130,7 @@ local entries = {
 		reward = function(client)
 			rewardItem(client, "corp2024")
 
-			client:ChatNotify("Поздравляем! Вы выиграли 1х Фишка Корпората!")
+			client:ChatNotify(L("loot.prizeCorp", client))
 		end
 	},
 	{ 
@@ -139,7 +139,7 @@ local entries = {
 		reward = function(client)
 			rewardItem(client, "gavs2024")
 
-			client:ChatNotify("Поздравляем! Вы выиграли 1х Надувной Генерал Гавс!")
+			client:ChatNotify(L("loot.prizeGavs", client))
 		end
 	},
 }

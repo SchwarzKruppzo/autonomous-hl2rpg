@@ -1,5 +1,5 @@
-RECIPE.name = "Овощной суп"
-RECIPE.category = "Продукты"
+RECIPE.name = "recipe.cooking.soup_vegetable"
+RECIPE.category = "recipe.category.cooking.products"
 RECIPE.requirements = {
 	cook_spices = 1,
 	tomato = 1,

@@ -1,6 +1,6 @@
-ITEM.name = "Пружина"
-ITEM.description = "Ещё пружинит, если выпрямить!"
-ITEM.category = "Базовые компоненты"
+ITEM.name = "item.chain"
+ITEM.description = "item.chain.desc"
+ITEM.category = "item.category.raw"
 ITEM.model = "models/illusion/eftcontainers/chain.mdl"
 ITEM.width = 1
 ITEM.height = 1

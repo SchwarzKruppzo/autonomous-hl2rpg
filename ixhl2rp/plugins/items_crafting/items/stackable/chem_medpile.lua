@@ -1,7 +1,7 @@
-ITEM.name = "Набор медикаментов"
-ITEM.description = "Этот набор содержит все необходимые медикаменты: антисептики, обезболивающие и другие важные медицинские принадлежности."
+ITEM.name = "item.chem_medpile"
+ITEM.description = "item.chem_medpile.desc"
 ITEM.model = "models/crunchy/props/eft_props/medpile.mdl"
-ITEM.category = "Химические компоненты"
+ITEM.category = "item.category.craft_chemical"
 ITEM.height = 1
 ITEM.max_stack = 4
 ITEM.default_stack = 1

@@ -1,3 +1,3 @@
-STATION.name = "Кофемашина"
-STATION.description = "Электрочайник, предназначенный для быстрого кипячения воды с возможностью залить кофе или может даже чай. Оснащен ручкой для удобства использования и часто имеет индикатор уровня воды, крышку с фиксатором и световой индикатор работы."
+STATION.name = "station.coffeemachine.name"
+STATION.description = "station.coffeemachine.desc"
 STATION.model = "models/cellar/teapot_machine.mdl"

@@ -1,5 +1,5 @@
-ITEM.name = "Арматурные болты"
-ITEM.description = "Куски арматуры длиной 12 дюймов, предназначенные в качестве боеприпасов для самодельных арбалетов раскалённого типа."
+ITEM.name = "item.crossbow_bolt"
+ITEM.description = "item.crossbow_bolt.desc"
 ITEM.model = "models/items/crossbowrounds.mdl"
 ITEM.width = 3
 ITEM.height = 1

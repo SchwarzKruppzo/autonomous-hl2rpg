@@ -1,5 +1,5 @@
-ITEM.name = "Спагетти"
-ITEM.description = "Замечательные спагетти в тарелочке, никто не трогал их!"
+ITEM.name = "item.spagnetti"
+ITEM.description = "item.spagnetti.desc"
 ITEM.model = "models/bowlofspaghetti01/bowlofspaghetti01.mdl"
 ITEM.cost = 20
 ITEM.width = 1

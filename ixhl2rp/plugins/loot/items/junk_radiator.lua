@@ -1,6 +1,6 @@
-ITEM.name = "Ржавая батарея"
-ITEM.description = "Некогда старый предмет быта, через который проходило отопление. От года износа его металлическая поверхность выглядит поистертой и истлевшей от времени, с заметными следами окисления."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_radiator"
+ITEM.description = "item.junk_radiator.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_interiors/radiator01a.mdl"
 ITEM.width = 4
 ITEM.height = 4

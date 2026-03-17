@@ -1,5 +1,5 @@
-ITEM.name = "Фирменные сардины"
-ITEM.description = "Консервная банка с рыбным содержимым, предположительно сардинами. Заменившая рыбу замена заставляет задуматься, действительно ли это рыба."
+ITEM.name = "item.union_branded_sardines"
+ITEM.description = "item.union_branded_sardines.desc"
 ITEM.model = "models/bioshockinfinite/cardine_can_open.mdl"
 ITEM.cost = 18
 ITEM.width = 1

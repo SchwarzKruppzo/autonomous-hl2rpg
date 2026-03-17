@@ -1,5 +1,5 @@
-RECIPE.name = "Набор медикаментов"
-RECIPE.category = "Медицина"
+RECIPE.name = "recipe.medical.medpile"
+RECIPE.category = "recipe.category.medical"
 RECIPE.requirements = {
 	painkiller = 1,
 	chem_antiseptic = 1,

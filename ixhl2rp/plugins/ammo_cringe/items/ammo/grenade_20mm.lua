@@ -1,5 +1,5 @@
-ITEM.name = "20мм подствольная граната"
-ITEM.description = "Осколочный заряд для использования в различного рода подствольных гранатометах."
+ITEM.name = "item.grenade_20mm"
+ITEM.description = "item.grenade_20mm.desc"
 ITEM.model = "models/items/ar2_grenade.mdl"
 ITEM.width = 1
 ITEM.height = 1

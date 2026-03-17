@@ -1,6 +1,6 @@
-ITEM.name = "Деревянный стул"
-ITEM.description = "Изготовленный из массива дерева, он имеет круглое сиденье и четыре прочных ножки. Несмотря на следы времени, стул все еще сохраняет свою функциональность."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_woodchair"
+ITEM.description = "item.junk_woodchair.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_interiors/furniture_chair01a.mdl"
 ITEM.width = 2
 ITEM.height = 3

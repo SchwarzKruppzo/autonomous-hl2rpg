@@ -4,40 +4,6 @@ PLUGIN.name = "Food and Drinks"
 PLUGIN.author = "SchwarzKruppzo"
 PLUGIN.description = "Adds a hunger and thirst with various useable items."
 
-ix.lang.AddTable("en", {
-	useDrink = "Drink",
-	useDrinkAll = "Drink All",
-	useFood = "Consume",
-	useFoodAll = "Consume All",
-	categoryFood = "Food",
-	categoryDrink = "Drink",
-	categoryJunk = "Junk",
-	usesDesc = "Uses: %s/%s",
-	volumeDesc = "%s/%s ml",
-	portionDesc = "%s/%s g",
-	foodNotify = "I have eaten %s.",
-	drinkNotify = "I have drunk %s.",
-	barThirst = "THIRST",
-	barHunger = "HUNGER"
-})
-
-ix.lang.AddTable("ru", {
-	useDrink = "Выпить",
-	useDrinkAll = "Выпить всё",
-	useFood = "Съесть",
-	useFoodAll = "Съесть всё",
-	categoryFood = "Еда",
-	categoryDrink = "Напитки",
-	categoryJunk = "Мусор",
-	usesDesc = "Использований: %s/%s",
-	volumeDesc = "%s/%s мл",
-	portionDesc = "%s/%s г",
-	foodNotify = "Вы съели %s.",
-	drinkNotify = "Вы выпили %s.",
-	barThirst = "ЖАЖДА",
-	barHunger = "ГОЛОД"
-})
-
 ix.char.RegisterVar("thirst", {
 	field = "thirst",
 	fieldType = ix.type.number,

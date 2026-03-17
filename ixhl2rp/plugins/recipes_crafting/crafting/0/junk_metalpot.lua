@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Сгоревшая сковорода"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_metalpot"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_metalpot"
 RECIPE.results = {
 	metal_scrap = 1

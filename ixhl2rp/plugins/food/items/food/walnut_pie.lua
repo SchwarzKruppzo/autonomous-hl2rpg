@@ -1,5 +1,5 @@
-ITEM.name = "Ореховый пирог"
-ITEM.description = "Свежий пирог, от которого отдает ароматом из далёких времён, когда мы все мочились в штаны. Это было год назад."
+ITEM.name = "item.walnut_pie"
+ITEM.description = "item.walnut_pie.desc"
 ITEM.model = "models/foodnhouseholditems/pie.mdl"
 ITEM.cost = 36
 ITEM.width = 1

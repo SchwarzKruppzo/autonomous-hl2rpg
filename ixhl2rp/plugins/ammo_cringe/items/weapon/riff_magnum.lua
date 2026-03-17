@@ -1,9 +1,9 @@
-ITEM.name = "R-78"
-ITEM.description = "[Уникальный внешний вид для Револьвер .357]"
+ITEM.name = "item.riff_magnum"
+ITEM.description = "item.riff_magnum.desc"
 ITEM.model = "models/weapons/w_azn_trigund.mdl"
 ITEM.class = "riff_357"
 ITEM.weaponCategory = "secondary"
-ITEM.category = "Уникальное"
+ITEM.category = "item.category.unique"
 ITEM.rarity = 2
 ITEM.width = 2
 ITEM.height = 1

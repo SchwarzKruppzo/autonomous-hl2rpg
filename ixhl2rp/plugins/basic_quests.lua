@@ -4,6 +4,27 @@ PLUGIN.name = "Basic Quests"
 PLUGIN.author = "Schwarz Kruppzo"
 PLUGIN.description = ""
 
+ix.lang.AddTable("ru", {
+	questsTitle = "Задачи",
+	["quest.cwu_garbage.title"] = "Ежедневная работа в ГСР",
+	["quest.cwu_garbage.progress"] = "Собрать в городе мусор [%s/4]",
+})
+ix.lang.AddTable("en", {
+	questsTitle = "Quests",
+	["quest.cwu_garbage.title"] = "Daily CWU garbage duty",
+	["quest.cwu_garbage.progress"] = "Collect garbage in the city [%s/4]",
+})
+ix.lang.AddTable("fr", {
+	questsTitle = "Quêtes",
+	["quest.cwu_garbage.title"] = "Travail quotidien GSR",
+	["quest.cwu_garbage.progress"] = "Ramasser les ordures en ville [%s/4]",
+})
+ix.lang.AddTable("es-es", {
+	questsTitle = "Misiones",
+	["quest.cwu_garbage.title"] = "Trabajo diario de basura GSR",
+	["quest.cwu_garbage.progress"] = "Recoger basura en la ciudad [%s/4]",
+})
+
 if SERVER then
 	util.AddNetworkString("ixUpdateQuests")
 
@@ -85,7 +106,7 @@ else
 		self:SetPos(ScrW() - self.minW, 10)
 		self.title = self:Add("DLabel")
 		self.title:SetFont("ixTaskMain")
-		self.title:SetText("ЗАДАНИЯ")
+		self.title:SetText(L("questsTitle"))
 		self.title:SizeToContents()
 		self.title:Dock(TOP)
 
@@ -161,9 +182,9 @@ else
 
 	QuestData = QuestData or {}
 	QuestData["cwu_garbage"] = {
-		title = "Ежедневная работа в ГСР",
+		title = "quest.cwu_garbage.title",
 		func = function()
-			return string.format("Собрать в городе мусор [%s/4]", LocalPlayer():GetCharacter():GetData("cwuGarbage", 0))
+			return string.format(L("quest.cwu_garbage.progress"), LocalPlayer():GetCharacter():GetData("cwuGarbage", 0))
 		end
 	}
 
@@ -181,7 +202,7 @@ else
 			for k, v in pairs(quests) do
 				local data = QuestData[k]
 				if data then
-					ix.gui.quest:AddQuest(k, data.title, data.func)
+					ix.gui.quest:AddQuest(k, L(data.title), data.func)
 				end
 			end
 		end	
@@ -207,7 +228,7 @@ else
 			for k, v in pairs(quests) do
 				local data = QuestData[k]
 				if data then
-					ix.gui.quest:AddQuest(k, data.title, data.func)
+					ix.gui.quest:AddQuest(k, L(data.title), data.func)
 				end
 			end
 		end	

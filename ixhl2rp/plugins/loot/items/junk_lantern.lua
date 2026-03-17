@@ -1,6 +1,6 @@
-ITEM.name = "Масляная лампа"
-ITEM.description = "Металлический корпус лампы покрыт сколами, а поверхность матовая от долгого использования. Стеклянный резервуар, исцарапанный и покрытый пылью, выделяется из темного металла. Ручка для переноски, с годами, потеряла свою первоначальную гладкость. Внутри видно остатки высохшего масла."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_lantern"
+ITEM.description = "item.junk_lantern.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_unique/spawn_apartment/lantern.mdl"
 ITEM.width = 1
 ITEM.height = 2

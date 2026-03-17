@@ -1,5 +1,5 @@
-ITEM.name = "Банан"
-ITEM.description = "Аппетитно выглядящий банан с напечатанным знаком Альянса на нём. Не такой мягкий, как должен бы быть."
+ITEM.name = "item.union_branded_banana"
+ITEM.description = "item.union_branded_banana.desc"
 ITEM.model = "models/bioshockinfinite/hext_banana.mdl"
 ITEM.cost = 3
 ITEM.width = 1

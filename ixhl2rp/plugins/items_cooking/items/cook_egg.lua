@@ -1,7 +1,7 @@
-ITEM.name = "Сырое яйцо"
-ITEM.description = "Куриное яйцо, что было подло схвачено людьми."
+ITEM.name = "item.cook_egg"
+ITEM.description = "item.cook_egg.desc"
 ITEM.model = "models/foodnhouseholditems/egg1.mdl"
-ITEM.category = "Кулинарные компоненты"
+ITEM.category = "item.category.cooking"
 ITEM.width = 1
 ITEM.height = 1
 ITEM.max_stack = 3

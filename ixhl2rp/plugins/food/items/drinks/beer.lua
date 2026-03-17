@@ -1,5 +1,5 @@
-ITEM.name = "Бутылированное пиво"
-ITEM.description = "Зловонное пиво, довольно резкое на вкус, но довольно хорошо пьянящее."
+ITEM.name = "item.beer"
+ITEM.description = "item.beer.desc"
 ITEM.cost = 10
 ITEM.model = "models/mosi/fallout4/props/alcohol/beer.mdl"
 ITEM.width = 1

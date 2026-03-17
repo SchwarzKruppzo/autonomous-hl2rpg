@@ -1,4 +1,4 @@
-ITEM.category = "Строительство - контейнеры"
+ITEM.category = "item.category.construction_containers"
 ITEM.model = "models/cellar/tool_crate_wood.mdl"
 ITEM.iconCam = {
 	pos = Vector(160.73175048828, -0.035080194473267, 752.37615966797),
@@ -8,6 +8,6 @@ ITEM.iconCam = {
 ITEM.width = 5
 ITEM.height = 4
 
-ITEM.name = "Сборка: настенная тумбочка"
-ITEM.description = "Тумба, которая вешается на стену. По закону подлости правая дверца не имеет ручки, что нервирует, но не особо мешает."
+ITEM.name = "item.cont_cupboard"
+ITEM.description = "item.cont_cupboard.desc"
 ITEM.preview_model = "models/props_c17/furniturecupboard001a.mdl"

@@ -13,29 +13,29 @@ function ix.quickmenu:AddCallback(name, icon, callback, shouldShow)
 	};
 end;
 
-ix.quickmenu:AddCallback("Личные Записи", "icon16/note_edit.png", function()
+ix.quickmenu:AddCallback(L("quickmenuPersonalNotes"), "icon16/note_edit.png", function()
 	ix.command.Send("MyNotes")
 end)
 
-ix.quickmenu:AddCallback("Изменить описание", "icon16/note_edit.png", function()
+ix.quickmenu:AddCallback(L("quickmenuChangeDescription"), "icon16/note_edit.png", function()
 	ix.command.Send("CharDesc")
 end)
 
-ix.quickmenu:AddCallback("Выбросить токены", "icon16/money_delete.png", function()
-	local description = string.format("Сколько вы хотите выбросить? У вас есть %s.", LocalPlayer():GetCharacter():GetMoney())
+ix.quickmenu:AddCallback(L("quickmenuDropTokens"), "icon16/money_delete.png", function()
+	local description = L("quickmenuDropTokensDesc", LocalPlayer():GetCharacter():GetMoney())
 
-	Derma_StringRequest("Выбросить токены", description, 20, function(text)
+	Derma_StringRequest(L("quickmenuDropTokensTitle"), description, 20, function(text)
 		ix.command.Send("DropTokens", text)
-	end, nil, "Выбросить", "Отмена")
+	end, nil, L("quickmenuDropTokensConfirm"), L("cancel"))
 end)
 
-ix.quickmenu:AddCallback("Упасть", "icon16/user.png", function()
-	Derma_StringRequest("Упасть", "Введите время (от 5 до 60 секунд).", 5, function(text)
+ix.quickmenu:AddCallback(L("quickmenuFallOver"), "icon16/user.png", function()
+	Derma_StringRequest(L("quickmenuFallOverTitle"), L("quickmenuFallOverPrompt"), 5, function(text)
 		ix.command.Send("CharFallOver", math.Clamp(tonumber(text) or 60, 60, 120))
-	end, nil, "Упасть", "Отмена")
+	end, nil, L("quickmenuFallOverConfirm"), L("cancel"))
 end)
 
-ix.quickmenu:AddCallback("Сменить походку", "icon16/user.png", function()
+ix.quickmenu:AddCallback(L("quickmenuChangeWalkstyle"), "icon16/user.png", function()
 	local menu = DermaMenu()
 	local moods = ix.plugin.list["emotemoods"].MoodTextTable
 	for i = 1, 4 do

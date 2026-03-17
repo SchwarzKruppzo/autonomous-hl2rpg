@@ -1,5 +1,5 @@
-ITEM.name = "Кружка кофе"
-ITEM.description = "Кружка, наполненная нефильтрованым кофе. На поверхности самого кофе плавает что-то странное. На вкус очень горькое месиво."
+ITEM.name = "item.coffe_mug"
+ITEM.description = "item.coffe_mug.desc"
 ITEM.model = "models/props_junk/garbage_coffeemug001a.mdl"
 ITEM.cost = 7
 ITEM.width = 1

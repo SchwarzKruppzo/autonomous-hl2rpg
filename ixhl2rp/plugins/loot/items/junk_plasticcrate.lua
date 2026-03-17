@@ -1,6 +1,6 @@
-ITEM.name = "Пластиковая корзина"
-ITEM.description = "Форма корзины прямоугольная с заостренными углами и перфорированной сеткой. Удобные ручки по бокам облегчают транспортировку и перемещение."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_plasticcrate"
+ITEM.description = "item.junk_plasticcrate.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_junk/plasticcrate01a.mdl"
 ITEM.width = 2
 ITEM.height = 1

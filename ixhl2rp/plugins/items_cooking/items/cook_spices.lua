@@ -1,7 +1,7 @@
-ITEM.name = "Специи"
-ITEM.description = "Коробочка с множеством специй внутри, что разнообразит ваше блюдо."
+ITEM.name = "item.cook_spices"
+ITEM.description = "item.cook_spices.desc"
 ITEM.model = "models/mosi/fallout4/props/junk/cigarcarton.mdl"
-ITEM.category = "Кулинарные компоненты"
+ITEM.category = "item.category.cooking"
 ITEM.width = 1
 ITEM.height = 1
 ITEM.max_stack = 8

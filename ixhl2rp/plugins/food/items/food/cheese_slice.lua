@@ -1,5 +1,5 @@
-ITEM.name = "Кусок сыра"
-ITEM.description = "Отрезанный кусок из круга сыра. Его можно съесть так и просто, так и дополнить к блюду. Буквально на два укуса!"
+ITEM.name = "item.cheese_slice"
+ITEM.description = "item.cheese_slice.desc"
 ITEM.model = "models/foodnhouseholditems/cheesewheel1c.mdl"
 ITEM.cost = 13
 ITEM.width = 1

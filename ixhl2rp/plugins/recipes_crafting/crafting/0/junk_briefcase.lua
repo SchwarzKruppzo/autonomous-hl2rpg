@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Старый саквояж"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_briefcase"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_briefcase"
 RECIPE.results = {
 	mat_leather = 2,

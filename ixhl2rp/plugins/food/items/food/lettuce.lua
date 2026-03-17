@@ -1,5 +1,5 @@
-ITEM.name = "Лист салата"
-ITEM.description = "Зеленый лист салата, трава как трава, что тут еще сказать?"
+ITEM.name = "item.lettuce"
+ITEM.description = "item.lettuce.desc"
 ITEM.model = "models/foodnhouseholditems/lettuce.mdl"
 ITEM.cost = 12
 ITEM.width = 1

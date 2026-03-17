@@ -1,11 +1,11 @@
-ITEM.name = "Стяжки"
-ITEM.description = "Пластиковые одноразовые стяжки. Подойдут для временной иммобилизации конечностей цели."
+ITEM.name = "item.ziptie"
+ITEM.description = "item.ziptie.desc"
 ITEM.model = "models/bybig/stagy.mdl"
 ITEM.rarity = 1
 ITEM.max_stack = 8
 ITEM.stackable = true
 ITEM.functions.Use = {
-    name = "Связать",
+    name = "use.tie",
     OnRun = function(itemTable)
         local client = itemTable.player
         local data = {}

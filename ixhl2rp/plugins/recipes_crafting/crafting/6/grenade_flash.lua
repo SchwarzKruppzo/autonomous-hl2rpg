@@ -1,5 +1,5 @@
-RECIPE.name = "Светошумовая граната"
-RECIPE.category = "Взрывчатка"
+RECIPE.name = "recipe.crafting.grenade_flash"
+RECIPE.category = "recipe.category.explosives"
 RECIPE.requirements = {
 	metal_reclaimed = 1,
 	box_of_gunpowder = 2,

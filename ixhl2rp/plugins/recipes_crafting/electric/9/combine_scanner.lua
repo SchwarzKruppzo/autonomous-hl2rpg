@@ -1,5 +1,5 @@
-RECIPE.name = "Автономный сканнер Альянса"
-RECIPE.category = "Разное"
+RECIPE.name = "recipe.electric.combine_scanner"
+RECIPE.category = "recipe.category.misc"
 RECIPE.requirements = {
 	mat_screws = 6,
 	mat_nuts = 6,

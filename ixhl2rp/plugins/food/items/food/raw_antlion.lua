@@ -1,5 +1,5 @@
-ITEM.name = "Сырое мясо муравьиного льва"
-ITEM.description = "Мерзкий и дохлый жук, что отдал свое мясо. Это не такой плохой кусок, ведь в нем много протеинов, но если не приготовить, вас точно стошнит."
+ITEM.name = "item.raw_antlion"
+ITEM.description = "item.raw_antlion.desc"
 ITEM.model = "models/gibs/antlion_gib_medium_2.mdl"
 ITEM.cost = 12
 ITEM.width = 1

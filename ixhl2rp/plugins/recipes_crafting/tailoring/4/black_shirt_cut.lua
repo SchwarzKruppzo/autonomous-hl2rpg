@@ -1,5 +1,5 @@
-RECIPE.name = "Черная рубашка-безрукавка"
-RECIPE.category = "Одежда — тело"
+RECIPE.name = "recipe.tailoring.black_shirt_cut"
+RECIPE.category = "recipe.category.body"
 RECIPE.requirements = {
 	mat_cloth_reclaimed = 1,
 	mat_leather = 2

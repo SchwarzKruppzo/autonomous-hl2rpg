@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Автомобильный вал"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_axel"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_axel"
 RECIPE.results = {
 	metal_scrap = 2,

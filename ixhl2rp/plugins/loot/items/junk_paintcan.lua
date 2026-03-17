@@ -1,6 +1,6 @@
-ITEM.name = "Банка из под краски"
-ITEM.description = "Металлическая банка с закручивающейся крышкой, покрыта разводами и кляксами высохшей краски различных оттенков. На крышке банки видны следы открывания — маленькая заусенца на краю, указывающая на то, что ее использовали неоднократно."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_paintcan"
+ITEM.description = "item.junk_paintcan.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_junk/metal_paintcan001a.mdl"
 ITEM.width = 2
 ITEM.height = 2

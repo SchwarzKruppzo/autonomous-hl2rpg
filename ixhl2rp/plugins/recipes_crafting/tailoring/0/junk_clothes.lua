@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Рваная одежда"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.tailoring.junk_clothes"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_clothes"
 RECIPE.results = {
 	mat_cloth = {1, 3}

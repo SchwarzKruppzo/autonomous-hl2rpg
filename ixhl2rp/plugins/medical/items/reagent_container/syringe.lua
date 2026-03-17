@@ -1,6 +1,6 @@
-ITEM.name = "Syringe"
-ITEM.description = "A syringe that can hold up to 100 ml."
-ITEM.category = "Medical"
+ITEM.name = "item.syringe"
+ITEM.description = "item.syringe.desc"
+ITEM.category = "item.category.medical"
 ITEM.model = Model("models/autonomous/syringe.mdl")
 ITEM.width = 1
 ITEM.height = 1

@@ -111,7 +111,7 @@ function ItemSkillBook:Interrupt(client, character)
 end
 
 function ItemSkillBook:Init()
-	self.category = "Книги (навыки)"
+	self.category = "item.category.skillbook"
 
 	self.functions.read = {
 		name = "Читать",
@@ -122,13 +122,13 @@ function ItemSkillBook:Init()
 			
 			if item.bookRequire and (info[item.bookRequire] != true) then
 				-- cannot read
-				client:Notify("Вам необходимо изучить предыдущую часть книги!")
+				client:NotifyLocalized("skillbook.needPrevious")
 				return
 			end
 
 			if info[id] == true then
 				-- this book was read
-				client:Notify("Вы уже читали эту книгу!")
+				client:NotifyLocalized("skillbook.alreadyRead")
 				return
 			end
 			

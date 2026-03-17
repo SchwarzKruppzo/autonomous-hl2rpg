@@ -1,5 +1,5 @@
-ITEM.name = "Хедкрабья туша"
-ITEM.description = "Целый кусок умертвенной туши хедкраба, теперь он точно не навредит вам. Но у вас все еще имеются сомнения, можно ли есть?" 
+ITEM.name = "item.headcrab_corpse"
+ITEM.description = "item.headcrab_corpse.desc" 
 ITEM.model = "models/arachnit/steamvr/hla/headcrab_dinner/headcrab_dinner.mdl"
 ITEM.cost = 12
 ITEM.width = 2

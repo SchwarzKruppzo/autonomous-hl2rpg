@@ -1,5 +1,5 @@
-ITEM.name = "Фильтр Mk. II"
-ITEM.description = "Эти фильтры собираются на заказ силами Сверхнадзора для солдат Патруля по всему миру. Примечательно то, что в сплаве металла, который и формирует этот фильтр, находится тот самый внеземной металл, что делает этот фильтр довольно тяжелым, но при этом и одним из самых эффективных."
+ITEM.name = "item.filter_epic"
+ITEM.description = "item.filter_epic.desc"
 ITEM.model = Model("models/vintagethief/items/filter.mdl")
 ITEM.width = 1
 ITEM.height = 1

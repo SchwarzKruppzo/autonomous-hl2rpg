@@ -1,5 +1,5 @@
 ix.LootContainer:Add("garbage", { -- garbage tier 0
-	Name = "Мусор",
+	Name = "loot.name.garbage",
 	Description = "",
 	Model = {
 		"models/props_junk/garbage128_composite001a.mdl",
@@ -8,7 +8,7 @@ ix.LootContainer:Add("garbage", { -- garbage tier 0
 		"models/props_junk/garbage128_composite001d.mdl"
 	},
 
-	SearchText = "Поиск мусора...",
+	SearchText = "loot.searchTrash",
 	SearchTime = 5,
 
 	NotSolid = true,
@@ -79,14 +79,14 @@ ix.LootContainer:Add("garbage", { -- garbage tier 0
 })
 
 ix.LootContainer:Add("trash_cluster", {  -- garbage tier 1
-	Name = "Мешок с мусором",
+	Name = "loot.name.trash_cluster",
 	Description = "",
 	Model = "models/props_junk/trashcluster01a_corner.mdl",
 
 	OpenSound = "foley/industrial/disassemble_crate1.mp3",
 	CloseSound = "willardnetworks/inventory/inv_move4.mp3",
 
-	SearchText = "Поиск мусора...",
+	SearchText = "loot.searchTrash",
 	SearchTime = 5,
 
 	Hide = false,
@@ -153,7 +153,7 @@ ix.LootContainer:Add("trash_cluster", {  -- garbage tier 1
 })
 
 ix.LootContainer:Add("dumpster", { -- garbage tier 2
-	Name = "Металлический бак",
+	Name = "loot.name.dumpster",
 	Description = "",
 	Model = "models/props_junk/trashdumpster01a.mdl",
 
@@ -241,7 +241,7 @@ ix.LootContainer:Add("dumpster", { -- garbage tier 2
 })
 
 ix.LootContainer:Add("crate", { -- rnp - utility
-	Name = "Деревянный ящик",
+	Name = "loot.name.crate",
 	Description = "",
 	Model = "models/props/de_nuke/crate_extrasmall.mdl",
 
@@ -309,7 +309,7 @@ ix.LootContainer:Add("crate", { -- rnp - utility
 })
 
 ix.LootContainer:Add("food_box", { -- rnp - food package
-	Name = "Коробка с припасами",
+	Name = "loot.name.food_box",
 	Description = "",
 	Model = "models/hls/alyxports/cardboard_box_1.mdl",
 
@@ -381,7 +381,7 @@ ix.LootContainer:Add("food_box", { -- rnp - food package
 })
 
 ix.LootContainer:Add("medical_box", { -- rnp - medical package
-	Name = "Коробка с припасами (синяя)",
+	Name = "loot.name.medical_box",
 	Description = "",
 	Model = "models/hls/alyxports/cardboard_box_3.mdl",
 
@@ -425,7 +425,7 @@ ix.LootContainer:Add("medical_box", { -- rnp - medical package
 })
 
 ix.LootContainer:Add("supply_crate", { -- resource crate
-	Name = "Заводской ящик",
+	Name = "loot.name.supply_crate",
 	Description = "",
 	Model = "models/hls/alyxports/wood_crate004.mdl",
 
@@ -495,7 +495,7 @@ ix.LootContainer:Add("supply_crate", { -- resource crate
 })
 
 ix.LootContainer:Add("military_crate", { -- military tier 0
-	Name = "Военный ящик",
+	Name = "loot.name.military_crate",
 	Description = "",
 	Model = "models/kali/props/cases/hard case c.mdl",
 
@@ -581,7 +581,7 @@ ix.LootContainer:Add("military_crate", { -- military tier 0
 })
 
 ix.LootContainer:Add("infection_crate", {  -- infestation control 1
-    Name = "Контейнер контроля заражения",
+    Name = "loot.name.infection_crate",
     Description = "",
     Model = "models/hazmat_crate/hazmat_crate_body.mdl",
 
@@ -624,7 +624,7 @@ ix.LootContainer:Add("infection_crate", {  -- infestation control 1
 
 
 ix.LootContainer:Add("development", { -- military tier 0
-	Name = "Военный ящик",
+	Name = "loot.name.development",
 	Description = "",
 	Model = "models/kali/props/cases/hard case c.mdl",
 

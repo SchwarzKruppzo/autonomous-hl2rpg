@@ -1,5 +1,5 @@
-RECIPE.name = "Сера"
-RECIPE.category = "Переработка"
+RECIPE.name = "recipe.electric.sulfur"
+RECIPE.category = "recipe.category.recycling"
 RECIPE.requirements = {
 	electro_battery = 4,
 }

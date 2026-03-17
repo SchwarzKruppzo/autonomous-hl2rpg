@@ -1,5 +1,5 @@
-ITEM.name = "Буханка хлеба"
-ITEM.description = "Хорошая буханка хлеба со знаком Альянса."
+ITEM.name = "item.union_branded_bread"
+ITEM.description = "item.union_branded_bread.desc"
 ITEM.model = "models/bioshockinfinite/dread_loaf.mdl"
 ITEM.cost = 8
 ITEM.width = 1

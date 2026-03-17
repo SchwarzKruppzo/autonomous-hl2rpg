@@ -1,5 +1,5 @@
-ITEM.name = "Специальная вода Брина"
-ITEM.description = "Алюминиевая банка жёлтого цвета с фирменным знаком Альянса на ней, если её встряхнуть можно услышать шипение газа."
+ITEM.name = "item.special_breens_water"
+ITEM.description = "item.special_breens_water.desc"
 ITEM.model = "models/props_junk/popcan01a.mdl"
 ITEM.skin = 2
 ITEM.cost = 10

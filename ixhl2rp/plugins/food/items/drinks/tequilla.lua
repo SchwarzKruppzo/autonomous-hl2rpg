@@ -1,5 +1,5 @@
-ITEM.name = "Бутылка текилы"
-ITEM.description = "Бутылка внутри которой прозрачная жидкость, имеет терпкий и сладкий вкус, с нотами агавы и цитрусовых. Для встречи членов мексиканского картеля самое то!"
+ITEM.name = "item.tequilla"
+ITEM.description = "item.tequilla.desc"
 ITEM.cost = 10
 ITEM.model = "models/mark2580/gtav/barstuff/tequila_bottle.mdl"
 ITEM.width = 1

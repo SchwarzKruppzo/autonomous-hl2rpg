@@ -1,5 +1,5 @@
-ITEM.name = "Коктейль из кокоса"
-ITEM.description = "В самом кокосе находится коктейль, так же из него торчит трубочка с зонтиком."
+ITEM.name = "item.coconut_cocktail"
+ITEM.description = "item.coconut_cocktail.desc"
 ITEM.model = "models/foodnhouseholditems/coconut_drink.mdl"
 ITEM.cost = 30
 ITEM.width = 1

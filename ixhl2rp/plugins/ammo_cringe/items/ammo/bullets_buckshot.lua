@@ -1,5 +1,5 @@
-ITEM.name = "Патроны для дробовиков"
-ITEM.description = "Небольшая коробка патронов для различных дробовиков."
+ITEM.name = "item.bullets_buckshot"
+ITEM.description = "item.bullets_buckshot.desc"
 ITEM.max_stack = 60
 ITEM.default_stack = 15
 ITEM.rarity = 1

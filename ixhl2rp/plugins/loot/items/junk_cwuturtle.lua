@@ -1,6 +1,6 @@
-ITEM.name = "Рваная черепашка ГСР"
-ITEM.description = "Реликвия ушедших времен. Эта черепашка Союза Рабочих видала и лучшие времена - когда-то, возможно, она принадлежала кому-то и о ней заботились, но после инцидента, произошедшего давным давно, ее кто-то потерял."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_cwuturtle"
+ITEM.description = "item.junk_cwuturtle.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props/de_tides/vending_turtle.mdl"
 ITEM.width = 1
 ITEM.height = 1

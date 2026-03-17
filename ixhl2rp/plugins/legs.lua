@@ -3,12 +3,6 @@ PLUGIN.name = "Legs"
 PLUGIN.author = "Valkyrie & blackops7799"
 PLUGIN.description = "Renders the characters legs to the local player."
 
-ix.lang.AddTable("english", {
-	legs = "Legs",
-
-	optLegsEnabled = "Enable legs",
-	optLegsInVehicle = "Enable legs in vehicles"
-})
 
 if (CLIENT) then
 	ix.option.Add("legsEnabled", ix.type.bool, true, {

@@ -1,5 +1,5 @@
-ITEM.name = "Импульсные патроны"
-ITEM.description = "Небольшой картридж импульсных боеприпасов для вооружения Альянса."
+ITEM.name = "item.bullets_ar2"
+ITEM.description = "item.bullets_ar2.desc"
 ITEM.max_stack = 120
 ITEM.default_stack = 30
 ITEM.rarity = 1

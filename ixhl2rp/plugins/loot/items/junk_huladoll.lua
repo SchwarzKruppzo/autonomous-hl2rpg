@@ -1,6 +1,6 @@
-ITEM.name = "Статуэтка гавайской принцессы"
-ITEM.description = "Забавный предмет, изображающий гавайскую девицу, забавно двигающей своим тазом. Лицо давным давно стерлость, но движущий тельцем механизм все еще работает."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_huladoll"
+ITEM.description = "item.junk_huladoll.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_lab/huladoll.mdl"
 ITEM.width = 1
 ITEM.height = 1

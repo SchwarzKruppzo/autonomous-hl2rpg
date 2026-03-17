@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Деревянный стул"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_woodchair"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_woodchair"
 RECIPE.results = {
 	mat_leather = 1,

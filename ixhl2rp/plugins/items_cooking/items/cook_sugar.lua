@@ -1,7 +1,7 @@
-ITEM.name = "Пакет сахара"
-ITEM.description = "Серого цвета сахар, по всей видимости, из буряка, очень сластит серую жизнь."
+ITEM.name = "item.cook_sugar"
+ITEM.description = "item.cook_sugar.desc"
 ITEM.model = "models/foodnhouseholdaaaaa/combirationa.mdl"
-ITEM.category = "Кулинарные компоненты"
+ITEM.category = "item.category.cooking"
 ITEM.width = 1
 ITEM.height = 1
 ITEM.max_stack = 8

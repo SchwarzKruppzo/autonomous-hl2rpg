@@ -1,5 +1,5 @@
-RECIPE.name = "Молоток"
-RECIPE.category = "Инструменты"
+RECIPE.name = "recipe.crafting.tool_hammer"
+RECIPE.category = "recipe.category.tools"
 RECIPE.requirements = {
 	metal_reclaimed = 1,
 	mat_wood = 2,

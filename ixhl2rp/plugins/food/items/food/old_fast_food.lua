@@ -1,5 +1,5 @@
-ITEM.name = "Старая еда быстрого приготовления."
-ITEM.description = "Пакет без этикеток, внутри находится сухая лапша и пакетики с приправами. Сама лапша немного покрылась плесенью из-за сыроватости, но разве это проблема?"
+ITEM.name = "item.old_fast_food"
+ITEM.description = "item.old_fast_food.desc"
 ITEM.model = "models/props_junk/garbage_takeoutcarton001a.mdl"
 ITEM.cost = 11
 ITEM.width = 1

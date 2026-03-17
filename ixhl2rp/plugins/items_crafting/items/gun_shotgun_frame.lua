@@ -1,5 +1,5 @@
-ITEM.name = "Основа Дробовика"
-ITEM.description = "Базовая основа для дробовиков. В умелых руках может стать чем угодно, что умеет стрелять."
+ITEM.name = "item.gun_shotgun_frame"
+ITEM.description = "item.gun_shotgun_frame.desc"
 ITEM.model = "models/cellar/craft/shotgun_frame.mdl"
 ITEM.width = 3
 ITEM.height = 1
@@ -8,5 +8,5 @@ ITEM.iconCam = {
 	ang = Angle(86.062065124512, 268.48315429688, 0),
 	fov = 3.1149184448933,
 }
-ITEM.category = "Части оружия"
+ITEM.category = "item.category.weapon_parts"
 ITEM.contraband = true

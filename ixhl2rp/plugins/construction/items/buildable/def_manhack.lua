@@ -1,9 +1,9 @@
-ITEM.category = "Строительство - оборона"
+ITEM.category = "item.category.construction_defend"
 ITEM.model = "models/manhack.mdl"
 ITEM.width = 1
 ITEM.height = 2
-ITEM.name = "Сборка: Манхак"
-ITEM.description = "Манхак с бритвенными лезвиями представляет собой мощное средство для использовании на поле боя. Отлично подходит для использования в зонах с повышенной опасностью или в охраняемых территориях."
+ITEM.name = "item.def_manhack"
+ITEM.description = "item.def_manhack.desc"
 ITEM.preview_model = "models/manhack.mdl"
 ITEM.iconCam = {
 	pos = Vector(-81.868637084961, 472.40734863281, 56.037578582764),

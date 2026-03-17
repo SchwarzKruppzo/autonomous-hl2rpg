@@ -1,5 +1,5 @@
-ITEM.name = "Молоток"
-ITEM.description = "Молоточек, который прибыл к нам еще в те времена, когда заниматься ремонтом самостоятельно было незазорно."
+ITEM.name = "item.tool_hammer"
+ITEM.description = "item.tool_hammer.desc"
 ITEM.model = "models/mosi/fallout4/props/junk/hammer03.mdl"
 ITEM.width = 2
 ITEM.height = 1

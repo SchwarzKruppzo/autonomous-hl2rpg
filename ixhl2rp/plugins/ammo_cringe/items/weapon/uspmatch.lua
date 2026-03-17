@@ -1,5 +1,5 @@
-ITEM.name = "USP Match"
-ITEM.description = "Стандартный пистолет, который используют силы Гражданской Обороны. Калибр 9mm прекрасно справляется с не бронированными и, что самое важное, безоружными целями. Типичный дизайн этого пистолета помогает с легкостью найти для него самые разные составные части, а калибр, который этот пистолет использует, довольно распространен. Идеально оружие для маленьких шалостей."
+ITEM.name = "item.uspmatch"
+ITEM.description = "item.uspmatch.desc"
 ITEM.model = "models/weapons/w_pistol.mdl"
 ITEM.class = "arccw_uspmatch"
 ITEM.weaponCategory = "sidearm"

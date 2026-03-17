@@ -1,3 +1,3 @@
 ITEM.rarity = 2
-ITEM.description = "Книга в уникальной серо-зеленой обложке."
+ITEM.description = "item.empty_book1.desc"
 ITEM.skin = 0

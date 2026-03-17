@@ -1,5 +1,5 @@
-ITEM.name = "Пищевые добавки \"Минимум\""
-ITEM.description = "Вакуумная упаковка, содержащая густую кашицу. Она коричневого цвета, с сильным вкусом соли. Пластиковая ложка упакована рядом. Этого достаточно, чтобы остаться в живых."
+ITEM.name = "item.minimal_supplements"
+ITEM.description = "item.minimal_supplements.desc"
 ITEM.model = "models/gibs/props_canteen/vm_sneckol.mdl"
 ITEM.cost = 14
 ITEM.width = 1

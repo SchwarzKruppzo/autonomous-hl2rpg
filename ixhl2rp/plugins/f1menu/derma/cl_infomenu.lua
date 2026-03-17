@@ -68,7 +68,7 @@ function PANEL:Populate()
 	--self.limbs:SetScale(0.5)
 	self.limbs:SetPos(0, 30)
 
-	self.header = self:Add(self:AddLabel(8, "Персонаж и ролевая информация", true, true))
+	self.header = self:Add(self:AddLabel(8, "infoMenuHeader", true, true))
 
 	local format = "%A, %B %d, %Y. %H:%M:%S"
 
@@ -96,7 +96,7 @@ function PANEL:Populate()
 	local name = LocalPlayer():GetName()
 
 	self.name = self.infoBox:Add(self:AddLabel(4, name, true))
-	self.faction = self.infoBox:Add(self:AddLabel(8, faction.name, true))
+	self.faction = self.infoBox:Add(self:AddLabel(8, L(faction.name), true))
 
 	for k, v in pairs(ix.infoMenu.stored) do
 		self.infoBox:Add(self:AddLabel(0, v))

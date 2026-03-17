@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Сломанный телевизор"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_tv"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_tv"
 RECIPE.results = {
 	mat_plastic = 1,

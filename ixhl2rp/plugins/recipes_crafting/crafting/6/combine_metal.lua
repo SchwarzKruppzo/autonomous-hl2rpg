@@ -1,5 +1,5 @@
-RECIPE.name = "Высококачественный сплав"
-RECIPE.category = "Переплавка"
+RECIPE.name = "recipe.crafting.combine_metal"
+RECIPE.category = "recipe.category.smelting"
 RECIPE.requirements = {
 	mat_ore_titan = 4,
 	metal_reclaimed = 2,

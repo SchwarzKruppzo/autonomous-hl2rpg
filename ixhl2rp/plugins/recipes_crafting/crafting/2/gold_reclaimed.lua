@@ -1,5 +1,5 @@
-RECIPE.name = "Слиток золота"
-RECIPE.category = "Переплавка"
+RECIPE.name = "recipe.crafting.gold_reclaimed"
+RECIPE.category = "recipe.category.smelting"
 RECIPE.requirements = {
 	mat_ore_gold = 4,
 	mat_charcoal = 2

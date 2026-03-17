@@ -1,7 +1,7 @@
-ITEM.name = "Опиум"
-ITEM.description = "Мощное наркотическое вещество, используемый в медицине как обезболивающее, он также может вызвать сильное привыкание и обладает многочисленными побочными эффектами."
+ITEM.name = "item.chem_opium"
+ITEM.description = "item.chem_opium.desc"
 ITEM.model = "models/mosi/fallout4/props/aid/buffout.mdl"
-ITEM.category = "Химические компоненты"
+ITEM.category = "item.category.craft_chemical"
 ITEM.height = 1
 ITEM.max_stack = 4
 ITEM.default_stack = 1

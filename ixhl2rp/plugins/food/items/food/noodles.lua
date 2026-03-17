@@ -1,5 +1,5 @@
-ITEM.name = "Лапша"
-ITEM.description = "Лапша сделанная по настоящему рецепту, где нужно сначала замесить тесто, потом делать из него тонкие пласты и все это сварить." 
+ITEM.name = "item.noodles"
+ITEM.description = "item.noodles.desc" 
 ITEM.model = "models/mosi/fallout4/props/food/noodles.mdl"
 ITEM.cost = 12
 ITEM.width = 1

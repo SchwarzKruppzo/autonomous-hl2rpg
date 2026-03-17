@@ -1,5 +1,5 @@
-ITEM.name = "Жареный лобстер"
-ITEM.description = "Жареное мясо лобстера, пахнет вкусно."
+ITEM.name = "item.fried_lobster"
+ITEM.description = "item.fried_lobster.desc"
 ITEM.model = "models/foodnhouseholditems/lobster2.mdl"
 ITEM.cost = 28
 ITEM.width = 1

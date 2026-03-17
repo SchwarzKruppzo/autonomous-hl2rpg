@@ -427,7 +427,7 @@ if SERVER then
 
 		if self:GetFuelAmount() <= 0 then
 			self:EmitSound("ambient/machines/sputter1.wav")
-			activator:Notify("В этом переработчике закончилось топливо.")
+			activator:NotifyLocalized("recycler.noFuel")
 
 			self.iNextResourceCreation = CurTime() + 2
 			return
@@ -482,11 +482,11 @@ else
 	function ENT:OnPopulateEntityInfo(container)
 		local name = container:AddRow("name")
 		name:SetImportant()
-		name:SetText("Переработчик")
+		name:SetText(L("factoryRecyclerName"))
 		name:SizeToContents()
 
 		local value = container:AddRow("value")
-		value:SetText(string.format("Загруженность %s из 5", self:GetRawResource()))
+		value:SetText(L("factoryRecyclerLoad", self:GetRawResource()))
 		value:SetBackgroundColor(derma.GetColor("Info", container))
 		value:SizeToContents()
 
@@ -496,7 +496,7 @@ else
 
 			if item then
 				local product = container:AddRow("product")
-				product:SetText(string.format("Перерабатывает в: %s", L(item.name):utf8lower()))
+				product:SetText(L("factoryRecyclerProduct", L(item.name):utf8lower()))
 				product:SetBackgroundColor(derma.GetColor("Success", container))
 				product:SizeToContents()
 			end

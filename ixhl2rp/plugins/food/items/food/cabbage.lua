@@ -1,5 +1,5 @@
-ITEM.name = "Капуста"
-ITEM.description = "Зеленый качан из множества листов капусты. Можно таким накормить и скот, и себя."
+ITEM.name = "item.cabbage"
+ITEM.description = "item.cabbage.desc"
 ITEM.model = "models/foodnhouseholditems/cabbage1.mdl"
 ITEM.skin = 1
 ITEM.cost = 10

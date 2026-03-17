@@ -496,10 +496,10 @@ function PANEL:Init()
 	self.btn_container:SetTall(self.button_size)
 	self.btn_container:InvalidateParent(true)
 
-	local health = self:AddButton("hp", 'СОСТОЯНИЕ ЗДОРОВЬЯ')
-	local info = self:AddButton("info", 'РОЛЕВАЯ ИНФОРМАЦИЯ')
-	local skills = self:AddButton("skills", 'ХАРАКТЕРИСТИКИ')
-	local perks = self:AddButton("perks", 'ПЕРКИ')
+	local health = self:AddButton("hp", L("tab_health"))
+	local info = self:AddButton("info", L("tab_info"))
+	local skills = self:AddButton("skills", L("tab_characteristics"))
+	local perks = self:AddButton("perks", L("tab_perks"))
 
 	--health:SetDisabled(true)
 	--health:SetStyle(5)
@@ -541,7 +541,7 @@ function PANEL:Init()
 		limbs:Center()
 
 		local consc = left_container:Add("ui.tab.statbar")
-		consc:SetTitle("СОЗНАНИЕ:")
+		consc:SetTitle(L("tab_consciousness"))
 		consc:Dock(TOP)
 		consc:DockMargin(16, 5, 16, 0)
 		consc.OnUpdate = function()
@@ -553,7 +553,7 @@ function PANEL:Init()
 		consc:SizeToContents()
 
 		local pain = left_container:Add("ui.tab.statbar")
-		pain:SetTitle("БОЛЬ:")
+		pain:SetTitle(L("tab_pain"))
 		pain:Dock(TOP)
 		pain:DockMargin(16, 5, 16, 9)
 		pain.OnUpdate = function()
@@ -565,7 +565,7 @@ function PANEL:Init()
 		
 		local big_size = Scale(10)
 		local food = left_container:Add("ui.tab.statbar")
-		food:SetTitle("ГОЛОД:")
+		food:SetTitle(L("tab_hunger"))
 		food:Dock(BOTTOM)
 		food:DockMargin(16, 0, 16, 16)
 		food.hsv = true
@@ -583,7 +583,7 @@ function PANEL:Init()
 		food:SizeToContents()
 
 		local water = left_container:Add("ui.tab.statbar")
-		water:SetTitle("ЖАЖДА:")
+		water:SetTitle(L("tab_thirst"))
 		water:Dock(BOTTOM)
 		water:DockMargin(16, 0, 16, 5)
 		water.hsv = true
@@ -601,7 +601,7 @@ function PANEL:Init()
 		water:SizeToContents()
 
 		local hp = left_container:Add("ui.tab.statbar")
-		hp:SetTitle("ЗДОРОВЬЕ:")
+		hp:SetTitle(L("tab_health_label"))
 		hp:Dock(BOTTOM)
 		hp:DockMargin(16, 0, 16, 5)
 		hp.hsv = true
@@ -632,7 +632,7 @@ function PANEL:Init()
 
 		local label = right_container:Add("DLabel")
 		label:SetTextColor(Color(0, 225, 255))
-		label:SetText("ПРОФИЛЬ ПЕРСОНАЖА")
+		label:SetText(L("tab_profile"))
 		label:SetFont("ui.tab.smalltitle")
 		label:DockMargin(8, 8, 0, 5)
 		label:SizeToContents()
@@ -649,7 +649,7 @@ function PANEL:Init()
 
 		local label = left_container:Add("DLabel")
 		label:SetTextColor(Color(0, 225, 255))
-		label:SetText("ОСНОВНОЕ")
+		label:SetText(L("tab_basics"))
 		label:SetFont("ui.tab.smalltitle")
 		label:DockMargin(8, 8, 0, 5)
 		label:SizeToContents()
@@ -676,22 +676,22 @@ function PANEL:Init()
 			value:Dock(TOP)
 		end
 		
-		AddLabel("ИМЯ", character:GetName())
+		AddLabel(L("tab_name"), character:GetName())
 
 		local genders = ix.plugin.list["!character"]
-		AddLabel("ПОЛ", L(genders.Genders[character:GetGender()] or "unknown"))
+		AddLabel(L("tab_gender"), L(genders.Genders[character:GetGender()] or "unknown"))
 
 		local faction = ix.faction.indices[character:GetFaction()]
-		AddLabel("ПРИНАДЛЕЖНОСТЬ", L(faction.name))
+		AddLabel(L("faction"), L(faction.name))
 
 		local card = LocalPlayer():GetIDCard()
-		AddLabel("ГРАЖДАНСКИЙ НОМЕР", string.format("%s", card and card:GetData("cid") or "Н/Д"))
+		AddLabel(L("label_cid"), string.format("%s", card and card:GetData("cid") or L("n_a")))
 		
 		
 
 		local label = right_container:Add("DLabel")
 		label:SetTextColor(Color(255, 72, 72))
-		label:SetText("Панель находится на стадии разработки.")
+		label:SetText(L("panel_developing"))
 		label:SetFont("ui.specialpoints.title")
 		label:DockMargin(16, 16, 16, 16)
 		label:SizeToContents()
@@ -748,7 +748,7 @@ function PANEL:Init()
 
 		local label = right_container:Add("DLabel")
 		label:SetTextColor(Color(0, 225, 255, 255))
-		label:SetText("ФИЗИЧЕСКОЕ ОПИСАНИЕ")
+		label:SetText(L("tab_phys_desc"))
 		label:SetFont("ui.tab.smalltitle2")
 		label:DockMargin(16, 16, 0, 0)
 		label:SizeToContents()
@@ -760,7 +760,7 @@ function PANEL:Init()
 
 		local label = right_container:Add("DLabel")
 		label:SetTextColor(Color(0, 225, 255, 255))
-		label:SetText("ВНЕШНЕЕ ОПИСАНИЕ")
+		label:SetText(L("tab_appearance_desc"))
 		label:SetFont("ui.tab.smalltitle2")
 		label:DockMargin(16, 16, 0, 0)
 		label:SizeToContents()
@@ -774,7 +774,7 @@ function PANEL:Init()
 		
 		local label = right_container:Add("DLabel")
 		label:SetTextColor(Color(0, 225, 255, 255))
-		label:SetText("ЛИЧНЫЕ ЗАПИСИ")
+		label:SetText(L("tab_notes"))
 		label:SetFont("ui.tab.smalltitle2")
 		label:DockMargin(16, 16, 0, 0)
 		label:SizeToContents()
@@ -802,7 +802,7 @@ function PANEL:Init()
 
 		local label = right_container:Add("DLabel")
 		label:SetTextColor(Color(0, 225, 255))
-		label:SetText("НАВЫКИ")
+		label:SetText(L("tab_skills"))
 		label:SetFont("ui.tab.smalltitle")
 		label:DockMargin(8, 8, 0, 5)
 		label:SizeToContents()
@@ -819,7 +819,7 @@ function PANEL:Init()
 
 		local label = left_container:Add("DLabel")
 		label:SetTextColor(Color(0, 225, 255))
-		label:SetText("ХАРАКТЕРИСТИКИ")
+		label:SetText(L("tab_characteristics"))
 		label:SetFont("ui.tab.smalltitle")
 		label:DockMargin(8, 8, 0, 5)
 		label:SizeToContents()
@@ -850,7 +850,7 @@ function PANEL:Init()
 			attribute:SizeToChildren(true, true)
 			attribute:SetAutonomousTooltip(function(tooltip)
 				tooltip:SetTitle(name:utf8upper())
-				tooltip:AddSmallText("ХАРАКТЕРИСТИКА ПЕРСОНАЖА")
+				tooltip:AddSmallText(L("tab_special_tooltip"))
 				tooltip:AddDivider()
 
 				if v.Tooltip then
@@ -861,7 +861,7 @@ function PANEL:Init()
 
 		local label = right_container:Add("DLabel")
 		label:SetTextColor(Color(255, 72, 72))
-		label:SetText("Панель находится на стадии разработки.")
+		label:SetText(L("panel_developing"))
 		label:SetFont("ui.specialpoints.title")
 		label:DockMargin(16, 16, 16, 16)
 		label:SizeToContents()
@@ -1006,7 +1006,7 @@ function PANEL:Setup(right)
 	local label = self.right:Add('DLabel')
 	label:Dock(TOP)
 	label:DockMargin(8, 8, 0, 0)
-	label:SetText("ИНВЕНТАРЬ")
+	label:SetText(L("inv"))
 	label:SetTextColor(Color(0, 225, 255))
 	label:SetFont("ui.tab.smalltitle")
 
@@ -1025,7 +1025,7 @@ function PANEL:Setup(right)
 	local label = self.right:Add('DLabel')
 	label:Dock(TOP)
 	label:DockMargin(8, 0, 0, 0)
-	label:SetText("РЮКЗАК")
+	label:SetText(L("tab_backpack"))
 	label:SetTextColor(Color(0, 225, 255))
 	label:SetFont("ui.tab.smalltitle")
 
@@ -1092,7 +1092,7 @@ local buttons = {
 	primary = {
 		[1] = {
 			id = "character",
-			text = "ПЕРСОНАЖ",
+			text = "tab_character",
 			width = 800,
 			height = 640,
 			OnShow = function(parent, x)
@@ -1105,7 +1105,7 @@ local buttons = {
 		},
 		[2] = {
 			id = "inventory",
-			text = "СНАРЯЖЕНИЕ",
+			text = "tab_equipment",
 			width = 1000,
 			height = 700,
 			OnShow = function(parent, x)
@@ -1129,7 +1129,7 @@ local buttons = {
 					//btn:Dock(LEFT)
 					//btn:DockMargin(0, 0, 5, 0)
 					btn2:SetStyleSmall()
-					btn2:SetText('ВЕРХНЯЯ ОДЕЖДА')
+					btn2:SetText(L('tab_equip_outer'))
 					btn2:SetStyle(4)
 					btn2:SetAlpha(255)
 					btn2:SizeToContents()
@@ -1142,7 +1142,7 @@ local buttons = {
 					local btn = buttons:Add('ui.tabmenu.btn')
 					btn:SetStyleSmall()
 					btn:SetStyle(5)
-					btn:SetText('НИЖНЯЯ ОДЕЖДА')
+					btn:SetText(L('tab_equip_under'))
 					btn:SetAlpha(255)
 					btn:SizeToContents()
 					btn:SetTall(button_size)
@@ -1162,7 +1162,7 @@ local buttons = {
 					torso:Rebuild()
 					torso:SizeToContents()
 					torso:Center()
-					torso:SetTitle("ТОРС")
+					torso:SetTitle(L("tab_slot_torso"))
 
 					local head = client:GetInventory("head"):CreatePanel(parent)
 					head:SetSlotSize(slot_size)
@@ -1170,7 +1170,7 @@ local buttons = {
 					head:SizeToContents()
 					head:MoveAbove(torso, 16)
 					head:CenterHorizontal()
-					head:SetTitle("ГОЛОВА")
+					head:SetTitle(L("tab_slot_head"))
 
 					local legs = client:GetInventory("legs"):CreatePanel(parent)
 					legs:SetSlotSize(slot_size)
@@ -1178,7 +1178,7 @@ local buttons = {
 					legs:SizeToContents()
 					legs:MoveBelow(torso, 16)
 					legs:CenterHorizontal()
-					legs:SetTitle("НОГИ")
+					legs:SetTitle(L("tab_slot_legs"))
 
 					local face = client:GetInventory("mask"):CreatePanel(parent)
 					face:SetSlotSize(slot_size_small)
@@ -1186,7 +1186,7 @@ local buttons = {
 					face:SizeToContents()
 					face:SetY(head:GetY())
 					face:MoveLeftOf(head, 5)
-					face:SetTitle("ЛИЦО")
+					face:SetTitle(L("tab_slot_face"))
 
 					local ears = client:GetInventory("ears"):CreatePanel(parent)
 					ears:SetSlotSize(slot_size_small)
@@ -1194,7 +1194,7 @@ local buttons = {
 					ears:SizeToContents()
 					ears:SetY(head:GetY())
 					ears:MoveRightOf(head, 5)
-					ears:SetTitle("УШИ")
+					ears:SetTitle(L("tab_slot_ears"))
 
 					local arm = client:GetInventory("arm"):CreatePanel(parent)
 					arm:SetSlotSize(slot_size_small)
@@ -1202,7 +1202,7 @@ local buttons = {
 					arm:SizeToContents()
 					arm:MoveBelow(head, 16)
 					arm:MoveLeftOf(torso, 5)
-					arm:SetTitle("ПЛЕЧО")
+					arm:SetTitle(L("tab_slot_shoulder"))
 					
 					local hands = client:GetInventory("hands"):CreatePanel(parent)
 					hands:SetSlotSize(slot_size_small)
@@ -1210,7 +1210,7 @@ local buttons = {
 					hands:SizeToContents()
 					hands:MoveBelow(head, 16)
 					hands:MoveLeftOf(arm, 5)
-					hands:SetTitle("РУКИ")
+					hands:SetTitle(L("tab_slot_hands"))
 
 					local cid = client:GetInventory("cid"):CreatePanel(parent)
 					cid:SetSlotSize(slot_size_small)
@@ -1218,7 +1218,7 @@ local buttons = {
 					cid:SizeToContents()
 					cid:MoveBelow(torso, 16)
 					cid:MoveRightOf(legs, 5)
-					cid:SetTitle("CITIZEN ID")
+					cid:SetTitle(L("label_cid"))
 
 					local radio = client:GetInventory("radio"):CreatePanel(parent)
 					radio:SetSlotSize(slot_size_small)
@@ -1226,7 +1226,7 @@ local buttons = {
 					radio:SizeToContents()
 					radio:MoveBelow(torso, 16)
 					radio:MoveLeftOf(legs, 5)
-					radio:SetTitle("РАЦИЯ")
+					radio:SetTitle(L("tab_radio"))
 
 					local backpack = client:GetInventory("backpack"):CreatePanel(parent)
 					backpack:SetSlotSize(slot_size)
@@ -1234,7 +1234,7 @@ local buttons = {
 					backpack:SizeToContents()
 					backpack:Center()
 					backpack:MoveRightOf(torso, 5)
-					backpack:SetTitle("РЮКЗАК")
+					backpack:SetTitle(L("tab_backpack"))
 					backpack.OnRebuild = function()
 						container:ValidateBackpack()
 					end
@@ -1245,7 +1245,7 @@ local buttons = {
 		},
 		[3] = {
 			id = "craft",
-			text = "СОЗДАНИЕ ВЕЩЕЙ",
+			text = "tab_craft",
 			width = 1000,
 			height = 720,
 			OnShow = function(parent, x)
@@ -1261,7 +1261,7 @@ local buttons = {
 	secondary = {
 		[1] = {
 			id = "exit",
-			text = "В ГЛАВНОЕ МЕНЮ",
+			text = "tab_to_mainmenu",
 			style = 2,
 			OnClick = function()
 				ix.gui.menu:Close()
@@ -1270,7 +1270,7 @@ local buttons = {
 		},
 		[2] = {
 			id = "settings",
-			text = "НАСТРОЙКИ",
+			text = "tab_settings",
 			width = 1400,
 			height = 800,
 			OnShow = function(parent, x)
@@ -1337,7 +1337,7 @@ local buttons = {
 		},
 		[3] = {
 			id = "help",
-			text = "ПОМОЩЬ",
+			text = "tab_help",
 			width = 1400,
 			height = 800,
 			OnShow = function(parent, x)
@@ -1351,7 +1351,7 @@ local buttons = {
 		},
 		[4] = {
 			id = "scoreboard",
-			text = "ИГРОКИ",
+			text = "tab_players",
 			width = 1000,
 			height = 720,
 			OnShow = function(parent, x)
@@ -1362,7 +1362,7 @@ local buttons = {
 		},
 		[5] = {
 			id = "config",
-			text = "СЕРВЕР",
+			text = "tab_server",
 			width = 1400,
 			height = 800,
 			OnShow = function(parent, x)
@@ -1582,7 +1582,7 @@ function PANEL:Init()
 		local level_w, level_h = surface.GetTextSize(level)
 		local level_clr = lvl_colors[level] or lvl_colors[1]
 
-		draw.SimpleText("УРОВЕНЬ", "ui.tabmenu.leveltext", x + level_w + 8, 0, level_clr, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+		draw.SimpleText(L("tab_level"), "ui.tabmenu.leveltext", x + level_w + 8, 0, level_clr, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 		draw.SimpleText(level, "ui.tabmenu.level", x, 0, level_clr, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 
 		x = x + level_w + 8
@@ -1593,7 +1593,7 @@ function PANEL:Init()
 		y = y + level_bar_h
 
 		DisableClipping(true)
-			draw.SimpleText("ДО СЛЕДУЮЩЕГО: ".. math.Round(xp_max - xp).." XP", "ui.tabmenu.levelmini", x + level_bar_w, y, level_clr, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
+			draw.SimpleText(L("tab_xp_until", math.Round(xp_max - xp)), "ui.tabmenu.levelmini", x + level_bar_w, y, level_clr, TEXT_ALIGN_RIGHT, TEXT_ALIGN_TOP)
 		DisableClipping(false)
 	end
 
@@ -1627,7 +1627,7 @@ function PANEL:Init()
 	money:Dock(RIGHT)
 	money:SetTextColor(Color(32, 255, 128))
 	money:DockMargin(0, 0, level_padding, 0)
-	money:SetText("ТОКЕНОВ")
+	money:SetText(L("tab_tokens"))
 	money:SizeToContents()
 
 	self.money = self.tab:Add("DLabel")
@@ -1670,7 +1670,7 @@ function PANEL:Init()
 			end
 
 			button:SetSize(48, parent:GetTall())
-			button:SetText(v.text)
+			button:SetText(L(v.text))
 			button:SizeToContents()
 			button:Dock(LEFT)
 
@@ -1686,7 +1686,7 @@ function PANEL:Init()
 					
 					if state then
 						local frame = self:Add("ui.tab.frame")
-						frame:SetTitle(v.text:utf8upper())
+						frame:SetTitle(L(v.text):utf8upper())
 						frame:SetSize(Scale(v.width), Scale(v.height))
 						frame:Center()
 						frame:DockPadding(16, 22 + 16, 16, 16)

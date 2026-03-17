@@ -18,6 +18,12 @@ ix.util.Include("sh_outfit.class.lua")
 
 if SERVER then
 	function PLUGIN:PlayerInitialSpawn(client)
+		for entity in pairs(ix.Appearance.Entities) do
+			if IsValid(entity) and entity.char_outfit then
+				entity.char_outfit:SendTo(client)
+			end
+		end
+
 		client.char_outfit = ix.meta.Outfit:New(client)
 	end
 
@@ -35,6 +41,12 @@ if SERVER then
 		client.char_outfit:ModelChanged(model, oldmodel)
 	end
 
+	function PLUGIN:EntityRemoved(entity)
+		if ix.Appearance.Entities[entity] then
+			ix.Appearance.Entities[entity] = nil
+		end
+	end
+	
 	local function CacheBodygroups(client, oldcharacter)
 		if oldcharacter then
 			local bgs = {}
@@ -48,7 +60,7 @@ if SERVER then
 	end
 
 	function PLUGIN:PrePlayerLoadedCharacter(client, character, oldcharacter)
-		client.char_outfit.loading = true
+		//client.char_outfit.loading = true
 
 		CacheBodygroups(client, oldcharacter)
 	end

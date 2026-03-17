@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Аккумулятор"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_carbattery"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_carbattery"
 RECIPE.results = {
 	mat_sulfur = {2, 3},

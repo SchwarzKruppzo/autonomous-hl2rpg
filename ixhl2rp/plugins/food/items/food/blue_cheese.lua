@@ -1,5 +1,5 @@
-ITEM.name = "Сыр с плесенью"
-ITEM.description = "Сине-зеленый круг сыра, внутри которой, по всей видимости плесень. Только опытный гурман может сказать, что эта плесень съедобная и это такой вид сыра."
+ITEM.name = "item.blue_cheese"
+ITEM.description = "item.blue_cheese.desc"
 ITEM.model = "models/foodnhouseholditems/cheesewheel2a.mdl"
 ITEM.cost = 12
 ITEM.width = 2

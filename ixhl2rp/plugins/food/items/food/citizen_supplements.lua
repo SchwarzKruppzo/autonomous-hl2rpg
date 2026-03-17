@@ -1,5 +1,5 @@
-ITEM.name = "Пищевые добавки \"Гражданин\""
-ITEM.description = "Небольшая упаковка, содержащая густую кашицу. Она коричневого цвета, с сильным вкусом соли. Пластиковая ложка упакована рядом. Здесь достаточное количество этой штуки."
+ITEM.name = "item.citizen_supplements"
+ITEM.description = "item.citizen_supplements.desc"
 ITEM.model = "models/mres/consumables/tag_mre.mdl"
 ITEM.cost = 20
 ITEM.width = 1

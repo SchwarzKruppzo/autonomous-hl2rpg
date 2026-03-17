@@ -1,5 +1,5 @@
-RECIPE.name = "Медицинская маска"
-RECIPE.category = "Одежда — лицо"
+RECIPE.name = "recipe.tailoring.surgerymask"
+RECIPE.category = "recipe.category.face"
 RECIPE.requirements = {
 	mat_cloth = 2,
 	box_of_needles = 1

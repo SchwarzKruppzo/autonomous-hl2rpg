@@ -1,5 +1,5 @@
-ITEM.name = "Энергетик"
-ITEM.description = "Банка с надписью Monster."
+ITEM.name = "item.energy_drink"
+ITEM.description = "item.energy_drink.desc"
 ITEM.model = "models/foodnhouseholditems/sodacanb01.mdl"
 ITEM.cost = 36
 ITEM.width = 1

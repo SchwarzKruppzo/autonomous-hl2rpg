@@ -1,5 +1,5 @@
-ITEM.name = "Сварочный аппарат"
-ITEM.description = "Небольшая горелка, которой надолго явно не хватит."
+ITEM.name = "item.tool_welding"
+ITEM.description = "item.tool_welding.desc"
 ITEM.model = "models/mark2580/gtav/garage_stuff/blowtorch.mdl" --SMALL PROPS
 ITEM.width = 1
 ITEM.height = 2

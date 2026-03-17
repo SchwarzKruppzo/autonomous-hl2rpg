@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Видеомагнитофон"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_vcr"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_vcr"
 RECIPE.results = {
 	mat_plastic = 1,

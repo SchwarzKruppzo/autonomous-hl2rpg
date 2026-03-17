@@ -1,5 +1,5 @@
-RECIPE.name = "Лак"
-RECIPE.category = "Компоненты"
+RECIPE.name = "recipe.crafting.varnish"
+RECIPE.category = "recipe.category.components"
 RECIPE.requirements = {
 	mat_acid = 1,
 	mat_oil = 2

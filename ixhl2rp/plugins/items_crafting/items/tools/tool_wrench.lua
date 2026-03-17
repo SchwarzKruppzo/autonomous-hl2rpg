@@ -1,5 +1,5 @@
-ITEM.name = "Гаечный ключ"
-ITEM.description = ""
+ITEM.name = "item.tool_wrench"
+ITEM.description = "item.tool_wrench.desc"
 ITEM.model = "models/mosi/fallout4/props/junk/adjustablewrench.mdl"
 ITEM.width = 2
 ITEM.height = 1

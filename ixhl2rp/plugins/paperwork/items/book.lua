@@ -95,7 +95,7 @@ function ITEM:GetName()
 		return string.format("\"%s\"", title)
 	end
 	
-	return "Книга"
+	return L("item.book")
 end
 
 if CLIENT then

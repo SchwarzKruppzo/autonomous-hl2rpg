@@ -1,5 +1,5 @@
-ITEM.name = "Бутылка боярышника"
-ITEM.description = "Бутылка давно забытого веселья русского народа."
+ITEM.name = "item.hawthorn"
+ITEM.description = "item.hawthorn.desc"
 ITEM.model = "models/props_junk/glassjug01.mdl"
 ITEM.cost = 13
 ITEM.width = 1

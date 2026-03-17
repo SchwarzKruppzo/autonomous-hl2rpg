@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Старая газета"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_newspaper"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_newspaper"
 RECIPE.results = {
 	paper_advanced = 2,

@@ -1,5 +1,5 @@
-ITEM.name = "Рогалик"
-ITEM.description = "Рогалик, состоящий из качественного теста и посыпанный душистыми специями. До смерти сладкий!"
+ITEM.name = "item.bagel"
+ITEM.description = "item.bagel.desc"
 ITEM.model = "models/foodnhouseholditems/pretzel.mdl"
 ITEM.cost = 6
 ITEM.width = 1

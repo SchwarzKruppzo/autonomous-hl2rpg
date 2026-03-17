@@ -52,7 +52,7 @@ if SERVER then
 				character:DoAction("farming", xp, self.Plant)
 
 				if info.Harvest then
-					character:GetPlayer():RewardXP(self.Plant.RewardXP, "урожай")
+					character:GetPlayer():RewardXP(self.Plant.RewardXP, "xp.harvest")
 				end
 			end
 		end
@@ -306,10 +306,10 @@ if CLIENT then
 	ENT.PopulateEntityInfo = true
 
 	local growStatus = {
-		"Активный рост",
-		"Голодание",
-		"Период отдыха",
-		"Можно собрать урожай"
+		"plantGrowActive",
+		"plantGrowStarving",
+		"plantGrowRest",
+		"plantGrowHarvestable"
 	}
 
 	function ENT:OnPopulateEntityInfo(container)
@@ -321,12 +321,12 @@ if CLIENT then
 
 			local name = container:AddRow("name")
 			name:SetImportant()
-			name:SetText(plantInfo.Name)
+			name:SetText(L(plantInfo.Name))
 			name:SetBackgroundColor(Color(64, 225, 64))
 			name:SizeToContents()
 
 			local water = container:AddRow("water")
-			water:SetText(string.format("Вода: %s%%", math.Round(self:GetWater())))
+			water:SetText(L("plantWaterLabel", math.Round(self:GetWater())))
 			water:SetBackgroundColor(Color(64, 225, 225))
 			water:SizeToContents()
 			water.Think = function(this)
@@ -334,12 +334,12 @@ if CLIENT then
 					return
 				end
 				
-				this:SetText(string.format("Вода: %s%%", math.Round(self:GetWater())))
+				this:SetText(L("plantWaterLabel", math.Round(self:GetWater())))
 			end
 
 			if status and (status > 0) then
 				local info = container:AddRow("status")
-				info:SetText(growStatus[status])
+				info:SetText(L(growStatus[status]))
 				info:SetBackgroundColor(Color(225, 225, 225))
 				info:SizeToContents()
 				info.Think = function(this)
@@ -350,13 +350,13 @@ if CLIENT then
 					local status = self:GetGrowStatus()
 
 					if status and (status > 0) then
-						this:SetText(growStatus[status])
+						this:SetText(L(growStatus[status]))
 					end
 				end
 			end
 
 			local desc = container:AddRow("desc")
-			desc:SetText(plantInfo.Description)
+			desc:SetText(L(plantInfo.Description))
 			desc:SizeToContents()
 		end
 	end
@@ -365,14 +365,14 @@ if CLIENT then
 		local menus = {}
 
 		if self:GetIsGrow() then
-			menus["Собрать урожай"] = function(panel)
+			menus[L("plantMenuHarvest")] = function(panel)
 				ix.menu.NetworkChoice(self, "Harvest")
 
 				return false
 			end
 		end
 
-		menus["Полить водой"] = function(panel)
+		menus[L("plantMenuWater")] = function(panel)
 			ix.menu.NetworkChoice(self, "Refill")
 
 			return false

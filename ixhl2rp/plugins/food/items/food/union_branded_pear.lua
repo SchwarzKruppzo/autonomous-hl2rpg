@@ -1,5 +1,5 @@
-ITEM.name = "Груша"
-ITEM.description = "Аппетитно выглядящая груша с напечатанным знаком Альянса на ней. Тем не менее, она не пахнет столь же свежо, как её оригинальный аналог."
+ITEM.name = "item.union_branded_pear"
+ITEM.description = "item.union_branded_pear.desc"
 ITEM.model = "models/bioshockinfinite/hext_pear.mdl"
 ITEM.cost = 2
 ITEM.width = 1

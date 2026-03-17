@@ -1,5 +1,5 @@
-RECIPE.name = "M18 Дымовая"
-RECIPE.category = "Взрывчатка"
+RECIPE.name = "recipe.crafting.grenade_m18"
+RECIPE.category = "recipe.category.explosives"
 RECIPE.requirements = {
 	metal_reclaimed = 1,
 	box_of_gunpowder = 2,

@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Настольный вентилятор"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_deskfan"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_deskfan"
 RECIPE.results = {
 	mat_plastic = 1,

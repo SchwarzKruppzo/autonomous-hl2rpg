@@ -1,5 +1,5 @@
-RECIPE.name = "Бумага"
-RECIPE.category = "Переработка"
+RECIPE.name = "recipe.crafting.recycle_paper"
+RECIPE.category = "recipe.category.recycling"
 RECIPE.requirements = {
 	empty_carton = 4
 }

@@ -1,0 +1,62 @@
+ix.Locale:Build("en")
+
+
+radioFormat = "[%s] %s %s %s%s \"%s\""
+radioFormatEavesdrop = "%s %s %s%s \"%s\""
+radioVia = "via radio"
+radioSpeaks = "says"
+radioShouts = "shouts"
+radioWhispers = "whispers"
+
+radioNoAccess = "You do not have access to that channel!"
+radioNoChannel = "You are not on a valid channel!"
+radioChannelSet = "You have set your channel to '%s'."
+radioChannelSetSub = "You have set your channel to '%s' (#%d)."
+radioChannelInvalid = "%s is not a valid channel!"
+
+chatRadioing = "Radioing..."
+
+radioHideFreq = "Hide radio frequency in chat"
+radioCategory = "Radio"
+
+item.radio_handheld        = "Handheld Radio"
+item.radio_handheld.desc   = "A standard handheld radio with a tunable frequency."
+
+item.stationary_radio      = "Stationary Radio"
+item.stationary_radio.desc = "A stationary radio with a frequency tuner."
+
+item.radio_cp              = "Civil Protection Radio"
+item.radio_cp.desc         = "A specialized radio with encrypted channels and a bio-lock for Civil Protection units."
+
+item.radio_cwu             = "Civil Worker's Union Radio"
+item.radio_cwu.desc        = "A specialized radio with encrypted channels and a bio-lock for CWU staff."
+
+radioSetFrequency          = "Set Frequency"
+radioFrequencyTitle        = "Frequency"
+radioFrequencyPrompt       = "Enter a new radio frequency"
+radioFrequencyLabel        = "Frequency: %s"
+radioStationaryChannelSet  = "You have set this stationary radio's channel to %s."
+radioStationaryCannotTune  = "This stationary radio cannot tune in on that channel!"
+radioStationaryFrequencySet = "You have set this stationary radio's frequency to %s."
+radioFrequencyRange        = "The frequency must be between 100.0 and 999.9!"
+radioFrequencyFormat       = "The radio frequency must look like xxx.x!"
+radioSetFrequency         = "Set Frequency"
+radioSetFrequencyPrompt   = "Please enter the frequency of this radio."
+radioChannelsLabel        = "Radio channels: %s"
+radioTransmittingLabel    = "Transmitting on: %s"
+radioItemFrequencySet     = "You have set this radio's frequency to %s."
+radioCmdRadio             = "Send a radio message on your current channel."
+radioCmdRadioWhisper      = "Whisper a radio message on your current channel."
+radioCmdRadioYell         = "Yell a radio message on your current channel."
+radioCmdSetChannel        = "Sets the radio channel you are transmitting on."
+radioCmdToggleChannel     = "Subscribe or unsubscribe a character from a radio channel."
+radioCmdTempToggleChannel = "Temporarily subscribe a character to a radio channel."
+radioUnsubscribedOther    = "You have unsubscribed %s from '%s'."
+radioUnsubscribedYou      = "%s has unsubscribed you from '%s'."
+radioUnsubscribedSelf     = "You have been unsubscribed from '%s'."
+radioSubscribedOther      = "You have subscribed %s to '%s'."
+radioSubscribedYou        = "%s has subscribed you to '%s'."
+radioSubscribedSelf       = "You have been subscribed to '%s'."
+radioTempSubscribedOther  = "You have temporarily subscribed %s to '%s'."
+radioTempSubscribedYou    = "%s has temporarily subscribed you to '%s'."
+radioTempSubscribedSelf   = "You have been temporarily subscribed to '%s'."

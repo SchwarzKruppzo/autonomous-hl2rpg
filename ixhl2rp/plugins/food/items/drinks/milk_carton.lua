@@ -1,5 +1,5 @@
-ITEM.name = "Пакет молока"
-ITEM.description = "Белый пакет с молоком. Внутри действительно молоко - правда, оно не очищено и от него очень сильно несет выменем. Корова, скорее всего, больная. Тем не менее, это единственное молоко, которое обладает хоть какими-то полезными свойствами."
+ITEM.name = "item.milk_carton"
+ITEM.description = "item.milk_carton.desc"
 ITEM.model = "models/foodnhouseholditems/milk2.mdl"
 ITEM.iconCam = {
 	pos = Vector(233.39462280273, 86.431831359863, 12.753064155579),

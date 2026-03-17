@@ -4,6 +4,22 @@ PLUGIN.name = "Ragdoll Looting"
 PLUGIN.author = ""
 PLUGIN.description = ""
 
+ix.lang.AddTable("ru", {
+	["searchragdoll.invTitle"] = "Инвентарь лежачего",
+	["searchragdoll.search"] = "Обыскать",
+})
+ix.lang.AddTable("en", {
+	["searchragdoll.invTitle"] = "Downed player inventory",
+	["searchragdoll.search"] = "Search",
+})
+ix.lang.AddTable("fr", {
+	["searchragdoll.invTitle"] = "Inventaire du joueur au sol",
+	["searchragdoll.search"] = "Fouiller",
+})
+ix.lang.AddTable("es-es", {
+	["searchragdoll.invTitle"] = "Inventario del jugador caído",
+	["searchragdoll.search"] = "Registrar",
+})
 
 if SERVER then
 	util.AddNetworkString("rp.search.ragdoll")
@@ -29,7 +45,7 @@ if SERVER then
 
 			ix.storage.Open(ply, target.inventory, {
 				entity = clientTarget,
-				name = "Инвентарь лежачего",
+				name = "searchragdoll.invTitle",
 				searchTime = 0,
 				OnPlayerOpen = function(client)
 					for k, v in pairs(clientTarget:GetInventories()) do
@@ -62,7 +78,7 @@ else
 		if IsValid(doll) then
 			function doll:GetEntityMenu()
 				local options = {
-					["Обыскать"] = function()
+					[L("searchragdoll.search")] = function()
 						net.Start("rp.search.ragdoll")
 							net.WriteEntity(self)
 						net.SendToServer()

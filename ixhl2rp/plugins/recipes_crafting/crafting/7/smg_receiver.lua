@@ -1,5 +1,5 @@
-RECIPE.name = "Ресивер ПП"
-RECIPE.category = "Оружие - компоненты"
+RECIPE.name = "recipe.crafting.smg_receiver"
+RECIPE.category = "recipe.category.weapon_components"
 RECIPE.requirements = {
 	metal_reclaimed = 2,
 	mat_weaponparts = 3,

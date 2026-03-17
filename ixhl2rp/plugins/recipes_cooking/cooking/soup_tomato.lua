@@ -1,5 +1,5 @@
-RECIPE.name = "Томатный суп"
-RECIPE.category = "Продукты"
+RECIPE.name = "recipe.cooking.soup_tomato"
+RECIPE.category = "recipe.category.cooking.products"
 RECIPE.requirements = {
 	cook_spices = 1,
 	empty_tin_can = 1,

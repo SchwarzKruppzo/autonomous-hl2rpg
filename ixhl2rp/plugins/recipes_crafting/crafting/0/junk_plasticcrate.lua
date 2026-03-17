@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Пластиковая корзина"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_plasticcrate"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_plasticcrate"
 RECIPE.results = {
 	mat_plastic = 1

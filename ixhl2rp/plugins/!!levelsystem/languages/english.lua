@@ -10,6 +10,7 @@ chat.skill.increased 			= "Your skill %s has been increased to %s!"
 chat.skill.decreased 			= "Your skill %s has been decreased to %s!"
 
 cmd.dice 						= "Dice roll with specified parameters."
+cmdCharSetLevel 					= "Set the level of a character."
 
 cmd.notify.lvlChanged 			= "You have successfully changed the character's level."
 cmd.notify.lvlAdded 			= "You have successfully added levels to the character."

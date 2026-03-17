@@ -1,5 +1,5 @@
-ITEM.name = "Загадочная монета"
-ITEM.description = "Вы не знаете откуда она у вас, но на ней выбито \"А. Проценко\""
+ITEM.name = "item.procenko_coin"
+ITEM.description = "item.procenko_coin.desc"
 ITEM.model = "models/bioshockinfinite/hext_coin.mdl"
 ITEM.rarity = 3
 ITEM.category = "Уникальное"

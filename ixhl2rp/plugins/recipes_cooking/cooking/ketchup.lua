@@ -1,5 +1,5 @@
-RECIPE.name = "Кетчуп"
-RECIPE.category = "Продукты"
+RECIPE.name = "recipe.cooking.ketchup"
+RECIPE.category = "recipe.category.cooking.products"
 RECIPE.requirements = {
 	tomato = 3,
 	cook_spices = 1,

@@ -7,11 +7,11 @@ ItemArmbandMPF.isArmband = true
 
 function ItemArmbandMPF:Init()
 	self.armband = self.armband or 0
-	self.category = 'Повязки (MPF)'
+	self.category = "item.category.armbands_mpf"
 
 	self.combine = self.combine or {}
 	self.combine.armband = {
-		name = "Надеть повязку",
+		name = "item.armbandWear",
 		OnRun = function(item, targetItem, items)
 			targetItem:SetData("armband", item.armband)
 

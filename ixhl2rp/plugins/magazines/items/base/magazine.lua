@@ -25,10 +25,10 @@ local function action(self, time, condition, callback)
 end
 
 function ItemMagazine:Init()
-	self.category = "Журналы"
+	self.category = "item.category.magazine"
 
 	self.functions.use = {
-		name = "Прочитать",
+		name = "use.read",
 		OnRun = function(item)
 			local client, character = item.player, item.player:GetCharacter()
 
@@ -36,7 +36,7 @@ function ItemMagazine:Init()
 
 			local time = 5
 
-			client:SetAction("Вы читаете журнал...", time)
+			client:SetAction(L("magazineReading"), time)
 
 			action(client, time, function()
 				if client:Alive() and !IsValid(client.ixRagdoll) and client:GetCharacter() == character then --and !client:IsUnconscious() then
@@ -74,7 +74,7 @@ if CLIENT then
 	function ItemMagazine:PopulateTooltip(tooltip)
 		local uses = tooltip:AddRowAfter("name")
 		uses:SetBackgroundColor(derma.GetColor("Success", tooltip))
-		uses:SetText("Ускоряет время отдыха персонажа в 3 раза. Длительность эффекта - 1 час.")
+		uses:SetText(L("magazineRestBuff"))
 	end
 end
 

@@ -1,5 +1,5 @@
-ITEM.name = "Рюкзак Гражданской Обороны"
-ITEM.description = ""
+ITEM.name = "item.bag_cp"
+ITEM.description = "item.bag_cp.desc"
 ITEM.model = "models/cellar/prop_pack_cp.mdl"
 ITEM.rarity = 2
 ITEM.width = 3
@@ -16,9 +16,4 @@ ITEM.iconCam = {
 	fov = 4.3062882137585,
 }
 
-function ITEM:GetOutfitData()
-    return {
-        slot = "backpack",
-        model = "models/cellar/pack_cp.mdl"
-    }
-end
+ITEM.displayID = "backpack_cp"

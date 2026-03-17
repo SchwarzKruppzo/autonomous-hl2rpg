@@ -1,5 +1,5 @@
-ITEM.name = "Чайник"
-ITEM.description = "Вроде обычный чайник, но с очень смешным носиком. В нем можноварить все: от воды до носков."
+ITEM.name = "item.tool_kettle"
+ITEM.description = "item.tool_kettle.desc"
 ITEM.model = "models/props_interiors/pot01a.mdl"
 ITEM.cost = 12
 ITEM.width = 2

@@ -1,5 +1,5 @@
-RECIPE.name = "Синяя ветровка"
-RECIPE.category = "Одежда — тело"
+RECIPE.name = "recipe.tailoring.torso_cloth3"
+RECIPE.category = "recipe.category.body"
 RECIPE.requirements = {
 	mat_cloth_reclaimed = 2,
 	mat_leather = 3,

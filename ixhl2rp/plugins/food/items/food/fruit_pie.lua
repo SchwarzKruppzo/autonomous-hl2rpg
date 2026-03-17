@@ -1,5 +1,5 @@
-ITEM.name = "Фруктовый пирог"
-ITEM.description = "Вкусный пирог из разных сладеньких и кисленьких фруктов, что будет отличным десертом за пищу. Все же десерт это награда за еду, а как еще?" 
+ITEM.name = "item.fruit_pie"
+ITEM.description = "item.fruit_pie.desc" 
 ITEM.model = "models/mosi/fallout4/props/food/preservedpie.mdl"
 ITEM.cost = 12
 ITEM.width = 1

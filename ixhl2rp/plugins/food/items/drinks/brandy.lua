@@ -1,5 +1,5 @@
-ITEM.name = "Бутылка бренди"
-ITEM.description = "Высокая стеклянная бутылка с толстым дном, алкоголь внутри имеет амброво-медовый оттенок и сладковатый аромат с нотами карамели и сухих фруктов. Его можно пить долго и легко, но на следующий день, дай бог, не проснуться в совсем незнакомом месте."
+ITEM.name = "item.brandy"
+ITEM.description = "item.brandy.desc"
 ITEM.cost = 10
 ITEM.model = "models/mark2580/gtav/barstuff/bottle_brandy.mdl"
 ITEM.width = 1

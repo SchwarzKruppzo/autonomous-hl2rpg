@@ -1,6 +1,6 @@
-ITEM.name = "Сломанный 9MM пистолет"
-ITEM.description = "Пистолет, прошедший через битвы и забытый где-то на задворках истории. Многие детали отсутствуют, а от пистолета тут одно лишь название, но, все же, это не значит, что его нельзя починить.."
-ITEM.category = "Базовые компоненты"
+ITEM.name = "item.broken_pistol"
+ITEM.description = "item.broken_pistol.desc"
+ITEM.category = "item.category.raw"
 ITEM.rarity = 1
 ITEM.model = "models/weapons/w_pistol.mdl"
 ITEM.width = 2

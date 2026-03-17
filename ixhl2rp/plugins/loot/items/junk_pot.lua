@@ -1,6 +1,6 @@
-ITEM.name = "Дырявый чайник"
-ITEM.description = "Металлический чайник старого образца, выглядящий изношенным и покрытым ржавчиной. На его поверхности видны многочисленные дырки разного размера, словно он был подвергнут долголетнему использованию без должного ухода."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_pot"
+ITEM.description = "item.junk_pot.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_interiors/pot01a.mdl"
 ITEM.width = 2
 ITEM.height = 1

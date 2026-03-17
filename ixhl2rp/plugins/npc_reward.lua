@@ -4,6 +4,19 @@ PLUGIN.name = "NPC Reward"
 PLUGIN.author = "Schwarz Kruppzo"
 PLUGIN.description = ""
 
+ix.lang.AddTable("ru", {
+	npcRewardKill = "убийство",
+})
+ix.lang.AddTable("en", {
+	npcRewardKill = "kill",
+})
+ix.lang.AddTable("fr", {
+	npcRewardKill = "meurtre",
+})
+ix.lang.AddTable("es-es", {
+	npcRewardKill = "eliminación",
+})
+
 PLUGIN.NPCReward = {
 	["npc_zombie"] = 50,
 	["npc_headcrab"] = 100,
@@ -53,7 +66,7 @@ function PLUGIN:OnNPCKilled(entity, attacker, inflictor)
 			if IsValid(client) then
 				local xp = math.Round((self.NPCReward[entity:GetClass()] or 100) * percent)
 
-				client:RewardXP(math.max(xp, 10), "убийство")
+				client:RewardXP(math.max(xp, 10), L("npcRewardKill", client))
 			end
 		end
 	end

@@ -1,5 +1,5 @@
-RECIPE.name = "Коробочка с гвоздями"
-RECIPE.category = "Компоненты"
+RECIPE.name = "recipe.crafting.nails"
+RECIPE.category = "recipe.category.components"
 RECIPE.requirements = {
 	metal_reclaimed = 1
 }

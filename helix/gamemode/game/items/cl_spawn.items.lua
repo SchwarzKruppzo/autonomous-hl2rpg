@@ -1,34 +1,33 @@
 local icons = {
-	["Инструменты"] = "wrench",
-	["Одежда"] = "suit",
-	["Одежда (MPF)"] = "user_gray",
-	["Одежда (Броня)"] = "user_green",
-	["Одежда (OTA)"] = "user_red",
-	["Напитки"] = "drink",
-	["Оружие"] = "gun",
+	["item.category.tools"] = "wrench",
+	["item.category.clothing"] = "suit",
+	["item.category.clothing_mpf"] = "user_gray",
+	["item.category.clothing_armor"] = "user_green",
+	["item.category.clothing_ota"] = "user_red",
+	["categoryDrink"] = "drink",
+	["item.category.weapon"] = "gun",
 	["Other"] = "brick",
-	["Базовые компоненты"] = "cog",
-	["Уникальное"] = "shield",
-	["Еда"] = "cake",
-	["Citizen ID"] = "vcard",
-	["Патроны"] = "find",
-	["Производные компоненты"] = "cog_add",
-	["Радиация"] = "error",
-	["Коммуникация"] = "feed",
-	["Рационы"] = "page",
-	["Купоны Альянса"] = "coins",
-	["Книги"] = "book_addresses",
-	["Книги (навыки)"] = "book_open",
-	["Кулинарные компоненты"] = "cup",
-	["Хлам"] = "bin",
-	["Части оружия"] = "text_list_bullets",
-	["Химические компоненты"] = "asterisk_orange",
-	["Фильтры"] = "help",
-	["Медицина"] = "pill",
-	["Строительство - контейнеры"] = "box",
-	["Части оружия"] = "link",
-	["Повязки (MPF)"] = "status_busy",
-	["Повязки (Лояльность)"] = "status_online",
+	["item.category.raw"] = "cog",
+	["item.category.unique"] = "shield",
+	["categoryFood"] = "cake",
+	["item.category.cid"] = "vcard",
+	["item.category.ammo"] = "find",
+	["item.category.crafted"] = "cog_add",
+	["item.category.radiation"] = "error",
+	["item.category.comm"] = "feed",
+	["item.category.ration"] = "page",
+	["item.category.coupon"] = "coins",
+	["item.category.book"] = "book_addresses",
+	["item.category.skillbook"] = "book_open",
+	["item.category.cooking"] = "cup",
+	["loot.categoryJunk"] = "bin",
+	["item.category.weapon_parts"] = "text_list_bullets",
+	["item.category.craft_chemical"] = "asterisk_orange",
+	["item.category.filter"] = "help",
+	["item.category.medical"] = "pill",
+	["item.category.construction_containers"] = "box",
+	["item.category.armbands_mpf"] = "status_busy",
+	["item.category.armbands_citizen"] = "status_online",
 }
 
 spawnmenu.AddContentType("ixItem", function(container, data)
@@ -39,7 +38,7 @@ spawnmenu.AddContentType("ixItem", function(container, data)
 
 	icon:SetContentType("ixItem")
 	icon:SetSpawnName(data.uniqueID)
-	icon:SetName(data.name)
+	icon:SetName(L(data.name))
 
 	local mdl = data.GetModel and data:GetModel() or data.model
 
@@ -148,4 +147,4 @@ local function CreateItemsPanel()
 	return base
 end
 
-spawnmenu.AddCreationTab(L"spawn.ui.items", CreateItemsPanel, "icon16/script_key.png")
+spawnmenu.AddCreationTab("Items", CreateItemsPanel, "icon16/script_key.png")

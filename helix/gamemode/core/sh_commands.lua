@@ -369,7 +369,7 @@ ix.command.Add("CharDelete", {
 							query:Where("id", characterID)
 						query:Execute()
 
-						client:Notify(string.format("Персонаж %s был удален!", character:GetName()))
+						client:NotifyLocalized("charDeleted", character:GetName())
 					end
 				end)
 			query:Execute()
@@ -397,7 +397,7 @@ ix.command.Add("CharDelete", {
 				query:Where("id", id)
 			query:Execute()
 
-			client:Notify(string.format("Персонаж %s был удален!", character:GetName()))
+			client:NotifyLocalized("charDeleted", character:GetName())
 
 			if isCurrentChar then
 				owner:SetNetVar("char", nil)

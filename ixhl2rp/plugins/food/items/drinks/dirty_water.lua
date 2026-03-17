@@ -1,5 +1,5 @@
-ITEM.name = "Грязная вода"
-ITEM.description = "Мутная и ужасно отвратная вода, набранная с лужи... Или же с крана?"
+ITEM.name = "item.dirty_water"
+ITEM.description = "item.dirty_water.desc"
 ITEM.model = "models/props_nunk/popcan01a.mdl"
 ITEM.cost = 12
 ITEM.width = 1

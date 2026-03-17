@@ -1,5 +1,5 @@
-RECIPE.name = "Уголь"
-RECIPE.category = "Переработка"
+RECIPE.name = "recipe.crafting.charcoal"
+RECIPE.category = "recipe.category.recycling"
 RECIPE.requirements = {
 	mat_wood = 2
 }

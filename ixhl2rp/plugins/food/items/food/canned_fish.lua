@@ -1,5 +1,5 @@
-ITEM.name = "Консервированная рыба"
-ITEM.description = "Уж очень приятная на вид консерва, что сразу пробуждает в вас аппетит. Внутри, в собственном соку, сельдь."
+ITEM.name = "item.canned_fish"
+ITEM.description = "item.canned_fish.desc"
 ITEM.model = "models/crunchy/props/eft_props/herring.mdl"
 ITEM.cost = 6
 ITEM.width = 1

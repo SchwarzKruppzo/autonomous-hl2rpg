@@ -1,5 +1,5 @@
-RECIPE.name = "Письменный столик"
-RECIPE.category = "Контейнеры"
+RECIPE.name = "recipe.crafting.cont_desk"
+RECIPE.category = "recipe.category.containers"
 RECIPE.requirements = {
 	mat_wood = 12,
 	box_of_nails = 2,

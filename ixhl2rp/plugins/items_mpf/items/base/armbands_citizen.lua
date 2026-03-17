@@ -66,7 +66,7 @@ function ItemArmbandCit:Init()
 	ix.meta.ItemCloth.Init(self)
 
 	self.armband = self.armband or 0
-	self.category = 'Повязки (Лояльность)'
+	self.category = "item.category.armbands_citizen"
 end
 
 function ItemArmbandCit:OnEquipped(client)

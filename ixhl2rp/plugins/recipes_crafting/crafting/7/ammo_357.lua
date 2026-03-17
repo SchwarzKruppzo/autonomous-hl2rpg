@@ -1,5 +1,5 @@
-RECIPE.name = "Патроны для револьверов"
-RECIPE.category = "Боеприпасы"
+RECIPE.name = "recipe.crafting.ammo_357"
+RECIPE.category = "recipe.category.ammo"
 RECIPE.requirements = {
 	metal_reclaimed = 2,
 	box_of_casings = 2,

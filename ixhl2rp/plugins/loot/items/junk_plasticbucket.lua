@@ -1,6 +1,6 @@
-ITEM.name = "Пластиковое ведро"
-ITEM.description = "Ведро, изготовленное из крепкого белого пластика. Оно имеет круглое дно и высокие стенки, достаточно прочные, чтобы выдерживать вес жидкости или мусора. На боковой стороне  была стерта маркировка или логотоп."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_plasticbucket"
+ITEM.description = "item.junk_plasticbucket.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_junk/plasticbucket001a.mdl"
 ITEM.width = 2
 ITEM.height = 2

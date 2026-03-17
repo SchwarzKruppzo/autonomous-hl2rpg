@@ -1,5 +1,5 @@
-RECIPE.name = "Бронепластина"
-RECIPE.category = "Компоненты"
+RECIPE.name = "recipe.crafting.armor_plate"
+RECIPE.category = "recipe.category.components"
 RECIPE.requirements = {
 	metal_reclaimed = 5
 }

@@ -84,15 +84,15 @@ function ENT:Use(pPlayer)
 	if emptyContainer then
 		self:FillReagentContainer(pPlayer, emptyContainer, "dirty_water")
 
-		ix.chat.Send(pPlayer, "me", "наполняет " .. emptyContainer.name .. " водой.")
+		pPlayer:Emote("me", "emoteFillContainer", emptyContainer.name)
 	elseif pPlayer:HasItem("empty_can") then
 		self:FillContainer(pPlayer, "empty_can", "dirty_water")
 
-		ix.chat.Send(pPlayer, "me", "наполняет пустую банку водой.")
+		pPlayer:Emote("me", "emoteFillEmptyCan")
 	elseif pPlayer:HasItem("empty_tin_can") then
 		self:FillContainer(pPlayer, "empty_tin_can", "dirty_water")
 
-		ix.chat.Send(pPlayer, "me", "наполняет пустую консервную банку водой.")
+		pPlayer:Emote("me", "emoteFillTinCan")
 	else
 		timer.Simple(1, function()
 			pPlayer:ViewPunch(Angle(3, 0, 2))
@@ -108,7 +108,7 @@ function ENT:Use(pPlayer)
 				character:SetRadLevel(character:GetRadLevel() + rad)
 			end
 
-			ix.chat.Send(pPlayer, "me", "пьёт воду из туалета.")
+			pPlayer:Emote("me", "emoteDrinkToilet")
 		end)
 	end
 end
@@ -135,7 +135,7 @@ properties.Add("sinktrigger2", {
 		if (!self:Filter(entity, client)) then return end
 		
 		if entity.PermaID then
-			client:Notify("Необходимо убрать проп из Perma All, прежде чем конвертировать его.")
+			client:NotifyLocalized("permaall.cantConvert")
 
 			return
 		end
@@ -160,7 +160,7 @@ ENT.PopulateEntityInfo = true
 
 function ENT:OnPopulateEntityInfo(tooltip)
 	local client = LocalPlayer()
-	local hint = "[E] — пить (грязная вода)"
+	local hint = L("hintDrinkDirtyWater")
 
 	local hasRefillable = false
 	local inventory = client:GetInventory("main")
@@ -175,9 +175,9 @@ function ENT:OnPopulateEntityInfo(tooltip)
 	end
 
 	if hasRefillable then
-		hint = "[E] — наполнить контейнер (грязная вода)"
+		hint = L("hintFillContainerDirtyWater")
 	elseif client:HasItem("empty_can") or client:HasItem("empty_tin_can") then
-		hint = "[E] — налить в пустую банку (грязная вода)"
+		hint = L("hintPourIntoCanDirtyWater")
 	end
 
 	local title = tooltip:AddRow("hint")

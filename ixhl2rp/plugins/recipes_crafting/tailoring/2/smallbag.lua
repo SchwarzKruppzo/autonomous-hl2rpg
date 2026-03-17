@@ -1,5 +1,5 @@
-RECIPE.name = "Небольшая сумка"
-RECIPE.category = "Сумки"
+RECIPE.name = "recipe.tailoring.smallbag"
+RECIPE.category = "recipe.category.bags"
 RECIPE.requirements = {
 	mat_cloth = 4,
 	box_of_needles = 1

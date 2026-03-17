@@ -1,0 +1,31 @@
+ix.Locale:Build("fr")
+
+
+pressSpeak 				= "Appuyez sur [E] pour parler."
+
+r_mark_greetings_1f 		= "Que puis-je faire pour vous ?"
+r_mark_greetings_2f 		= "Avez-vous besoin de quelque chose ?"
+r_mark_greetings_3f 		= "Je vous écoute."
+r_mark_greetings_1m 		= "Comment puis-je vous aider ?"
+r_mark_greetings_2m 		= "Je vous écoute."
+r_mark_greetings_3m 		= "Oui ?"
+r_mark_neverseen 			= "Oui, c'est vrai.\nLe Département du Logement et de la Propriété, avec l'administration municipale, prépare des réformes dans la ville, et il y a donc des changements de personnel partout. Un moment difficile, surtout dans une telle crise pour la zone industrielle de la ville. Je suis ici maintenant pour la délivrance du courrier, et bientôt - la rédaction des documents pour la location d'appartements résidentiels, de commerces et d'autres propriétés...\nOn dit qu'ils veulent relancer l'économie de la ville. En général, quelque chose comme ça."
+r_mark_rent 				= "Je ne peux pas en parler maintenant. Le département n'est pas encore prêt pour cela, peut-être une autre fois."
+r_mark_rumours 			= "Non. Tout est calme."
+r_mark_checkmail 			= "D'accord. Votre carte citoyenne, s'il vous plaît."
+t_mail_check_id 			= "Lui a donné la carte citoyenne #%s."
+t_mark_neverseen_f 		= "Je ne vous ai jamais vu ici auparavant."
+t_mark_neverseen_m 		= "Je ne vous ai jamais vu ici auparavant."
+t_mark_rent_f 				= "Je voudrais parler de la location/achat d'un local."
+t_mark_rent_m 				= "Je voudrais parler de la location/achat d'un local."
+t_mark_checkmail_f 		= "Je voudrais vérifier mon courrier."
+t_mark_checkmail_m 		= "Je voudrais vérifier mon courrier."
+t_mark_rumours 			= "Avez-vous entendu quelque chose récemment ?"
+t_generic_goodbye 			= "À bientôt."
+t_checkmail_no_m 			= "J'ai changé d'avis."
+t_checkmail_no_f 			= "J'ai changé d'avis."
+r_rumour1 					= "Il se dit qu'une expérience ratée a eu lieu dans la zone industrielle, et maintenant nous sommes tous sans phases de travail ! Combien de temps cela durera-t-il, qui sait.\nLouange au Syndicat qui nous verse des allocations, sinon on pourrait mourir de faim..."
+
+npc.garbageReward 			= "Vous avez reçu 10 jetons et 1x coupon \"Main-d'œuvre\"."
+npc.rationReward 			= "Vous avez reçu %s jetons pour le travail à l'usine de rations."
+npc.productionReward 		= "Vous avez reçu %s jetons pour la production."

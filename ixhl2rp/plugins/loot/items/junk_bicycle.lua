@@ -1,6 +1,6 @@
-ITEM.name = "Велосипед"
-ITEM.description = "Старый велосипед с видимыми признаками износа: пыльные колеса, ржавая рама, потертые ручки руля и потрескавшееся седло. Несколько спиц сломаны, а цепь выскочила. Ржавые педали и ободья колёс добавляют ушедшей эпохи истории."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_bicycle"
+ITEM.description = "item.junk_bicycle.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_junk/bicycle01a.mdl"
 ITEM.width = 6
 ITEM.height = 3

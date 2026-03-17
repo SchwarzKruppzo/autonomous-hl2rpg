@@ -1,7 +1,7 @@
-ITEM.name = "Сломанный легкий бронежилет"
+ITEM.name = "item.broken_armor_light"
 ITEM.model = "models/crunchy/props/fear_props/armor.mdl"
-ITEM.description = ""
-ITEM.category = "Базовые компоненты"
+ITEM.description = "item.broken_armor_light.desc"
+ITEM.category = "item.category.raw"
 ITEM.width = 2
 ITEM.height = 2
 ITEM.iconCam = {

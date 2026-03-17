@@ -1,5 +1,5 @@
-RECIPE.name = "Патроны для дробовиков"
-RECIPE.category = "Боеприпасы"
+RECIPE.name = "recipe.crafting.ammo_buckshot"
+RECIPE.category = "recipe.category.ammo"
 RECIPE.requirements = {
 	box_of_nails = 2,
 	box_of_casings = 1,

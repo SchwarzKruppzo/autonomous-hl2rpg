@@ -1,5 +1,5 @@
-ITEM.name = "Жареное мясо хедкраба"
-ITEM.description = "Приготовленное на огне кусок плоти инопланетного существа. Самое удивительное, что этим можно насытиться и не отравиться."
+ITEM.name = "item.cooked_headcrab"
+ITEM.description = "item.cooked_headcrab.desc"
 ITEM.model = "models/foodnhouseholditems/meat6.mdl"
 ITEM.cost = 12
 ITEM.width = 1

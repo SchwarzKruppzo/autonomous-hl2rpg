@@ -1,5 +1,5 @@
-ITEM.name = "Униформа инженера ГО с визором"
-ITEM.description = "Униформа инженера Гражданской Обороны с визором."
+ITEM.name = "item.mpf_engineer_i1"
+ITEM.description = "item.mpf_engineer_i1.desc"
 ITEM.genderReplacement = {
 	[GENDER_MALE] = "models/cellar/characters/metropolice/male.mdl",
 	[GENDER_FEMALE] = "models/cellar/characters/metropolice/female.mdl"

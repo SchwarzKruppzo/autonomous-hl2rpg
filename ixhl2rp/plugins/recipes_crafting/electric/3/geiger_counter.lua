@@ -1,5 +1,5 @@
-RECIPE.name = "Счетчик Гейгера"
-RECIPE.category = "Разное"
+RECIPE.name = "recipe.electric.geiger_counter"
+RECIPE.category = "recipe.category.misc"
 RECIPE.requirements = {
 	junk_geiger = 1,
 	electro_reclaimed = 1,

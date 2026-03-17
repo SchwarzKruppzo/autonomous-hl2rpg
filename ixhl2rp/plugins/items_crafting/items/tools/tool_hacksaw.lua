@@ -1,5 +1,5 @@
-ITEM.name = "Напильник"
-ITEM.description = ""
+ITEM.name = "item.tool_hacksaw"
+ITEM.description = "item.tool_hacksaw.desc"
 ITEM.model = "models/props_tools/hacksaw.mdl"
 ITEM.width = 2
 ITEM.height = 1

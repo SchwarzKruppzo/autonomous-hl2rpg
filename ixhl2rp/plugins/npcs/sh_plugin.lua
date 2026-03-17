@@ -17,14 +17,6 @@ function ix.dialogues.Add(class, topicTable)
 	ix.dialogues.stored[class] = topicTable
 end
 
-ix.lang.AddTable("english", {
-	pressSpeak = "Press [E] to talk.",
-})
-
-ix.lang.AddTable("russian", {
-	pressSpeak = "Нажмите [E] чтобы поговорить",
-})
-
 ix.char.RegisterVar("knownTopics", {
 	field = "topics",
 	fieldType = ix.type.string,

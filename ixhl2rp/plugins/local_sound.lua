@@ -2,14 +2,6 @@ PLUGIN.name = "Local Sound"
 PLUGIN.author = "Schwarz Kruppzo"
 PLUGIN.description = "Provides a command to broadcast audio within a defined proximity range."
 
-ix.lang.AddTable("english", {
-    cmdLocalSound = "Broadcast audio within a specified proximity."
-})
-
-ix.lang.AddTable("russian", {
-    cmdLocalSound = "Воспроизвести аудио в заданном радиусе действия."
-})
-
 ix.command.Add("LocalSound", {
 	description = "@cmdLocalSound",
 	adminOnly = true,

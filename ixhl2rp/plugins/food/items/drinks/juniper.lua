@@ -1,5 +1,5 @@
-ITEM.name = "Настойка можжевельника"
-ITEM.description = "Праздная настойка можжевельника. При открытии бутылки появляется запах качественного спирта и зелени. Но, вкус оставляет желать лучшего. Главное - что пьянит!"
+ITEM.name = "item.juniper"
+ITEM.description = "item.juniper.desc"
 ITEM.model = "models/bioshockinfinite/jin_bottle.mdl"
 ITEM.cost = 9
 ITEM.width = 1

@@ -1,4 +1,4 @@
-ITEM.name = "Book 1"
+ITEM.name = "item.test_book"
 ITEM.model = "models/n_models/n_book.mdl"
 ITEM.width = 2
 ITEM.height = 1

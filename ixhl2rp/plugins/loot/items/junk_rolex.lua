@@ -1,6 +1,6 @@
-ITEM.name = "Золотые часы"
-ITEM.description = "На первый взгляд – золотые часы, однако ближе к ним оказываются обычные детские часы взрослого стиля из дешевого пластика с нарисованным циферблатом. Отсутствие механизма и заметный недостаток веса лишь усиливают впечатление, что эти часы не предназначены для серьезного использования."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_rolex"
+ITEM.description = "item.junk_rolex.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/illusion/eftcontainers/rolex.mdl"
 ITEM.width = 1
 ITEM.height = 1

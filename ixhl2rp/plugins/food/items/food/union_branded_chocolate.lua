@@ -1,5 +1,5 @@
-ITEM.name = "Фирменный шоколад"
-ITEM.description = "Бережно упакованная плитка шоколада, разрешённая Альянсом. Отчётливый знак Альянса напечатан на лицевой стороне."
+ITEM.name = "item.union_branded_chocolate"
+ITEM.description = "item.union_branded_chocolate.desc"
 ITEM.model = "models/bioshockinfinite/hext_candy_chocolate.mdl"
 ITEM.cost = 9
 ITEM.width = 1

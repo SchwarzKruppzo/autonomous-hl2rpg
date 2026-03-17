@@ -29,6 +29,11 @@ shape4_3 = "burly"
 shape4_4 = "powerful"
 shape4_5 = "buff"
 
+shape1 = "scrawny"
+shape2 = "slim"
+shape3 = "average"
+shape4 = "bulky"
+
 eyes1 = "blue"
 eyes2 = "green"
 eyes3 = "brown"

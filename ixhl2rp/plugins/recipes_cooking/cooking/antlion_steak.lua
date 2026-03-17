@@ -1,5 +1,5 @@
-RECIPE.name = "Стейк из муравьиного льва"
-RECIPE.category = "Продукты"
+RECIPE.name = "recipe.cooking.antlion_steak"
+RECIPE.category = "recipe.category.cooking.products"
 RECIPE.requirements = {
 	cook_spices = 1,
 	raw_antlion = 1,

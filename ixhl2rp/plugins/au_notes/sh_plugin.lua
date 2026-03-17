@@ -2,7 +2,7 @@ local PLUGIN = PLUGIN
 
 PLUGIN.name = "Notes"
 PLUGIN.author = "Krieg & Schwarz Kruppzo"
-PLUGIN.description = "Добавляет пользовательские и администраторские записи для каждого персонажа."
+PLUGIN.description = "@notesPluginDesc"
 
 ix.config.Add("notesMaxLen", 2048, "Max length for notes", nil, {
     data = {min = 64, max = 5096},
@@ -22,7 +22,7 @@ ix.char.RegisterVar("notes", {
 })
 
 ix.command.Add("CharNotes", {
-    description = "Устанавливает записи о персонаже, видно только для администраторов",
+    description = "@notesCmdCharNotesDesc",
     privilege = "Helix - Basic Admin Commands",
     arguments = {
         ix.type.character
@@ -33,7 +33,7 @@ ix.command.Add("CharNotes", {
 })
 
 ix.command.Add("MyNotes", {
-    description = "Открывает ваши личные записи",
+    description = "@notesCmdMyNotesDesc",
     OnRun = function(self, client)
         netstream.Start(client, "ixMyNotes")
     end

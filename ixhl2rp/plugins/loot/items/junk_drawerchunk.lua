@@ -1,6 +1,6 @@
-ITEM.name = "Деревянный ошметок"
-ITEM.description = "Обломанная часть какой-то мебели, что теперь пришла в негодность. Структура дерева от гладких участков до грубых, образованных годами использования."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_drawerchunk"
+ITEM.description = "item.junk_drawerchunk.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_c17/furnituredrawer001a_chunk06.mdl"
 ITEM.width = 3
 ITEM.height = 1

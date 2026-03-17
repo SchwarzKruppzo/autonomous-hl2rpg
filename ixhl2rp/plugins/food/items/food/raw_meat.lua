@@ -1,5 +1,5 @@
-ITEM.name = "Сырое мясо"
-ITEM.description = "Это настоящее мясо, точно не подделка, видимо какой-то непотяной дичи. Но кого это волнует? Это же мясо!"
+ITEM.name = "item.raw_meat"
+ITEM.description = "item.raw_meat.desc"
 ITEM.model = "models/foodnhouseholditems/meat7.mdl"
 ITEM.skin = 3
 ITEM.cost = 10

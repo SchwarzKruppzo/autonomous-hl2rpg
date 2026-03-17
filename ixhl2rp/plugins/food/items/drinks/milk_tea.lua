@@ -1,5 +1,5 @@
-ITEM.name = "Кружка чая с молоком"
-ITEM.description = "Как еще в Англии называют - 'белый чай'. Очень приятное дополнение молока к обычному черному чаю, насыщает и расслабляет прекрасно."
+ITEM.name = "item.milk_tea"
+ITEM.description = "item.milk_tea.desc"
 ITEM.model = "models/props_junk/garbage_coffeemug001a.mdl"
 ITEM.cost = 6
 ITEM.width = 1

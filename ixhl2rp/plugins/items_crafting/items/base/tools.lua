@@ -11,7 +11,7 @@ local function Read_Durability(item)
 end
 
 function Item:Init()
-	self.category = 'Инструменты'
+	self.category = "item.category.tools"
 
 	self.durability = self.durability or 1000
 

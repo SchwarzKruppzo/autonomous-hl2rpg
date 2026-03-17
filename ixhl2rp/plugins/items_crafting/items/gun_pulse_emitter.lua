@@ -1,5 +1,5 @@
-ITEM.name = "Ударник Внеземного оружия"
-ITEM.description = "Комплекс деталей удраного механизма - аналога боевой пружины и затворной группы земного оружия. Причудлив на вид, однако совершает невозможное - высекает из катриджей с темной материи сгустки энерегии."
+ITEM.name = "item.gun_pulse_emitter"
+ITEM.description = "item.gun_pulse_emitter.desc"
 ITEM.model = "models/cellar/craft/pulse_emitter.mdl"
 ITEM.width = 4
 ITEM.height = 1
@@ -9,5 +9,5 @@ ITEM.iconCam = {
 	fov = 3.5806984559611,
 }
 ITEM.rarity = 3
-ITEM.category = "Части оружия"
+ITEM.category = "item.category.weapon_parts"
 ITEM.contraband = true

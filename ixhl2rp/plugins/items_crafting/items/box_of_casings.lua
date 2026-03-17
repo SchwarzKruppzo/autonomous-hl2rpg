@@ -1,6 +1,6 @@
-ITEM.name = "Коробка с гильзами"
-ITEM.description = "Коробка, доверху набитая пустыми гильзами. Может быть полезным для создания патронов к оружию."
-ITEM.category = "Производные компоненты"
+ITEM.name = "item.box_of_casings"
+ITEM.description = "item.box_of_casings.desc"
+ITEM.category = "item.category.crafted"
 ITEM.rarity = 1
 ITEM.model = "models/items/sniper_round_box.mdl"
 ITEM.width = 1

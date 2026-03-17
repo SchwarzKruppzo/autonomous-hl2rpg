@@ -1,5 +1,4 @@
-ITEM.name = "Citizen Card"
-ITEM.PrintName = "iIDCard"
+ITEM.name = "iIDCard"
 ITEM.model = Model("models/vintagethief/cellarproject/cid_card.mdl")
 ITEM.width = 1
 ITEM.height = 1

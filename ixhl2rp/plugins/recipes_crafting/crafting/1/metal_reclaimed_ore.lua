@@ -1,5 +1,5 @@
-RECIPE.name = "Восстановленный металл"
-RECIPE.category = "Переплавка"
+RECIPE.name = "recipe.crafting.metal_reclaimed_ore"
+RECIPE.category = "recipe.category.smelting"
 RECIPE.requirements = {
 	mat_ore_titan = 2,
 	mat_charcoal = 3

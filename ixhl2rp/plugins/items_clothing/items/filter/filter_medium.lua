@@ -1,5 +1,5 @@
-ITEM.name = "Гражданский фильтр"
-ITEM.description = "Этот фильтр производится Гражданским Союзом Рабочих из самых дешевых материалов. Не смотря на свою топорность, все же, он является довольно эффективным, если помещения не сильно загазованны или уровень радиации не на столько высок. Пахнет тем самым \"китайским\" пластиком!"
+ITEM.name = "item.filter_medium"
+ITEM.description = "item.filter_medium.desc"
 ITEM.model = Model("models/vintagethief/items/filter.mdl")
 ITEM.width = 1
 ITEM.height = 1

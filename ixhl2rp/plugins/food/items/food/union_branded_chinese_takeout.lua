@@ -1,5 +1,5 @@
-ITEM.name = "Лапша быстрого приготовления"
-ITEM.description = "Почти квадратный картонный контейнер с чау-чау-мейном и оранжевым цыпленком внутри. Лапша довольно сухая, и курица похожа на силикон..."
+ITEM.name = "item.union_branded_chinese_takeout"
+ITEM.description = "item.union_branded_chinese_takeout.desc"
 ITEM.model = "models/props_junk/garbage_takeoutcarton001a.mdl"
 ITEM.cost = 10
 ITEM.width = 1

@@ -1,5 +1,5 @@
-ITEM.name = "RPG"
-ITEM.description = "Управляемая ракетная установка с лазерным наведением."
+ITEM.name = "item.rpg"
+ITEM.description = "item.rpg.desc"
 ITEM.model = "models/weapons/w_rocket_launcher.mdl"
 ITEM.class = "cellar_hl2_rpg"
 ITEM.weaponCategory = "primary"
@@ -24,7 +24,7 @@ if CLIENT then
 		end
 
 		local skill = tooltip:AddRow("skill")
-		skill:SetText("Тип: пусковая установка")
+		skill:SetText(L("weaponTypeLabel", L("weaponTypeLauncher")))
 		skill:SetBackgroundColor(grayClr)
 		skill:SizeToContents()
 	end

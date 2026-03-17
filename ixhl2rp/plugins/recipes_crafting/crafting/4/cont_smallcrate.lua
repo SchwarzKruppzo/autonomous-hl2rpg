@@ -1,5 +1,5 @@
-RECIPE.name = "Небольшой ящик"
-RECIPE.category = "Контейнеры"
+RECIPE.name = "recipe.crafting.cont_smallcrate"
+RECIPE.category = "recipe.category.containers"
 RECIPE.requirements = {
 	mat_wood = 10,
 	box_of_nails = 3,

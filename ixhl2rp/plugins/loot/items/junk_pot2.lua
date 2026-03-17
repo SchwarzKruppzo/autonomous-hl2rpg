@@ -1,6 +1,6 @@
-ITEM.name = "Старая кастрюля"
-ITEM.description = "Поверхность кастрюли покрыта устойчивым слоем затертости. Покрыта пятнами ржавчины, а ручка и крышка облезлая от времени. Многочисленные царапины и следы от огня свидетельствуют о долгой службе."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_pot2"
+ITEM.description = "item.junk_pot2.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_c17/metalpot001a.mdl"
 ITEM.width = 2
 ITEM.height = 2

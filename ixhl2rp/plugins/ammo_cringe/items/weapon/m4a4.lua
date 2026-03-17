@@ -1,5 +1,5 @@
-ITEM.name = "M4A4"
-ITEM.description = "Популярная американская штурмовая винтовка на базе системы AR-15."
+ITEM.name = "item.m4a4"
+ITEM.description = "item.m4a4.desc"
 ITEM.model = "models/weapons/arccw_go/v_rif_m4a1.mdl"
 ITEM.class = "arccw_m4a4"
 ITEM.weaponCategory = "primary"

@@ -1,5 +1,5 @@
-ITEM.name = "Самодельное топливо"
-ITEM.description = "Металлический контейнер красного оттенка. Его форма проста и функциональна, с зауженным горлом, позволяющим легко налить или вылить содержимое. Внутри канистры - смесь самодельного топлива."
+ITEM.name = "item.gascan_bad"
+ITEM.description = "item.gascan_bad.desc"
 ITEM.category = "Уникальное"
 ITEM.model = "models/props_junk/gascan001a.mdl"
 ITEM.width = 2

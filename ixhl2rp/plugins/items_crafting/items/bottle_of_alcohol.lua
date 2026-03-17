@@ -1,9 +1,9 @@
-ITEM.name = "Этанол"
-ITEM.description = "Стеклянная ёмкость со спиртом внутри."
+ITEM.name = "item.bottle_of_alcohol"
+ITEM.description = "item.bottle_of_alcohol.desc"
 ITEM.model = "models/props_junk/glassjug01.mdl"
 ITEM.width = 1
 ITEM.height = 1
 ITEM.cost = 5
-ITEM.category = "Базовые компоненты"
+ITEM.category = "item.category.raw"
 ITEM.stackable = true
 ITEM.max_stack = 8

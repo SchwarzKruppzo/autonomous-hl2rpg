@@ -1,5 +1,5 @@
-RECIPE.name = "Гаечный ключ"
-RECIPE.category = "Инструменты"
+RECIPE.name = "recipe.crafting.tool_wrench"
+RECIPE.category = "recipe.category.tools"
 RECIPE.requirements = {
 	metal_reclaimed = 3,
 	mat_nuts = 1,

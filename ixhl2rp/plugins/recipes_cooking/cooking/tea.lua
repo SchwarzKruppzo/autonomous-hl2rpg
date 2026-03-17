@@ -1,5 +1,5 @@
-RECIPE.name = "Кружка чая"
-RECIPE.category = "Напитки"
+RECIPE.name = "recipe.cooking.tea"
+RECIPE.category = "recipe.category.cooking.drinks"
 RECIPE.requirements = {
 	cook_tea = 1,
 	purified_water = 1,

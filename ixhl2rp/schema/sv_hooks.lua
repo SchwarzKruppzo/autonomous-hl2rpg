@@ -270,7 +270,7 @@ end
 
 function Schema:CanPlayerJoinClass(client, class, info)
 	if (client:IsRestricted()) then
-		client:Notify("You cannot change classes when you are restrained!")
+		client:NotifyLocalized("cantChangeClassRestrained")
 
 		return false
 	end

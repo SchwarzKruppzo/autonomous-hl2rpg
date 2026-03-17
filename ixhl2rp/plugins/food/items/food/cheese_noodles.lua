@@ -1,5 +1,5 @@
-ITEM.name = "Сырная лапша"
-ITEM.description = "Пик восточной кулинарии! Сваренная лапша с приятным дополнением в виде сыра будоражит вкусовые рецепторы, трудно не подсесть на такое."
+ITEM.name = "item.cheese_noodles"
+ITEM.description = "item.cheese_noodles.desc"
 ITEM.model = "models/mosi/fallout4/props/food/noodles.mdl"
 ITEM.cost = 6
 ITEM.width = 1

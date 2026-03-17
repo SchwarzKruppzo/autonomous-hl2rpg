@@ -1,5 +1,5 @@
-ITEM.name = "M18"
-ITEM.description = "Дымовая граната старого мира."
+ITEM.name = "item.m18_grenade"
+ITEM.description = "item.m18_grenade.desc"
 ITEM.model = "models/weapons/arc9/darsu_eft/w_m18_unthrowed.mdl"
 ITEM.class = "cellar_nade_m18"
 ITEM.weaponCategory = "smoke"
@@ -22,7 +22,7 @@ if CLIENT then
 		end
 
 		local skill = tooltip:AddRow("skill")
-		skill:SetText("Тип: дымовая")
+		skill:SetText(L("weaponTypeLabel", L("weaponTypeSmoke")))
 		skill:SetBackgroundColor(grayClr)
 		skill:SizeToContents()
 	end

@@ -1,5 +1,5 @@
-ITEM.name = "Коробка печенья"
-ITEM.description = "Упаковка внутри которой песочное печенье, а оно еще и сладкое, под чай самое то."
+ITEM.name = "item.cookies"
+ITEM.description = "item.cookies.desc"
 ITEM.model = "models/food/biscuits_box_1.mdl"
 ITEM.cost = 12
 ITEM.width = 1

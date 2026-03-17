@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Системный блок"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_harddrive"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_harddrive"
 RECIPE.results = {
 	mat_plastic = 2,

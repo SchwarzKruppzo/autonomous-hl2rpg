@@ -1,5 +1,5 @@
-RECIPE.name = "Восстановленная электроника"
-RECIPE.category = "Переработка"
+RECIPE.name = "recipe.electric.electro_reclaimed"
+RECIPE.category = "recipe.category.recycling"
 RECIPE.requirements = {
 	electro_circuit = 3,
 	mat_screws = 1

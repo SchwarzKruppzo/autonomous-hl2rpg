@@ -1,5 +1,5 @@
-ITEM.name = "Банка с соленьями"
-ITEM.description = "Небольшая банка с кучей разных солений внутри. Вода внутри довольно вязкая, а соленья очень трудно жуются. Но, тем не менее, они очень вкусные!"
+ITEM.name = "item.pickle_jar"
+ITEM.description = "item.pickle_jar.desc"
 ITEM.model = "models/foodnhouseholditems/picklejar.mdl"
 ITEM.cost = 6
 ITEM.width = 1

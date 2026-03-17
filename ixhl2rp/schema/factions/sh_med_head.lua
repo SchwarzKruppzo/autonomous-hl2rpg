@@ -1,5 +1,5 @@
-FACTION.name = "Глава МБГСР"
-FACTION.description = ""
+FACTION.name = "faction.med_head"
+FACTION.description = "faction.med_head.desc"
 FACTION.color = Color(255, 215, 0, 255)
 FACTION.isDefault = false
 FACTION.bHumanVoices = true

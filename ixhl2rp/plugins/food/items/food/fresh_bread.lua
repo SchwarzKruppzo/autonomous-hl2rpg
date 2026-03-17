@@ -1,5 +1,5 @@
-ITEM.name = "Свежий хлеб"
-ITEM.description = "Свежий выпеченный хлеб из ржаной муки, тем более он сделан своими руками."
+ITEM.name = "item.fresh_bread"
+ITEM.description = "item.fresh_bread.desc"
 ITEM.model = "models/food/bread01a.mdl"
 ITEM.cost = 12
 ITEM.width = 1

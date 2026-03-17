@@ -1,5 +1,5 @@
-ITEM.name = "Красный перец"
-ITEM.description = "Довольно большой красный перец. Его кожица имеет нездоровый красный цвет, а значит, что он, скорее всего, покрыт довольно опасными химикатами. Но никого это не волнует."
+ITEM.name = "item.red_pepper"
+ITEM.description = "item.red_pepper.desc"
 ITEM.model = "models/foodnhouseholditems/pepper1.mdl"
 ITEM.cost = 1
 ITEM.width = 1

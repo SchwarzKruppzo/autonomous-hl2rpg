@@ -1,6 +1,6 @@
-ITEM.name = "Монитор"
-ITEM.description = "Полуразобранный монитор, с трещинами по поверхности пластика и зацепками проводов, выглядящих, будто они могут оторваться в любую секунду. Пластиковый корпус потерял блеск, на нём видны неразборчивые следы от ударов и затемненные участки на экране."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_monitor"
+ITEM.description = "item.junk_monitor.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_lab/monitor01a.mdl"
 ITEM.width = 2
 ITEM.height = 2

@@ -1,5 +1,5 @@
-ITEM.name = "Шоколадная паста"
-ITEM.description = "Стеклянная баночка с шоколадной пастой внутри."
+ITEM.name = "item.nutella"
+ITEM.description = "item.nutella.desc"
 ITEM.model = "models/foodnhouseholditems/nutella.mdl"
 ITEM.cost = 25
 ITEM.width = 1

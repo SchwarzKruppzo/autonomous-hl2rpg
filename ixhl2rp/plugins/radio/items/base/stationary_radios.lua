@@ -6,7 +6,7 @@ function Item:Init()
 	self.tuningEnabled = self.tuningEnabled or false
 	self.frequencyID = self.frequencyID or "freq_0000"
 
-	self.category = 'Коммуникация'
+	self.category = "item.category.comm"
 end
 
 function Item:OnDrop(owner)

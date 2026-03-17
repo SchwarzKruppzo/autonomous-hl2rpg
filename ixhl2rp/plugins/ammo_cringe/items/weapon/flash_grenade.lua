@@ -1,5 +1,5 @@
-ITEM.name = "Светошумовая граната"
-ITEM.description = "Светошумовая граната старого мира."
+ITEM.name = "item.flash_grenade"
+ITEM.description = "item.flash_grenade.desc"
 ITEM.model = "models/weapons/w_eq_flashbang.mdl"
 ITEM.class = "cellar_nade_flashbang"
 ITEM.weaponCategory = "flashbang"
@@ -22,7 +22,7 @@ if CLIENT then
 		end
 
 		local skill = tooltip:AddRow("skill")
-		skill:SetText("Тип: оглушение")
+		skill:SetText(L("weaponTypeLabel", L("weaponTypeFlash")))
 		skill:SetBackgroundColor(grayClr)
 		skill:SizeToContents()
 	end

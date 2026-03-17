@@ -83,8 +83,8 @@ if CLIENT then
 			end
 
 			
-			draw.DrawText("[ЛКМ/ПКМ] — поставить/отменить", "ixMediumFont", ScrW() * 0.5 + 1, ScrH() * 0.95 + 1, color_black, TEXT_ALIGN_CENTER)
-			draw.DrawText("[ЛКМ/ПКМ] — поставить/отменить", "ixMediumFont", ScrW() * 0.5, ScrH() * 0.95, color_white, TEXT_ALIGN_CENTER)
+			draw.DrawText(L("buildHintPlaceCancel"), "ixMediumFont", ScrW() * 0.5 + 1, ScrH() * 0.95 + 1, color_black, TEXT_ALIGN_CENTER)
+			draw.DrawText(L("buildHintPlaceCancel"), "ixMediumFont", ScrW() * 0.5, ScrH() * 0.95, color_white, TEXT_ALIGN_CENTER)
 		end
 
 		local crateCallback

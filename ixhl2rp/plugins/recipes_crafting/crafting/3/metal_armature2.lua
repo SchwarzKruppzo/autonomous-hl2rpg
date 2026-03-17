@@ -1,5 +1,5 @@
-RECIPE.name = "Металлический прут"
-RECIPE.category = "Переработка"
+RECIPE.name = "recipe.crafting.metal_armature2"
+RECIPE.category = "recipe.category.recycling"
 RECIPE.requirements = {
 	metal_reclaimed = 1,
 }

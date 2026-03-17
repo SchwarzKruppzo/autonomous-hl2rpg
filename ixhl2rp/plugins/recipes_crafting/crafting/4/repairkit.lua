@@ -1,5 +1,5 @@
-RECIPE.name = "Ремонтный набор"
-RECIPE.category = "Ремонт"
+RECIPE.name = "recipe.crafting.repairkit"
+RECIPE.category = "recipe.category.repair"
 RECIPE.requirements = {
 	mat_weaponparts = 2,
 	mat_oil = 5,

@@ -1,4 +1,4 @@
-ITEM.name = "CID карта директора ГСР"
+ITEM.name = "item.cid_cwu_head"
 ITEM.model = Model("models/vintagethief/cellarproject/cid_card.mdl")
 ITEM.width = 1
 ITEM.height = 1

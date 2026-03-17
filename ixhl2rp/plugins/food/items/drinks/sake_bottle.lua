@@ -1,6 +1,5 @@
-ITEM.name = "Сакэ"
-ITEM.PrintName = "iUBSake"
-ITEM.description = "Обычная бутылка с сакэ, немного пыльная."
+ITEM.name = "item.sake_bottle"
+ITEM.description = "item.sake_bottle.desc"
 ITEM.model = "models/foodnhouseholditems/champagne3.mdl"
 ITEM.cost = 30
 ITEM.width = 1

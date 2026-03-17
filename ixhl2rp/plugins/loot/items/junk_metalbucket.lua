@@ -1,6 +1,6 @@
-ITEM.name = "Ржавое ведро"
-ITEM.description = "На первый взгляд ничего не выделяет среди других старых металлических ведер. Его поверхность усыпана осыпающимися кусочками ржавого металла, а по бокам видны следы потертостей и сколов, а некоторые участки покрыты патиной."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_metalbucket"
+ITEM.description = "item.junk_metalbucket.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_junk/metalbucket01a.mdl"
 ITEM.width = 2
 ITEM.height = 2

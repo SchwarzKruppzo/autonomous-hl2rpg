@@ -1,5 +1,5 @@
-ITEM.name = "Бутылка водки"
-ITEM.description = "Высокая бутылка с винтовой крышкой. Вкус острый и чистый, с нотками зернового солода. Если много пить, вы постепенно чувствуете как вам хочется что-то сказать на русском"
+ITEM.name = "item.vodka"
+ITEM.description = "item.vodka.desc"
 ITEM.cost = 10
 ITEM.model = "models/mark2580/gtav/barstuff/vodka_bottle.mdl"
 ITEM.width = 1

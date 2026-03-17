@@ -1,7 +1,7 @@
-ITEM.name = "Необработанный биогель"
-ITEM.description = "Представляет собой густую, вязкую жидкость желтоватого оттенка. Этот материал используется в медицине и биоинженерии для ускорения регенерации тканей и лечения ран."
+ITEM.name = "item.chem_rawbiogel"
+ITEM.description = "item.chem_rawbiogel.desc"
 ITEM.model = "models/grub_nugget_medium.mdl"
-ITEM.category = "Химические компоненты"
+ITEM.category = "item.category.craft_chemical"
 ITEM.height = 1
 ITEM.max_stack = 4
 ITEM.default_stack = 1

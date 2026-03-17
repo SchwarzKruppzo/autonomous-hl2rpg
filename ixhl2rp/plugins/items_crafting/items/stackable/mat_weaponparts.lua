@@ -1,7 +1,7 @@
-ITEM.name = "Запчасти оружия"
+ITEM.name = "item.mat_weaponparts"
 ITEM.model = "models/illusion/eftcontainers/weaponparts.mdl"
-ITEM.description = ""
-ITEM.category = "Базовые компоненты"
+ITEM.description = "item.mat_weaponparts.desc"
+ITEM.category = "item.category.raw"
 ITEM.width = 2
 ITEM.height = 2
 ITEM.iconCam = {

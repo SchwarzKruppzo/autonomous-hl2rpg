@@ -1,5 +1,5 @@
-ITEM.name = "Консервированная ветчина"
-ITEM.description = "Старая банка с ветчиной внутри, происхождение этого мяса определить трудно, так как все этикетки стерты, но факт - это мясо настоящее."
+ITEM.name = "item.canned_ham"
+ITEM.description = "item.canned_ham.desc"
 ITEM.model = "models/mosi/fallout4/props/food/cram.mdl"
 ITEM.cost = 12
 ITEM.width = 1

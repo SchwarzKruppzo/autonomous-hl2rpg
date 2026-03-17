@@ -1,5 +1,5 @@
-ITEM.name = "Рация Гражданской Обороны"
-ITEM.description = "Специальная рация с зашифрованным каналом и био-замком."
+ITEM.name = "item.radio_cp"
+ITEM.description = "item.radio_cp.desc"
 ITEM.frequency = "tac"
 ITEM.frequencyID = "cp_main"
 ITEM.factionLock = {

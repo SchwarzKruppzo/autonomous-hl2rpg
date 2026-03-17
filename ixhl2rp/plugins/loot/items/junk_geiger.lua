@@ -1,6 +1,6 @@
-ITEM.name = "Сломанный счетчик Гейгера"
-ITEM.description = "Небольшое устройство размером примерно с карманный калькулятор. Его корпус обычно выполнен из пластика или металла и имеет простой дисплей с цифровыми или аналоговыми показателями. Поврежденная поверхность корпуса, вся царапинах или трещинах на экране, а также отсутствии реакции на радиацию."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_geiger"
+ITEM.description = "item.junk_geiger.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/kali/miscstuff/stalker/sensor_d.mdl"
 ITEM.width = 1
 ITEM.height = 1

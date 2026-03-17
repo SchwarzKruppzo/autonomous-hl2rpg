@@ -1,5 +1,5 @@
-ITEM.name = "Кетчуп"
-ITEM.description = "Красная вязкая жидкость в прозрачной баночке. Этикетка гласит, что это кетчуп, но на вкус похоже больше на плавленый ржавый металл."
+ITEM.name = "item.ketchup"
+ITEM.description = "item.ketchup.desc"
 ITEM.model = "models/foodnhouseholditems/ketchup.mdl"
 ITEM.cost = 2
 ITEM.width = 1

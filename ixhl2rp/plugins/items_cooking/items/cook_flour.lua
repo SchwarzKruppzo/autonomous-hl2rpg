@@ -1,7 +1,7 @@
-ITEM.name = "Ржаная мука"
-ITEM.description = "Ржаная мука не первого сорта, можно спустать с каким-то порошком, благо на пакете как раз говорится о том, что это мука."
+ITEM.name = "item.cook_flour"
+ITEM.description = "item.cook_flour.desc"
 ITEM.model = "models/food/bag_flour_1.mdl"
-ITEM.category = "Кулинарные компоненты"
+ITEM.category = "item.category.cooking"
 ITEM.width = 2
 ITEM.height = 2
 ITEM.max_stack = 4

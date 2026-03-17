@@ -1,5 +1,5 @@
-ITEM.name = "Консервированный краб"
-ITEM.description = "Старая пошарпанная консерва с красным крабом на этикетке. Она гласит, что внутри содержится самое настоящее мясо морского краба, вот это удача."
+ITEM.name = "item.canned_crab"
+ITEM.description = "item.canned_crab.desc"
 ITEM.model = "models/food/can_square.mdl"
 ITEM.cost = 12
 ITEM.width = 1

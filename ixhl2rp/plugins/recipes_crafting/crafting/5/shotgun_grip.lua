@@ -1,5 +1,5 @@
-RECIPE.name = "Помпа Дробовика"
-RECIPE.category = "Оружие - компоненты"
+RECIPE.name = "recipe.crafting.shotgun_grip"
+RECIPE.category = "recipe.category.weapon_components"
 RECIPE.requirements = {
 	metal_reclaimed = 1,
 	mat_weaponparts = 1,

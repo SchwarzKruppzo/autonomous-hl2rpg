@@ -1,7 +1,7 @@
 RECIPE.isBreakdown = true
 
-RECIPE.name = "Настенные часы"
-RECIPE.category = "Разбор"
+RECIPE.name = "recipe.crafting.junk_clock2"
+RECIPE.category = "recipe.category.breakdown"
 RECIPE.requirements = "junk_clock2"
 RECIPE.results = {
 	mat_plastic = 1,

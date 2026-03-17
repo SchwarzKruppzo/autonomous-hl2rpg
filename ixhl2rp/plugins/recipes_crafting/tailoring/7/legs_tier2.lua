@@ -1,5 +1,5 @@
-RECIPE.name = "Довоенные штаны с бронепластинами"
-RECIPE.category = "Броня — ноги"
+RECIPE.name = "recipe.tailoring.legs_tier2"
+RECIPE.category = "recipe.category.armor_legs"
 RECIPE.requirements = {
 	mat_kevlar = 4,
 	mat_leather = 2,

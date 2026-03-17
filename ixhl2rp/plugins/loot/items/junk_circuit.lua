@@ -1,6 +1,6 @@
-ITEM.name = "Перегоревшая электроника"
-ITEM.description = "Выглядит как обычное электронное устройство, но имеет явные признаки повреждения или поломки из-за перегрева. На корпусе видны следы обугливания и плавления пластмассы, разбухшие элементы, вытекший электролит и дымные отложения."
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_circuit"
+ITEM.description = "item.junk_circuit.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_lab/reciever01c.mdl"
 ITEM.width = 1
 ITEM.height = 1

@@ -1,5 +1,5 @@
-ITEM.name = "Краснокачанная капуста"
-ITEM.description = "Качан из множества красных и розовых листов капусты. Подойдет для какого-то супа или похлебки."
+ITEM.name = "item.red_cabbage"
+ITEM.description = "item.red_cabbage.desc"
 ITEM.model = "models/foodnhouseholditems/cabbage2.mdl"
 ITEM.skin = 1
 ITEM.cost = 10

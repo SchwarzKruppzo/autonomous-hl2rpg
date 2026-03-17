@@ -1,6 +1,6 @@
-ITEM.name = "Настольные часы"
-ITEM.description = "Деревянный корпус покрыт множеством мелких царапин и потертостей. Циферблат, заметно выцветший и потускневший со временем, демонстрирует тонкую патину,"
-ITEM.category = "Хлам"
+ITEM.name = "item.junk_clock"
+ITEM.description = "item.junk_clock.desc"
+ITEM.category = "loot.categoryJunk"
 ITEM.model = "models/props_combine/breenclock.mdl"
 ITEM.width = 1
 ITEM.height = 1
