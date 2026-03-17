@@ -123,7 +123,7 @@ do
 end
 
 ix.command.Add("PlaceSound", {
-	description = "Проиграть звук в радиусе",
+	description = "@cmdPlaceSoundDesc",
 	arguments = ix.type.string,
 	adminOnly = true,
 	OnRun = function(self, client, string)
@@ -148,7 +148,7 @@ ix.command.Add("CharFallOver", {
 })
 
 ix.command.Add("DoorKick", {
-	description = "Выбить дверь.",
+	description = "@cmdDoorKickDesc",
 	OnCheckAccess = function(self, client)
 		if (!client:IsCombine()) then
 			return false
@@ -156,15 +156,15 @@ ix.command.Add("DoorKick", {
 
 		local entity = client:GetEyeTrace().Entity
 		if (!IsValid(entity) or !entity:IsDoor() or entity:GetNetVar("disabled")) then
-			return false, "Вы не смотрите на дверь!"
+			return false, "doorKickNotLooking"
 		end
 
 		if entity:MapCreationID() == 5334 then
-			return false, "Вы не смотрите на дверь!"
+			return false, "doorKickNotLooking"
 		end
 
 		if (client:GetPos():DistToSqr(entity:GetPos()) > 10000) then
-			return false, "Вы слишком далеко!"
+			return false, "doorKickTooFar"
 		end
 
 		return true
@@ -172,7 +172,7 @@ ix.command.Add("DoorKick", {
 	OnRun = function(self, client)
 		local entity = client:GetEyeTrace().Entity
 		if (IsValid(entity.ixLock)) then
-			return "Вы не можете выбить дверь с замком Альянса!"
+			return "@doorKickAllianceLock"
 		end
 
 		local current = client:GetLocalVar("stm", 0)
@@ -185,7 +185,7 @@ ix.command.Add("DoorKick", {
 				entity:Fire("open")
 			end)
 		else
-			client:Notify("У вас недостаточно выносливости!")
+			client:NotifyLocalized("notEnoughStamina")
 		end
     end
 })

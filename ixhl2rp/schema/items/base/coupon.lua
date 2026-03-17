@@ -8,13 +8,13 @@ Item.iconCam = {
 }
 
 function Item:Init()
-	self.category = 'Купоны Альянса'
+	self.category = "item.category.coupon"
 
 	self.stackable = true
 	self.max_stack = 8
 
 	self.functions.InsertCoupon = {
-		name = "Вставить купон",
+		name = "item.coupon.insertCoupon",
 		OnRun = function(itemTable)
 			local client = itemTable.player
 			local data = {}
@@ -56,7 +56,7 @@ function Item:Init()
 end
 
 if CLIENT then
-	local warning_text = "Данный купон - собственность Гражданской Обороны: при нахождении поддельной копии сообщите ближайшему патрулю. Попытка фальсификации является серьезным нарушением."
+	local warning_text = L("couponWarning")
 	
 	function Item:PopulateTooltip(tooltip)
 		local notice = tooltip:AddRowAfter("description", "notice")
