@@ -60,6 +60,44 @@ ix.chat.Register("level", {
 
 PLUGIN.XPTable = PLUGIN.XPTable or ix.util.Include("sh_data.levelxp.lua")
 PLUGIN.PointsTable = PLUGIN.PointsTable or ix.util.Include("sh_data.levelpoints.lua")
+PLUGIN.SocialXPConfig = {
+	-- only chat types not in blacklist are eligible
+	blacklist = {
+		pm = true,
+		looc = true,
+		ooc = true,
+		adminchat = true,
+		it = true,
+		-- avoid global/large-audience channels (farm & perf risk).
+		radio = true,
+		dispatch = true,
+	},
+
+	-- anti-afk: listener must have spoken recently in these types.
+	requireActiveListener = true,
+	activeWindowSec = 180,
+	activeChatTypes = {
+		ic = true,
+		w = true, -- shorthand for whisper
+		y = true, -- shorthand for yell
+		whisper = true, -- some plugins use full names
+		yell = true, -- some plugins use full names
+	},
+
+	minLen = 60,
+	pairCooldownSec = 15,
+	dupWindowSec = 120,
+	maxRecentMessages = 10,
+
+	-- target ~1500 xp/hour cap from chat.
+	capPerMinute = 25,
+	capPerHour = 0,
+
+	-- xp per accepted message
+	baseXP = 4,
+	bonusPerLen = 80,
+	maxBonus = 6,
+}
 
 function PLUGIN:GetRequiredLevelXP(currentLevel)
 	return PLUGIN.XPTable[currentLevel] or 0
@@ -70,6 +108,7 @@ function PLUGIN:GetPointsAtLevel(currentLevel)
 end
 
 ix.util.Include("cl_hooks.lua")
+ix.util.Include("sv_social_xp.class.lua")
 ix.util.Include("sv_hooks.lua")
 ix.util.Include("sv_plugin.lua")
 
