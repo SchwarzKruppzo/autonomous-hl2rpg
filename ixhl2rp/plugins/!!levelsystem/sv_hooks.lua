@@ -88,37 +88,23 @@ function PLUGIN:OnCharacterCreated(client, character)
 	end
 end
 
-local xpPerSymbol = 0.02
-
-local function GetTextXP(text, level)
-	local length = string.utf8len(text)
-	local words = #string.Explode(" ", text) or 0
-	local symbols = length - (length / words)
-	local xp = (xpPerSymbol * symbols)
-
-	return xp
-end
-
-
-local blacklist = {
-	["pm"] = true,
-	["looc"] = true,
-	["ooc"] = true,
-	["adminchat"] = true,
-	["it"] = true,
-}
-
 function PLUGIN:PlayerMessageSend(speaker, chatType, text, bAnonymous, receivers, rawText)
-	if IsValid(speaker) and !blacklist[chatType] then
-		for _, client in pairs(receivers) do
+	if IsValid(speaker) and !self.SocialXPConfig.blacklist[chatType] then
+		-- lazy init
+		if !self.socialXP then
+			self.socialXP = ix.meta.ChatXPService:New(self.SocialXPConfig)
+		end
+
+		for _, client in pairs(receivers or {}) do
 			if client == speaker then continue end
 
 			local character = client:GetCharacter()
+			if !character then continue end
 
-			local level = character:GetLevel()
-			local xp = GetTextXP(text, level)
-
-			character:AddLevelXP(xp, 2)
+			local xp = self.socialXP:Award(speaker, client, chatType, text)
+			if xp and xp > 0 then
+				character:AddLevelXP(xp, 2)
+			end
 		end
 	end
 end
