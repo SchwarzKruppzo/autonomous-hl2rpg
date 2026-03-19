@@ -1,4 +1,4 @@
-ITEM.name = "Униформа медика ГО с визором"
+ITEM.name = "item.mpf_medic_i1"
 ITEM.description = "item.mpf_medic_i1.desc"
 ITEM.genderReplacement = {
 	[GENDER_MALE] = "models/cellar/characters/metropolice/male.mdl",

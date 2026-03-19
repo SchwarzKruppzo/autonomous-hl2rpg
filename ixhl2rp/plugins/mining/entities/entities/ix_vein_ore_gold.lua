@@ -222,7 +222,7 @@ if SERVER then
 							ix.Item:Spawn(client, nil, instance)
 						end
 
-						client:RewardXP(10, "добычу ресурсов")
+						client:RewardXP(10, "mining.xpReason")
 					end
 				else
 					client:NotifyLocalized("mining.notify.emptyOre")

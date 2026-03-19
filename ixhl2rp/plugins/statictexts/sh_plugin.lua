@@ -197,11 +197,11 @@ if CLIENT then
 
 else
 	ix.log.AddType("annotationCreated", function(client, content)
-		return string.format("%s создал аннотацию: %s", client:GetName(), content)
+		return string.format("%s created annotation: %s", client:GetName(), content)
 	end)
 
 	ix.log.AddType("annotationDeleted", function(client, content)
-		return string.format("%s удалил аннотацию: %s", client:GetName(), content)
+		return string.format("%s deleted annotation: %s", client:GetName(), content)
 	end)
 
 	function PLUGIN:CreateAnnotation(annotationData)

@@ -127,7 +127,7 @@ function PANEL:Init()
 
 	self.hint = self:Add("DLabel")
 	self.hint:SetFont("ixMediumFont")
-	self.hint:SetText("[TAB] — close storage")
+	self.hint:SetText(L("storageCloseHint"))
 	self.hint:SizeToContents()
 	self.hint:Center()
 	self.hint:AlignBottom(16)

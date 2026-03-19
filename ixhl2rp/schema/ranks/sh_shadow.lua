@@ -1,3 +1,3 @@
 RANK.weight = 2
-RANK.name = "Overwatch Assassin"
+RANK.name = "rank.shadow"
 RANK.isOTARank = true

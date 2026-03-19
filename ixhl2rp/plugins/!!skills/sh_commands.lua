@@ -32,7 +32,7 @@ ix.command.Add("CharSetSkill", {
 })
 
 ix.command.Add("lvl", {
-	description = "Распределить очки характеристик",
+	description = "@cmdLvlDesc",
 	OnRun = function(self, client)
 		local points = client:GetCharacter():GetSkillPoints()
 
@@ -44,7 +44,7 @@ ix.command.Add("lvl", {
 })
 
 ix.command.Add("lvlreset", {
-	description = "Сбросить очки характеристик",
+	description = "@cmdLvlResetDesc",
 	OnRun = function(self, client)
 		/*
 		local char = client:GetCharacter()

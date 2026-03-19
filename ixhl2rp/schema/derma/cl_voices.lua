@@ -4,7 +4,7 @@ local PANEL = {}
 
 function PANEL:Init()
 	self:SetFont("ixSmallFont")
-	self:SetText("You do not have access to any voice lines!")
+	self:SetText(L("voices.noAccess"))
 	self:SetContentAlignment(5)
 	self:SetTextColor(color_white)
 	self:SetExpensiveShadow(1, color_black)
@@ -54,7 +54,7 @@ function PANEL:Init()
 	end
 
 	if (#self.classes < 1) then
-		self.notice:SetText("You do not have access to any voice lines!")
+		self.notice:SetText(L("voices.noAccess"))
 		self.notice:SizeToContents()
 		self.notice:SetTall(self.notice:GetTall() + 16)
 

@@ -8,6 +8,6 @@ ITEM.iconCam = {
 	ang = Angle(-12.481377601624, 147.73669433594, 0),
 	fov = 3.1570480857513,
 }
-ITEM.category = "Уникальное"
+ITEM.category = "item.category.unique"
 ITEM.rarity = 2
 ITEM.NoSpawn = true

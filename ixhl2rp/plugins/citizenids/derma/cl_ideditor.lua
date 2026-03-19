@@ -6,11 +6,11 @@ function PANEL:Init()
 	self:SetSize(320, 480)
 	self:MakePopup()
 	self:CenterVertical()
-	self:SetTitle("Admin Citizen ID Editor")
+	self:SetTitle(L("cideditor.title"))
 
 	local label = self:Add("DLabel")
 	label:Dock(TOP)
-	label:SetText("Assigned to: ")
+	label:SetText(L("cideditor.assignedTo"))
 	label:SizeToContents()
 
 	self.name = self:Add("DTextEntry")
@@ -19,7 +19,7 @@ function PANEL:Init()
 
 	local label = self:Add("DLabel")
 	label:Dock(TOP)
-	label:SetText("CID: ")
+	label:SetText(L("cideditor.cidLabel"))
 	label:SizeToContents()
 
 	self.cid = self:Add("DTextEntry")
@@ -28,14 +28,14 @@ function PANEL:Init()
 
 	self.cidBtn = self:Add("DButton")
 	self.cidBtn:Dock(TOP)
-	self.cidBtn:SetText("GENERATE CITIZEN ID")
+	self.cidBtn:SetText(L("cideditor.generateCid"))
 	self.cidBtn.DoClick = function(this)
 		self.cid:SetText(Schema:ZeroNumber(math.random(1, 99999), 5))
 	end
 
 	local label = self:Add("DLabel")
 	label:Dock(TOP)
-	label:SetText("RegID: ")
+	label:SetText(L("cideditor.regidLabel"))
 	label:SizeToContents()
 
 	self.regid = self:Add("DTextEntry")
@@ -44,14 +44,14 @@ function PANEL:Init()
 
 	self.regidBtn = self:Add("DButton")
 	self.regidBtn:Dock(TOP)
-	self.regidBtn:SetText("GENERATE REGISTRATION ID")
+	self.regidBtn:SetText(L("cideditor.generateRegid"))
 	self.regidBtn.DoClick = function(this)
 		self.regid:SetText(string.format("%s-%d",string.gsub(math.random(100000000, 999999999), "^(%d%d%d)(%d%d%d%d)(%d%d)", "%1:%2:%3"), Schema:ZeroNumber(math.random(1, 99), 2)))
 	end
 
 	local label = self:Add("DLabel")
 	label:Dock(TOP)
-	label:SetText("Available Accesses: ")
+	label:SetText(L("cideditor.availableAccesses"))
 	label:SizeToContents()
 
 	local menu
@@ -70,8 +70,8 @@ function PANEL:Init()
 		end
 
 		menu = DermaMenu()
-		menu:AddOption("Add Access", function()
-			Derma_StringRequest("Citizen ID Add Access", "", "all", function(text)
+		menu:AddOption(L("cideditor.addAccess"), function()
+			Derma_StringRequest(L("cideditor.addAccessTitle"), "", "all", function(text)
 				for _, line in pairs(self.accesss:GetLines()) do
 					if text == line:GetValue(1) then
 						return
@@ -90,7 +90,7 @@ function PANEL:Init()
 
 		menu = DermaMenu()
 
-		menu:AddOption("Remove Access", function()
+		menu:AddOption(L("cideditor.removeAccess"), function()
 			this:RemoveLine(index)
 		end):SetImage("icon16/cog_delete.png")
 		menu:Open()
@@ -102,7 +102,7 @@ function PANEL:Init()
 
 	self.apply = self:Add("DButton")
 	self.apply:Dock(BOTTOM)
-	self.apply:SetText("APPLY CHANGES")
+	self.apply:SetText(L("cideditor.applyChanges"))
 	self.apply.DoClick = function(this)
 		local data = {}
 		data["name"] = self.name:GetText()

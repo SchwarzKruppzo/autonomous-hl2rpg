@@ -211,7 +211,7 @@ function PANEL:Init()
 
 	self.close = self:Add('ui.tab.frame.button')
 	self.close:SetStyle(2)
-	self.close:SetText('ЗАКРЫТЬ')
+	self.close:SetText(L("ui.close"))
 	self.close:SetTall(22)
 	self.close:SetAlpha(255)
 	self.close:SizeToContents()

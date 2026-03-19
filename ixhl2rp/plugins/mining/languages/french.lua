@@ -20,3 +20,5 @@ miningEmote 					= "%s extrait du minerai du gisement !"
 
 lwoodworkEmote 					= "Vous avez récolté du bois."
 woodworkEmote 					= "%s récolte du bois !"
+
+mining.xpReason					= "extraction de ressources"
