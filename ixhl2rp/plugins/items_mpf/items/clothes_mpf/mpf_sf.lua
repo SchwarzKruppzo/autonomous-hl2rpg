@@ -1,4 +1,4 @@
-ITEM.name = "Униформа офицера-спецназа ГО"
+ITEM.name = "item.mpf_sf"
 ITEM.description = "item.mpf_sf.desc"
 ITEM.genderReplacement = {
 	[GENDER_MALE] = "models/cellar/characters/metropolice/male.mdl",

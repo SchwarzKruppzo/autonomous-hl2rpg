@@ -56,3 +56,6 @@ skillSet = "Vous avez défini le niveau de la compétence %s de %s à %s."
 skillNotFound = "Compétence spécifiée non trouvée !"
 skillIncreased = "Votre compétence en %s a été augmentée à %s."
 skillsResetDisabled = "La réinitialisation des caractéristiques est temporairement désactivée, veuillez contacter l'administration senior."
+
+cmdLvlDesc = "Distribuer les points d'attributs"
+cmdLvlResetDesc = "Réinitialiser les points d'attributs"

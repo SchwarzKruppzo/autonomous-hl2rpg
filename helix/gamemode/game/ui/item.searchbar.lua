@@ -17,7 +17,7 @@ function PANEL:Init()
 
 	self.Search.OnEnter = function() self:RefreshResults() end
 	self.Search.OnFocusChanged = function(_, b) if (b) then self:RefreshResults() end end
-	self.Search:SetTooltip("Press enter to search")
+	self.Search:SetTooltip(L("ui.searchEnter"))
 
 	local btn = self.Search:Add("DImageButton")
 
@@ -26,7 +26,7 @@ function PANEL:Init()
 	btn:Dock(RIGHT)
 	btn:DockMargin(4, 2, 4, 2)
 	btn:SetSize(16, 16)
-	btn:SetTooltip("Press to search")
+	btn:SetTooltip(L("ui.searchBtn"))
 	btn.DoClick = function()
 		self:RefreshResults()
 	end
@@ -87,7 +87,7 @@ function PANEL:RefreshResults()
 
 	local header = self:Add("ContentHeader")
 
-	header:SetText(table.Count(results) .. " Results for \"" .. self.Search:GetText() .. "\"")
+	header:SetText(L("ui.searchResults", table.Count(results), self.Search:GetText()))
 	self.searchResultsItem:Add(header)
 
 	if (!table.IsEmpty(results)) then

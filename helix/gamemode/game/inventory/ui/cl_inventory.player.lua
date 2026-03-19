@@ -73,7 +73,7 @@ function PANEL:Rebuild()
 		slot:SetSlotSize(slot_size_w * 2, slot_size_h * 2)
 		slot:Rebuild()
 		slot:SizeToContents()
-		slot:SetTitle("РЮКЗАК")
+		slot:SetTitle(L("equip.backpack"))
 		slot.OnRebuild = nil
 
 		local instance_ids = inv:GetSlot(1, 1)

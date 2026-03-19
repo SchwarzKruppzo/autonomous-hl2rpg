@@ -456,24 +456,27 @@ a:link, a:visited, a:hover, a:active {
 }
 ]]
 
-PANEL.patch = [[
-<strong>Патч 28.6:</strong>
+function PANEL:BuildPatchHTML()
+	return [[
+<strong>]] .. L("mainmenu.patchTitle") .. [[</strong>
 <ul style="list-style: none;">
 </ul>
-<strong>ЯДРО:</strong>
+<strong>]] .. L("mainmenu.patchCore") .. [[</strong>
 <ul style="list-style: none;">
-	<li>— Подготовка ядра к запланированным изменениям интерфейса.</li>
+	<li>— ]] .. L("mainmenu.patchCoreText") .. [[</li>
 </ul>
-<strong>22.09.2024:</strong>
+<strong>]] .. L("mainmenu.patchDate") .. [[</strong>
 <ul style="list-style: none;">
 </ul>
-<strong>НОВОЕ:</strong>
+<strong>]] .. L("mainmenu.patchNew") .. [[</strong>
 <ul style="list-style: none;">
-	<li>— Добавлены предметы: Черные брюки, Белые брюки, Черные брюки с ремнем, Черный пиджак, Белый пиджак, Черный пиджак с пальто.</li>
+	<li>— ]] .. L("mainmenu.patchNewText") .. [[</li>
 </ul>
 ]]
+end
 
-PANEL.html = [[
+function PANEL:BuildBodyHTML()
+	return [[
 <div id="fx-border"></div>
 <div id="logo-container">
 </div>
@@ -482,11 +485,11 @@ PANEL.html = [[
 <div class="hint-container hint-fx hint-anim-down">
 	<div class="hint-fx-container">
 		<div class="hint-footer">
-			<span class="hint-footer">ГРАЖДАНСКАЯ ОБОРОНА</span>
+			<span class="hint-footer">]] .. L("mainmenu.hintTitle") .. [[</span>
 			<div class="hint-fx-top hint-fx"></div>
 		</div>
 		<div class="hint-content">
-			<div class="hint-textbox">Сотрудники Гражданской Обороны — это не только игроки, которые призваны избивать других игроков, но они также являются интересными персонажами. Несмотря на то, что сотрудники, обычно, немногословны, многие из них подвержены коррупции и могут иметь связи с Сопротивлением. Всегда обращайтесь к сотрудникам, если желаете что-то узнать или рассказать.</div>
+			<div class="hint-textbox">]] .. L("mainmenu.hintText") .. [[</div>
 			<div class="hint-fx-bottom hint-fx"></div>
 			<div class="hint-fx-right hint-fx"></div>
 		</div>
@@ -497,12 +500,12 @@ PANEL.html = [[
 <div class="hint-container hint-fx hint-anim-right" style="top: 25%; right: 1%; width: 27.5%;">
 	<div class="hint-fx-container">
 		<div class="hint-footer ">
-			<span class="hint-footer news">ВЕРСИЯ #28</span>
+			<span class="hint-footer news">]] .. L("mainmenu.versionLabel") .. [[</span>
 			<div class="hint-fx-top hint-fx"></div>
 		</div>
 		<div class="hint-content">
 			<div class="hint-textbox news">
-]]..PANEL.patch..[[
+]] .. self:BuildPatchHTML() .. [[
 			</div>
 			<div class="hint-fx-bottom hint-fx"></div>
 			<div class="hint-fx-right hint-fx"></div>
@@ -510,29 +513,30 @@ PANEL.html = [[
 		<div class="hint-fx-left hint-fx"></div>
 	</div>
 </div>
-<div class="warning"><div class="warning-ico"></div>Защищено системой анонимности версии 5.</div>
+<div class="warning"><div class="warning-ico"></div>]] .. L("mainmenu.warningText") .. [[</div>
 <div id="test2">
 	<div class="main-btn">
 		<div class="main-btn-ico" src="#" alt=""></div>
-		<a class="main-btn" href="#" onclick="menu.Button(1);">НОВОЕ ПРИБЫТИЕ</a>
+		<a class="main-btn" href="#" onclick="menu.Button(1);">]] .. L("mainmenu.btnNewArrival") .. [[</a>
 	</div>
 	<div class="main-btn">
 		<div class="main-btn-ico" src="#" alt=""></div>
-		<a class="main-btn" href="#" onclick="menu.Button(2);">ПЕРСОНАЖИ</a>
+		<a class="main-btn" href="#" onclick="menu.Button(2);">]] .. L("mainmenu.btnCharacters") .. [[</a>
 	</div>
 	<div class="main-btn">
 		<div class="main-btn-ico" src="#" alt=""></div>
-		<a class="main-btn" href="#" onclick="menu.Button(3);">КОНТЕНТ</a>
+		<a class="main-btn" href="#" onclick="menu.Button(3);">]] .. L("mainmenu.btnContent") .. [[</a>
 	</div>
 	<div class="main-btn">
 		<div class="main-btn-ico" src="#" alt=""></div>
-		<a class="main-btn" href="#" onclick="menu.Button(4);">ИНФОРМАЦИЯ</a>
+		<a class="main-btn" href="#" onclick="menu.Button(4);">]] .. L("mainmenu.btnInfo") .. [[</a>
 	</div>
 	<div class="main-btn" id="exit">
 		<div class="main-btn-ico" src="#" alt=""></div>
-		<a class="main-btn" href="#" onclick="menu.Button(5);">ЗАКРЫТЬ</a>
+		<a class="main-btn" href="#" onclick="menu.Button(5);">]] .. L("mainmenu.btnClose") .. [[</a>
 	</div>
 </div>]]
+end
 PANEL.java = [[
 const restart_anim = ($el) => {
 	$el.getAnimations().forEach((anim) => {
@@ -559,16 +563,8 @@ function reload_animations() {
 local pos, ang = vector_origin, Angle()
 local mdlang = Angle(0, -90, 0)
 
-function PANEL:Init()
-	self.mdl = ClientsideModel('models/cellar/logo.mdl', RENDERGROUP_OPAQUE)
-	self.mdl:SetNoDraw(true)
-	self.mdl:SetupBones()
-
-	self:SetSize(ScrW(), ScrH())
-	self:Center()
-	self:SetAlpha(255)
-	self:SetAllowLua(true)
-	self:SetHTML([[<html>
+function PANEL:BuildFullHTML()
+	return [[<html>
 		<body oncontextmenu="return false">
 			<style>
 				@font-face {
@@ -612,9 +608,25 @@ function PANEL:Init()
 					src: url("asset://garrysmod/resource/fonts/BlenderPro-Heavy.ttf");
 				}
 
-			]]..self.css..[[</style>]]..self.html..[[<script>]]..self.java..[[</script>
+			]] .. self.css .. [[</style>]] .. self:BuildBodyHTML() .. [[<script>]] .. self.java .. [[</script>
 		</body>
-	</html>]])
+	</html>]]
+end
+
+function PANEL:RefreshHTML()
+	self:SetHTML(self:BuildFullHTML())
+end
+
+function PANEL:Init()
+	self.mdl = ClientsideModel('models/cellar/logo.mdl', RENDERGROUP_OPAQUE)
+	self.mdl:SetNoDraw(true)
+	self.mdl:SetupBones()
+
+	self:SetSize(ScrW(), ScrH())
+	self:Center()
+	self:SetAlpha(255)
+	self:SetAllowLua(true)
+	self:RefreshHTML()
 
 	self:AddFunction("menu", "Button", function(id)
 		self:MenuClick(tonumber(id))
@@ -625,6 +637,16 @@ function PANEL:Init()
 	self:AddFunction("menu", "Hover", function()
 		LocalPlayer():EmitSound("Helix.Rollover")
 	end)
+
+	cvars.AddChangeCallback("gmod_language", function()
+		if IsValid(self) then
+			self:RefreshHTML()
+		end
+	end, "ui.mainmenu.lang")
+end
+
+function PANEL:OnRemove()
+	cvars.RemoveChangeCallback("gmod_language", "ui.mainmenu.lang")
 end
 
 function PANEL:MenuClick(id)
@@ -709,7 +731,7 @@ function PANEL:Init()
 			surface.SetTextColor(255, 0, 0)
 			surface.SetFont("Session")
 			surface.SetTextPos(50, 50)
-			surface.DrawText("Установите x86-64 версию игры.")
+			surface.DrawText(L("mainmenu.x86Warning"))
 		end
 	end
 	
@@ -757,7 +779,7 @@ function PANEL:MenuClick(id)
 		end)
 	elseif id == 2 then
 		if !bHasCharacter then
-			parent:ShowNotice(3, "У вас должен быть хотя бы один персонаж!")
+			parent:ShowNotice(3, L("mainmenu.needCharacter"))
 		else
 			self:Dim(parent.loadCharacterPanel)
 		end

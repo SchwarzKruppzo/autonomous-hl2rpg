@@ -1404,7 +1404,7 @@ function PANEL:CreateVisualStage(container)
 
 		local height = container:Add("ui.character.selector")
 		height:SetTitle(L"char_height")
-		height:SetValue(0, "%s см")
+		height:SetValue(0, L("chargen.heightFmt"))
 		height.CreateMenu = function(this, menu)
 			local value = vgui.Create("DNumberWang", menu)
 			value:SetMin(155)
@@ -1511,8 +1511,9 @@ function PANEL:CreateVisualStage(container)
 		lang:SetTitle(L"char_lang")
 		lang.CreateMenu = function(this, menu)
 			for k, v in ipairs(languages) do
-				local btn = menu:AddOption(v.text, function()
-					self:SetKnownLanguage(v.value, v.text)
+				local label = L(v.text)
+				local btn = menu:AddOption(label, function()
+					self:SetKnownLanguage(v.value, label)
 				end)
 				btn:SetImage(v.icon)
 			end
@@ -1521,7 +1522,7 @@ function PANEL:CreateVisualStage(container)
 		self.RandomizeLang = function(this)
 			local id = math.random(#languages)
 
-			this:SetKnownLanguage(languages[id].value, languages[id].text)
+			this:SetKnownLanguage(languages[id].value, L(languages[id].text))
 		end
 
 		self.SetKnownLanguage = function(this, value, title)
@@ -1616,12 +1617,12 @@ function PANEL:CreateVisualStage(container)
 		
 		local faceClr = Color(32, 225, 255)
 		local face = container:Add("ui.character.selector")
-		face:SetTitle("ЛИЦО: ")
+		face:SetTitle(L("chargen.faceLabel"))
 		face:SetValue(1)
 		face:SetValueColor(faceClr)
 
 		local hair = container:Add("ui.character.selector")
-		hair:SetTitle("ВОЛОСЫ: ")
+		hair:SetTitle(L("chargen.hairLabel"))
 		hair:SetValue(1)
 		hair:SetValueColor(faceClr)
 		
@@ -2090,7 +2091,7 @@ function PANEL:CreateSkillsStage()
 		name:SetTall(panel:GetTall() * 0.4)
 		name:SetAutonomousTooltip(function(tooltip)
 			tooltip:SetTitle(name:GetText())
-			tooltip:AddSmallText("ХАРАКТЕРИСТИКА ПЕРСОНАЖА")
+			tooltip:AddSmallText(L("chargen.attribute"))
 			tooltip:AddDivider()
 
 			if v.Tooltip then
