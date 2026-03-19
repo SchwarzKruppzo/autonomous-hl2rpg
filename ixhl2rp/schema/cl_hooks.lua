@@ -160,7 +160,7 @@ function Schema:PopulateHelpMenu(tabs)
 		if (#classes < 1) then
 			local info = container:Add("DLabel")
 			info:SetFont("ixSmallFont")
-			info:SetText("You do not have access to any voice lines!")
+			info:SetText(L("voices.noAccess"))
 			info:SetContentAlignment(5)
 			info:SetTextColor(color_white)
 			info:SetExpensiveShadow(1, color_black)

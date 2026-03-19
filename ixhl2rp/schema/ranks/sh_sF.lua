@@ -1,2 +1,2 @@
 RANK.weight = 8
-RANK.name = "Special Forces"
+RANK.name = "rank.sF"

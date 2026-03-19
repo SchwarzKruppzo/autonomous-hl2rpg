@@ -1,2 +1,2 @@
 RANK.weight = 5
-RANK.name = "Integrated 2"
+RANK.name = "rank.i2"

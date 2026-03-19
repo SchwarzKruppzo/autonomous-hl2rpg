@@ -1,6 +1,6 @@
 ITEM.name = "item.gascan_bad"
 ITEM.description = "item.gascan_bad.desc"
-ITEM.category = "Уникальное"
+ITEM.category = "item.category.unique"
 ITEM.model = "models/props_junk/gascan001a.mdl"
 ITEM.width = 2
 ITEM.height = 3

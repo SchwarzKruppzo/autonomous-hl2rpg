@@ -1,2 +1,2 @@
 RANK.weight = 11
-RANK.name = "Overwatch Overseer"
+RANK.name = "rank.oo"

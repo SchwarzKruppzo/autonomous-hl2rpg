@@ -1,4 +1,4 @@
-CLASS.name = "2Scanner"
+CLASS.name = "class.scanner2"
 CLASS.faction = FACTION_MPF
 CLASS.isDefault = false
 

@@ -1,2 +1,2 @@
 RANK.weight = 10
-RANK.name = "Central Commander"
+RANK.name = "rank.cc"
