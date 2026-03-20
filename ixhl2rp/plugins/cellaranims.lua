@@ -984,7 +984,3 @@ ix.anim.SetModelClass("models/santopadre/diper/diper_miller.mdl", "cellarMale")
 
 ix.anim.SetModelClass("models/female_retribution.mdl", "cellarFemale")
 ix.anim.SetModelClass("models/female_18_retribution.mdl", "cellarFemaleMPF")
-
-if CLIENT then
-	RunConsoleCommand('r_eyemove', 0)
-end

@@ -45,8 +45,6 @@ function Schema:GetPlayerEntityMenu(client, options)
 end
 
 function Schema:CharacterLoaded(character)
-	RunConsoleCommand('r_eyemove', 0)
-
 	if (character:IsCombine()) then
 		vgui.Create("ixCombineDisplay")
 
