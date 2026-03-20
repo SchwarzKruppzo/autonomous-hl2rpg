@@ -1,4 +1,27 @@
 local size = math.scale(64)
+local REGION_GAP = math.scale(4)
+
+local function GetClosestVisibleSlot(parent, x, y)
+	local best, best_dist = nil, math.huge
+
+	for _, child in ipairs(parent:GetChildren()) do
+		if child:IsVisible() and child.slot_x then
+			local cx, cy = child:GetPos()
+			local cw, ch = child:GetSize()
+			local dx = math.max(cx - x, 0, x - cx - cw)
+			local dy = math.max(cy - y, 0, y - cy - ch)
+			local dist = dx * dx + dy * dy
+
+			if dist < best_dist then
+				best_dist = dist
+				best = child
+			end
+		end
+	end
+
+	return best
+end
+
 local PANEL = {}
 PANEL.title = ''
 PANEL.slot_size_w = size
@@ -50,11 +73,9 @@ function PANEL:Init()
 				w, h = (slot_w - 1) * 0.5 * slot_size_w, (slot_h - 1) * 0.5 * slot_size_h
 			end
 
-			local slot = receiver:GetClosestChild(mouse_x - w, mouse_y - h)
+			local slot = GetClosestVisibleSlot(receiver, mouse_x - w, mouse_y - h)
 
-			if !slot:IsVisible() and slot.parent then
-				slot = slot:parent()
-			end
+			if !slot then return end
 			
 			slot.is_hovered = true
 
@@ -67,10 +88,11 @@ function PANEL:Init()
 			end
 
 			local slot_x, slot_y = slot:GetItemPos()
-			local inventory_width, inventory_height = self:GetInventorySize()
 
 			if is_multislot then
-				if slot_x + slot_w - 1 > inventory_width or slot_y + slot_h - 1 > inventory_height then
+				local inv = self:GetInventory()
+
+				if !inv:IsRectInRegion(slot_x, slot_y, slot_w, slot_h) then
 					slot.out_of_bounds = true
 				else
 					slot.out_of_bounds = false
@@ -122,14 +144,23 @@ function PANEL:OnKeyCodePressed(key)
 	end
 end
 
-function PANEL:PerformLayout(w, h)
+function PANEL:GetContentSize()
+	if self._contentWidth and self._contentHeight then
+		return self._contentWidth, self._contentHeight
+	end
+
 	local slot_size_w, slot_size_h = self:GetSlotSize()
 	local slot_padding = self:GetSlotPadding()
-	local width = (slot_size_w + slot_padding) * self:GetInventoryWidth() - slot_padding
-	local height = (slot_size_h + slot_padding) * self:GetInventoryHeight() - slot_padding
+
+	return (slot_size_w + slot_padding) * self:GetInventoryWidth() - slot_padding,
+		(slot_size_h + slot_padding) * self:GetInventoryHeight() - slot_padding
+end
+
+function PANEL:PerformLayout(w, h)
+	local width, height = self:GetContentSize()
 
 	if height > h then
-		width = width + math.scale_x(16) + slot_padding
+		width = width + math.scale_x(16) + self:GetSlotPadding()
 	end
 
 	self.scroll:SetWide(width)
@@ -137,7 +168,6 @@ function PANEL:PerformLayout(w, h)
 end
 
 function PANEL:Paint(w, h)
-	--Theme.hook('PaintInventoryBackground', self, w, h)
 end
 
 do
@@ -168,16 +198,15 @@ function PANEL:PaintOver(w, h)
 end
 
 function PANEL:SizeToContents()
-	local slot_size_w, slot_size_h = self:GetSlotSize()
-	local slot_padding = self:GetSlotPadding()
-	local width = (slot_size_w + slot_padding) * self:GetInventoryWidth() - slot_padding
-	local height = (slot_size_h + slot_padding) * self:GetInventoryHeight() - slot_padding
-
-	self:SetSize(width, height)
+	self:SetSize(self:GetContentSize())
 end
 
 function PANEL:StartDragging(dropped)
 	if dropped.isLoot then
+		return
+	end
+
+	if dropped.pendingTransfer then
 		return
 	end
 
@@ -197,9 +226,10 @@ function PANEL:StartDragging(dropped)
 	for i = y, y + h - 1 do
 		for k = x, x + w - 1 do
 			if i == y and k == x then
-				local slot = vgui.Create('ui.inv.item', panel.scroll)
+				local px, py = panel:GetCellPixelPos(k, i)
+				local slot = vgui.Create('ui.inv.item', panel.scroll:GetCanvas())
 				slot:SetSize(slot_size_w, slot_size_h)
-				slot:SetPos((k - 1) * (slot_size_w + slot_padding), (i - 1) * (slot_size_h + slot_padding))
+				slot:SetPos(px, py)
 				slot.slot_x = k
 				slot.slot_y = i
 				slot.slot_size = {slot_size_w, slot_size_h}
@@ -226,9 +256,13 @@ function PANEL:StartDragging(dropped)
 					continue
 				end
 
-				local slot = panel.slot_panels[i][k]
-				slot:Reset()
-				slot:SetVisible(true)
+				local row = panel.slot_panels[i]
+				local slot = row and row[k]
+
+				if IsValid(slot) then
+					slot:Reset()
+					slot:SetVisible(true)
+				end
 			end
 		end
 	end
@@ -348,26 +382,24 @@ function PANEL:OnDrop(dropped)
 		end
 	end
 
+	local did_optimistic = false
+
 	if ix.gui.can_drop then
+		did_optimistic = true
+
 		if oldInventoryID == targetInventoryID then
 			old_inventory:MoveStack(items, target_x, target_y, was_rotated)
-		else
-			if #items == 1 then
-				old_inventory:Transfer(items[1], inventory, target_x, target_y, was_rotated)
-			else
-				old_inventory:TransferStack(items, inventory, target_x, target_y, was_rotated)
-			end
-
-			if IsValid(inventory.panel) then
-				inventory.panel:Rebuild()
-			end
 		end
 
+		ix.gui.can_drop = false
+	end
+
+	if !did_optimistic and oldInventoryID == targetInventoryID then
 		if IsValid(old_inventory.panel) then
 			old_inventory.panel:Rebuild()
 		end
 
-		ix.gui.can_drop = false
+		return
 	end
 	
 	net.Start('inventory.move')
@@ -382,11 +414,13 @@ function PANEL:OnDrop(dropped)
 		net.WriteBool(was_rotated)
 	net.SendToServer()
 
-	if (oldInventoryID != targetInventoryID) then
-		ix.Inventory:Get(oldInventoryID).panel:Rebuild()
+	if IsValid(old_inventory.panel) then
+		old_inventory.panel:Rebuild()
 	end
-	
-	self:Rebuild()
+
+	if oldInventoryID != targetInventoryID and IsValid(inventory.panel) then
+		inventory.panel:Rebuild()
+	end
 end
 
 function PANEL:SetInventoryID(inventory_id)
@@ -508,93 +542,227 @@ function PANEL:ShouldBeRebuild()
     return false
 end
 
+function PANEL:ComputeRegionLayout()
+	local inventory = self:GetInventory()
+	local regions = inventory:GetRegions()
+
+	self._regionRects = nil
+	self._regionOffsets = nil
+	self._contentWidth = nil
+	self._contentHeight = nil
+
+	if !regions then return end
+
+	local slot_size_w, slot_size_h = self:GetSlotSize()
+	local slot_padding = self:GetSlotPadding()
+	local gap = REGION_GAP
+
+	local offsets = {}
+
+	for idx, r in ipairs(regions) do
+		local gx, gy = 0, 0
+
+		for idx2, r2 in ipairs(regions) do
+			if idx2 >= idx then break end
+
+			if r2.x + r2.w == r.x then
+				local y_overlap = math.max(r.y, r2.y) <= math.min(r.y + r.h - 1, r2.y + r2.h - 1)
+
+				if y_overlap then
+					gx = math.max(gx, offsets[idx2].x + gap)
+				end
+			end
+
+			if r2.y + r2.h == r.y then
+				local x_overlap = math.max(r.x, r2.x) <= math.min(r.x + r.w - 1, r2.x + r2.w - 1)
+
+				if x_overlap then
+					gy = math.max(gy, offsets[idx2].y + gap)
+				end
+			end
+		end
+
+		offsets[idx] = {x = gx, y = gy}
+	end
+
+	self._regionOffsets = offsets
+
+	local regionRects = {}
+	local max_w, max_h = 0, 0
+
+	for idx, r in ipairs(regions) do
+		local off = offsets[idx]
+		local px = (r.x - 1) * (slot_size_w + slot_padding) + off.x
+		local py = (r.y - 1) * (slot_size_h + slot_padding) + off.y
+		local pw = r.w * (slot_size_w + slot_padding) - slot_padding
+		local ph = r.h * (slot_size_h + slot_padding) - slot_padding
+
+		regionRects[idx] = {x = px, y = py, w = pw, h = ph}
+		max_w = math.max(max_w, px + pw)
+		max_h = math.max(max_h, py + ph)
+	end
+
+	self._regionRects = regionRects
+	self._contentWidth = max_w
+	self._contentHeight = max_h
+end
+
+function PANEL:GetCellPixelPos(x, y)
+	local slot_size_w, slot_size_h = self:GetSlotSize()
+	local slot_padding = self:GetSlotPadding()
+	local base_x = (x - 1) * (slot_size_w + slot_padding)
+	local base_y = (y - 1) * (slot_size_h + slot_padding)
+
+	local inventory = self:GetInventory()
+
+	if !inventory._regionMap or !self._regionOffsets then
+		return base_x, base_y
+	end
+
+	local regionIdx = inventory._regionMap[y] and inventory._regionMap[y][x]
+
+	if regionIdx and self._regionOffsets[regionIdx] then
+		local off = self._regionOffsets[regionIdx]
+		return base_x + off.x, base_y + off.y
+	end
+
+	return base_x, base_y
+end
+
 function PANEL:Rebuild()
 	dragndrop.Clear()
 	self.scroll:Clear()
 
-	for i = 1, self:GetInventoryHeight() do
-		self.slot_panels[i] = {}
-	end
-
-	self.slot_parents = {}
-
 	local slot_size_w, slot_size_h = self:GetSlotSize()
 	local slot_padding = self:GetSlotPadding()
 	local width, height = self:GetInventorySize()
+	local inventory = self:GetInventory()
+	local regions = inventory:GetRegions()
 
-	for i = 1, height do
-		for k = 1, width do
-			local slot = vgui.Create('ui.inv.item', self.scroll)
-			slot:SetSize(slot_size_w, slot_size_h)
-			slot:SetPos((k - 1) * (slot_size_w + slot_padding), (i - 1) * (slot_size_h + slot_padding))
-			slot.slot_x = k
-			slot.slot_y = i
-			slot.slot_size = {slot_size_w, slot_size_h}
-			slot.slot_padding = slot_padding
-			slot.inventory_id = self:GetInventoryID()
-			slot.multislot = self:IsMultislot()
-			slot.scroll = self
+	self.slot_panels = {}
+	self.slot_parents = {}
 
-			if self.draw_inventory_slots == true then
-				slot.slot_number = k + (i - 1) * width
+	self:ComputeRegionLayout()
+
+	local regionRects = self._regionRects
+	self.scroll:GetCanvas().Paint = function(pnl, cw, ch)
+		if regionRects then
+			surface.SetDrawColor(0, 73, 88, 100)
+
+			for _, rect in ipairs(regionRects) do
+				surface.DrawOutlinedRect(rect.x, rect.y, rect.w, rect.h)
 			end
-
-			local icon = self:GetIcon()
-
-			if icon then
-				slot.icon = icon
-			end
-
-			if self:IsDisabled() then
-				slot.disabled = true
-			end
-
-			if istable(self.slot_panels[i][k]) then
-				local data = self.slot_panels[i][k]
-				slot:SetVisible(false)
-				slot.parent = function(this)
-					if !IsValid(this.parentX) then
-						this.parentX = self.slot_panels[data[1]][data[2]]
-					end
-
-					return this.parentX
-				end
-			else
-				local instance_ids = self:GetSlot(k, i)
-
-				if instance_ids and #instance_ids > 0 then
-					if #instance_ids == 1 then
-						slot:SetItem(instance_ids[1])
-					else
-						slot:SetItemMulti(instance_ids)
-					end
-				end
-
-				if self:IsMultislot() and slot:IsVisible() then
-					local w, h = slot:GetItemSize()
-
-					if w > 1 or h > 1 then
-						for m = 1, h do
-							for n = 1, w do
-								local slot_pos_y, slot_pos_x = (i + m - 1), (k + n - 1)
-
-								if slot_pos_y > height or slot_pos_x > width then
-									continue
-								end
-								
-								self.slot_panels[slot_pos_y][slot_pos_x] = {i, k}
-							end
-						end
-
-						slot:SetSize((slot_size_w + slot_padding) * w - slot_padding, (slot_size_h + slot_padding) * h - slot_padding)
-						slot:Rebuild()
-					end
-				end
-			end
-
-			self.slot_panels[i][k] = slot
-			self.scroll:AddItem(slot)
 		end
+	end
+
+	local function CreateSlotAt(k, i)
+		self.slot_panels[i] = self.slot_panels[i] or {}
+
+		local px, py = self:GetCellPixelPos(k, i)
+		local slot = vgui.Create('ui.inv.item', self.scroll)
+		slot:SetSize(slot_size_w, slot_size_h)
+		slot:SetPos(px, py)
+		slot.slot_x = k
+		slot.slot_y = i
+		slot.slot_size = {slot_size_w, slot_size_h}
+		slot.slot_padding = slot_padding
+		slot.inventory_id = self:GetInventoryID()
+		slot.multislot = self:IsMultislot()
+		slot.scroll = self
+
+		if self.draw_inventory_slots == true then
+			slot.slot_number = k + (i - 1) * width
+		end
+
+		local icon = self:GetIcon()
+
+		if icon then
+			slot.icon = icon
+		end
+
+		if self:IsDisabled() then
+			slot.disabled = true
+		end
+
+		return slot
+	end
+
+	local function PopulateSlot(slot, k, i)
+		if istable(self.slot_panels[i][k]) then
+			local data = self.slot_panels[i][k]
+			slot:SetVisible(false)
+			slot.parent = function(this)
+				if !IsValid(this.parentX) then
+					this.parentX = self.slot_panels[data[1]][data[2]]
+				end
+
+				return this.parentX
+			end
+		else
+			local instance_ids = self:GetSlot(k, i)
+
+			if instance_ids and #instance_ids > 0 then
+				if #instance_ids == 1 then
+					slot:SetItem(instance_ids[1])
+				else
+					slot:SetItemMulti(instance_ids)
+				end
+			end
+
+			if self:IsMultislot() and slot:IsVisible() then
+				local w, h = slot:GetItemSize()
+
+				if w > 1 or h > 1 then
+					for m = 1, h do
+						for n = 1, w do
+							local slot_pos_y, slot_pos_x = (i + m - 1), (k + n - 1)
+
+							if slot_pos_y > height or slot_pos_x > width then
+								continue
+							end
+
+							self.slot_panels[slot_pos_y] = self.slot_panels[slot_pos_y] or {}
+							self.slot_panels[slot_pos_y][slot_pos_x] = {i, k}
+						end
+					end
+
+					slot:SetSize((slot_size_w + slot_padding) * w - slot_padding, (slot_size_h + slot_padding) * h - slot_padding)
+					slot:Rebuild()
+				end
+			end
+		end
+	end
+
+	if regions then
+		for _, r in ipairs(regions) do
+			for iy = r.y, r.y + r.h - 1 do
+				for ix = r.x, r.x + r.w - 1 do
+					local slot = CreateSlotAt(ix, iy)
+
+					PopulateSlot(slot, ix, iy)
+
+					self.slot_panels[iy][ix] = slot
+					self.scroll:AddItem(slot)
+				end
+			end
+		end
+	else
+		for i = 1, height do
+			self.slot_panels[i] = self.slot_panels[i] or {}
+
+			for k = 1, width do
+				local slot = CreateSlotAt(k, i)
+
+				PopulateSlot(slot, k, i)
+
+				self.slot_panels[i][k] = slot
+				self.scroll:AddItem(slot)
+			end
+		end
+	end
+
+	if ix.inventory and ix.inventory.RestoreAllPendingFlags then
+		ix.inventory.RestoreAllPendingFlags()
 	end
 
 	if self.OnRebuild then

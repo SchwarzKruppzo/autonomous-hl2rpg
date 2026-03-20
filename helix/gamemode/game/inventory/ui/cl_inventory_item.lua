@@ -31,7 +31,7 @@ function PANEL:Paint(w, h)
 	if IsValid(drop_slot) and drop_slot:GetInventoryID() == self:GetInventoryID() then
 		local drag_slot = ix.inventory_drag_slot
 
-		if IsValid(drag_slot) then
+		if IsValid(drag_slot) and self != drag_slot then
 			local slot_w, slot_h = drag_slot:GetItemSize()
 			local drop_x, drop_y = drop_slot:GetItemPos()
 			local x, y = self:GetItemPos()
@@ -108,6 +108,12 @@ function PANEL:Paint(w, h)
 		render.OverrideBlend(false)
 	end
 
+	if self.pendingTransfer then
+		local alpha = math.abs(math.sin(CurTime() * 3)) * 200
+		surface.SetDrawColor(255, 255, 255, alpha)
+		surface.DrawRect(0, 0, w, h)
+	end
+
 	surface.SetDrawColor(255, 255, 255, 255 * 0.75)
 	surface.SetMaterial(shadow)
 	surface.DrawTexturedRect(1, 1, w, h)
@@ -143,6 +149,8 @@ function PANEL:PaintOver(w, h)
 end
 
 function PANEL:OnMousePressed(...)
+	if self.pendingTransfer then return end
+
 	self.mouse_pressed = CurTime()
 	ix.inventory_drag_slot = self
 

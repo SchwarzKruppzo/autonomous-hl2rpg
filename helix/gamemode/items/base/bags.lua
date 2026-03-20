@@ -112,6 +112,10 @@ function Item:CreateInventory()
 		inventory.infinite_height = data.infinite_height != nil and data.infinite_height or false
 		inventory.instance_id = self.id
 
+	if data.regions then
+		inventory:SetRegions(data.regions)
+	end
+
 	self.inventory = inventory
 end
 
@@ -225,6 +229,8 @@ if SERVER then
 	end
 
 	function Item:OnSync(receiver, transmit)
+		if IsValid(self:GetEntity()) then return end
+
 		if self.inventory_id and self.inventory then
 			local hasReceiver
 
@@ -238,7 +244,7 @@ if SERVER then
 				self.inventory:AddReceiver(receiver)
 			end
 			
-			self.inventory:Sync()
+			self.inventory:SyncTo(receiver)
 		end
 	end
 

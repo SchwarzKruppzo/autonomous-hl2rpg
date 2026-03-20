@@ -43,7 +43,7 @@ function ItemEquipable:Init()
 				if bSuccess then
 					item.entity:Delete()
 
-					inventory:Sync()
+					inventory:SendDeltaAdd(item.id, item.x, item.y)
 
 					item:Equip(item.player, bSuccess)
 				else
@@ -54,11 +54,11 @@ function ItemEquipable:Init()
 			else
 				if !self:IsEquipped() then
 					local old_inventory = ix.Inventory:Get(item.inventory_id)
+					local old_x, old_y = item.x, item.y
 
 					old_inventory:Transfer(item.id, inventory, x, y, false)
 
-					old_inventory:Sync()
-					inventory:Sync()
+					inventory:SendDeltaTransfer(item.id, old_inventory, old_x, old_y, item.x, item.y)
 				end
 			end
 		end,
@@ -75,11 +75,11 @@ function ItemEquipable:Init()
 		OnRun = function(item)
 			local old_inventory = ix.Inventory:Get(item.inventory_id)
 			local inventory = item.player:GetInventory('main')
+			local old_x, old_y = item.x, item.y
 
 			old_inventory:Transfer(item.id, inventory)
 
-			old_inventory:Sync()
-			inventory:Sync()
+			inventory:SendDeltaTransfer(item.id, old_inventory, old_x, old_y, item.x, item.y)
 		end,
 		OnCanRun = function(item)
 			local client = item.player

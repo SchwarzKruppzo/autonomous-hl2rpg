@@ -81,7 +81,11 @@ do
 			end
 		end
 
-		inventory:Sync()
+		if success then
+			inventory:SendDeltaAdd(item.id, item.x, item.y)
+		else
+			inventory:Sync()
+		end
 
 		return success, error
 	end
@@ -94,7 +98,9 @@ do
 		local inventory = self:GetInventory(inv_type or self.default_inventory or "main")
 		local success, error = inventory:GiveItem(id, amount, data)
 
-		inventory:Sync()
+		if success then
+			inventory:Sync()
+		end
 
 		return success, error
 	end
@@ -102,9 +108,17 @@ do
 	function PLAYER:TakeItem(id, inv_type)
 		if inv_type then
 			local inventory = self:GetInventory(inv_type)
+			local found_item = inventory:FindItem(id)
+			local old_x, old_y = found_item and found_item.x, found_item and found_item.y
+			local old_id = found_item and found_item.id
+
 			local success, error = inventory:TakeItem(id)
 
-			inventory:Sync()
+			if success and old_id then
+				inventory:SendDeltaRemove(old_id, old_x, old_y)
+			else
+				inventory:Sync()
+			end
 
 			return success, error
 		else
@@ -115,8 +129,16 @@ do
 					local inv = ix.Inventory:Get(item.inventory_id)
 
 					if inv then
+						local old_x, old_y = item.x, item.y
+						local old_id = item.id
+
 						local success, error = inv:TakeItem(id)
-						inv:Sync()
+
+						if success then
+							inv:SendDeltaRemove(old_id, old_x, old_y)
+						else
+							inv:Sync()
+						end
 
 						return success, error
 					end
@@ -146,8 +168,11 @@ do
 						local inv = ix.Inventory:Get(item.inventory_id)
 
 						if inv then
+							local old_x, old_y = item.x, item.y
+							local old_id = item.id
+
 							inv:TakeItem(id)
-							inv:Sync()
+							inv:SendDeltaRemove(old_id, old_x, old_y)
 
 							amount = amount - 1
 						end
@@ -160,11 +185,18 @@ do
 	end
 
 	function PLAYER:TakeItemByID(instance_id, inv_type)
+		local target_item = ix.Item.instances[instance_id]
+		local old_x, old_y = target_item and target_item.x, target_item and target_item.y
+
 		if inv_type then
 			local inventory = self:GetInventory(inv_type)
 			local success, error = inventory:TakeItemByID(instance_id)
 
-			inventory:Sync()
+			if success then
+				inventory:SendDeltaRemove(instance_id, old_x, old_y)
+			else
+				inventory:Sync()
+			end
 
 			return success, error
 		else
@@ -174,7 +206,11 @@ do
 				local inventory = self:GetInventory(item.inventory_type)
 				local success, error = inventory:TakeItemTable(item)
 
-				inventory:Sync()
+				if success then
+					inventory:SendDeltaRemove(instance_id, old_x, old_y)
+				else
+					inventory:Sync()
+				end
 
 				return success, error
 			else

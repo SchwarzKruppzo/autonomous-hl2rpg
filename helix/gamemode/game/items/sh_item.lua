@@ -155,6 +155,7 @@ end
 
 if SERVER then
 	util.AddNetworkString("item.sync")
+	util.AddNetworkString("item.sync.batch")
 	util.AddNetworkString("item.data")
 	util.AddNetworkString("item.action")
 	util.AddNetworkString("item.entity.action")
