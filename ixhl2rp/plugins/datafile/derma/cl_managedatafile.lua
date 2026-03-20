@@ -21,7 +21,7 @@ function PANEL:Init()
 	self.List:AddColumn("poster");
 
 	self.Delete = vgui.Create("cwDfButton", self);
-	self.Delete:SetText("Delete Entry");
+	self.Delete:SetText(L("datafile.deleteEntry"));
 	self.Delete:SetMetroColor(Color(200, 50, 0, 255))
 	self.Delete:Dock(BOTTOM);
 	self.Delete:DockMargin(0, 5, 0, 0);

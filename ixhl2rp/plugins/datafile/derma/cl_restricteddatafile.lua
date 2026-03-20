@@ -17,7 +17,7 @@ function PANEL:Init()
 	self:SetTall(35);
 
 	self.Header1 = vgui.Create("DLabel", self);
-	self.Header1:SetText("NOTES");
+	self.Header1:SetText(L("datafile.notes"));
 	self.Header1:SetTextColor(colours.blue);
 	self.Header1:SetFont("MiddleLabels");
 	self.Header1:Dock(FILL);
@@ -25,7 +25,7 @@ function PANEL:Init()
 	self.Header1:SetContentAlignment(4);
 
 	self.Header2 = vgui.Create("DLabel", self);
-    self.Header2:SetText("REGISTRY RECORD");
+    self.Header2:SetText(L("datafile.registryRecord"));
     self.Header2:SetTextColor(colours.yellow);
     self.Header2:SetFont("MiddleLabels");
     self.Header2:Dock(FILL);
@@ -33,7 +33,7 @@ function PANEL:Init()
     self.Header2:SetContentAlignment(5);
 
 	self.Header3 = vgui.Create("DLabel", self);
-	self.Header3:SetText("MEDICAL RECORD");
+	self.Header3:SetText(L("datafile.medicalRecord"));
 	self.Header3:SetTextColor(colours.green);
 	self.Header3:SetFont("MiddleLabels");
 	self.Header3:Dock(FILL);
@@ -79,7 +79,7 @@ function PANEL:Init()
 	self:SetTall(50);
 
 	self.LeftHeaderLabel = vgui.Create("DLabel", self);
-	self.LeftHeaderLabel:SetText("CIVIL STATUS");
+	self.LeftHeaderLabel:SetText(L("datafile.civilStatus"));
 	self.LeftHeaderLabel:SetContentAlignment(4)
 	self.LeftHeaderLabel:SetTextColor(Color(0, 150, 150, 255));
 	self.LeftHeaderLabel:SetFont("TopBoldLabel");
@@ -87,7 +87,7 @@ function PANEL:Init()
 	self.LeftHeaderLabel:DockMargin(5, 5, 0, 0);
 
 	self.MiddleHeaderLabel = vgui.Create("DLabel", self);
-    self.MiddleHeaderLabel:SetText("REGISTERED AT");
+    self.MiddleHeaderLabel:SetText(L("datafile.registeredAt"));
     self.MiddleHeaderLabel:SetContentAlignment(5)
     self.MiddleHeaderLabel:SetTextColor(Color(231, 180, 60, 255));
     self.MiddleHeaderLabel:SetFont("TopBoldLabel");
@@ -95,7 +95,7 @@ function PANEL:Init()
     self.MiddleHeaderLabel:DockMargin(5, 5, 0, 0);
 
 	self.RightHeaderLabel = vgui.Create("DLabel", self);
-	self.RightHeaderLabel:SetText("LAST SEEN");
+	self.RightHeaderLabel:SetText(L("datafile.lastSeen"));
 	self.RightHeaderLabel:SetContentAlignment(6)
 	self.RightHeaderLabel:SetTextColor(Color(150, 150, 96, 255));
 	self.RightHeaderLabel:SetFont("TopBoldLabel");
@@ -181,27 +181,27 @@ function PANEL:Init()
 
 	-- Upper buttons. Population will be done below.
 	self.uLeftButton = vgui.Create("cwDfButton", self.uButtons);
-	self.uLeftButton:SetText("ADD NOTE");
+	self.uLeftButton:SetText(L("datafile.addNote"));
 	self.uLeftButton:SetMetroColor(colours.blue);
 	self.uLeftButton:Dock(LEFT);
 
 	self.uMiddleButton = vgui.Create("cwDfButton", self.uButtons);
-    self.uMiddleButton:SetText("ADD REGISTRATION RECORD");
+    self.uMiddleButton:SetText(L("datafile.addRegRecord"));
     self.uMiddleButton:SetMetroColor(colours.yellow);
     self.uMiddleButton:Dock(FILL);
 
 	self.uRightButton = vgui.Create("cwDfButton", self.uButtons);
-	self.uRightButton:SetText("ADD MEDICAL RECORD");
+	self.uRightButton:SetText(L("datafile.addMedicalRecord"));
 	self.uRightButton:SetMetroColor(colours.green);
 	self.uRightButton:Dock(RIGHT);
 
 	-- Bottom buttons.
 	self.dLeftButton = vgui.Create("cwDfButton", self.dButtons);
-	self.dLeftButton:SetText("UPDATE LAST SEEN");
+	self.dLeftButton:SetText(L("datafile.updateLastSeen"));
 	self.dLeftButton:Dock(LEFT);
 
 	self.dMiddleButton = vgui.Create("cwDfButton", self.dButtons);
-    self.dMiddleButton:SetText("REMOVE REGISTRATION");
+    self.dMiddleButton:SetText(L("datafile.removeRegistration"));
     self.dMiddleButton:Dock(FILL);
 
 	self.dRightButton = vgui.Create("cwDfButton", self.dButtons);

@@ -198,14 +198,14 @@ if CLIENT then
 				end
 			end
 
-			StatRow("armor", string.format(L("armorClass"), self.armor.class), color_white, tooltip, true)
+			StatRow("armor", L("armorClass", self.armor.class), color_white, tooltip, true)
 
 			if self.armor.density then
-				StatRow("density", string.format(L("armorFactor"), 100 * self.armor.density), color_white, tooltip, true, true)
+				StatRow("density", L("armorFactor", 100 * self.armor.density), color_white, tooltip, true, true)
 			end
 
 			if self.inventory_id then
-				StatRow("durability", string.format(L("armorDurability"), (self:GetData("value") or 1) * self.armor.max_durability, self.armor.max_durability), color_white, tooltip, true, true)
+				StatRow("durability", L("armorDurability", (self:GetData("value") or 1) * self.armor.max_durability, self.armor.max_durability), color_white, tooltip, true, true)
 			end
 			
 			if self.armor.coverage then
@@ -221,7 +221,7 @@ if CLIENT then
 				table.SortByMember(coverages, "factor")
 
 				for k, v in ipairs(coverages) do
-					StatRow("hit"..k, string.format(L(v.type), v.factor), yellowClr, tooltip)
+					StatRow("hit"..k, L(v.type, v.factor), yellowClr, tooltip)
 				end
 			end
 
@@ -241,7 +241,7 @@ if CLIENT then
 				table.SortByMember(damages, "factor")
 
 				for k, v in ipairs(damages) do
-					StatRow("dmg"..k, string.format(L("armorDamageText"), (v.factor > 0 and "+" or "")..tostring(100 * v.factor), L(v.type)), v.factor > 0 and greenClr or redClr, tooltip)
+					StatRow("dmg"..k, L("armorDamageText", (v.factor > 0 and "+" or "")..tostring(100 * v.factor), L(v.type)), v.factor > 0 and greenClr or redClr, tooltip)
 				end
 			end
 
@@ -261,7 +261,7 @@ if CLIENT then
 				table.SortByMember(damages, "factor")
 
 				for k, v in ipairs(damages) do
-					StatRow("dmgx"..k, string.format(L("armorDamageText"), tostring(100 * v.factor), L(v.type)), v.factor > 1 and redClr or greenClr, tooltip)
+					StatRow("dmgx"..k, L("armorDamageText", tostring(100 * v.factor), L(v.type)), v.factor > 1 and redClr or greenClr, tooltip)
 				end
 			end
 		end

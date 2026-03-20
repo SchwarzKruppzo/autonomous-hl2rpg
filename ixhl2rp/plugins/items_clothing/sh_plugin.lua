@@ -14,7 +14,21 @@ ix.Net:AddPlayerVar("custom_outfit", false, nil, ix.Net.Type.Table, function(ent
 	end
 end)
 
-ix.util.Include("sh_outfit.class.lua")
+--ix.util.Include("cl_facemap.class.lua")
+--ix.util.Include("sh_outfit.class.lua")
+--ix.util.Include("sh_chargen.class.lua")
+
+ix.char.RegisterVar("charGen", {
+	field = "chargen",
+	fieldType = ix.type.text,
+	Meta = ix.meta.CharGenData,
+	Net = {
+		Transmit = ix.transmit.all
+	},
+	OnValidate = function(self, chargen, data, client)
+		return chargen
+	end,
+})
 
 if SERVER then
 	function PLUGIN:PlayerInitialSpawn(client)
@@ -68,4 +82,23 @@ if SERVER then
 	function PLUGIN:PlayerDisconnected(client)
 		CacheBodygroups(client, client:GetCharacter())
 	end
+
+	util.AddNetworkString("techdemo.ui")
+else
+	net.Receive("techdemo.ui", function()
+		vgui.Create("techdemo.customize")
+	end)
 end
+
+ix.command.Add("FaceEdit", {
+	description = "",
+	adminOnly = false,
+	arguments = {},
+	OnCheckAccess = function(self, client)
+		return true
+	end,
+	OnRun = function(self, client, target)
+		net.Start("techdemo.ui")
+		net.Send(client)
+	end
+})

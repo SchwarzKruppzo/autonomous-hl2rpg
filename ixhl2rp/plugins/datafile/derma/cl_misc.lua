@@ -2,7 +2,7 @@
 local PANEL = {};
 
 function PANEL:Init()
-	self:SetTitle("Add Civil Record");
+	self:SetTitle(L("datafile.titleCivilRecord"));
 	self:MakePopup();
 
 	self:SetSize(300, 250);
@@ -21,7 +21,7 @@ function PANEL:Init()
 	self.Number:SetMinMax(-10, 10);
 
 	self.Submit = vgui.Create("cwDfButton", self);
-	self.Submit:SetText("Submit")
+	self.Submit:SetText(L("datafile.submit"))
 	self.Submit:SetZPos(-1)
 	self.Submit:Dock(BOTTOM);
 	self.Submit:DockMargin(0, 2.5, 0, 2.5);
@@ -54,7 +54,7 @@ vgui.Register("cwDfCivilEntry", PANEL, "DFrame");
 PANEL = {};
 
 function PANEL:Init()
-	self:SetTitle("Add Medical Record");
+	self:SetTitle(L("datafile.titleMedicalRecord"));
 	self:MakePopup();
 
 	self:SetSize(300, 250);
@@ -68,7 +68,7 @@ function PANEL:Init()
 	self.Entry:DockMargin(0, 0, 0, 2.5);
 
 	self.Submit = vgui.Create("cwDfButton", self);
-	self.Submit:SetText("Submit")
+	self.Submit:SetText(L("datafile.submit"))
 	self.Submit:Dock(BOTTOM);
 	self.Submit:DockMargin(0, 2.5, 0, 2.5);
 	self.Submit:SetMetroColor(Color(39, 174, 96, 100));
@@ -99,7 +99,7 @@ vgui.Register("cwDfMedicalEntry", PANEL, "DFrame");
 PANEL = {};
 
 function PANEL:Init()
-	self:SetTitle("Add Note");
+	self:SetTitle(L("datafile.titleNote"));
 	self:MakePopup();
 
 	self:SetSize(300, 250);
@@ -113,7 +113,7 @@ function PANEL:Init()
 	self.Entry:DockMargin(0, 0, 0, 2.5);
 
 	self.Submit = vgui.Create("cwDfButton", self);
-	self.Submit:SetText("Submit")
+	self.Submit:SetText(L("datafile.submit"))
 	self.Submit:Dock(BOTTOM);
 	self.Submit:DockMargin(0, 2.5, 0, 2.5);
 	self.Submit:SetMetroColor(Color(41, 128, 185, 100));
@@ -144,7 +144,7 @@ vgui.Register("cwDfNoteEntry", PANEL, "DFrame");
 PANEL = {};
 
 function PANEL:Init()
-	self:SetTitle("Add Registration Record");
+	self:SetTitle(L("datafile.titleRegRecord"));
 	self:MakePopup();
 
 	self:SetSize(300, 80);
@@ -158,7 +158,7 @@ function PANEL:Init()
 	self.Entry:DockMargin(0, 0, 0, 2.5);
 
 	self.Submit = vgui.Create("cwDfButton", self);
-	self.Submit:SetText("Submit")
+	self.Submit:SetText(L("datafile.submit"))
 	self.Submit:Dock(BOTTOM);
 	self.Submit:DockMargin(0, 2.5, 0, 2.5);
 	self.Submit:SetMetroColor(Color(231, 180, 60, 100));
