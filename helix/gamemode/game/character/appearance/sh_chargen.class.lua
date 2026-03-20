@@ -493,18 +493,18 @@ end
 
 ix.meta.CharGenData = CharGenData
 
-if CLIENT then
-	hook.Add("UpdateAnimation", "chargen.flexes", function(client)
-		local character = client:GetCharacter()
-
-		if character then
-			local charGenData = character:CharGen()
-
-			if charGenData and charGenData._flexes then
-				for k, v in pairs(charGenData._flexes) do
-					client:SetFlexWeight(k, v)
-				end
-			end
-		end
-	end)
-end
+//if CLIENT then
+//	hook.Add("UpdateAnimation", "chargen.flexes", function(client)
+//		local character = client:GetCharacter()
+//
+//		if character then
+//			local charGenData = character:CharGen()
+//
+//			if charGenData and charGenData._flexes then
+//				for k, v in pairs(charGenData._flexes) do
+//					client:SetFlexWeight(k, v)
+//				end
+//			end
+//		end
+//	end)
+//end
