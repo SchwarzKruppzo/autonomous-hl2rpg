@@ -8,3 +8,5 @@ ix.util.Include("appearance/sh_appearance.lua") -- clothing display database & m
 ix.util.Include("appearance/cl_facemap.class.lua") -- facemap texture generator
 ix.util.Include("appearance/sh_outfit.class.lua") -- class that handles visuals for player clothes (bodygroups, layers logic, clientside parts)
 ix.util.Include("appearance/sh_chargen.class.lua") -- character class stores customization settings and its synchronization
+
+ix.util.Include("appearance/cl_ui_techdemo.lua")
