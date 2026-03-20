@@ -536,7 +536,7 @@ if CLIENT then
 
 		if durability then
 			local info = durability_state[durability]
-			local panel = tooltip:AddRowAfter(hasLock && "lock" || "name", "durability")
+			local panel = tooltip:AddRowAfter(hasLock and "lock" or "name", "durability")
 			panel:SetBackgroundColor(HSVToColor(120 * info[2], 1, 1))
 			panel:SetText(L("weaponConditionLabel", L(info[1])))
 			panel:SizeToContents()
@@ -546,7 +546,7 @@ if CLIENT then
 		if weapon then
 			local character = LocalPlayer():GetCharacter()
 			local isMelee = weapon.Type == "Melee"
-			local damage = weapon.Primary.Damage
+			local damage = weapon.Primary.Damage or 0
 
 			if weapon.Primary.NumShots then
 				damage = damage * weapon.Primary.NumShots
