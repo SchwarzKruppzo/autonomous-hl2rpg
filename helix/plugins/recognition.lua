@@ -174,7 +174,7 @@ if (CLIENT) then
 
 		local name = hook.Run("GetCharacterName", target, "ic")
 
-		Derma_StringRequest(L("recognition.rememberTitle"), string.format(L("recognition.rememberPrompt"), name), "", function(text)
+		Derma_StringRequest(L("recognition.rememberTitle"), L("recognition.rememberPrompt", name), "", function(text)
 			ix.gui.recognize = nil
 
 			client.recognize = client.recognize or {}

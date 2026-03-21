@@ -91,7 +91,7 @@ if SERVER then
 				local ourSkill = character:GetSkillModified(skill)
 
 				if ourSkill < needed then
-					return false, string.format(L("craftNeedSkill"), L(skillTable.name, client), needed)
+					return false, "craftNeedSkill", L(skillTable.name, client), needed
 				end
 			end
 		end
@@ -108,7 +108,7 @@ if SERVER then
 				end
 
 				if !hasStation then
-					return false, L("craftNeedWorkstation")
+					return false, "craftNeedWorkstation"
 				end
 			else
 				local stationInfo = self.stations[recipe.station]
@@ -118,7 +118,7 @@ if SERVER then
 				end
 
 				if !hasStation then
-					return false, L("craftNeedStation", L(stationInfo.name))
+					return false, "craftNeedStation", L(stationInfo.name)
 				end
 			end
 		end
@@ -136,7 +136,7 @@ if SERVER then
 		end
 
 		if !hasTools then
-			return false, L("craftNeedTools")
+			return false, "craftNeedTools"
 		end
 
 		if recipe.isBreakdown then
@@ -213,7 +213,7 @@ if SERVER then
 		end
 		
 		if !hasItems then
-			return false, L("craftNeedItems")
+			return false, "craftNeedItems"
 		end
 
 		return true
@@ -501,10 +501,11 @@ if SERVER then
 		local recipeTable = self.recipes[uniqueID]
 
 		if recipeTable then
-			local bCanCraft, reason = self:AttemptCraft(recipeTable, client)
+			local result = { self:AttemptCraft(recipeTable, client) }
+			local bCanCraft, reason = result[1], result[2]
 
 			if !bCanCraft then
-				client:Notify(reason)
+				client:NotifyLocalized(reason, unpack(result, 3))
 				return false
 			end
 

@@ -76,7 +76,7 @@ function ItemArmor:OnEquipped(client)
 	if strength then
 		client.char_outfit.armor[self] = true
 	else
-		client:ChatNotify(L("armor.notEnoughStrength", client))
+		client:ChatNotifyLocalized("armor.notEnoughStrength")
 	end
 
 	if self.equip_inv == 'torso' then

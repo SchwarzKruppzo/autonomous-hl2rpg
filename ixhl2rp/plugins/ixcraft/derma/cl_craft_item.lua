@@ -169,7 +169,7 @@ function PANEL:SetupCraft()
 	parent.itemIcon:Center()
 
 	if skill_scale >= 0 and self.recipe.skill then
-		parent.itemXP:SetText(skill_scale <= 1 and string.format(L("craftSkillXP"), self.recipe.xp or 0) or L("craftSkillLevelTooLow"))
+		parent.itemXP:SetText(skill_scale <= 1 and L("craftSkillXP", self.recipe.xp or 0) or L("craftSkillLevelTooLow"))
 		parent.itemXP:SetTextColor(skill_color)
 		parent.itemXP:SizeToContents()
 		parent.itemXP:SetVisible(true)
