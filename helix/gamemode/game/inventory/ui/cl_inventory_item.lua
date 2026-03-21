@@ -31,7 +31,7 @@ function PANEL:Paint(w, h)
 	if IsValid(drop_slot) and drop_slot:GetInventoryID() == self:GetInventoryID() then
 		local drag_slot = ix.inventory_drag_slot
 
-		if IsValid(drag_slot) then
+		if IsValid(drag_slot) and self != drag_slot then
 			local slot_w, slot_h = drag_slot:GetItemSize()
 			local drop_x, drop_y = drop_slot:GetItemPos()
 			local x, y = self:GetItemPos()
@@ -108,6 +108,13 @@ function PANEL:Paint(w, h)
 		render.OverrideBlend(false)
 	end
 
+	if self.reservedTransferTarget then
+		surface.SetDrawColor(60, 200, 120, 100)
+		surface.DrawOutlinedRect(0, 0, w, h)
+		surface.SetDrawColor(60, 200, 120, 45)
+		surface.DrawRect(1, 1, w - 2, h - 2)
+	end
+
 	surface.SetDrawColor(255, 255, 255, 255 * 0.75)
 	surface.SetMaterial(shadow)
 	surface.DrawTexturedRect(1, 1, w, h)
@@ -124,6 +131,7 @@ surface.CreateFont("item.count", {
 	antialias = true,
 })
 
+local baseRadius = math.scale(64) * 0.75
 function PANEL:PaintOver(w, h)
 	if self.item_count >= 2 then
 		//DisableClipping(true)
@@ -140,9 +148,55 @@ function PANEL:PaintOver(w, h)
 	if self.item_data and self.item_data.PaintOver then
 		self.item_data:PaintOver(w, h)
 	end
+
+	if self.pendingTransfer then
+		local dx = ix.DX and ix.DX()
+		local pending = ix.Inventory.pendingTransfers and ix.Inventory.pendingTransfers[self.pendingTransfer]
+		local duration = (pending and pending.duration) or ix.Inventory.transferDelay or 2.5
+
+		if pending and pending.startTime then
+			local now = SysTime()
+			local fraction = math.Clamp((pending.startTime + duration - now) / duration, 0, 1)
+			local cx, cy = w * 0.5, h * 0.5
+			local m = math.min(w, h)
+			local radius = m * 0.6
+			local thickness = radius * 0.1
+			local endAngle = math.max((1 - fraction) * 360, 1)
+			local alpha = 0.25 + (0.75 * fraction)
+
+			local clr = ColorAlpha(ix.Palette.combineblue, 255 * 0.75 * alpha)
+			local clr2 = ColorAlpha(ix.Palette.combineblue, 255 * alpha)
+
+			dx.Circle(cx, cy, radius)
+				:Rotation(-90)
+				:Outline(thickness)
+				:StartAngle(0)
+				:EndAngle(endAngle)
+				:Color(clr)
+				:Draw()
+
+			dx.Circle(cx, cy, radius)
+				:Rotation(-90)
+				:Outline(1)
+				:StartAngle(0)
+				:EndAngle(endAngle)
+				:Color(clr2)
+				:Draw()
+			
+			dx.Circle(cx, cy, radius - (thickness * 2) + 2)
+				:Rotation(-90)
+				:Outline(1)
+				:StartAngle(0)
+				:EndAngle(endAngle)
+				:Color(clr2)
+				:Draw()
+		end
+	end
 end
 
 function PANEL:OnMousePressed(...)
+	if self.pendingTransfer then return end
+
 	self.mouse_pressed = CurTime()
 	ix.inventory_drag_slot = self
 
@@ -192,8 +246,12 @@ function PANEL:DragMouseRelease(mcode)
 
 	dragndrop.Drop()
 	
-	if (!self.procceed) then
-		ix.Inventory:Get(self:GetInventoryID()).panel:Rebuild()
+	if !self.procceed then
+		local pnl = ix.Inventory:Get(self:GetInventoryID()).panel
+
+		if IsValid(pnl) then
+			ix.Inventory:SafeRebuildPanel(pnl)
+		end
 	end
 
 	self:MouseCapture(false)

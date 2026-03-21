@@ -91,7 +91,7 @@ if SERVER then
 				local ourSkill = character:GetSkillModified(skill)
 
 				if ourSkill < needed then
-					return false, string.format(L("craftNeedSkill"), L(skillTable.name, client), needed)
+					return false, "craftNeedSkill", L(skillTable.name, client), needed
 				end
 			end
 		end
@@ -108,7 +108,7 @@ if SERVER then
 				end
 
 				if !hasStation then
-					return false, L("craftNeedWorkstation")
+					return false, "craftNeedWorkstation"
 				end
 			else
 				local stationInfo = self.stations[recipe.station]
@@ -118,7 +118,7 @@ if SERVER then
 				end
 
 				if !hasStation then
-					return false, L("craftNeedStation", L(stationInfo.name))
+					return false, "craftNeedStation", L(stationInfo.name)
 				end
 			end
 		end
@@ -136,7 +136,7 @@ if SERVER then
 		end
 
 		if !hasTools then
-			return false, L("craftNeedTools")
+			return false, "craftNeedTools"
 		end
 
 		if recipe.isBreakdown then
@@ -213,7 +213,7 @@ if SERVER then
 		end
 		
 		if !hasItems then
-			return false, L("craftNeedItems")
+			return false, "craftNeedItems"
 		end
 
 		return true
@@ -242,18 +242,21 @@ if SERVER then
 
 		local inventory = client:GetInventory("main")
 
-		local resync = {}
+		local deltaRemoved = {}
+		local deltaAdded = {}
 
 		if recipe.isBreakdown then
 			local hasItem
 
 			for k, v in ipairs(inventory:GetItems()) do
 				if v.uniqueID == recipe.requirements then
-					local inv = v.inventory_id
+					local inv_id = v.inventory_id
+					local old_x, old_y, old_id = v.x, v.y, v.id
+					local old_w, old_h = inventory:GetItemSize(v)
 					hasItem = true
 					v:Remove(nil, true)
 
-					resync[inv] = true
+					table.insert(deltaRemoved, {inv_id = inv_id, item_id = old_id, x = old_x, y = old_y, w = old_w, h = old_h})
 					break
 				end
 			end
@@ -261,11 +264,13 @@ if SERVER then
 			if IsValid(client.ixStation) and !hasItem then
 				for k, v in ipairs(client.ixStation.inventory:GetItems()) do
 					if v.uniqueID == recipe.requirements then
-						local inv = v.inventory_id
+						local inv_id = v.inventory_id
+						local old_x, old_y, old_id = v.x, v.y, v.id
+						local old_w, old_h = client.ixStation.inventory:GetItemSize(v)
 						hasItem = true
 						v:Remove(nil, true)
 
-						resync[inv] = true
+						table.insert(deltaRemoved, {inv_id = inv_id, item_id = old_id, x = old_x, y = old_y, w = old_w, h = old_h})
 						break
 					end
 				end
@@ -313,9 +318,11 @@ if SERVER then
 						if (countRemoved + 1) > amount then continue end
 
 						countRemoved = countRemoved + 1
-						local inv = v.inventory_id
+						local inv_id = v.inventory_id
+						local old_x, old_y, old_id = v.x, v.y, v.id
+						local old_w, old_h = inventory:GetItemSize(v)
 						v:Remove(nil, true)
-						resync[inv] = true
+						table.insert(deltaRemoved, {inv_id = inv_id, item_id = old_id, x = old_x, y = old_y, w = old_w, h = old_h})
 					end
 				end
 
@@ -329,9 +336,11 @@ if SERVER then
 							if (countRemoved + 1) > amount then continue end
 
 							countRemoved = countRemoved + 1
-							local inv = v.inventory_id
+							local inv_id = v.inventory_id
+							local old_x, old_y, old_id = v.x, v.y, v.id
+							local old_w, old_h = client.ixStation.inventory:GetItemSize(v)
 							v:Remove(nil, true)
-							resync[inv] = true
+							table.insert(deltaRemoved, {inv_id = inv_id, item_id = old_id, x = old_x, y = old_y, w = old_w, h = old_h})
 						end
 					end
 				end
@@ -427,7 +436,7 @@ if SERVER then
 
 							inventory:AddItem(item, x, y)
 
-							resync[inventory.id] = true
+							table.insert(deltaAdded, {inv_id = inventory.id, item_id = item.id, x = item.x, y = item.y})
 						else
 							ix.Item:Spawn(client, nil, item)
 						end
@@ -456,7 +465,7 @@ if SERVER then
 
 						inventory:AddItem(item, x, y)
 
-						resync[inventory.id] = true
+						table.insert(deltaAdded, {inv_id = inventory.id, item_id = item.id, x = item.x, y = item.y})
 					else
 						ix.Item:Spawn(client, nil, item)
 					end
@@ -464,11 +473,19 @@ if SERVER then
 			end
 		end
 
-		for k, v in pairs(resync) do
-			local inventory = ix.Inventory.stored[k]
+		for _, delta in ipairs(deltaRemoved) do
+			local inv = ix.Inventory.stored[delta.inv_id]
 
-			if inventory then
-				inventory:Sync()
+			if inv then
+				inv:SendDeltaRemove(delta.item_id, delta.x, delta.y, delta.w, delta.h)
+			end
+		end
+
+		for _, delta in ipairs(deltaAdded) do
+			local inv = ix.Inventory.stored[delta.inv_id]
+
+			if inv then
+				inv:SendDeltaAdd(delta.item_id)
 			end
 		end
 
@@ -484,10 +501,11 @@ if SERVER then
 		local recipeTable = self.recipes[uniqueID]
 
 		if recipeTable then
-			local bCanCraft, reason = self:AttemptCraft(recipeTable, client)
+			local result = { self:AttemptCraft(recipeTable, client) }
+			local bCanCraft, reason = result[1], result[2]
 
 			if !bCanCraft then
-				client:Notify(reason)
+				client:NotifyLocalized(reason, unpack(result, 3))
 				return false
 			end
 
