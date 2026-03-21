@@ -40,7 +40,7 @@ if CLIENT then
 	end
 
 	function ENT:GetName()
-		return self:GetNPCName() or ""
+		return L(self:GetNPCName()) or ""
 	end
 
 	function ENT:OnPopulateEntityInfo(container)
