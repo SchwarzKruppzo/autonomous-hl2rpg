@@ -1,5 +1,6 @@
 local Inventory = class 'Inventory'
 
+
 -- Initializes the new inventory class
 -- and loads it to the server cache.
 -- ```
@@ -388,7 +389,6 @@ end
 if SERVER then
 	util.AddNetworkString('ixInvSync')
 	util.AddNetworkString('inventory.move')
-	util.AddNetworkString('inventory.move.ack')
 	util.AddNetworkString('inventory.move.reject')
 	util.AddNetworkString('inventory.move.delayed')
 	util.AddNetworkString('inventory.move.delayed.complete')
@@ -397,48 +397,6 @@ if SERVER then
 	util.AddNetworkString('inventory.delta.added')
 	util.AddNetworkString('inventory.delta.removed')
 	util.AddNetworkString('inventory.delta.transferred')
-
-	ix.inventory = ix.inventory or {}
-	ix.inventory.pendingTransfers = {}
-	ix.inventory.nextTransferId = 0
-
-	local TRANSFER_DELAY = 2.5
-
-	function ix.inventory.CancelTransfer(transferId)
-		local pending = ix.inventory.pendingTransfers[transferId]
-
-		if !pending then return end
-
-		timer.Remove('ixPendingTransfer_' .. transferId)
-
-		local targetInv = ix.Inventory:Get(pending.to_id)
-
-		if targetInv then
-			targetInv:UnreserveSlots(transferId)
-		end
-
-		for _, instanceId in ipairs(pending.items) do
-			if ix.inventory.pendingTransfers['item_' .. instanceId] == transferId then
-				ix.inventory.pendingTransfers['item_' .. instanceId] = nil
-			end
-		end
-
-		if IsValid(pending.client) then
-			net.Start('inventory.move.delayed.cancel')
-				net.WriteUInt(transferId, 32)
-			net.Send(pending.client)
-		end
-
-		ix.inventory.pendingTransfers[transferId] = nil
-	end
-
-	function ix.inventory.CancelPlayerTransfers(client)
-		for transferId, pending in pairs(ix.inventory.pendingTransfers) do
-			if isnumber(transferId) and istable(pending) and pending.client == client then
-				ix.inventory.CancelTransfer(transferId)
-			end
-		end
-	end
 
 	function Inventory:ReserveSlots(x, y, w, h, transferId)
 		self.reservedSlots = self.reservedSlots or {}
@@ -808,11 +766,61 @@ if SERVER then
 			return true
 		end
 
+		for _, iid in ipairs(instance_ids) do
+			for iy = old_y, old_y + h - 1 do
+				for kx = old_x, old_x + w - 1 do
+					if self.slots[iy] and self.slots[iy][kx] then
+						table.RemoveByValue(self.slots[iy][kx], iid)
+					end
+				end
+			end
+		end
+
+		local moved = {}
+
 		for k, v in ipairs(instance_ids) do
+			local move_item = ix.Item.instances[v]
+			local saved = move_item and {id = v, old_x = move_item.x, old_y = move_item.y, old_rotated = move_item.rotated}
+
 			local success, error = self:MoveItem(v, x, y, was_rotated)
 
 			if !success then
+				for i = #moved, 1, -1 do
+					local m = moved[i]
+					local ri = ix.Item.instances[m.id]
+
+					if ri then
+						local cw, ch = self:GetItemSize(ri)
+
+						for iy = ri.y, ri.y + ch - 1 do
+							for kx = ri.x, ri.x + cw - 1 do
+								if self.slots[iy] and self.slots[iy][kx] then
+									table.RemoveByValue(self.slots[iy][kx], m.id)
+								end
+							end
+						end
+
+						ri.x = m.old_x
+						ri.y = m.old_y
+						ri.rotated = m.old_rotated
+					end
+				end
+
+				for _, iid in ipairs(instance_ids) do
+					for iy = old_y, old_y + h - 1 do
+						for kx = old_x, old_x + w - 1 do
+							if self.slots[iy] and self.slots[iy][kx] then
+								table.insert(self.slots[iy][kx], iid)
+							end
+						end
+					end
+				end
+
 				return success, error
+			end
+
+			if saved then
+				table.insert(moved, saved)
 			end
 		end
 
@@ -820,11 +828,61 @@ if SERVER then
 	end
 
 	function Inventory:TransferStack(instance_ids, inventory, x, y, was_rotated)
+		local moved = {}
+
 		for k, v in ipairs(instance_ids) do
+			local move_item = ix.Item.instances[v]
+			local saved = move_item and {
+				id = v,
+				old_inv = self,
+				old_x = move_item.x,
+				old_y = move_item.y,
+				old_rotated = move_item.rotated,
+				old_inv_id = move_item.inventory_id,
+				old_inv_type = move_item.inventory_type
+			}
+
 			local success, error_text = self:Transfer(v, inventory, x, y, was_rotated)
 
 			if !success then
+				for i = #moved, 1, -1 do
+					local m = moved[i]
+					local ri = ix.Item.instances[m.id]
+
+					if ri then
+						local cw, ch = inventory:GetItemSize(ri)
+
+						for iy = ri.y, ri.y + ch - 1 do
+							for kx = ri.x, ri.x + cw - 1 do
+								if inventory.slots[iy] and inventory.slots[iy][kx] then
+									table.RemoveByValue(inventory.slots[iy][kx], m.id)
+								end
+							end
+						end
+
+						ri.x = m.old_x
+						ri.y = m.old_y
+						ri.rotated = m.old_rotated
+						ri.inventory_id = m.old_inv_id
+						ri.inventory_type = m.old_inv_type
+
+						local rw, rh = self:GetItemSize(ri)
+
+						for iy = m.old_y, m.old_y + rh - 1 do
+							for kx = m.old_x, m.old_x + rw - 1 do
+								if self.slots[iy] and self.slots[iy][kx] then
+									table.insert(self.slots[iy][kx], m.id)
+								end
+							end
+						end
+					end
+				end
+
 				return success, error_text
+			end
+
+			if saved then
+				table.insert(moved, saved)
 			end
 		end
 
@@ -961,7 +1019,20 @@ if SERVER then
 		end
 
 		self:Rebuild()
-		self:Sync()
+
+		if !self._syncCoalesceTimer then
+			self._syncCoalesceTimer = true
+			local invId = self.id
+
+			timer.Simple(0, function()
+				local inv = ix.Inventory:Get(invId)
+
+				if !inv then return end
+
+				inv._syncCoalesceTimer = nil
+				inv:Sync()
+			end)
+		end
 	end
 
 	function Inventory:SetDisabled(disabled)
@@ -970,38 +1041,44 @@ if SERVER then
 		self:Sync()
 	end
 
-	function Inventory:SendDeltaMove(instance_id, old_x, old_y, new_x, new_y, rotated, except)
-		local item = ix.Item.instances[instance_id]
+	local function FilterReceivers(receivers, except)
+		local filtered = {}
 
-		if !item then return end
-
-		local w, h = self:GetItemSize(item)
-
-		for k, v in ipairs(self:GetReceivers()) do
-			if !IsValid(v) or v == except then continue end
-
-			item:Sync(v)
-
-			net.Start('inventory.delta.moved')
-				net.WriteUInt(self.id, 32)
-				net.WriteUInt(instance_id, 32)
-				net.WriteUInt(old_x, 8)
-				net.WriteUInt(old_y, 8)
-				net.WriteUInt(new_x, 8)
-				net.WriteUInt(new_y, 8)
-				net.WriteUInt(w, 8)
-				net.WriteUInt(h, 8)
-				net.WriteBool(rotated or false)
-			net.Send(v)
+		for k, v in ipairs(receivers) do
+			if IsValid(v) and v != except then
+				table.insert(filtered, v)
+			end
 		end
+
+		return filtered
 	end
 
-	function Inventory:SendDeltaAdd(instance_id, x, y, except)
+	function Inventory:SendDeltaMove(instance_id, old_x, old_y, old_w, old_h, except)
 		local item = ix.Item.instances[instance_id]
 
 		if !item then return end
 
-		local w, h = self:GetItemSize(item)
+		local targets = FilterReceivers(self:GetReceivers(), except)
+
+		if #targets == 0 then return end
+
+		net.Start('inventory.delta.moved')
+			net.WriteUInt(self.id, 32)
+			net.WriteUInt(instance_id, 32)
+			net.WriteUInt(old_x, 8)
+			net.WriteUInt(old_y, 8)
+			net.WriteUInt(old_w, 8)
+			net.WriteUInt(old_h, 8)
+			net.WriteUInt(item.x, 8)
+			net.WriteUInt(item.y, 8)
+			net.WriteBool(item.rotated or false)
+		net.Send(targets)
+	end
+
+	function Inventory:SendDeltaAdd(instance_id, except)
+		local item = ix.Item.instances[instance_id]
+
+		if !item then return end
 
 		for k, v in ipairs(self:GetReceivers()) do
 			if !IsValid(v) or v == except then continue end
@@ -1011,43 +1088,29 @@ if SERVER then
 			net.Start('inventory.delta.added')
 				net.WriteUInt(self.id, 32)
 				net.WriteUInt(instance_id, 32)
-				net.WriteUInt(x, 8)
-				net.WriteUInt(y, 8)
-				net.WriteUInt(w, 8)
-				net.WriteUInt(h, 8)
 			net.Send(v)
 		end
 	end
 
-	function Inventory:SendDeltaRemove(instance_id, old_x, old_y, except)
-		local item = ix.Item.instances[instance_id]
-		local w, h = 1, 1
+	function Inventory:SendDeltaRemove(instance_id, old_x, old_y, old_w, old_h, except)
+		local targets = FilterReceivers(self:GetReceivers(), except)
 
-		if item then
-			w, h = self:GetItemSize(item)
-		end
+		if #targets == 0 then return end
 
-		for k, v in ipairs(self:GetReceivers()) do
-			if !IsValid(v) or v == except then continue end
-
-			net.Start('inventory.delta.removed')
-				net.WriteUInt(self.id, 32)
-				net.WriteUInt(instance_id, 32)
-				net.WriteUInt(old_x, 8)
-				net.WriteUInt(old_y, 8)
-				net.WriteUInt(w, 8)
-				net.WriteUInt(h, 8)
-			net.Send(v)
-		end
+		net.Start('inventory.delta.removed')
+			net.WriteUInt(self.id, 32)
+			net.WriteUInt(instance_id, 32)
+			net.WriteUInt(old_x, 8)
+			net.WriteUInt(old_y, 8)
+			net.WriteUInt(old_w or 1, 8)
+			net.WriteUInt(old_h or 1, 8)
+		net.Send(targets)
 	end
 
-	function Inventory:SendDeltaTransfer(instance_id, from_inv, old_x, old_y, new_x, new_y, except)
+	function Inventory:SendDeltaTransfer(instance_id, from_inv, old_x, old_y, old_w, old_h, except)
 		local item = ix.Item.instances[instance_id]
 
 		if !item then return end
-
-		local old_w, old_h = from_inv:GetItemSize(item)
-		local new_w, new_h = self:GetItemSize(item)
 
 		local targets = {}
 		local seen = {}
@@ -1066,23 +1129,20 @@ if SERVER then
 			end
 		end
 
-		for _, v in ipairs(targets) do
-			item:Sync(v)
+		if #targets == 0 then return end
 
-			net.Start('inventory.delta.transferred')
-				net.WriteUInt(from_inv.id, 32)
-				net.WriteUInt(self.id, 32)
-				net.WriteUInt(instance_id, 32)
-				net.WriteUInt(old_x, 8)
-				net.WriteUInt(old_y, 8)
-				net.WriteUInt(old_w, 8)
-				net.WriteUInt(old_h, 8)
-				net.WriteUInt(new_x, 8)
-				net.WriteUInt(new_y, 8)
-				net.WriteUInt(new_w, 8)
-				net.WriteUInt(new_h, 8)
-			net.Send(v)
-		end
+		net.Start('inventory.delta.transferred')
+			net.WriteUInt(from_inv.id, 32)
+			net.WriteUInt(self.id, 32)
+			net.WriteUInt(instance_id, 32)
+			net.WriteUInt(old_x, 8)
+			net.WriteUInt(old_y, 8)
+			net.WriteUInt(old_w, 8)
+			net.WriteUInt(old_h, 8)
+			net.WriteUInt(item.x, 8)
+			net.WriteUInt(item.y, 8)
+			net.WriteBool(item.rotated or false)
+		net.Send(targets)
 	end
 
 	local BATCH_MAX_SIZE = 60000
@@ -1138,21 +1198,21 @@ if SERVER then
 		end
 	end
 
-	function ix.inventory.ValidateCrossTransfer(old_inventory, inventory, instance_id, target_x, target_y, was_rotated)
+	function Inventory:ValidateCrossTransfer(inventory, instance_id, target_x, target_y, was_rotated)
 		local item = ix.Item.instances[instance_id]
 
 		if !item then
 			return false, 'invalidItem'
 		end
 
-		local success, err = hook.Run('CanTransferItem', item, inventory, target_x, target_y, old_inventory)
+		local success, err = hook.Run('CanTransferItem', item, inventory, target_x, target_y, self)
 
 		if success == false then
 			return false, err
 		end
 
 		if item.CanTransfer then
-			local canTransfer, transferReason = item:CanTransfer(old_inventory, inventory, target_x, target_y)
+			local canTransfer, transferReason = item:CanTransfer(self, inventory, target_x, target_y)
 
 			if canTransfer == false then
 				return false, transferReason or 'notAllowed'
@@ -1202,6 +1262,7 @@ if SERVER then
 		return true, nil, x, y, final_w, final_h, need_rotation
 	end
 
+	local Inventory = ix.Inventory
 	net.Receive('inventory.move', function(_, client)
 		local from_id = net.ReadUInt(32)
 		local to_id = net.ReadUInt(32)
@@ -1212,8 +1273,8 @@ if SERVER then
 		local target_x = net.ReadUInt(8)
 		local target_y = net.ReadUInt(8)
 		local was_rotated = net.ReadBool()
-		local old_inventory = ix.Inventory:Get(from_id)
-		local inventory = ix.Inventory:Get(to_id)
+		local old_inventory = Inventory:Get(from_id)
+		local inventory = Inventory:Get(to_id)
 
 		if !old_inventory or !inventory then
 			net.Start('inventory.move.reject')
@@ -1273,7 +1334,7 @@ if SERVER then
 		end
 
 		for _, instanceId in ipairs(items) do
-			if ix.inventory.pendingTransfers['item_' .. instanceId] then
+			if Inventory.pendingTransfers['item_' .. instanceId] then
 				net.Start('inventory.move.reject')
 					net.WriteString('itemLocked')
 				net.Send(client)
@@ -1291,6 +1352,7 @@ if SERVER then
 		if to_id == from_id then
 			local move_item = ix.Item.instances[items[1]]
 			local old_move_x, old_move_y = move_item and move_item.x, move_item and move_item.y
+			local old_move_w, old_move_h = move_item and inventory:GetItemSize(move_item)
 
 			local success, error = inventory:MoveStack(items, target_x, target_y, was_rotated)
 
@@ -1301,16 +1363,15 @@ if SERVER then
 
 				inventory:SyncTo(client)
 			else
-				net.Start('inventory.move.ack')
-				net.Send(client)
-
-				if move_item then
-					inventory:SendDeltaMove(items[1], old_move_x, old_move_y, move_item.x, move_item.y, move_item.rotated, client)
+				for _, instanceId in ipairs(items) do
+					if ix.Item.instances[instanceId] then
+						inventory:SendDeltaMove(instanceId, old_move_x, old_move_y, old_move_w, old_move_h, client)
+					end
 				end
 			end
 		else
 			local success, err, final_x, final_y, final_w, final_h, need_rotation =
-				ix.inventory.ValidateCrossTransfer(old_inventory, inventory, items[1], target_x, target_y, was_rotated)
+				old_inventory:ValidateCrossTransfer(inventory, items[1], target_x, target_y, was_rotated)
 
 			if !success then
 				net.Start('inventory.move.reject')
@@ -1323,35 +1384,35 @@ if SERVER then
 				return
 			end
 
-			ix.inventory.nextTransferId = ix.inventory.nextTransferId + 1
-			local transferId = ix.inventory.nextTransferId
+			Inventory.nextTransferId = Inventory.nextTransferId + 1
+			local transferId = Inventory.nextTransferId
 
 			inventory:ReserveSlots(final_x, final_y, final_w, final_h, transferId)
 
 			for _, instanceId in ipairs(items) do
-				ix.inventory.pendingTransfers['item_' .. instanceId] = transferId
+				Inventory.pendingTransfers['item_' .. instanceId] = transferId
 			end
 
 			local source_item = ix.Item.instances[items[1]]
 			local source_w, source_h = old_inventory:GetItemSize(source_item)
+			local transferDelay = Inventory:ComputeTransferDelay(client, items, source_item)
 
-			if source_item.rotated then
-				source_w, source_h = source_h, source_w
-			end
-
-			ix.inventory.pendingTransfers[transferId] = {
+			Inventory.pendingTransfers[transferId] = {
 				client = client,
 				from_id = from_id,
 				to_id = to_id,
 				items = items,
 				source_x = x,
 				source_y = y,
+				source_w = source_w,
+				source_h = source_h,
 				target_x = final_x,
 				target_y = final_y,
 				was_rotated = was_rotated,
 				need_rotation = need_rotation,
 				final_w = final_w,
 				final_h = final_h,
+				delay = transferDelay,
 			}
 
 			net.Start('inventory.move.delayed')
@@ -1367,25 +1428,26 @@ if SERVER then
 				net.WriteUInt(final_w, 8)
 				net.WriteUInt(final_h, 8)
 				net.WriteUInt(items[1], 32)
+				net.WriteFloat(transferDelay)
 			net.Send(client)
 
-			timer.Create('ixPendingTransfer_' .. transferId, TRANSFER_DELAY, 1, function()
-				local pending = ix.inventory.pendingTransfers[transferId]
+			timer.Create('ixPendingTransfer_' .. transferId, transferDelay, 1, function()
+				local pending = Inventory.pendingTransfers[transferId]
 
 				if !pending then return end
 
-				local targetInv = ix.Inventory:Get(pending.to_id)
-				local sourceInv = ix.Inventory:Get(pending.from_id)
+				local targetInv = Inventory:Get(pending.to_id)
+				local sourceInv = Inventory:Get(pending.from_id)
 
 				if targetInv then
 					targetInv:UnreserveSlots(transferId)
 				end
 
 				for _, instanceId in ipairs(pending.items) do
-					ix.inventory.pendingTransfers['item_' .. instanceId] = nil
+					Inventory.pendingTransfers['item_' .. instanceId] = nil
 				end
 
-				ix.inventory.pendingTransfers[transferId] = nil
+				Inventory.pendingTransfers[transferId] = nil
 
 				if !sourceInv or !targetInv then return end
 
@@ -1407,27 +1469,22 @@ if SERVER then
 						targetInv:SyncTo(pending.client)
 					end
 				else
-					local transferred_item = ix.Item.instances[pending.items[1]]
-
 					if IsValid(pending.client) then
 						net.Start('inventory.move.delayed.complete')
 							net.WriteUInt(transferId, 32)
 						net.Send(pending.client)
-
-						sourceInv:SyncTo(pending.client)
-						targetInv:SyncTo(pending.client)
 					end
 
-					if transferred_item then
-						targetInv:SendDeltaTransfer(pending.items[1], sourceInv, pending.source_x, pending.source_y, transferred_item.x, transferred_item.y, pending.client)
+					for _, instanceId in ipairs(pending.items) do
+						local transferred_item = ix.Item.instances[instanceId]
+
+						if transferred_item then
+							targetInv:SendDeltaTransfer(instanceId, sourceInv, pending.source_x, pending.source_y, pending.source_w, pending.source_h)
+						end
 					end
 				end
 			end)
 		end
-	end)
-
-	hook.Add('PlayerDisconnected', 'ix.inventory.CancelPending', function(client)
-		ix.inventory.CancelPlayerTransfers(client)
 	end)
 else
 	function Inventory:MoveStack(instance_ids, x, y, was_rotated)
@@ -1441,11 +1498,61 @@ else
 			return true
 		end
 
+		for _, iid in ipairs(instance_ids) do
+			for iy = old_y, old_y + h - 1 do
+				for kx = old_x, old_x + w - 1 do
+					if self.slots[iy] and self.slots[iy][kx] then
+						table.RemoveByValue(self.slots[iy][kx], iid)
+					end
+				end
+			end
+		end
+
+		local moved = {}
+
 		for k, v in ipairs(instance_ids) do
+			local move_item = ix.Item.instances[v]
+			local saved = move_item and {id = v, old_x = move_item.x, old_y = move_item.y, old_rotated = move_item.rotated}
+
 			local success = self:MoveItem(v, x, y, was_rotated)
 
 			if !success then
+				for i = #moved, 1, -1 do
+					local m = moved[i]
+					local ri = ix.Item.instances[m.id]
+
+					if ri then
+						local cw, ch = self:GetItemSize(ri)
+
+						for iy = ri.y, ri.y + ch - 1 do
+							for kx = ri.x, ri.x + cw - 1 do
+								if self.slots[iy] and self.slots[iy][kx] then
+									table.RemoveByValue(self.slots[iy][kx], m.id)
+								end
+							end
+						end
+
+						ri.x = m.old_x
+						ri.y = m.old_y
+						ri.rotated = m.old_rotated
+					end
+				end
+
+				for _, iid in ipairs(instance_ids) do
+					for iy = old_y, old_y + h - 1 do
+						for kx = old_x, old_x + w - 1 do
+							if self.slots[iy] and self.slots[iy][kx] then
+								table.insert(self.slots[iy][kx], iid)
+							end
+						end
+					end
+				end
+
 				return success
+			end
+
+			if saved then
+				table.insert(moved, saved)
 			end
 		end
 
@@ -1631,53 +1738,7 @@ else
 		["backpack"] = true,
 	}
 
-	ix.inventory = ix.inventory or {}
-	ix.inventory.clientPendingTransfers = {}
-
-	function ix.inventory.ApplyPendingFlags(transferId)
-		local pending = ix.inventory.clientPendingTransfers[transferId]
-
-		if !pending then return end
-
-		local srcInv = ix.Inventory:Get(pending.fromInvId)
-
-		if srcInv and IsValid(srcInv.panel) then
-			local sp = srcInv.panel.slot_panels
-			local slotPanel = sp and sp[pending.sourceY] and sp[pending.sourceY][pending.sourceX]
-
-			if IsValid(slotPanel) and !istable(slotPanel) then
-				slotPanel.pendingTransfer = transferId
-			end
-		end
-
-	end
-
-	function ix.inventory.RestoreAllPendingFlags()
-		for transferId, _ in pairs(ix.inventory.clientPendingTransfers) do
-			ix.inventory.ApplyPendingFlags(transferId)
-		end
-	end
-
-	function ix.inventory.ClearPendingFlags(transferId)
-		local pending = ix.inventory.clientPendingTransfers[transferId]
-
-		if !pending then return end
-
-		local srcInv = ix.Inventory:Get(pending.fromInvId)
-
-		if srcInv and IsValid(srcInv.panel) then
-			local sp = srcInv.panel.slot_panels
-			local slotPanel = sp and sp[pending.sourceY] and sp[pending.sourceY][pending.sourceX]
-
-			if IsValid(slotPanel) and !istable(slotPanel) then
-				slotPanel.pendingTransfer = nil
-			end
-		end
-
-	end
-
-	net.Receive('inventory.move.ack', function() end)
-
+	local Inventory = ix.Inventory
 	net.Receive('inventory.move.reject', function()
 		local error = net.ReadString()
 
@@ -1699,8 +1760,9 @@ else
 		local targetW = net.ReadUInt(8)
 		local targetH = net.ReadUInt(8)
 		local instanceId = net.ReadUInt(32)
+		local duration = net.ReadFloat()
 
-		ix.inventory.clientPendingTransfers[transferId] = {
+		Inventory.pendingTransfers[transferId] = {
 			fromInvId = fromInvId,
 			sourceX = sourceX,
 			sourceY = sourceY,
@@ -1712,23 +1774,26 @@ else
 			targetW = targetW,
 			targetH = targetH,
 			instanceId = instanceId,
+			startTime = SysTime(),
+			duration = duration,
 		}
 
-		ix.inventory.ApplyPendingFlags(transferId)
+		Inventory:SetPendingFlags(transferId, true)
+		Inventory:ApplyReservedTargetHighlight(transferId, toInvId, targetX, targetY, targetW, targetH)
 	end)
 
 	net.Receive('inventory.move.delayed.complete', function()
 		local transferId = net.ReadUInt(32)
 
-		ix.inventory.ClearPendingFlags(transferId)
-		ix.inventory.clientPendingTransfers[transferId] = nil
+		Inventory:SetPendingFlags(transferId)
+		Inventory.pendingTransfers[transferId] = nil
 	end)
 
 	net.Receive('inventory.move.delayed.cancel', function()
 		local transferId = net.ReadUInt(32)
 
-		ix.inventory.ClearPendingFlags(transferId)
-		ix.inventory.clientPendingTransfers[transferId] = nil
+		Inventory:SetPendingFlags(transferId)
+		Inventory.pendingTransfers[transferId] = nil
 	end)
 
 	net.Receive('ixInvSync', function(len)
@@ -1828,7 +1893,7 @@ else
 		end
 
 		if IsValid(inventory.panel) then
-			inventory.panel:Rebuild()
+			Inventory:DebouncedRebuild(inventory.panel)
 		end
 	end)
 
@@ -1837,18 +1902,16 @@ else
 		local instance_id = net.ReadUInt(32)
 		local old_x = net.ReadUInt(8)
 		local old_y = net.ReadUInt(8)
+		local old_w = net.ReadUInt(8)
+		local old_h = net.ReadUInt(8)
 		local new_x = net.ReadUInt(8)
 		local new_y = net.ReadUInt(8)
-		local w = net.ReadUInt(8)
-		local h = net.ReadUInt(8)
 		local rotated = net.ReadBool()
 
 		local inventory = ix.Inventory:Get(inv_id)
 		local item = ix.Item.instances[instance_id]
 
 		if !inventory or !item then return end
-
-		local old_w, old_h = inventory:GetItemSize(item)
 
 		for i = old_y, old_y + old_h - 1 do
 			for k = old_x, old_x + old_w - 1 do
@@ -1862,8 +1925,10 @@ else
 		item.y = new_y
 		item.rotated = rotated
 
-		for i = new_y, new_y + h - 1 do
-			for k = new_x, new_x + w - 1 do
+		local new_w, new_h = inventory:GetItemSize(item)
+
+		for i = new_y, new_y + new_h - 1 do
+			for k = new_x, new_x + new_w - 1 do
 				if inventory.slots[i] and inventory.slots[i][k] then
 					table.insert(inventory.slots[i][k], instance_id)
 				end
@@ -1871,30 +1936,31 @@ else
 		end
 
 		if IsValid(inventory.panel) then
-			inventory.panel:Rebuild()
+			local ux = math.min(old_x, new_x)
+			local uy = math.min(old_y, new_y)
+			local uw = math.max(old_x + old_w - 1, new_x + new_w - 1) - ux + 1
+			local uh = math.max(old_y + old_h - 1, new_y + new_h - 1) - uy + 1
+
+			inventory.panel:RefreshGridRect(ux, uy, uw, uh)
 		end
 	end)
 
 	net.Receive('inventory.delta.added', function()
 		local inv_id = net.ReadUInt(32)
 		local instance_id = net.ReadUInt(32)
-		local x = net.ReadUInt(8)
-		local y = net.ReadUInt(8)
-		local w = net.ReadUInt(8)
-		local h = net.ReadUInt(8)
 
 		local inventory = ix.Inventory:Get(inv_id)
 		local item = ix.Item.instances[instance_id]
 
 		if !inventory or !item then return end
 
-		item.x = x
-		item.y = y
 		item.inventory_id = inv_id
 		item.inventory_type = inventory.type
 
-		for i = y, y + h - 1 do
-			for k = x, x + w - 1 do
+		local w, h = inventory:GetItemSize(item)
+
+		for i = item.y, item.y + h - 1 do
+			for k = item.x, item.x + w - 1 do
 				if inventory.slots[i] and inventory.slots[i][k] then
 					table.insert(inventory.slots[i][k], instance_id)
 				end
@@ -1902,7 +1968,7 @@ else
 		end
 
 		if IsValid(inventory.panel) then
-			inventory.panel:Rebuild()
+			inventory.panel:RefreshGridRect(item.x, item.y, w, h)
 		end
 	end)
 
@@ -1911,15 +1977,15 @@ else
 		local instance_id = net.ReadUInt(32)
 		local old_x = net.ReadUInt(8)
 		local old_y = net.ReadUInt(8)
-		local w = net.ReadUInt(8)
-		local h = net.ReadUInt(8)
+		local old_w = net.ReadUInt(8)
+		local old_h = net.ReadUInt(8)
 
 		local inventory = ix.Inventory:Get(inv_id)
 
 		if !inventory then return end
 
-		for i = old_y, old_y + h - 1 do
-			for k = old_x, old_x + w - 1 do
+		for i = old_y, old_y + old_h - 1 do
+			for k = old_x, old_x + old_w - 1 do
 				if inventory.slots[i] and inventory.slots[i][k] then
 					table.RemoveByValue(inventory.slots[i][k], instance_id)
 				end
@@ -1927,7 +1993,7 @@ else
 		end
 
 		if IsValid(inventory.panel) then
-			inventory.panel:Rebuild()
+			inventory.panel:RefreshGridRect(old_x, old_y, old_w, old_h)
 		end
 	end)
 
@@ -1941,8 +2007,7 @@ else
 		local old_h = net.ReadUInt(8)
 		local new_x = net.ReadUInt(8)
 		local new_y = net.ReadUInt(8)
-		local new_w = net.ReadUInt(8)
-		local new_h = net.ReadUInt(8)
+		local rotated = net.ReadBool()
 
 		local from_inv = ix.Inventory:Get(from_inv_id)
 		local to_inv = ix.Inventory:Get(to_inv_id)
@@ -1960,16 +2025,19 @@ else
 			end
 
 			if IsValid(from_inv.panel) then
-				from_inv.panel:Rebuild()
+				from_inv.panel:RefreshGridRect(old_x, old_y, old_w, old_h)
 			end
 		end
 
 		item.x = new_x
 		item.y = new_y
+		item.rotated = rotated
 		item.inventory_id = to_inv_id
 
 		if to_inv then
 			item.inventory_type = to_inv.type
+
+			local new_w, new_h = to_inv:GetItemSize(item)
 
 			for i = new_y, new_y + new_h - 1 do
 				for k = new_x, new_x + new_w - 1 do
@@ -1980,7 +2048,7 @@ else
 			end
 
 			if IsValid(to_inv.panel) then
-				to_inv.panel:Rebuild()
+				to_inv.panel:RefreshGridRect(new_x, new_y, new_w, new_h)
 			end
 		end
 	end)

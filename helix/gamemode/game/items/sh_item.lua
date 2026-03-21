@@ -1066,7 +1066,7 @@ else
 
 					for _, sub in pairs(options) do
 						subMenu:AddOption(L(sub.name or "subOption"), function()
-							itemTable.player = LocalPlayer()
+							targetItem.player = LocalPlayer()
 							item.player = LocalPlayer()
 								local send = true
 
@@ -1081,7 +1081,7 @@ else
 								if send != false then
 									InventoryCombineAction(item, targetItem, v.index, items, sub.data)
 								end
-							itemTable.player = nil
+							targetItem.player = nil
 							item.player = nil
 						end)
 					end

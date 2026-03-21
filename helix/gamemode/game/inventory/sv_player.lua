@@ -82,7 +82,7 @@ do
 		end
 
 		if success then
-			inventory:SendDeltaAdd(item.id, item.x, item.y)
+			inventory:SendDeltaAdd(item.id)
 		else
 			inventory:Sync()
 		end
@@ -110,12 +110,13 @@ do
 			local inventory = self:GetInventory(inv_type)
 			local found_item = inventory:FindItem(id)
 			local old_x, old_y = found_item and found_item.x, found_item and found_item.y
+			local old_w, old_h = found_item and inventory:GetItemSize(found_item)
 			local old_id = found_item and found_item.id
 
 			local success, error = inventory:TakeItem(id)
 
 			if success and old_id then
-				inventory:SendDeltaRemove(old_id, old_x, old_y)
+				inventory:SendDeltaRemove(old_id, old_x, old_y, old_w, old_h)
 			else
 				inventory:Sync()
 			end
@@ -130,12 +131,13 @@ do
 
 					if inv then
 						local old_x, old_y = item.x, item.y
+						local old_w, old_h = inv:GetItemSize(item)
 						local old_id = item.id
 
 						local success, error = inv:TakeItem(id)
 
 						if success then
-							inv:SendDeltaRemove(old_id, old_x, old_y)
+							inv:SendDeltaRemove(old_id, old_x, old_y, old_w, old_h)
 						else
 							inv:Sync()
 						end
@@ -169,10 +171,11 @@ do
 
 						if inv then
 							local old_x, old_y = item.x, item.y
+							local old_w, old_h = inv:GetItemSize(item)
 							local old_id = item.id
 
 							inv:TakeItem(id)
-							inv:SendDeltaRemove(old_id, old_x, old_y)
+							inv:SendDeltaRemove(old_id, old_x, old_y, old_w, old_h)
 
 							amount = amount - 1
 						end
@@ -190,10 +193,12 @@ do
 
 		if inv_type then
 			local inventory = self:GetInventory(inv_type)
+			local old_w, old_h = target_item and inventory:GetItemSize(target_item)
+
 			local success, error = inventory:TakeItemByID(instance_id)
 
 			if success then
-				inventory:SendDeltaRemove(instance_id, old_x, old_y)
+				inventory:SendDeltaRemove(instance_id, old_x, old_y, old_w, old_h)
 			else
 				inventory:Sync()
 			end
@@ -204,10 +209,11 @@ do
 
 			if has then
 				local inventory = self:GetInventory(item.inventory_type)
+				local old_w, old_h = inventory:GetItemSize(item)
 				local success, error = inventory:TakeItemTable(item)
 
 				if success then
-					inventory:SendDeltaRemove(instance_id, old_x, old_y)
+					inventory:SendDeltaRemove(instance_id, old_x, old_y, old_w, old_h)
 				else
 					inventory:Sync()
 				end
