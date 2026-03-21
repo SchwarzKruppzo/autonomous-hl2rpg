@@ -252,10 +252,11 @@ if SERVER then
 				if v.uniqueID == recipe.requirements then
 					local inv_id = v.inventory_id
 					local old_x, old_y, old_id = v.x, v.y, v.id
+					local old_w, old_h = inventory:GetItemSize(v)
 					hasItem = true
 					v:Remove(nil, true)
 
-					table.insert(deltaRemoved, {inv_id = inv_id, item_id = old_id, x = old_x, y = old_y})
+					table.insert(deltaRemoved, {inv_id = inv_id, item_id = old_id, x = old_x, y = old_y, w = old_w, h = old_h})
 					break
 				end
 			end
@@ -265,10 +266,11 @@ if SERVER then
 					if v.uniqueID == recipe.requirements then
 						local inv_id = v.inventory_id
 						local old_x, old_y, old_id = v.x, v.y, v.id
+						local old_w, old_h = client.ixStation.inventory:GetItemSize(v)
 						hasItem = true
 						v:Remove(nil, true)
 
-						table.insert(deltaRemoved, {inv_id = inv_id, item_id = old_id, x = old_x, y = old_y})
+						table.insert(deltaRemoved, {inv_id = inv_id, item_id = old_id, x = old_x, y = old_y, w = old_w, h = old_h})
 						break
 					end
 				end
@@ -318,8 +320,9 @@ if SERVER then
 						countRemoved = countRemoved + 1
 						local inv_id = v.inventory_id
 						local old_x, old_y, old_id = v.x, v.y, v.id
+						local old_w, old_h = inventory:GetItemSize(v)
 						v:Remove(nil, true)
-						table.insert(deltaRemoved, {inv_id = inv_id, item_id = old_id, x = old_x, y = old_y})
+						table.insert(deltaRemoved, {inv_id = inv_id, item_id = old_id, x = old_x, y = old_y, w = old_w, h = old_h})
 					end
 				end
 
@@ -335,8 +338,9 @@ if SERVER then
 							countRemoved = countRemoved + 1
 							local inv_id = v.inventory_id
 							local old_x, old_y, old_id = v.x, v.y, v.id
+							local old_w, old_h = client.ixStation.inventory:GetItemSize(v)
 							v:Remove(nil, true)
-							table.insert(deltaRemoved, {inv_id = inv_id, item_id = old_id, x = old_x, y = old_y})
+							table.insert(deltaRemoved, {inv_id = inv_id, item_id = old_id, x = old_x, y = old_y, w = old_w, h = old_h})
 						end
 					end
 				end
@@ -473,7 +477,7 @@ if SERVER then
 			local inv = ix.Inventory.stored[delta.inv_id]
 
 			if inv then
-				inv:SendDeltaRemove(delta.item_id, delta.x, delta.y)
+				inv:SendDeltaRemove(delta.item_id, delta.x, delta.y, delta.w, delta.h)
 			end
 		end
 
@@ -481,7 +485,7 @@ if SERVER then
 			local inv = ix.Inventory.stored[delta.inv_id]
 
 			if inv then
-				inv:SendDeltaAdd(delta.item_id, delta.x, delta.y)
+				inv:SendDeltaAdd(delta.item_id)
 			end
 		end
 
