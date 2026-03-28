@@ -69,7 +69,7 @@ ix.command.Add("BusinessInfo", {
 	OnRun = function(self, client)
 		for k, v in pairs(ix.poi) do
 			if v.log then
-				client:ChatNotify(string.format(L("businessInfoFormat"),
+				client:ChatNotifyLocalized("businessInfoFormat",
 					k,
 					v.log.owner,
 					v.log.visitors,
@@ -77,7 +77,7 @@ ix.command.Add("BusinessInfo", {
 					v.cash,
 					v.log.opened,
 					math.Round(v.time)
-				))
+				)
 			end
 		end
 	end

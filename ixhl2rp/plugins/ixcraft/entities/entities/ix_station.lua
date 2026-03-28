@@ -83,7 +83,7 @@ if SERVER then
 		end
 
 		self.inventory:AddReceiver(client)
-		self.inventory:Sync()
+		self.inventory:SyncTo(client)
 
 		local pingtime = client:Ping() * 0.001
 
@@ -104,7 +104,19 @@ if SERVER then
 	end
 
 	net.Receive("ixOpenStationCraft", function(len, client)
+		local station = client.ixStation
+
+		if IsValid(station) and station.inventory then
+			station.inventory:RemoveReceiver(client)
+		end
+
 		client.ixStation = nil
+	end)
+
+	hook.Add('PlayerDisconnected', 'ix.station.CleanupReceiver', function(client)
+		if IsValid(client.ixStation) and client.ixStation.inventory then
+			client.ixStation.inventory:RemoveReceiver(client)
+		end
 	end)
 else
 	ENT.PopulateEntityInfo = true

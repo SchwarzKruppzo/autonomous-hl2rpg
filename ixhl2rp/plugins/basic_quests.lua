@@ -184,7 +184,7 @@ else
 	QuestData["cwu_garbage"] = {
 		title = "quest.cwu_garbage.title",
 		func = function()
-			return string.format(L("quest.cwu_garbage.progress"), LocalPlayer():GetCharacter():GetData("cwuGarbage", 0))
+			return L("quest.cwu_garbage.progress", LocalPlayer():GetCharacter():GetData("cwuGarbage", 0))
 		end
 	}
 

@@ -195,6 +195,8 @@ if (SERVER) then
 		if info then
 			inventory:RemoveReceiver(client)
 
+			ix.Inventory:CancelPlayerTransfers(client)
+
 			-- update receivers for any bags this inventory might have
 			for _, v in pairs(inventory:GetItems()) do
 				if v.isBag and v:GetInventory() then
@@ -265,6 +267,12 @@ if (SERVER) then
 	-- @inventory inventory Inventory to close
 	function ix.storage.Close(inventory)
 		local receivers = inventory:GetReceivers()
+
+		for _, client in ipairs(receivers) do
+			if IsValid(client) then
+				ix.Inventory.CancelPlayerTransfers(client)
+			end
+		end
 
 		if #receivers > 0 then
 			net.Start("ixStorageExpired")

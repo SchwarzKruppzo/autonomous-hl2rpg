@@ -203,3 +203,35 @@ CharGen:AddFaceMorph("female", 3, "Firefly", 4, Vector(0.02, 0, 0.1), Vector(0.0
 CharGen:AddFaceMorph("female", 4, "Claire", 5, Vector(-0.05, 0, 0.15), Vector(-0.05, 0, -0.05))
 
 CharGen:SetModelClass("models/autonomous/base_female.mdl", "female")
+
+
+
+CharGen:AddOption("male", CharGen.Option.FaceMap, 1, "Base", "facemap/base")
+CharGen:AddOption("male", CharGen.Option.FaceMap, 2, "Gosling", "facemap/gosling")
+CharGen:AddOption("male", CharGen.Option.FaceMap, 3, "Leon", "facemap/leon")
+CharGen:AddOption("male", CharGen.Option.FaceMap, 4, "James", "facemap/james")
+CharGen:AddOption("male", CharGen.Option.FaceMap, 5, "Skywalker", "facemap/skywalker")
+
+CharGen:AddFaceMorph("male", 1, "Base", -1, Vector(0, 0, 0), Vector(0, 0, 0))
+CharGen:AddFaceMorph("male", 2, "Gosling", 0, Vector(0, 0, 0.125), Vector(0, 0, -0.125))
+CharGen:AddFaceMorph("male", 3, "Leon", 1, Vector(-0.01, 0, -0.05), Vector(0.05, 0, -0.18))
+CharGen:AddFaceMorph("male", 4, "James", 2, Vector(0.1, 0, 0), Vector(0.1, 0, -0.15))
+CharGen:AddFaceMorph("male", 5, "Skywalker", 3, Vector(0.025, 0, -0.05), Vector(0.025, 0, -0.15))
+
+CharGen:AddTextureLayer("male", CharGen.Option.HairScalp, 1, "Hair Scalp")
+CharGen:AddTextureLayer("male", CharGen.Option.Makeup, 1, "Details 1")
+
+CharGen:AddOption("male", CharGen.Option.HairScalp, 1, "Scalp Leon", "scalp/hair_leon")
+CharGen:AddOption("male", CharGen.Option.Makeup, 1, "Beard 1", "makeup/beard")
+
+do
+	local BodyCategory = {
+		Genitals = 1,
+	}
+
+	CharGen:AddBodygroupCategory("male", BodyCategory.Genitals, "Genitals")
+	CharGen:AddBodygroupOption("male", BodyCategory.Genitals, 1, "Hidden", { [5] = 0 })
+	CharGen:AddBodygroupOption("male", BodyCategory.Genitals, 2, "Visible", { [5] = 1 })
+end
+
+CharGen:SetModelClass("models/autonomous/base_male.mdl", "male")

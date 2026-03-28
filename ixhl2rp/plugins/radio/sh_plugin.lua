@@ -118,7 +118,7 @@ function PLUGIN:InitializedChatClasses()
 			hook.Run("AdjustRadioEavesdrop", data)
 
 			local typeText = L(typeTextKeys[data.typeText] or typeTextKeys[1])
-			chat.AddText(langIcon or "", class.color, ix.util.GetMaterial("cellar/chat/eaves_radiohand.png"), string.format(L(class.format),
+			chat.AddText(langIcon or "", class.color, ix.util.GetMaterial("cellar/chat/eaves_radiohand.png"), L(class.format,
 				name, typeText, L("radioVia"), langPrefix or "", text))
 
 			if (data.useSound and isstring(data.sound)) then

@@ -676,49 +676,64 @@ if SERVER then
 		self.mark_as_save = false
 	end
 		
+	function ITEM:CollectSyncData(receiver)
+		local data = {}
+
+		for k, info in pairs(self.vars) do
+			if bit.band(info.Transmit, ix.transmit.none) == ix.transmit.none then continue end
+			if bit.band(info.Transmit, ix.transmit.owner) == ix.transmit.owner then 
+				local inventory = self.inventory_id and ix.Inventory:Get(self.inventory_id)
+
+				local has
+
+				if inventory then
+					local receivers = inventory:GetReceivers()
+
+					for k, v in ipairs(receivers) do
+						if v == receiver then
+							has = true
+							break
+						end
+					end
+				end
+				
+				if !has then
+					continue
+				end
+			end
+
+			data[k] = self.data[k]
+		end
+
+		local entity = self:GetEntity()
+
+		return {
+			uniqueID = self.uniqueID,
+			id = self:GetID(),
+			entityID = IsValid(entity) and entity:EntIndex() or 0,
+			invID = self.inventory_id,
+			x = self.x,
+			y = self.y,
+			rotated = self.rotated,
+			data = data
+		}
+	end
+
 	function ITEM:Sync(receiver, transmit)
 		if receiver == nil then
 			for k, v in ipairs(player.GetAll()) do
 				self:Sync(v, transmit)
 			end
 		else
+			local syncData = self:CollectSyncData(receiver)
 			local entity = self:GetEntity()
-			local data = {}
 
-			for k, info in pairs(self.vars) do
-				if bit.band(info.Transmit, ix.transmit.none) == ix.transmit.none then continue end
-				if bit.band(info.Transmit, ix.transmit.owner) == ix.transmit.owner then 
-					local inventory = self.inventory_id and ix.Inventory:Get(self.inventory_id)
-
-					local has
-
-					if inventory then
-						local receivers = inventory:GetReceivers()
-
-						for k, v in ipairs(receivers) do
-							if v == receiver then
-								has = true
-								break
-							end
-						end
-					end
-					
-					if !has then
-						continue
-					end
-				end
-
-				data[k] = self.data[k]
-			end
-
-			data = pon.encode(data)
-			data = util.Compress(data)
-
-			local length = #data
+			local compressed = util.Compress(pon.encode(syncData.data))
+			local length = #compressed
 
 			net.Start('item.sync')
-				net.WriteString(self.uniqueID)
-				net.WriteUInt(self:GetID(), 32)
+				net.WriteString(syncData.uniqueID)
+				net.WriteUInt(syncData.id, 32)
 				if IsValid(entity) then
 					net.WriteUInt(entity:EntIndex(), 16)
 				elseif self.inventory_id then
@@ -729,7 +744,7 @@ if SERVER then
 					net.WriteBool(self.rotated)
 				end
 				net.WriteUInt(length, 32)
-				net.WriteData(data, length)
+				net.WriteData(compressed, length)
 			net.Send(receiver)
 
 			if self.OnSync then
@@ -820,6 +835,56 @@ else
 
 					if item.data_callbacks[k] then
 						item.data_callbacks[k](item, v)
+					end
+				end
+			end
+		end
+	end)
+
+	net.Receive('item.sync.batch', function(len)
+		local length = net.ReadUInt(32)
+		local compressed = net.ReadData(length)
+
+		local decoded = pon.decode(util.Decompress(compressed))
+
+		if !decoded then return end
+
+		for _, syncData in ipairs(decoded) do
+			local item = ix.Item:New(syncData.uniqueID, syncData.id)
+
+			if item then
+				if syncData.x and syncData.y then
+					item.x = syncData.x
+					item.y = syncData.y
+					item.rotated = syncData.rotated
+				end
+
+				if syncData.entityID and syncData.entityID > 0 then
+					item.character_id = nil
+					item.inventory_id = nil
+					item.inventory_type = nil
+
+					queue_ents[syncData.entityID] = syncData.id
+
+					local entity = Entity(syncData.entityID)
+
+					if IsValid(entity) then
+						SetupItemEntity(entity)
+					end
+				elseif syncData.invID then
+					item.entity = nil
+					item.inventory_id = syncData.invID
+
+					ix.Item.entities[syncData.id] = nil
+				end
+
+				if syncData.data then
+					for k, v in pairs(syncData.data) do
+						item.data[k] = v
+
+						if item.data_callbacks[k] then
+							item.data_callbacks[k](item, v)
+						end
 					end
 				end
 			end

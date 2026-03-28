@@ -25,7 +25,9 @@ do
 
 	function PLAYER:GetItemsID(inv_type)
 		if inv_type then
-			return self:GetInventory(inv_type)
+			local inv = self:GetInventory(inv_type)
+
+			return inv and inv:GetItemsID()
 		else
 			local items = {}
 

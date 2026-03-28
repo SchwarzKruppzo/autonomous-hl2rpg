@@ -109,7 +109,7 @@ function Schema:InitializedChatClasses()
 			end
 		end,
 		OnChatAdd = function(class, speaker, text)
-			chat.AddText(class.color, ix.util.GetMaterial("cellar/chat/dispatch.png"), string.format(L(class.format), text))
+			chat.AddText(class.color, ix.util.GetMaterial("cellar/chat/dispatch.png"), L(class.format, text))
 		end
 	})
 
@@ -128,7 +128,7 @@ function Schema:InitializedChatClasses()
 			return listener:IsCombine()
 		end,
 		OnChatAdd = function(class, speaker, text)
-			chat.AddText(class.color, string.format(L(class.format), text))
+			chat.AddText(class.color, L(class.format, text))
 
 			surface.PlaySound("npc/overwatch/radiovoice/on3.wav")
 		end
@@ -174,7 +174,7 @@ function Schema:InitializedChatClasses()
 			end
 		end,
 		OnChatAdd = function(class, speaker, text)
-			chat.AddText(class.color, ix.util.GetMaterial("cellar/chat/broadcast.png"), string.format(L(class.format), IsValid(speaker) and speaker:Name() or "Broadcast", text))
+			chat.AddText(class.color, ix.util.GetMaterial("cellar/chat/broadcast.png"), L(class.format, IsValid(speaker) and speaker:Name() or "Broadcast", text))
 		end
 	})
 

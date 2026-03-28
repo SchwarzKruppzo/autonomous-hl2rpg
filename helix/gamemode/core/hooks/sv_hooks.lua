@@ -690,6 +690,8 @@ function GM:PlayerDisconnected(client)
 
 	client:ClearNetVars()
 	client:DeleteInventories()
+
+	ix.Inventory:CancelPlayerTransfers(client)
 end
 
 function GM:InitPostEntity()
