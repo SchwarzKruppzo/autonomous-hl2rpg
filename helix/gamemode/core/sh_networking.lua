@@ -467,6 +467,30 @@ do
 end
 
 if CLIENT then
+	local lastEntRevisions = {}
+	local pendingEntRevisions = {}
+
+	function Net:SendCloseRequest(entity)
+		local entIndex = isnumber(entity) and entity or entity:EntIndex()
+
+		if pendingEntRevisions[entIndex] then
+			return
+		end
+		
+		net.Start("rp.net.closelook.request")
+			net.WriteUInt(entIndex, 16)
+			net.WriteUInt(lastEntRevisions[entIndex] or 0, 32)
+		net.SendToServer()
+
+		pendingEntRevisions[entIndex] = true
+	end
+
+	function Net:IsWaitingCloseResponse(entity)
+		local entIndex = isnumber(entity) and entity or entity:EntIndex()
+
+		return pendingEntRevisions[entIndex]
+	end
+
 	net.Receive("rp.net.global", function()
 		local key, value = net.ReadNetVar(1)
 
@@ -559,4 +583,38 @@ else
 	util.AddNetworkString("rp.net.local.clear")
 	util.AddNetworkString("rp.net.entity.clear")
 	util.AddNetworkString("rp.net.player.clear")
+
+	util.AddNetworkString("rp.net.closelook.request")
+
+
+	local function TraceEntity(client)
+		local lastTrace = client.closelookTrace or {}
+
+		lastTrace.start = client:GetShootPos()
+		lastTrace.endpos = lastTrace.start + client:GetAimVector(client) * 160
+		lastTrace.filter = client
+		lastTrace.mask = MASK_SHOT_HULL
+
+		client.closelookTrace = lastTrace
+
+		return util.TraceHull(lastTrace).Entity
+	end
+	
+	net.Receive("rp.net.closelook.request", function(len, client)
+		local entIndex = net.ReadUInt(16)
+		local clientEntRevision = net.ReadUInt(32)
+		
+		local entity = Entity(entIndex)
+
+		if !IsValid(entity) then
+			return
+		end
+		
+		entity = TraceEntity(client)
+
+		if !IsValid(entity) or entIndex != entity:EntIndex() then
+			return
+		end
+		
+	end)
 end
