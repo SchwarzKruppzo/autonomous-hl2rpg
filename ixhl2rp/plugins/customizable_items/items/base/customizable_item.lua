@@ -68,24 +68,26 @@ function ItemCustomize:Init()
 		Transmit = ix.transmit.all,
 	})
 
-	self:AddDataCallback("checksum", function(item, value)
-		if !CustomItem.loaded then
-			CustomItem:Load()
-		end
-		
-		local saved = CustomItem.stored[value]
+	if CLIENT then
+		self:AddDataCallback("checksum", function(item, value)
+			if !CustomItem.loaded then
+				CustomItem:Load()
+			end
+			
+			local saved = CustomItem.stored[value]
 
-		if saved then
-			CustomItem:Deploy(item.id, saved)
-		else
-			CustomItem.queue[value] = CustomItem.queue[value] or {}
-			CustomItem.queue[value][item:GetID()] = true
+			if saved then
+				CustomItem:Deploy(item.id, saved)
+			else
+				CustomItem.queue[value] = CustomItem.queue[value] or {}
+				CustomItem.queue[value][item:GetID()] = true
 
-			net.Start("item.custom.sync")
-				net.WriteType(value)
-			net.SendToServer()
-		end
-	end)
+				net.Start("item.custom.sync")
+					net.WriteType(value)
+				net.SendToServer()
+			end
+		end)
+	end
 end
 
 function ItemCustomize:GetMaterial()

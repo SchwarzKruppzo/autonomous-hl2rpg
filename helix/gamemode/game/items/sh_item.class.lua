@@ -506,6 +506,10 @@ function ITEM:SetData(key, value, receivers, noSave, noCheckEntity)
 	self.data[key] = value
 
 	if SERVER then
+		if self.data_callbacks[key] then
+			self.data_callbacks[key](self, value)
+		end
+					
 		/*
 		local isCloseLook = bit.band(self.vars[key].Transmit, ix.transmit.closelook) == ix.transmit.closelook
 
