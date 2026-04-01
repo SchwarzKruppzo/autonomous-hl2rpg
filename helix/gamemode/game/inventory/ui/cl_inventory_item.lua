@@ -408,6 +408,10 @@ function PANEL:Rebuild()
 			end
 		end
 		self.mdl.PreDrawModel = function(pnl, ent)
+			render.OverrideColorWriteEnable(true, false)
+			ent:DrawModel()
+			render.OverrideColorWriteEnable(false, false)
+
 			render.SetColorModulation(2, 2, 2)
 			render.SetBlend(surface.GetAlphaMultiplier())
 		end
