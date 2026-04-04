@@ -28,7 +28,7 @@ function ReagentHolder:RecacheReagents()
 	end
 end
 
-function ReagentHolder:UpdateTotal()
+function ReagentHolder:UpdateTotal(callUpdate)
 	self.volume = 0
 
 	for id, reagent in ipairs(self.reagents) do
@@ -39,11 +39,17 @@ function ReagentHolder:UpdateTotal()
 		end
 	end
 
-	if self.owner and self.owner.OnReagentUpdateTotal then
-		self.owner:OnReagentUpdateTotal(self.volume)
+	if callUpdate then
+		self:OnUpdate()
 	end
 
 	return self.volume
+end
+
+function ReagentHolder:OnUpdate()
+	if self.owner and self.owner.OnReagentUpdateTotal then
+		self.owner:OnReagentUpdateTotal(self.volume)
+	end
 end
 
 function ReagentHolder:DeleteReagent(id)
@@ -96,7 +102,7 @@ function ReagentHolder:RemoveReagent(id, amount, noReaction)
 	return false
 end
 
-function ReagentHolder:AddReagent(reagentID, amount, reagentTemp, noReaction)
+function ReagentHolder:AddReagent(reagentID, amount, reagentTemp, noReaction, noUpdate)
 	amount = amount or 0
 	reagentTemp = reagentTemp or 300
 
@@ -133,7 +139,7 @@ function ReagentHolder:AddReagent(reagentID, amount, reagentTemp, noReaction)
 		self.recached = false
 	end
 
-	self:UpdateTotal()
+	self:UpdateTotal(!noUpdate)
 
 	if !noReaction then
 		self:HandleReactions()
@@ -142,8 +148,10 @@ end
 
 function ReagentHolder:AddReagents(reagents)
 	for reagentID, amount in pairs(reagents) do
-		self:AddReagent(reagentID, amount)
+		self:AddReagent(reagentID, amount, nil, nil, true)
 	end
+
+	self:OnUpdate()
 end
 
 function ReagentHolder:Transfer(target, amount, user, method, multiplier, noReaction)
@@ -173,7 +181,7 @@ function ReagentHolder:Transfer(target, amount, user, method, multiplier, noReac
 	for id, reagent in ipairs(self.reagents) do
 		local transfer_amount = reagent.volume * part
 
-		target:AddReagent(reagent.uniqueID, transfer_amount * multiplier, 300, true)
+		target:AddReagent(reagent.uniqueID, transfer_amount * multiplier, 300, true, true)
 		self:RemoveReagent(id, transfer_amount)
 	end
 
@@ -184,6 +192,9 @@ function ReagentHolder:Transfer(target, amount, user, method, multiplier, noReac
 		target:HandleReactions()
 		self:HandleReactions()
 	end
+
+	self:OnUpdate()
+	target:OnUpdate()
 
 	return amount
 end
@@ -211,11 +222,11 @@ function ReagentHolder:Deserialize(data)
 
 	if data then
 		for _, entry in ipairs(data) do
-			self:AddReagent(entry.id, entry.volume, 300, true)
+			self:AddReagent(entry.id, entry.volume, 300, true, true)
 		end
 	end
 
-	self:UpdateTotal()
+	self:OnUpdate()
 end
 
 function ReagentHolder:Clear()
@@ -223,7 +234,5 @@ function ReagentHolder:Clear()
 	self.volume = 0
 	self.recached = false
 
-	if self.owner and self.owner.OnReagentUpdateTotal then
-		self.owner:OnReagentUpdateTotal(0)
-	end
+	self:OnUpdate()
 end
