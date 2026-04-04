@@ -151,19 +151,21 @@ function Reagents:GetMixedColor(reagents)
 	local vol_counter = 0
 	local vol_temp = 0
 
-	for _, info in ipairs(reagents) do
-		local reagentClass = self.stored[info.id]
-		local color = reagentClass.clr
+	if reagents then
+		for _, info in ipairs(reagents) do
+			local reagentClass = self.stored[info.id]
+			local color = reagentClass.clr
 
-		if isbool(color) and color == true then continue end
-		
-		vol_temp = volume
-		vol_counter = vol_counter + vol_temp
+			if isbool(color) and color == true then continue end
+			
+			vol_temp = info.volume
+			vol_counter = vol_counter + vol_temp
 
-		if !mixcolor then
-			mixcolor = color
-		else
-			BlendRGB(mixcolor, color, vol_temp / vol_counter)
+			if !mixcolor then
+				mixcolor = color
+			else
+				BlendRGB(mixcolor, color, vol_temp / vol_counter)
+			end
 		end
 	end
 
