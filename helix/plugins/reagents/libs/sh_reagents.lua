@@ -40,8 +40,39 @@ function Reagents:New(uniqueID)
 
 		return reagent
 	else
-		ErrorNoHalt("[Helix] Attempt to index unknown reagent '"..uniqueID.."'\n")
+		ErrorNoHalt("[Helix] Attempt to instance unknown reagent '"..uniqueID.."'\n")
 	end
+end
+
+function Reagents:Register(uniqueID, data, copy)
+	if !uniqueID then
+		ErrorNoHalt("[Helix] Attempt to register a reagent without a valid ID!\n")
+		return
+	end
+	
+	local reagent = ix.meta.Reagent:New(uniqueID)
+
+	if copy then
+		local baseData
+
+		if istable(copy) then
+			baseData = copy
+		elseif isstring(copy) then
+			baseData = self.stored[copy]
+		end
+
+		for k, v in pairs(baseData or {}) do
+			reagent[k] = v
+		end
+	end
+
+	for k, v in pairs(data) do
+		reagent[k] = v
+	end
+
+	self.stored[uniqueID] = reagent
+
+	return reagent
 end
 
 do
@@ -78,29 +109,6 @@ do
 	end
 end
 
--- Calculate total thirst/hunger from a given reagent composition and volume consumed
-function Reagents:CalcNutrition(holder, amount)
-	if !holder or holder.volume <= 0 then
-		return 0, 0
-	end
-
-	amount = math.min(amount, holder.volume)
-	local part = amount / holder.volume
-	local totalThirst, totalHunger = 0, 0
-
-	for _, reagent in ipairs(holder.reagents) do
-		local reagentClass = self.stored[reagent.uniqueID]
-		local consumed = reagent.volume * part
-
-		if reagentClass then
-			totalThirst = totalThirst + (reagentClass.thirst or 0) * consumed
-			totalHunger = totalHunger + (reagentClass.hunger or 0) * consumed
-		end
-	end
-
-	return totalThirst, totalHunger
-end
-
 -- Consume a given volume from holder, return thirst/hunger values and apply effects
 function Reagents:Consume(holder, amount, client)
 	if !holder or holder.volume <= 0 then
@@ -127,7 +135,37 @@ function Reagents:Consume(holder, amount, client)
 		holder:RemoveReagent(id, consumed, true)
 	end
 
-	holder:UpdateTotal()
+	holder:UpdateTotal(true)
 
 	return totalThirst, totalHunger
+end
+
+local function BlendRGB(RGB1, RGB2, amount)
+	RGB1.r = math.Round(RGB1.r + (RGB2.r - RGB1.r) * amount, 1)
+	RGB1.g = math.Round(RGB1.g + (RGB2.g - RGB1.g) * amount, 1)
+	RGB1.b = math.Round(RGB1.b + (RGB2.b - RGB1.b) * amount, 1)
+end
+
+function Reagents:GetMixedColor(reagents)
+	local mixcolor
+	local vol_counter = 0
+	local vol_temp = 0
+
+	for _, info in ipairs(reagents) do
+		local reagentClass = self.stored[info.id]
+		local color = reagentClass.clr
+
+		if isbool(color) and color == true then continue end
+		
+		vol_temp = volume
+		vol_counter = vol_counter + vol_temp
+
+		if !mixcolor then
+			mixcolor = color
+		else
+			BlendRGB(mixcolor, color, vol_temp / vol_counter)
+		end
+	end
+
+	return mixcolor or color_white
 end
