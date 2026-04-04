@@ -1,0 +1,26 @@
+ix.Locale:Build("en")
+
+
+item.glass1 			= "Cordial"
+item.glass2 			= "Shot"
+item.glass3 			= "Old Fashioned"
+item.glass4 			= "Snifter"
+item.glass5 			= "Flute"
+item.glass6 			= "Tumbler"
+item.glass7 			= "Wine glass"
+item.glass8 			= "Hurricane"
+item.glass9 			= "Cocktail glass"
+item.glass10			= "Highball"
+item.glass11			= "Glass pitcher"
+
+item.glass1.desc 		= "A small glass for liqueurs."
+item.glass2.desc 		= "A short glass for strong spirits, meant to be drunk in one gulp."
+item.glass3.desc 		= "A low, wide glass for classic cocktails with ice."
+item.glass4.desc 		= "A wide bowl on a short stem for cognac or whisky."
+item.glass5.desc 		= "A tall, narrow flute for sparkling wine and bubbly drinks."
+item.glass6.desc 		= "An all-purpose stemless glass for water, juice, and simple mixed drinks."
+item.glass7.desc 		= "A glass for different kinds of wine."
+item.glass8.desc 		= "A tall, curved glass for tropical cocktails with ice."
+item.glass9.desc 		= "A wide stemmed glass for cocktails served up."
+item.glass10.desc		= "A tall cylindrical glass for long drinks with soda and ice."
+item.glass11.desc		= "A clear pitcher for serving drinks to a group."

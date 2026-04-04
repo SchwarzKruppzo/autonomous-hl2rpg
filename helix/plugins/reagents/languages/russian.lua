@@ -1,0 +1,26 @@
+ix.Locale:Build("ru")
+
+
+item.glass1 			= "Кордиал"
+item.glass2 			= "Шот"
+item.glass3 			= "Олд фешен"
+item.glass4 			= "Снифтер"
+item.glass5 			= "Флюте"
+item.glass6 			= "Тумблер"
+item.glass7 			= "Винный бокал"
+item.glass8 			= "Харрикейн"
+item.glass9 			= "Коктейльный бокал"
+item.glass10			= "Хай-бол"
+item.glass11			= "Стеклянный кувшин"
+
+item.glass1.desc 		= ""
+item.glass2.desc 		= ""
+item.glass3.desc 		= ""
+item.glass4.desc 		= ""
+item.glass5.desc 		= ""
+item.glass6.desc 		= ""
+item.glass7.desc 		= ""
+item.glass8.desc 		= ""
+item.glass9.desc 		= ""
+item.glass10.desc		= ""
+item.glass11.desc		= ""
