@@ -119,8 +119,6 @@ if SERVER then
 
 			if savedReagents then
 				self.reagents:Deserialize(savedReagents)
-			else
-				self:OnMigrateData()
 			end
 		end
 	end
@@ -129,9 +127,6 @@ if SERVER then
 		if self.add_reagents then
 			self.reagents:AddReagents(self.add_reagents)
 		end
-	end
-
-	function ItemReagentContainer:OnMigrateData()
 	end
 
 	function ItemReagentContainer:OnReagentUpdateTotal(value)
