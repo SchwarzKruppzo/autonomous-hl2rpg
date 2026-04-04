@@ -193,24 +193,9 @@ if SERVER then
 		self:SetData("closed", self.stats.container or false)
 
 		self.reagents:AddReagent(self.reagent_type, self.volume, 300, true)
-		self.reagents:UpdateTotal()
 
 		if !self:IsClosed() then
 			self:StartRotProgress()
-		end
-	end
-
-	function ItemDrink:OnMigrateData()
-		local savedUses = self:GetData("uses")
-		local maxUses = math.floor(self.volume / self.sip_amount + 0.5)
-
-		if savedUses and maxUses > 0 then
-			local remaining = (savedUses / maxUses) * self.volume
-			self.reagents:AddReagent(self.reagent_type, remaining, 300, true)
-			self.reagents:UpdateTotal()
-		else
-			self.reagents:AddReagent(self.reagent_type, self.volume, 300, true)
-			self.reagents:UpdateTotal()
 		end
 	end
 end

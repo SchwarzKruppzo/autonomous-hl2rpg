@@ -179,24 +179,9 @@ if SERVER then
 		self:SetData("closed", self.stats.container or false)
 
 		self.reagents:AddReagent("food_matter", self.volume, 300, true)
-		self.reagents:UpdateTotal()
-
+		
 		if !self:IsClosed() then
 			self:StartRotProgress()
-		end
-	end
-
-	function ItemFood:OnMigrateData()
-		local savedUses = self:GetData("uses")
-		local maxUses = math.floor(self.volume / self.portion_amount + 0.5)
-
-		if savedUses and maxUses > 0 then
-			local remaining = (savedUses / maxUses) * self.volume
-			self.reagents:AddReagent("food_matter", remaining, 300, true)
-			self.reagents:UpdateTotal()
-		else
-			self.reagents:AddReagent("food_matter", self.volume, 300, true)
-			self.reagents:UpdateTotal()
 		end
 	end
 end
