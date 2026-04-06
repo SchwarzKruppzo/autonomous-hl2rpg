@@ -52,6 +52,14 @@ do
 	local function ReadCharID()
 		return net.ReadUInt(32)
 	end
+
+	local function WriteRGB(clr)
+		net.WriteColor(clr, false)
+	end
+
+	local function ReadRGB()
+		return net.ReadColor(false)
+	end
 	
 	Net.Type = {
 		All = {net.WriteType, net.ReadType},
@@ -62,7 +70,8 @@ do
 		Vector = {net.WriteVector, net.ReadVector},
 		Angle = {net.WriteAngle, net.ReadAngle},
 		Table = {net.WriteTable, net.ReadTable},
-		Color = {net.WriteColor, net.ReadColor},
+		Color = {net.WriteColor, net.ReadColor}, -- RGBA
+		RGB = {WriteRGB, ReadRGB}, -- RGB only
 		EntityIndex = {WriteEntIndex, ReadEntIndex},
 		CharacterID = {WriteCharID, ReadCharID},
 	}
