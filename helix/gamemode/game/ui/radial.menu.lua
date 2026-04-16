@@ -1,0 +1,214 @@
+local PANEL = {}
+local RADIUS_INNER = 100
+local RADIUS_OUTER = 250
+
+surface.CreateFont("autonomous.radialmenu.btn", {
+	font = "Blender Pro Medium",
+	extended = true,
+	size = 21,
+	weight = 500,
+})
+
+function PANEL:Init()
+	if IsValid(ix.gui.radialMenu) then
+		ix.gui.radialMenu:Remove()
+	end
+	
+	ix.gui.radialMenu = self
+
+	self:SetMouseInputEnabled(false)
+	self:SetKeyboardInputEnabled(false)
+	self:SetSize(ScrW(), ScrH())
+
+	self.options = {}
+	self.optionCount = 0
+	self.optionSelected = -1
+
+	self.sectionAngle = 0
+	self.sectionAngleDeg = 0
+	self.segmentAngles = {}
+
+	self.alpha = 0
+	self.innerColor = Color(16, 32, 48, 0)
+
+	self.centerX = ScrW() * 0.5
+	self.centerY = ScrH() * 0.5
+	self.cursorX = 0
+	self.cursorY = 0
+
+	self:MakePopup()
+end
+
+function PANEL:PrecalculateSegments()
+	self.sectionAngle = math.pi * 2 / self.optionCount
+	self.sectionAngleDeg = 359.99 / self.optionCount
+	self.segmentAngles = {}
+	
+	for i = 1, self.optionCount do
+		local startDeg = (i - 1) * self.sectionAngleDeg
+		local finishDeg = i * self.sectionAngleDeg
+
+		self.segmentAngles[i] = {
+			start = startDeg,
+			finish = finishDeg,
+		}
+	end
+end
+
+function PANEL:SetOptions(options)
+	self.options = ix.util.Imap(options, function(option)
+		return {
+			text = option.text or "Untitled",
+			callback = option.callback or option.options,
+			anim = 0,
+		}
+	end)
+
+	self.optionCount = #self.options
+
+	self:PrecalculateSegments()
+end
+
+function PANEL:Open()
+	self:CreateAnimation(1, {
+		target = {
+			alpha = 1
+		},
+		easing = "outCubic",
+		OnComplete = function()
+			print(1)
+		end
+	})
+end
+
+do
+	function PANEL:HandleSelected()
+		local selected = 0
+		local cursorX, cursorY = gui.MouseX(), gui.MouseY()
+		local cursor = self.cursor or Vector()
+
+		cursor.x = (cursorX - self.centerX)
+		cursor.y = (cursorY - self.centerY)
+
+		if cursor:LengthSqr() > 1e4 then
+			cursor = cursor:GetNormalized() * 100
+		end
+
+		self.cursor = cursor
+
+		if cursor.x ^ 2 + cursor.y ^ 2 > 4e3 then
+			local angle = math.atan2(cursor.y, cursor.x) + math.pi / 2
+			angle = angle > math.pi and angle - 2 * math.pi or angle
+			angle = (angle / math.pi + 1) / 2
+
+			local step = 1 / self.optionCount
+			selected = math.Round((angle + step / 2) * self.optionCount)
+		end
+
+		return selected
+	end
+
+	function PANEL:Think()
+		if self.alpha > 0 then
+			local FT = FrameTime()
+
+			self.optionSelected = self:HandleSelected()
+
+			for i = 1, self.optionCount do
+				if self.optionSelected == i then
+					self.options[i].anim = math.Approach(self.options[i].anim, 1, FT / 0.1)
+				else
+					self.options[i].anim = math.Approach(self.options[i].anim, 0, FT / 0.25)
+				end
+			end
+		end
+	end
+	
+	function PANEL:Paint(w, h)
+		if self.alpha <= 0 then return end
+
+		local centerX, centerY = w / 2, h / 2
+		local alpha = math.ease.OutQuad(self.alpha)
+
+		local dx = ix.DX and ix.DX()
+
+		local innerRadius = math.max(RADIUS_INNER * alpha, 0) * 1.5
+		local outerRadius = (RADIUS_OUTER * alpha) * 2
+
+		self.innerColor.a = 120 * alpha
+
+		dx.Circle(centerX, centerY, outerRadius)
+			:Blur(1)
+			:Rotation(-90)
+			:Outline(innerRadius)
+			:StartAngle(0)
+			:EndAngle(360)
+		:Draw()
+
+		dx.Circle(centerX, centerY, outerRadius)
+			:Outline(innerRadius)
+			:StartAngle(0)
+			:EndAngle(360)
+			:Color(self.innerColor)
+		:Draw()
+
+		dx.Circle(centerX, centerY, outerRadius - (innerRadius * 2))
+			:Outline(1)
+			:StartAngle(0)
+			:EndAngle(360)
+			:Color(ix.Palette.autonomousblue)
+		:Draw()
+
+		for i = 1, self.optionCount do
+			local hoverFrac = math.ease.OutQuad(self.options[i].anim)
+
+			local hoverColor = self.options[i].hoverColor or Color(16, 32, 48)
+			hoverColor.a = 100 * hoverFrac
+			self.options[i].hoverColor = hoverColor
+
+			if hoverFrac != 0 then
+				local hoverInner = hoverFrac * 5
+
+				dx.Circle(centerX, centerY, outerRadius)
+					:Rotation(-90)
+					:Outline(innerRadius)
+					:StartAngle(self.segmentAngles[i].start)
+					:EndAngle(self.segmentAngles[i].finish)
+					:Color(hoverColor)
+				:Draw()
+
+				dx.Circle(centerX, centerY, outerRadius - (innerRadius * 2))
+					:Rotation(-90)
+					:Outline(hoverInner)
+					:StartAngle(self.segmentAngles[i].start)
+					:EndAngle(self.segmentAngles[i].finish)
+					:Color(ix.Palette.autonomousblue)
+				:Draw()
+			end
+
+			local angCenter = self.sectionAngle * (i - 0.5) + (math.pi / 2)
+			local posX, posY = math.cos(angCenter), math.sin(angCenter)
+
+			local textColor = self.options[i].textColor or Color(0, 200, 255)
+			textColor.a = (150 + 105 * hoverFrac) * alpha
+			self.options[i].textColor = textColor
+
+			draw.SimpleText(self.options[i].text, "autonomous.radialmenu.btn", centerX + posX * (outerRadius - innerRadius) * 0.5, centerY + posY * (outerRadius - innerRadius) * 0.5, textColor, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+		end
+	end
+end
+	
+vgui.Register("ui.radial.menu", PANEL, "EditablePanel")
+
+/*
+local a = vgui.Create("ui.radial.menu")
+a:SetOptions({
+	{text = "Debug 1"},
+	{text = "Debug 2"},
+	{text = "Debug 3"},
+	{text = "Debug 4"},
+	{text = "Debug 5"},
+	{text = "Debug 6"},
+})
+a:Open()
+*/
