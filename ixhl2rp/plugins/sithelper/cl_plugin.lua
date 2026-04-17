@@ -1,154 +1,111 @@
 local PLUGIN = PLUGIN
 
-local bShowPreview = false
-local sitAngle = Angle(0, 0, 0)
-local sitPreview = NULL
-local sitOption = 1
+local radialMenu
+local precachedOptions
+local lastAnimGroup
 
-concommand.Add("+sit", function(player, cmd, args)
-	bShowPreview = true
+local function SelectAnimation(menu, option)
+	ix.AnimHelper:BuildPreview(true, option.data[1])
+end
 
-	sitAngle = Angle(0, LocalPlayer():EyeAngles().y + 180, 0)
-	sitPreview = ClientsideModel(player:GetModel(), RENDERGROUP_OPAQUE)
-	sitPreview:SetNoDraw(true)
+local function BuildAnimOptions(sequences)
+	local anims = {}
+
+	for k, sequence in ipairs(sequences) do
+		local info = ix.AnimHelper.anims[sequence]
+		local isExist = LocalPlayer():LookupSequence(sequence)
+
+		if (isExist > 0) and info then
+			anims[#anims + 1] = {text = info.label, data = {sequence}, callback = SelectAnimation}
+		end
+	end
+
+	return anims
+end
+
+local function RebuildOptions(animCategories)
+	local options = {
+		main = {}
+	}
+
+	for k, category in ipairs(animCategories) do
+		local anims = BuildAnimOptions(category.options)
+
+		if #anims > 0 then
+			local categoryID = "list"..k
+
+			options[categoryID] = anims
+			options.main[#options.main + 1] = {text = category.label, callback = categoryID}
+		end
+	end
+
+	precachedOptions = options
+end
+
+concommand.Add("+sit", function(client, cmd, args)
+	if lastAnimGroup != client.ixAnimModelClass then
+		RebuildOptions(PLUGIN.AnimOptions)
+
+		lastAnimGroup = client.ixAnimModelClass
+	end
+
+	ix.AnimHelper:BuildPreview(false)
+	
+	radialMenu = vgui.Create("ui.radial.menu")
+	radialMenu:SetMultiOptions(precachedOptions, "main")
+	radialMenu:Open()
+
+	local padding = ScrH() * 0.25
+	local model = radialMenu:Add("DModelPanel")
+	model:Dock(FILL)
+	model:DockMargin(padding, padding, padding, padding)
+	model:SetMouseInputEnabled(false)
+	model:SetFOV(90)
+	model:SetAlpha(255)
+	model.LayoutEntity = function(self)
+		local entity = self.Entity
+
+		entity:SetIK(false)
+
+		local bonePosition = entity:GetBonePosition(1)
+		self:SetLookAt(bonePosition)
+	end
+
+	model:SetCamPos(Vector(180, 180, 50))
+	model:SetModel(LocalPlayer():GetModel())
+	model:SetPaintedManually(true)
+	model.PreDrawModel = function(pnl, ent)
+		render.OverrideColorWriteEnable(true, false)
+		ent:DrawModel()
+		render.OverrideColorWriteEnable(false, false)
+
+		render.SetColorModulation(1, 1, 1)
+		render.SetBlend(pnl:GetParent().alpha)
+	end
+
+	local selectedAnim
+
+	radialMenu.OnOptionHovered = function(self, option)
+		LocalPlayer():EmitSound("Helix.Rollover")
+
+		local sequence = option.data[1]
+
+		if sequence then
+			model.Entity:SetSequence(model.Entity:LookupSequence(sequence))
+		end
+
+		selectedAnim = sequence
+	end
+
+	radialMenu.PrePaint = function(this, w, h, alpha)
+		if selectedAnim then
+			model:PaintManual()
+		end
+	end
 end)
 
 concommand.Add("-sit", function(player)
-	bShowPreview = false
-	SafeRemoveEntity(sitPreview)
-
-	local localPlayer = LocalPlayer()
-	local eyePos = localPlayer:EyePos()
-	local obb = PLUGIN.OBB[sitOption] or PLUGIN.OBB[0]
-
-	local character = localPlayer:GetCharacter()
-	if character and character:GetGender() == GENDER_FEMALE then
-		obb = PLUGIN.OBBF[sitOption] or obb
+	if IsValid(radialMenu) then
+		radialMenu:Close()
 	end
-
-	local sitTrace = util.TraceHull({
-		start = eyePos,
-		endpos = eyePos + localPlayer:EyeAngles():Forward() * 60,
-		filter = localPlayer,
-		mins = obb[1],
-		maxs = obb[2]
-	})
-
-	local downTrace = util.TraceHull({
-		start = sitTrace.HitPos,
-		endpos = sitTrace.HitPos - Vector(0, 0, 100),
-		filter = localPlayer,
-		mins = obb[1],
-		maxs = obb[2]
-	});
-
-	-- Trying to sit too far away or something is blocking us from sitting, deny it
-	if (!downTrace.Hit or downTrace.AllSolid or downTrace.HitNormal.z <= 0.75) then
-		return
-	end
-
-	net.Start("ixPlayerSit")
-		net.WriteVector(downTrace.HitPos)
-		net.WriteAngle(sitAngle)
-		net.WriteUInt(sitOption, 5)
-	net.SendToServer()
 end)
-
-do
-	local mat = Material("debug/debugdrawflat")
-
-	function PLUGIN:PostDrawTranslucentRenderables()
-		if (!bShowPreview) then
-			return
-		end
-
-		if (!IsValid(sitPreview)) then
-			return
-		end
-
-		local anim = sitPreview:LookupSequence(self.sitStances[sitOption])
-
-		if (anim <= -1) then
-			return
-		end
-
-		local localPlayer = LocalPlayer()
-		local eyePos = localPlayer:EyePos()
-		local obb = self.OBB[sitOption] or self.OBB[0]
-
-		local character = localPlayer:GetCharacter()
-		if character and character:GetGender() == GENDER_FEMALE then
-			obb = self.OBBF[sitOption] or obb
-		end
-
-		local sitTrace = util.TraceHull({
-			start = eyePos,
-			endpos = eyePos + localPlayer:EyeAngles():Forward() * 60,
-			filter = localPlayer,
-			mins = obb[1],
-			maxs = obb[2]
-		})
-
-		local downTrace = util.TraceHull({
-			start = sitTrace.HitPos,
-			endpos = sitTrace.HitPos - Vector(0, 0, 100),
-			filter = localPlayer,
-			mins = obb[1],
-			maxs = obb[2]
-		})
-
-		local bCanSit = self:CanSit(localPlayer, downTrace.HitPos, sitOption)
-
-		if (!downTrace.Hit or downTrace.HitNormal.z <= 0.75) then
-			bCanSit = false
-		end
-
-		render.MaterialOverride(mat)
-
-		local sitOffset = self.sitOffsets[sitOption] or vector_origin
-
-		local character = localPlayer:GetCharacter()
-		if character and character:GetGender() == GENDER_FEMALE then
-			sitOffset = self.sitOffsetsF[sitOption] or sitOffset
-		end
-
-		local forwardOffset = sitOffset.x
-		local previewPos = (downTrace.Hit and downTrace.HitPos or sitTrace.HitPos)
-		local previewOffsetPos = previewPos + sitAngle:Forward() * forwardOffset + Vector(0, 0, sitOffset.z)
-
-		render.SetColorModulation(bCanSit and 0 or 1, bCanSit and 1 or 0, 0, 1)
-		render.SetBlend(0.2)
-		sitPreview:SetPos(previewOffsetPos)
-		sitPreview:SetAngles(sitAngle)
-		sitPreview:SetSequence(anim)
-		sitPreview:DrawModel()
-
-		render.MaterialOverride(nil)
-	end
-end
-
-function PLUGIN:PlayerBindPress(player, bind, bPressed)
-	if (!bShowPreview or !IsValid(sitPreview)) then return end
-	bind = bind:lower()
-
-	if (bind:find("invnext") or bind:find("invprev")) then
-		return true
-	elseif (bind:find("+attack2") and bPressed) then
-		sitOption = math.Clamp(sitOption - 1, 1, #PLUGIN.sitStances)
-		return true
-	elseif (bind:find("+attack") and bPressed) then
-		sitOption = math.Clamp(sitOption + 1, 1, #PLUGIN.sitStances)
-		return true
-	end
-end
-
-function PLUGIN:InputMouseApply(cmd)
-	if (!bShowPreview or !IsValid(sitPreview)) then return end
-	local scrollDelta = cmd:GetMouseWheel()
-
-	if (scrollDelta == 0) then return end
-
-	local bPos = cmd:GetMouseWheel() > 0
-
-	sitAngle.y = math.NormalizeAngle(sitAngle.y + (bPos and 4 or -4))
-end

@@ -1,69 +1,77 @@
 local PLUGIN = PLUGIN
 
-util.AddNetworkString("ixPlayerSit")
+util.AddNetworkString("animhelper.select")
 
-net.Receive("ixPlayerSit", function(len, player)
+net.Receive("animhelper.select", function(_, client)
 	local pos = net.ReadVector()
 	local ang = net.ReadAngle()
-	local option = math.Clamp(net.ReadUInt(5) or 1, 1, #PLUGIN.sitStances)
-	local faction = player:Team()
-	local character = player:GetCharacter()
+	local option = net.ReadString()
+	local offsetZ = math.Clamp(net.ReadFloat(), -2, 4)
+	local curTime = CurTime()
 
-	if player.ixUntimedSequence then
+	local character = client:GetCharacter()
+
+	if !character or client.ixUntimedSequence then
 		return
 	end
 
-	if player:IsPilotScanner() then
+	if client:IsPilotScanner() then
 		return
 	end
 
-	--if faction == FACTION_VORT then return; end
-	
-	if (!PLUGIN:CanSit(player, pos, option, character)) then
+	if !PLUGIN:CanSit(client, pos, option) then
 		return
 	end
 
-	if (!player.cwNextStance or CurTime() >= player.cwNextStance) then
-		if (player:IsProne()) then
-			prone.Exit(player)
+	if !client.nextAnimSelect or curTime >= client.nextAnimSelect then
+		if client:IsProne() then
+			prone.Exit(client)
 		end
 
-		player.cwNextStance = CurTime() + 2;
+		client.nextAnimSelect = curTime + 2
 
-		local sitOffset = PLUGIN.sitOffsets[option] or vector_origin
+		local sitOffset = vector_origin
+		local animGroup = client.ixAnimModelClass
+		local info = ix.AnimHelper.anims[option]
 
-		if character and character:GetGender() == GENDER_FEMALE then
-			sitOffset = PLUGIN.sitOffsetsF[option] or sitOffset
+		if info then
+			local offset = info.offset[animGroup] or info.offset[1]
+
+			if bbox then
+				sitOffset = offset or vector_origin
+			end
 		end
 
-		local finalPos = pos + ang:Forward() * sitOffset.x + Vector(0, 0, sitOffset.z)
+		local finalPos = pos + ang:Forward() * sitOffset.x + Vector(0, 0, sitOffset.z + offsetZ)
 		
-		player.latestSitPos = player:GetPos()
-		player.latestSitAng = player:GetAngles()
-		player.latestCharKey = player:GetCharacter():GetID()
+		client.latestSitPos = client:GetPos()
+		client.latestSitAng = client:GetAngles()
+		client.latestCharKey = character:GetID()
 
-		player:SetPos(finalPos)
-		local angles = player:GetAngles()
+		client:SetPos(finalPos)
+
+		local angles = client:GetAngles()
 		angles.y = ang.y
-		player:SetAngles(angles)
-		player:SetLocalVelocity(vector_origin)
-		player:SetVelocity(vector_origin)
 
-		player:SetNetVar("sitHelperPos", player:GetPos())
-		player:SetNetVar("actEnterAngle", player:GetAngles())
-		player.ixUntimedSequence = true
-		player:SetCollisionGroup(COLLISION_GROUP_WORLD)
-		player:ForceSequence(PLUGIN.sitStances[option], nil, 0, nil)
-		
+		client:SetAngles(angles)
+		client:SetLocalVelocity(vector_origin)
+		client:SetVelocity(vector_origin)
+
+		client:SetNetVar("sitHelperPos", client:GetPos())
+		client:SetNetVar("actEnterAngle", client:GetAngles())
+
+		client.ixUntimedSequence = true
+		client:SetCollisionGroup(COLLISION_GROUP_WORLD)
+		client:ForceSequence(option, nil, 0, nil)
 
 		net.Start("ixActEnter")
 			net.WriteBool(true)
-		net.Send(player)
+		net.Send(client)
 	end
 end)
 
 function PLUGIN:PlayerLeaveSequence(client)
-	if (client:GetNetVar("sitHelperPos")) then
+	if client:GetNetVar("sitHelperPos") then
 		client.ixUntimedSequence = nil
 
 		client:SetNetVar("sitHelperPos", nil)
@@ -88,7 +96,7 @@ function PLUGIN:PlayerLeaveSequence(client)
 end
 
 PLUGIN["prone.CanEnter"] = function(self, client)
-	if (client:GetNetVar("sitHelperPos")) then
+	if client:GetNetVar("sitHelperPos") then
 		return false
 	end
 end
