@@ -1,6 +1,6 @@
 local PANEL = {}
-local RADIUS_INNER = 100
-local RADIUS_OUTER = 250
+local RADIUS_INNER = 120
+local RADIUS_OUTER = 300
 
 surface.CreateFont("autonomous.radialmenu.btn", {
 	font = "Blender Pro Medium",
@@ -62,6 +62,7 @@ function PANEL:ParseOptions(options)
 		return {
 			text = option.text or "Untitled",
 			callback = option.callback or option.options,
+			data = option.data or {},
 			anim = 0,
 		}
 	end)
@@ -74,6 +75,8 @@ function PANEL:SetMultiOptions(options, default)
 
 	if default then
 		self:SetOptions(default)
+		self.activeCategory = default
+		self.defaultCategory = default
 	end
 end
 
@@ -102,14 +105,9 @@ function PANEL:ChooseOption(id)
 		if isstring(callback) then
 			self.alpha = 0.5
 			self:SetOptions(callback)
-
-			for k, v in ipairs(self.options) do
-				v.anim = 0
-			end
-
-			self:Open(self:IsHandledByInput())
+			self:Open(self:IsHandledByInput(), callback)
 		else
-			local ret = callback(self, id)
+			local ret = callback(self, info)
 
 			return ret and ret or false
 		end
@@ -128,7 +126,7 @@ function PANEL:IsReady()
 	return self.alpha > 0.25
 end
 
-function PANEL:Open(isInput)
+function PANEL:Open(isInput, activeCategory)
 	self:SetVisible(true)
 
 	if !isInput then
@@ -138,6 +136,10 @@ function PANEL:Open(isInput)
 		self:SetKeyboardInputEnabled(false)
 	end
 
+	self.lastActiveCategory = self.activeCategory
+	self.activeCategory = activeCategory or self.lastActiveCategory
+
+	self.lastSelected = nil
 	self.cursorHandledByInput = isInput
 
 	self:CreateAnimation(1, {
@@ -151,7 +153,16 @@ function PANEL:Open(isInput)
 	})
 end
 
-function PANEL:Close()
+function PANEL:Close(dontClose)
+	if dontClose then
+		if self.lastActiveCategory and self.activeCategory != self.defaultCategory then
+			self.alpha = 0.5
+			self:SetOptions(self.lastActiveCategory)
+			self:Open(self:IsHandledByInput(), self.lastActiveCategory)
+			return
+		end
+	end
+	
 	self:SetMouseInputEnabled(false)
 	self:SetKeyboardInputEnabled(false)
 
@@ -225,8 +236,8 @@ do
 
 			self.optionSelected = self:HandleSelected()
 
-			if (self.lastSelected or 0) != self.optionSelected then
-				self:OnOptionHovered(self.optionSelected)
+			if (self.lastSelected or 0) != self.optionSelected and self.options[self.optionSelected] then
+				self:OnOptionHovered(self.options[self.optionSelected])
 
 				self.lastSelected = self.optionSelected
 			end
@@ -256,7 +267,7 @@ do
 
 		if !wasPressedRMB then
 			if cmd:KeyDown(IN_ATTACK2) then
-				self:Close()
+				self:Close(true)
 			end
 		end
 		
@@ -277,7 +288,7 @@ do
 		end
 
 		if mousecode == MOUSE_RIGHT then
-			self:Close()
+			self:Close(true)
 		end
 	end
 
@@ -287,6 +298,10 @@ do
 		local centerX, centerY = self.centerX, self.centerY
 		local alpha = math.ease.OutQuad(self.alpha)
 
+		if self.PrePaint then
+			self:PrePaint(w, h, alpha)
+		end
+		
 		local dx = ix.DX and ix.DX()
 
 		local innerRadius = math.max(RADIUS_INNER * alpha, 0) * 1.5
