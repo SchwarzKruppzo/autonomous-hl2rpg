@@ -529,10 +529,20 @@ function GM:PlayerBindPress(client, bind, pressed)
 	end
 end
 
+function GM:InputMouseApply(cmd, x, y, ang)
+	if IsValid(ix.gui.radialMenu) and ix.gui.radialMenu:IsHandledByInput() then 
+		return ix.gui.radialMenu:InputMouseApply(cmd, x, y, ang)
+	end
+end
+
 function GM:CreateMove(command)
 	if ((IsValid(ix.gui.characterMenu) and !ix.gui.characterMenu.bClosing)) then
 		command:ClearButtons()
 		command:ClearMovement()
+	end
+
+	if IsValid(ix.gui.radialMenu) and ix.gui.radialMenu:IsHandledByInput() then 
+		ix.gui.radialMenu:CreateMove(command)
 	end
 end
 
