@@ -9,8 +9,8 @@ function AnimHelper:Register(sequence, info)
 
 	info.sequence = sequence
 	info.label = info.label or "Unknown"
-	info.bbox = { defaultBBox }
-	info.offset = {}
+	info.bbox = info.bbox or { defaultBBox }
+	info.offset = info.offset or {}
 
 	self.anims[sequence] = info
 end
@@ -86,7 +86,7 @@ do
 
 		local sitTrace = util.TraceHull(sitTraceInfo)
 
-		downTraceInfo = downTraceeInfo or {filter = localPlayer}
+		downTraceInfo = downTraceInfo or {filter = localPlayer}
 		downTraceInfo.start = sitTrace.HitPos
 		downTraceInfo.endpos = sitTrace.HitPos - Vector(0, 0, 100)
 		downTraceInfo.mins = bboxMin
@@ -120,7 +120,7 @@ do
 		mdl:DrawModel()
 		render.OverrideColorWriteEnable(false, false)
 
-		render.SetColorModulation(canSit and 0 or 1, canSit and 1 or 0, 0, 1)
+		render.SetColorModulation(canSit and 0 or 1, canSit and 1 or 0, 0)
 		render.SetBlend(0.2)
 
 		mdl:DrawModel()

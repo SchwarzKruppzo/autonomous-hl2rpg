@@ -37,7 +37,7 @@ net.Receive("animhelper.select", function(_, client)
 		if info then
 			local offset = info.offset[animGroup] or info.offset[1]
 
-			if bbox then
+			if offset then
 				sitOffset = offset or vector_origin
 			end
 		end
