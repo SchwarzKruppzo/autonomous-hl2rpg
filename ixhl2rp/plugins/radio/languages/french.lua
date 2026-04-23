@@ -1,8 +1,7 @@
 ix.Locale:Build("fr")
 
 
-radioFormat 				= "[%s] %s %s %s%s \"%s\""
-radioFormatEavesdrop 		= "%s %s %s%s \"%s\""
+radioFormat 				= " %s %s%s \"%s\""
 radioVia 					= "à la radio"
 radioSpeaks 				= "dit"
 radioShouts 				= "crie"

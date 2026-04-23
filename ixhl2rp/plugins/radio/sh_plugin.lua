@@ -44,6 +44,16 @@ local typeTextKeys = {
 	[3] = "radioWhispers"
 }
 
+local typeTextStyles = {
+	[2] = {
+		size = 24,
+		bold = true
+	},
+	[3] = {
+		size = 11,
+	}
+}
+
 function PLUGIN:InitializedChatClasses()
 	local iconDefault = ix.util.GetMaterial("cellar/chat/radio_hand.png")
 
@@ -52,6 +62,9 @@ function PLUGIN:InitializedChatClasses()
 		format = "radioFormat",
 		bReceiveVoices = true,
 		indicator = "chatRadioing",
+		SelectStyle = function(class, speaker, data)
+			return typeTextStyles[data.typeText]
+		end,
 		OnChatAdd = function(class, speaker, text, bAnonymous, data)
 			local langIcon, langPrefix
 
@@ -87,11 +100,10 @@ function PLUGIN:InitializedChatClasses()
 				channel = "???.?"
 			end
 
-			
-
 			local typeText = L(typeTextKeys[data.typeText] or typeTextKeys[1])
-			chat.AddText(langIcon or "", data.color or class.color, icon, L(class.format,
-				channel, name, typeText, L("radioVia"), langPrefix or "", text))
+			chat.AddText(langIcon or "", data.color or class.color, icon, string.format("[%s] ", channel),
+				ix.chat.Link("player", name, speaker:GetCharacter():GetID()), L(class.format, typeText, L("radioVia"), langPrefix or "", text))
+
 
 			if (data.useSound and isstring(data.sound)) then
 				surface.PlaySound(data.sound)
@@ -105,6 +117,9 @@ function PLUGIN:InitializedChatClasses()
 	ix.chat.Register("radio_eavesdrop", {
 		color = Color(255, 255, 150),
 		format = "radioFormatEavesdrop",
+		SelectStyle = function(class, speaker, data)
+			return typeTextStyles[data.typeText]
+		end,
 		OnChatAdd = function(class, speaker, text, bAnonymous, data)
 			local langIcon, langPrefix
 
@@ -118,8 +133,8 @@ function PLUGIN:InitializedChatClasses()
 			hook.Run("AdjustRadioEavesdrop", data)
 
 			local typeText = L(typeTextKeys[data.typeText] or typeTextKeys[1])
-			chat.AddText(langIcon or "", class.color, ix.util.GetMaterial("cellar/chat/eaves_radiohand.png"), L(class.format,
-				name, typeText, L("radioVia"), langPrefix or "", text))
+			chat.AddText(langIcon or "", class.color, ix.util.GetMaterial("cellar/chat/eaves_radiohand.png"),
+				ix.chat.Link("player", name, speaker:GetCharacter():GetID()), L(class.format, typeText, L("radioVia"), langPrefix or "", text))
 
 			if (data.useSound and isstring(data.sound)) then
 				surface.PlaySound(data.sound)
