@@ -1,4 +1,4 @@
-ix.Palette = ix.Palette or {}
+ix.Palette = ix.Palette or {ui = {}}
 
 ix.Palette.black = Color( 0, 0, 0 )
 ix.Palette.white = Color( 255, 255, 255 )
@@ -23,6 +23,10 @@ ix.Palette.darkgray = Color( 71, 71, 71)
 
 -- Autonomous colors
 ix.Palette.autonomousblue = Color( 0, 190, 255)
+ix.Palette.ui.outline = Color(0, 190, 255, 48)
+ix.Palette.ui.outlineLow = Color(0, 190, 255, 16)
+ix.Palette.ui.corner = Color(0, 225, 255, 255)
+ix.Palette.ui.hover = Color(32, 160, 190)
 
 -- Combine colors
 ix.Palette.combineblue = Color( 35, 214, 248 )

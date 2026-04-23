@@ -21,6 +21,8 @@ ix.chat = ix.chat or {}
 -- > "%s says \"%s\""
 ix.chat.classes = ix.chat.classes or {}
 
+ix.chat.links = ix.chat.links or {}
+
 if (!ix.command) then
 	include("sh_command.lua")
 end
@@ -160,7 +162,7 @@ function ix.chat.Register(chatType, data)
 
 			local translated = L2(chatType.."Format", name, text)
 
-			chat.AddText(color, translated or string.format(self.format, name, text))
+			chat.AddText(color, self.formattranslated or string.format(self.format, name, text))
 		end
 	end
 
@@ -296,6 +298,54 @@ function ix.chat.Format(text)
 	return text:utf8sub(1, 1):utf8upper() .. text:utf8sub(2)
 end
 
+function ix.chat.SafeText(str)
+	str = str:gsub("\\", "\\\\")
+	str = str:gsub("<", "\\<")
+	str = str:gsub(">", "\\>")
+
+	return str
+end
+
+do
+	local Link_mt = {
+		__tostring = function(self)
+			return self.str
+		end,
+		parse = function(self)
+			local info = self.link
+			local argsCount = #self.args
+
+			if argsCount > 0 then
+				info = info .. ":"
+
+				for i = 1, argsCount do
+					info = info .. tostring(self.args[i]) .. ((i != argsCount) and "," or "")
+				end
+			end
+
+			return string.format("<link=%s>%s</link>", info, self.str)
+		end
+	}
+	Link_mt.__index = Link_mt
+
+	function ix.chat.Link(id, str, ...)
+		local args = { ... }
+		local self = {
+			str = str,
+			link = id,
+			args = args,
+		}
+
+		return setmetatable(self, Link_mt)
+	end
+end
+
+function ix.chat.RegisterLink(id, callback)
+	if SERVER then return end
+	
+	ix.chat.links[id] = callback
+end
+
 if (SERVER) then
 	util.AddNetworkString("ixChatMessage")
 
@@ -330,6 +380,12 @@ if (SERVER) then
 	-- @bool[opt=false] bAnonymous Whether or not the speaker should be anonymous
 	-- @tab[opt=nil] receivers The players to replicate send the message to
 	-- @tab[opt=nil] data Additional data for this chat message
+
+	local GlobalChatTypes = {
+		["looc"] = true,
+		["pm"] = true,
+		["adminchat"] = true
+	}
 	function ix.chat.Send(speaker, chatType, text, bAnonymous, receivers, data)
 		if (!chatType) then
 			return
@@ -350,7 +406,15 @@ if (SERVER) then
 
 				for _, v in ipairs(player.GetAll()) do
 					if (v:GetCharacter() and class:CanHear(speaker, v, data) != false) then
-						receivers[#receivers + 1] = v
+						if speaker then
+							if !GlobalChatTypes[chatType] and speaker.phase_id == v.phase_id then
+								receivers[#receivers + 1] = v
+							elseif GlobalChatTypes[chatType] then
+								receivers[#receivers + 1] = v
+							end
+						else
+							receivers[#receivers + 1] = v
+						end
 					end
 				end
 
@@ -377,6 +441,10 @@ if (SERVER) then
 				text = ix.chat.Format(text)
 			end
 
+			if (IsValid(speaker) and speaker:IsPlayer()) then
+				text = ix.chat.SafeText(text)
+			end
+
 			text = hook.Run("PlayerMessageSend", speaker, chatType, text, bAnonymous, receivers, rawText) or text
 
 			net.Start("ixChatMessage")
@@ -397,8 +465,22 @@ else
 		if (class) then
 			-- luacheck: globals CHAT_CLASS
 			CHAT_CLASS = class
+			CHAT_CLASS_STYLE = {
+				size = class.size,
+				bold = class.bold,
+				italic = class.italic
+			}
+
+				local style = class.SelectStyle and class:SelectStyle(speaker, data)
+
+				if style then
+					CHAT_CLASS_STYLE = style
+				end
+
 				local modified_text = class:OnChatAdd(speaker, text, anonymous, data)
+
 			CHAT_CLASS = nil
+			CHAT_CLASS_STYLE = nil
 
 			if IsValid(speaker) then
 				local info = {
@@ -652,6 +734,14 @@ ix.chat.Register("notice", {
 	end,
 	noSpaceAfter = true
 })
+
+ix.chat.RegisterLink("player", function(message, characterID)
+	ix.menu.Open({
+		["Report Player"] = function()
+		end,
+		["Profile"] = function()end
+	})
+end)
 
 -- Why does ULX even have a /me command?
 hook.Remove("PlayerSay", "ULXMeCheck")

@@ -4,105 +4,20 @@ local PLUGIN = PLUGIN
 local animationTime = 0.5
 local chatBorder = 32
 local sizingBorder = 20
-local maxChatEntries = 100
-
--- called when a markup object should paint its text
-local function PaintMarkupOverride(text, font, x, y, color, alignX, alignY, alpha)
-	alpha = alpha or 255
-
-	if (ix.option.Get("chatOutline", false)) then
-		-- outlined background for even more visibility
-		draw.SimpleTextOutlined(text, font, x, y, ColorAlpha(color, alpha), alignX, alignY, 1, Color(0, 0, 0, alpha))
-	else
-		-- background for easier reading
-		surface.SetTextPos(x + 1, y + 1)
-		surface.SetTextColor(0, 0, 0, alpha)
-		surface.SetFont(font)
-		surface.DrawText(text)
-
-		surface.SetTextPos(x, y)
-		surface.SetTextColor(color.r, color.g, color.b, alpha)
-		surface.SetFont(font)
-		surface.DrawText(text)
-	end
-end
-
--- chat message
-local PANEL = {}
-
-AccessorFunc(PANEL, "fadeDelay", "FadeDelay", FORCE_NUMBER)
-AccessorFunc(PANEL, "fadeDuration", "FadeDuration", FORCE_NUMBER)
-
-function PANEL:Init()
-	self.text = ""
-	self.alpha = 255
-	self.fadeDelay = 15
-	self.fadeDuration = 5
-end
-
-function PANEL:SetMarkup(text)
-	self.text = text
-
-	self.markup = ix.markup.Parse(self.text, self:GetWide())
-	self.markup.onDrawText = PaintMarkupOverride
-
-	self:SetTall(self.markup:GetHeight())
-
-	timer.Simple(self.fadeDelay, function()
-		if (!IsValid(self)) then
-			return
-		end
-
-		self:CreateAnimation(self.fadeDuration, {
-			index = 3,
-			target = {alpha = 0}
-		})
-	end)
-end
-
-function PANEL:PerformLayout(width, height)
-	if ((IsValid(ix.gui.chat) and ix.gui.chat.bSizing) or width == self.markup:GetWidth()) then
-		return
-	end
-
-	self.markup = ix.markup.Parse(self.text, width)
-	self.markup.onDrawText = PaintMarkupOverride
-
-	self:SetTall(self.markup:GetHeight())
-end
-
-function PANEL:Paint(width, height)
-	local newAlpha
-
-	-- we'll want to hide the chat while some important menus are open
-	if (IsValid(ix.gui.characterMenu)) then
-		newAlpha = math.min(255 - ix.gui.characterMenu.currentAlpha, self.alpha)
-	elseif (ix.gui.chat:GetActive()) then
-		newAlpha = math.max(ix.gui.chat.alpha, self.alpha)
-	else
-		newAlpha = self.alpha
-	end
-
-	if (newAlpha < 1) then
-		return
-	end
-
-	self.markup:draw(0, 0, nil, nil, newAlpha)
-end
-
-vgui.Register("ixChatMessage", PANEL, "Panel")
 
 -- chatbox tab button
-PANEL = {}
+local PANEL = {}
 
 AccessorFunc(PANEL, "bActive", "Active", FORCE_BOOL)
 AccessorFunc(PANEL, "bUnread", "Unread", FORCE_BOOL)
 
 function PANEL:Init()
-	self:SetFont("ixChatFont")
+	self:SetFont("tabmenu.btn.small")
 	self:SetContentAlignment(5)
 
 	self.unreadAlpha = 0
+
+	self.entered = false
 end
 
 function PANEL:SetUnread(bValue)
@@ -113,6 +28,14 @@ function PANEL:SetUnread(bValue)
 		target = {unreadAlpha = bValue and 1 or 0},
 		easing = "outQuint"
 	})
+end
+
+function PANEL:OnCursorEntered()
+	self.entered = true
+end
+
+function PANEL:OnCursorExited()
+	self.entered = false
 end
 
 function PANEL:SizeToContents()
@@ -134,12 +57,13 @@ function PANEL:Init()
 	-- holds all tab buttons
 	self.buttons = self:Add("Panel")
 	self.buttons:Dock(TOP)
-	self.buttons:DockPadding(1, 1, 0, 0)
+	self.buttons:DockPadding(3, 3, 0, 0)
 	self.buttons.OnMousePressed = ix.util.Bind(ix.gui.chat, ix.gui.chat.OnMousePressed) -- we want mouse events to fall through
 	self.buttons.OnMouseReleased = ix.util.Bind(ix.gui.chat, ix.gui.chat.OnMouseReleased)
 	self.buttons.Paint = function(_, width, height)
 		derma.SkinFunc("PaintChatboxTabs", self, width, height)
 	end
+	self.buttons:SetTall(26)
 
 	self.tabs = {}
 end
@@ -151,6 +75,7 @@ end
 function PANEL:AddTab(id, filter)
 	local button = self.buttons:Add("ixChatboxTabButton")
 	button:Dock(LEFT)
+	button:DockMargin(0, 0, 2, 2)
 	button:SetText(id) -- display name is also the ID
 	button:SetActive(false)
 	button:SetMouseInputEnabled(true)
@@ -160,12 +85,47 @@ function PANEL:AddTab(id, filter)
 		self:SetActiveTab(this:GetText())
 	end
 
-	local panel = self:Add("ixChatboxHistory")
+	local panel = self:Add("ui.chat.history")
 	panel:SetButton(button)
 	panel:SetID(id)
 	panel:Dock(FILL)
 	panel:SetVisible(false)
 	panel:SetFilter(filter or {})
+
+	panel:RegisterFontFace({
+		family = "Chat",
+		src = "resource/fonts/Roboto-Regular.ttf",
+	})
+
+	panel:RegisterFontFace({
+		family = "Chat",
+		src = "resource/fonts/Roboto-Italic.ttf",
+		style = "italic"
+	})
+
+	panel:RegisterFontFace({
+		family = "Chat",
+		src = "resource/fonts/Roboto-Bold.ttf",
+		weight = "bold"
+	})
+
+	panel:RegisterFontFace({
+		family = "ChatCounter",
+		src = "resource/fonts/Roboto-Italic.ttf",
+		style = "italic"
+	})
+
+	panel:RegisterFontFace({
+		family = "ChatCounter",
+		src = "resource/fonts/Roboto-BoldItalic.ttf",
+		style = "italic",
+		weight = "bold"
+	})
+
+	panel:SetDefaultFontSize(math.max(ScreenScale(7), 17) * ix.option.Get("chatFontScale", 1))
+	panel:SetFadeLifeTime(0.5, 15)
+
+	panel:Load()
 
 	button.DoRightClick = function(this)
 		ix.gui.chat:OnTabRightClick(this, panel, panel:GetID())
@@ -230,6 +190,7 @@ function PANEL:SetActiveTab(id)
 
 	for _, v in pairs(self.tabs) do
 		v:SetVisible(v:GetID() == id)
+		v:SetActive((v:GetID() == id) and ix.gui.chat.bActive or false)
 	end
 
 	tab:GetButton():SetUnread(false)
@@ -253,116 +214,7 @@ end
 
 vgui.Register("ixChatboxTabs", PANEL, "EditablePanel")
 
--- chatbox history panel
--- holds individual messages in a scrollable panel
-PANEL = {}
 
-AccessorFunc(PANEL, "filter", "Filter") -- blacklist of message classes
-AccessorFunc(PANEL, "id", "ID", FORCE_STRING)
-AccessorFunc(PANEL, "button", "Button") -- button panel that this panel corresponds to
-
-function PANEL:Init()
-	self:DockMargin(4, 2, 4, 4) -- smaller top margin to help blend tab button/history panel transition
-	self:SetPaintedManually(true)
-
-	local bar = self:GetVBar()
-	bar:SetWide(0)
-
-	self.entries = {}
-	self.filter = {}
-end
-
-DEFINE_BASECLASS("Panel") -- DScrollPanel doesn't have SetVisible member
-function PANEL:SetVisible(bState)
-	self:GetCanvas():SetVisible(bState)
-	BaseClass.SetVisible(self, bState)
-end
-
-DEFINE_BASECLASS("DScrollPanel")
-function PANEL:PerformLayoutInternal()
-	local bar = self:GetVBar()
-	local bScroll = !ix.gui.chat:GetActive() or bar.Scroll == bar.CanvasSize -- only scroll when we're not at the bottom/inactive
-
-	BaseClass.PerformLayoutInternal(self)
-
-	if (bScroll) then
-		self:ScrollToBottom()
-	end
-end
-
-function PANEL:ScrollToBottom()
-	local bar = self:GetVBar()
-	bar:SetScroll(bar.CanvasSize)
-end
-
--- adds a line of text as described by its elements
-function PANEL:AddLine(elements, bShouldScroll)
-	-- table.concat is faster than regular string concatenation where there are lots of strings to concatenate
-	local buffer = {
-		"<font=ixChatFont>"
-	}
-
-	if (ix.option.Get("chatTimestamps", false)) then
-		buffer[#buffer + 1] = "<color=150,150,150>("
-
-		if (ix.option.Get("hour24Time", false)) then
-			buffer[#buffer + 1] = os.date("%H:%M")
-		else
-			buffer[#buffer + 1] = os.date("%I:%M %p")
-		end
-
-		buffer[#buffer + 1] = ") "
-	end
-
-	if (CHAT_CLASS) then
-		buffer[#buffer + 1] = "<font="
-		buffer[#buffer + 1] = CHAT_CLASS.font or "ixChatFont"
-		buffer[#buffer + 1] = ">"
-	end
-
-	for _, v in ipairs(elements) do
-		if (type(v) == "IMaterial") then
-			local texture = v:GetName()
-
-			if (texture) then
-				buffer[#buffer + 1] = string.format("<img=%s,%dx%d> ", texture, v:Width(), v:Height())
-			end
-		elseif (istable(v) and v.r and v.g and v.b) then
-			buffer[#buffer + 1] = string.format("<color=%d,%d,%d>", v.r, v.g, v.b)
-		elseif (type(v) == "Player") then
-			local color = team.GetColor(v:Team())
-
-			buffer[#buffer + 1] = string.format("<color=%d,%d,%d>%s", color.r, color.g, color.b,
-				v:GetName():gsub("<", "&lt;"):gsub(">", "&gt;"))
-		else
-			buffer[#buffer + 1] = tostring(v):gsub("<", "&lt;"):gsub(">", "&gt;"):gsub("%b**", function(value)
-				local inner = value:utf8sub(2, -2)
-
-				if (inner:find("%S")) then
-					return "<font=ixChatFontItalics>" .. value:utf8sub(2, -2) .. "</font>"
-				end
-			end)
-		end
-	end
-
-	local panel = self:Add("ixChatMessage")
-	panel:Dock(TOP)
-	panel:InvalidateParent(true)
-	panel:SetMarkup(table.concat(buffer))
-
-	if (#self.entries >= maxChatEntries) then
-		local oldPanel = table.remove(self.entries, 1)
-
-		if (IsValid(oldPanel)) then
-			oldPanel:Remove()
-		end
-	end
-
-	self.entries[#self.entries + 1] = panel
-	return panel
-end
-
-vgui.Register("ixChatboxHistory", PANEL, "DScrollPanel")
 
 PANEL = {}
 DEFINE_BASECLASS("DTextEntry")
@@ -853,6 +705,10 @@ function PANEL:Init()
 	self.entry.OnKeyCodeTyped = ix.util.Bind(self, self.OnKeyCodeTyped)
 	self.entry.OnEnter = ix.util.Bind(self, self.OnMessageSent)
 
+	self.langSelector = entryPanel:Add("ixLanguageChatButton")
+	self.langSelector:Dock(RIGHT)
+	self.langSelector:ChangeFlagIcon(LocalPlayer():GetLanguage())
+
 	self.prefix = entryPanel:Add("ixChatboxPrefix")
 	self.prefix:Dock(LEFT)
 
@@ -953,8 +809,7 @@ function PANEL:SetActive(bActive)
 	local tab = self.tabs:GetActiveTab()
 
 	if (tab) then
-		-- we'll scroll to bottom even if we're opening since the SetVisible for the textentry will shift things a bit
-		tab:ScrollToBottom()
+		tab:SetActive(bActive)
 	end
 
 	self.bActive = tobool(bActive)
@@ -1114,6 +969,7 @@ function PANEL:Paint(width, height)
 	derma.SkinFunc("PaintChatboxBackground", self, width, height)
 
 	if (tab) then
+
 		-- manually paint active tab since messages handle their own alpha lifetime
 		surface.SetAlphaMultiplier(1)
 			tab:PaintManual()

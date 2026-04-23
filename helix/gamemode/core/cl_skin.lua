@@ -384,33 +384,75 @@ function SKIN:PaintHelixSlider(panel, width, height)
 	surface.DrawRect(0, 0, panel:GetVisualFraction() * width, height)
 end
 
+local function DrawCorners(x, y, w, h, size)
+	surface.SetDrawColor(ix.Palette.ui.outline)
+	surface.DrawOutlinedRect(x, y, w, h)
+
+	local offset = 2
+	surface.SetDrawColor(ix.Palette.ui.outlineLow)
+	surface.DrawOutlinedRect(x + offset, y + offset, w - offset * 2, h - offset * 2)
+
+	surface.SetDrawColor(ix.Palette.ui.corner)
+
+	surface.DrawLine(x, y, x + size, y)
+	surface.DrawLine(x, y, x, y + size)
+
+	x, y = w - 1, y
+
+	surface.DrawLine(x, y, x - size, y)
+	surface.DrawLine(x, y, x, y + size)
+
+	x, y = 0, h - 1
+
+	surface.DrawLine(x, y, x + size, y)
+	surface.DrawLine(x, y, x, y - size)
+
+	x, y = w - 1, h - 1
+
+	surface.DrawLine(x, y, x - size, y)
+	surface.DrawLine(x, y, x, y - size)
+end
+
 function SKIN:PaintChatboxTabButton(panel, width, height)
-	if (panel:GetActive()) then
-		surface.SetDrawColor(ix.config.Get("color", Color(75, 119, 190, 255)))
-		surface.DrawRect(0, 0, width, height)
-	else
-		surface.SetDrawColor(0, 0, 0, 100)
-		surface.DrawRect(0, 0, width, height)
+	surface.SetDrawColor(0, 0, 0, 128)
+	surface.DrawRect(0, 0, width, height)
 
-		if (panel:GetUnread()) then
-			surface.SetDrawColor(ColorAlpha(self.Colours.Warning, Lerp(panel.unreadAlpha, 0, 100)))
-			surface.SetTexture(gradient)
-			surface.DrawTexturedRect(0, 0, width, height - 1)
+	DrawCorners(0, 0, width, height, 2)
+
+	local ft = FrameTime()
+
+	panel.hoverAlpha = math.Approach((panel.hoverAlpha or 0), panel.entered and 1 or 0, ft * 5)
+	local hoverAlpha = math.ease.OutCubic(panel.hoverAlpha)
+
+	render.OverrideBlend(true, 4, 1, BLENDFUNC_ADD, 4, 1, BLENDFUNC_ADD)
+		panel.stateAlpha = math.Approach((panel.stateAlpha or 0), panel:GetActive() and 1 or 0, ft * 5)
+
+		if (panel.stateAlpha or 0) > 0 then
+			local a = math.ease.OutCubic(panel.stateAlpha)
+			local offsetAlpha = (1 + (0.5 * hoverAlpha))
+
+			surface.SetDrawColor(ix.Palette.ui.hover.r, ix.Palette.ui.hover.g, ix.Palette.ui.hover.b, 128 * a * offsetAlpha)
+			surface.DrawRect(0, 0, width, height)
 		end
-	end
 
-	-- border
-	surface.SetDrawColor(color_black)
-	surface.DrawRect(width - 1, 0, 1, height) -- right
+		surface.SetDrawColor(ix.Palette.ui.hover.r, ix.Palette.ui.hover.g, ix.Palette.ui.hover.b, 128 * hoverAlpha)
+		surface.DrawRect(0, 0, width, height)
+	render.OverrideBlend(false)
+
+	if !panel:GetActive() and panel:GetUnread() then
+		surface.SetDrawColor(ColorAlpha(ix.Palette.combineyellow, Lerp(panel.unreadAlpha, 0, 100)))
+		surface.SetTexture(gradient)
+		surface.DrawTexturedRect(0, 0, width, height - 1)
+	end
 end
 
 function SKIN:PaintChatboxTabs(panel, width, height, alpha)
 	surface.SetDrawColor(0, 0, 0, 33)
-	surface.DrawRect(0, 0, width, height)
+	surface.DrawRect(2, 0, width - 4, height)
 
 	surface.SetDrawColor(0, 0, 0, 100)
 	surface.SetTexture(gradient)
-	surface.DrawTexturedRect(0, height * 0.5, width, height * 0.5)
+	surface.DrawTexturedRect(2, height * 0.5, width - 4, height * 0.5)
 
 	local tab = panel:GetActiveTab()
 
@@ -425,17 +467,21 @@ function SKIN:PaintChatboxTabs(panel, width, height, alpha)
 	end
 end
 
+local shadow = Material('cellar/slot_shadow.png')
 function SKIN:PaintChatboxBackground(panel, width, height)
 	ix.util.DrawBlur(panel, 10)
 
-	if (panel:GetActive()) then
-		surface.SetDrawColor(ColorAlpha(ix.config.Get("color"), 120))
-		surface.SetTexture(gradientUp)
-		surface.DrawTexturedRect(0, panel.tabs.buttons:GetTall(), width, height * 0.25)
-	end
+	surface.SetDrawColor(color_white)
+	surface.SetMaterial(shadow)
+	surface.DrawTexturedRect(0, 0, width, height)
 
-	surface.SetDrawColor(color_black)
+	surface.SetDrawColor(16, 32, 48, 255 * 0.75)
+	surface.DrawRect(0, 0, width, height)
+
+	surface.SetDrawColor(0, 190 * 0.5, 255 * 0.5, 255 * 0.5)
 	surface.DrawOutlinedRect(0, 0, width, height)
+
+	DrawCorners(0, 0, width, height, 8)
 end
 
 function SKIN:PaintChatboxEntry(panel, width, height)
