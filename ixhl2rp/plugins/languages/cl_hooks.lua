@@ -10,20 +10,6 @@ function PLUGIN:DoVortShout(speaker)
 	netstream.Start("ForceShoutAnim", speaker)
 end
 
-function PLUGIN:ChatboxCreated()
-	if !IsValid(self.panel) then
-		self.panel = vgui.Create("ixLanguageChatButton")
-	end
-end
-
-function PLUGIN:ChatboxPositionChanged(x, y, width, height)
-	self.panel:CorrectPosition(x, y, width, height)
-end
-
-function PLUGIN:CharacterLoaded(character)
-	self.panel:ChangeFlagIcon(LocalPlayer():GetLanguage())
-end
-
 function Derma_LanguageSelect(list, confirmCallback)
 	local panel = vgui.Create("DFrame")
 	panel:SetTitle(L("langExtraLanguageTitle"))
