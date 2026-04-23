@@ -28,7 +28,7 @@ function Schema:InitializedChatClasses()
 
 			local bToYou = speaker:GetEyeTraceNoCursor().Entity == LocalPlayer()
 
-			chat.AddText(icon or "", color, ix.util.GetMaterial("cellar/chat/ic.png"), name, L("chat.ic.says"), langPrefix or "", bToYou and L("chat.toYou") or "", color_white, string.format(self.format, text))
+			chat.AddText(icon or "", color, ix.util.GetMaterial("cellar/chat/ic.png"), ix.chat.Link("player", name, speaker:GetCharacter():GetID()), L("chat.ic.says"), langPrefix or "", bToYou and L("chat.toYou") or "", color_white, string.format(self.format, text))
 			
 			return text
 		end
@@ -65,10 +65,11 @@ function Schema:InitializedChatClasses()
 
 			local bToYou = speaker:GetEyeTraceNoCursor().Entity == LocalPlayer()
 
-			chat.AddText(icon or "", color, ix.util.GetMaterial("cellar/chat/whisper.png"), name, L("chat.w.whispers"), langPrefix or "", bToYou and L("chat.toYou") or "", color_white, string.format(self.format, text))
+			chat.AddText(icon or "", color, ix.util.GetMaterial("cellar/chat/whisper.png"), ix.chat.Link("player", name, speaker:GetCharacter():GetID()), L("chat.w.whispers"), langPrefix or "", bToYou and L("chat.toYou") or "", color_white, string.format(self.format, text))
 			
 			return text
-		end
+		end,
+		size = 11
 	})
 
 	ix.chat.Register("y", {
@@ -91,10 +92,12 @@ function Schema:InitializedChatClasses()
 				L"someone" or hook.Run("GetCharacterName", speaker, "y") or
 				(IsValid(speaker) and speaker:Name() or "Console")
 
-			chat.AddText(icon or "", self.color, ix.util.GetMaterial("cellar/chat/yell.png"), name, L("chat.y.yells"), langPrefix or "", color_white, string.format(self.format, text))
+			chat.AddText(icon or "", self.color, ix.util.GetMaterial("cellar/chat/yell.png"), ix.chat.Link("player", name, speaker:GetCharacter():GetID()), L("chat.y.yells"), langPrefix or "", color_white, string.format(self.format, text))
 			
 			return text
-		end
+		end,
+		size = 24,
+		bold = true
 	})
 
 	-- dispatch broadcast
@@ -175,7 +178,8 @@ function Schema:InitializedChatClasses()
 		end,
 		OnChatAdd = function(class, speaker, text)
 			chat.AddText(class.color, ix.util.GetMaterial("cellar/chat/broadcast.png"), L(class.format, IsValid(speaker) and speaker:Name() or "Broadcast", text))
-		end
+		end,
+		bold = true
 	})
 
 	local meColor = Color(150, 180, 120, 255)
@@ -187,7 +191,9 @@ function Schema:InitializedChatClasses()
 		prefix = {"/MeL", "/ActionLong"},
 		description = "@cmdMeL",
 		deadCanChat = true,
-		indicator = "chatPerforming"
+		indicator = "chatPerforming",
+		italic = true,
+		bold = true
 	})
 
 	ix.chat.Register("me", {
@@ -197,7 +203,8 @@ function Schema:InitializedChatClasses()
 		prefix = {"/Me", "/Action"},
 		description = "@cmdMe",
 		deadCanChat = true,
-		indicator = "chatPerforming"
+		indicator = "chatPerforming",
+		italic = true
 	})
 
 	-- close action
@@ -208,7 +215,9 @@ function Schema:InitializedChatClasses()
 		description = "@cmdMeC",
 		CanHear = ix.config.Get("chatRange", 280) * 0.33,
 		deadCanChat = true,
-		indicator = "chatPerforming"
+		indicator = "chatPerforming",
+		italic = true,
+		size = 11
 	})
 
 	-- direct action
@@ -227,7 +236,9 @@ function Schema:InitializedChatClasses()
 			end
 
 			return speaker == listener or listener == entity
-		end
+		end,
+		italic = true,
+		size = 11
 	})
 
 	local itColor = Color(90, 170, 190, 255)
@@ -240,7 +251,9 @@ function Schema:InitializedChatClasses()
 		indicator = "chatPerforming",
 		OnChatAdd = function(class, speaker, text)
 			chat.AddText(itColor, "**** " .. text)
-		end
+		end,
+		italic = true,
+		bold = true
 	})
 
 	-- close area action
@@ -253,6 +266,7 @@ function Schema:InitializedChatClasses()
 		OnChatAdd = function(self, speaker, text)
 			chat.AddText(itColor, "*** "..text)
 		end,
+		italic = true
 	})
 
 	ix.chat.Register("itc", {
@@ -263,7 +277,9 @@ function Schema:InitializedChatClasses()
 		indicator = "chatPerforming",
 		OnChatAdd = function(class, speaker, text)
 			chat.AddText(itColor, "** " .. text)
-		end
+		end,
+		italic = true,
+		size = 11
 	})
 
 	-- direct area action
@@ -283,7 +299,9 @@ function Schema:InitializedChatClasses()
 		end,
 		OnChatAdd = function(class, speaker, text)
 			chat.AddText(itColor, "* " .. text)
-		end
+		end,
+		italic = true,
+		size = 11
 	})
 
 	ix.chat.Register("roll", {
@@ -295,7 +313,8 @@ function Schema:InitializedChatClasses()
 			chat.AddText(self.color, ix.util.GetMaterial("cellar/chat/roll.png"), string.format(self.format,
 				L("rollOutput", speaker:GetName(), text, data.max or 100)
 			))
-		end
+		end,
+		italic = true
 	})
 
 	ix.chat.Register("dice", {
@@ -307,7 +326,8 @@ function Schema:InitializedChatClasses()
 			chat.AddText(self.color, ix.util.GetMaterial("cellar/chat/roll.png"), string.format(self.format,
 				L("rollOutput", speaker:GetName(), text, data.max or 100), data.dices or 1, data.sides or 1
 			))
-		end
+		end,
+		italic = true
 	})
 
 	ix.chat.Register("chess", {
@@ -322,6 +342,7 @@ function Schema:InitializedChatClasses()
 		OnChatAdd = function(self, speaker, text)
 			chat.AddText(Color(255, 150, 0), text)
 		end,
+		italic = true
 	})
 end
 
