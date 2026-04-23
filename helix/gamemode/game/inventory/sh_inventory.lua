@@ -51,7 +51,7 @@ if SERVER then
 			end
 		end
 
-		local hookDelay = hook.Run("СomputeItemTransferDelay", client, items, sourceItem, delay)
+		local hookDelay = hook.Run("ComputeItemTransferDelay", client, items, sourceItem, delay)
 
 		if hookDelay != nil then
 			delay = hookDelay or delay
