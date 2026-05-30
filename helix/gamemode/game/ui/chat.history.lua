@@ -211,17 +211,19 @@ function PANEL:AddLine(elements, bShouldScroll)
 	local buffer = {
 		"<font=Chat>"
 	}
+	
+	if CHAT_CLASS_STYLE then
+		if CHAT_CLASS_STYLE.size then
+			buffer[#buffer + 1] = string.format("<size=%d>", CHAT_CLASS_STYLE.size)
+		end
 
-	if CHAT_CLASS_STYLE.size then
-		buffer[#buffer + 1] = string.format("<size=%d>", CHAT_CLASS_STYLE.size)
-	end
+		if CHAT_CLASS_STYLE.italic then
+			buffer[#buffer + 1] = "<i>"
+		end
 
-	if CHAT_CLASS_STYLE.italic then
-		buffer[#buffer + 1] = "<i>"
-	end
-
-	if CHAT_CLASS_STYLE.bold then
-		buffer[#buffer + 1] = "<b>"
+		if CHAT_CLASS_STYLE.bold then
+			buffer[#buffer + 1] = "<b>"
+		end
 	end
 
 	if ix.option.Get("chatTimestamps", false) then
