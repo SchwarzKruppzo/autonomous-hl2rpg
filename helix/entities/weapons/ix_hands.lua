@@ -278,6 +278,10 @@ function SWEP:PickupObject(entity)
 
 	self.constraint = constraint.Weld(self.holdEntity, self.heldEntity, 0,
 		trace.Entity:IsRagdoll() and trace.PhysicsBone or 0, 0, true, true)
+
+	if entity.OnPickupObject then
+		entity:OnPickupObject(self:GetOwner())
+	end
 end
 
 function SWEP:DropObject(bThrow)

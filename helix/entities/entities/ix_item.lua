@@ -159,6 +159,27 @@ if SERVER then
 		return true
 	end
 
+	function ENT:Touch(activator)
+		local CT = CurTime()
+		local item = self:GetItem()
+
+		if item.Touch then
+			if self.nextTouchTick and CT < self.nextTouchTick then return end
+
+			item:Touch(self, activator)
+
+			self.nextTouchTick = CT + 0.2
+		end
+	end
+
+	function ENT:OnPickupObject(activator)
+		local item = self:GetItem()
+
+		if item.OnPickupObject then
+			item:OnPickupObject(self, activator)
+		end
+	end
+
 	function ENT:UpdateTransmitState()
 		return TRANSMIT_PVS
 	end
