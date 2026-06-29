@@ -23,10 +23,12 @@ function PANEL:BuildData()
 	self.tex = {}
 
 	local health = self.character:Health()
+	local limbsCount = 0
 
 	for k, limb in ipairs(health.body.parts or {}) do
 		if limb.hidden then continue end
 
+		limbsCount = limbsCount + 1
 		self.tex[#self.tex + 1] = {limb.name, limb.texture, limb.id, limb.health}
 	end
 
@@ -40,10 +42,12 @@ function PANEL:BuildData()
 		if self.character then
 			local text = ""
 			local health = self.character:Health()
+			local currentLimb = 0
 			for k, limb in ipairs(health.body.parts or {}) do
 				if limb.hidden then continue end
 
-				text = text .. string.format("%s — %s/%s HP", limb.name, health:GetPartHealth(limb.id), limb.health) .. ((k != #limbs) and "\n" or "")
+				currentLimb = currentLimb + 1
+				text = text .. string.format("%s — %s/%s HP", limb.name, health:GetPartHealth(limb.id), limb.health) .. ((currentLimb != limbsCount) and "\n" or "")
 			end
 				  
 			local description = tooltip:AddRow("description")
