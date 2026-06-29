@@ -50,9 +50,20 @@ do
 			local client = self:GetPlayer()
 
 			local instance = ix.Item:Instance(type)
-			instance:SetupCharacter(self)
 
-			client:AddItem(instance, "cid")
+			--TO DO: migrate to newer datafile implementation
+			--instance:SetupCharacter(self)
+
+			--client:AddItem(instance, "cid")
+
+			--LEGACY:
+			instance:CreateDatafile(client)
+
+			timer.Simple(1, function()
+				client.ixDatafile = instance:GetData("datafileID", 0)
+
+				client:AddItem(instance, "cid")
+			end)
 		end
 	end
 end

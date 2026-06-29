@@ -15,24 +15,49 @@ CARDTYPE_CWU = 2
 CARDTYPE_UNION = 3
 CARDTYPE_CITY = 4
 
-local prime = 9999999787 -- prime % 4 = 3! DO NOT CHANGE EVER
-local offset = 100000 -- slightly larger than sqrt(prime) is ok. DO NOT CHANGE EVER
-local block = 100000000
-local function generateCardNumber(id)
-	id = (id + offset) % prime
+do
+	local prime = 9999999787 -- prime % 4 = 3! DO NOT CHANGE EVER
+	local offset = 100000 -- slightly larger than sqrt(prime) is ok. DO NOT CHANGE EVER
+	local block = 100000000
+	function Item:GenerateCardNumber(id)
+		id = (id + offset) % prime
 
-	local cardNum = 0
+		local cardNum = 0
 
-	for _ = 1, math.floor(id/block) do
-		cardNum = (cardNum + (id * block) % prime) % prime
+		for _ = 1, math.floor(id/block) do
+			cardNum = (cardNum + (id * block) % prime) % prime
+		end
+
+		cardNum = (cardNum + (id * (id % block) % prime)) % prime
+
+		if (2 * id < prime) then
+			return Schema:ZeroNumber(cardNum, 10)
+		else
+			return Schema:ZeroNumber(prime - cardNum, 10)
+		end
 	end
+end
 
-	cardNum = (cardNum + (id * (id % block) % prime)) % prime
+do
+	local prime = 99787 // prime % 4 = 3, don't change
+	local offset = 318 // > sqrt(prime), don't change
+	local block = 1000
+	function Item:GenerateCitizenID(characterID)
+		characterID = (characterID + offset) % prime
 
-	if (2 * id < prime) then
-		return cardNum
-	else
-		return prime - cardNum
+		local cid = 0
+
+		for _ = 1, math.floor(characterID/block) do
+			cid = (cid + (characterID * block) % prime) % prime
+		end
+
+		cid = (cid + (characterID * (characterID % block) % prime)) % prime
+
+		if (2 * characterID < prime) then
+			return Schema:ZeroNumber(cid, 5)
+		else
+			return Schema:ZeroNumber(prime - cid, 5)
+		end
 	end
 end
 
@@ -81,13 +106,17 @@ function Item:Init()
 	})
 
 	self:AddData("datafileID", {
-		Transmit = ix.transmit.owner,
+		Transmit = ix.transmit.none,
+	})
+
+	self:AddData("nextRationTime", {
+		Transmit = ix.transmit.none,
 	})
 end
 
 function Item:OnInstanced(isCreated)
 	if isCreated then
-		local cardNumber = Schema:ZeroNumber(generateCardNumber(self:GetID()), 10)
+		local cardNumber = self:GenerateCardNumber(self:GetID())
 		self:SetData("number", string.format("%s-%d",
 			string.gsub(cardNumber, "^(%d%d)(%d%d%d%d)(%d%d%d%d)", "%1%-%2%-%3"),
 			Schema:ZeroNumber(cardNumber % 97, 2)
@@ -100,9 +129,9 @@ function Item:OnInstanced(isCreated)
 end
 
 function Item:SetupCharacter(character)
-	self:SetData("name", character:GetName())
-	self:SetData("cid", "000-00")
-	self:SetData("datafileID", character:GetID())
+	--self:SetData("name", character:GetName())
+	--self:SetData("cid", "000-00")
+	--self:SetData("datafileID", character:GetID())
 end
 
 function Item:CreateDatafile(client)
@@ -110,18 +139,26 @@ function Item:CreateDatafile(client)
 		local character = client:GetCharacter()
 
 		self:SetData("name", character:GetName())
-		self:SetData("cid", Schema:ZeroNumber(math.random(1, 99999), 5))
+		self:SetData("cid", self:GenerateCitizenID(character:GetID()))
 
-		hook.Run("OnIDCardUpdated", self)
+		timer.Simple(0, function()
+			hook.Run("OnIDCardUpdated", self)
+		end)
 	end
 end
 
 function Item:OnEquipped(client)
-	ix.Datafile:OnCardEquipped(client, self, true)
+	--ix.Datafile:OnCardEquipped(client, self, true)
+
+	--LEGACY:
+	client.ixDatafile = self:GetData("datafileID", 0)
 end
 
 function Item:OnUnequipped(client)
-	ix.Datafile:OnCardEquipped(client, self, false)
+	--ix.Datafile:OnCardEquipped(client, self, false) 
+
+	--LEGACY:
+	client.ixDatafile = nil
 end
 
 if CLIENT then
