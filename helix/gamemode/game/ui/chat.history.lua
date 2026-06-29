@@ -250,7 +250,7 @@ function PANEL:AddLine(elements, bShouldScroll)
 		elseif type(v) == "Player" then
 			local color = team.GetColor(v:Team())
 
-			buffer[#buffer + 1] = string.format("<color=%d,%d,%d><link=player:%s>%s</link", color.r, color.g, color.b,
+			buffer[#buffer + 1] = string.format("<color=%d,%d,%d><link=player:%s>%s</link>", color.r, color.g, color.b,
 				v:GetCharacter():GetID(),v:GetName():gsub("<", "&lt;"):gsub(">", "&gt;"))
 		elseif istable(v) and v.link then
 			buffer[#buffer + 1] = v:parse()
