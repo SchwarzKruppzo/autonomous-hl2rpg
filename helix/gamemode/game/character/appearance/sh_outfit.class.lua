@@ -21,6 +21,8 @@ function Outfit:Init(owner)
 	if SERVER then
 		self.isModelChangedByOutfit = false
 
+		self.lastHands = nil
+		self.items = {}
 		self.armor = {}
 		self.gasmask = nil
 
@@ -143,11 +145,15 @@ if SERVER then
 	end
 
 	function Outfit:AddItem(item)
-		self:Add(item.displayID)
+		--self:Add(item.displayID)
+
+		self.items[item] = true
 	end
 
 	function Outfit:RemoveItem(item)
-		self:Remove(item.displayID)
+		--self:Remove(item.displayID)
+
+		self.items[item] = nil
 	end
 
 	function Outfit:Add(displayId)
@@ -161,7 +167,7 @@ if SERVER then
 			return
 		end
 		
-		self.displayIds[displayInfo.slot] = displayInfo
+		self.displayIds[displayInfo.slot] = displayId --displayInfo
 	end
 
 	function Outfit:ModifyItem(item, bodygroups)
@@ -259,8 +265,26 @@ if SERVER then
 		-- определяем скрытые слоты и body-маски
 		local hiddenSlots = {}
 		local bodyMasks = {}
+		local displayIds = table.Copy(self.displayIds)
 
-		for slot, displayInfo in pairs(self.displayIds) do
+		for item, _ in pairs(self.items) do
+			local dispID = item.displayID
+
+			if item.GetDisplayID then
+				dispID = item:GetDisplayID(self.owner)
+			end
+
+			local displayInfo = Appearance.Database[dispID]
+
+			if displayInfo then
+				displayIds[displayInfo.slot] = dispID
+			end
+		end
+
+		for slot, displayId in pairs(displayIds) do
+			local displayInfo = Appearance.Database[displayId]
+			if !displayInfo then continue end
+			
 			local effect = Appearance.SlotEffect[slot]
 			local variant = displayInfo.slotEffect
 
@@ -299,7 +323,10 @@ if SERVER then
 		local params = {}
 		local lastParams = self.lastPoseParams or {}
 
-		for slot, displayInfo in pairs(self.displayIds) do
+		for slot, displayId in pairs(displayIds) do
+			local displayInfo = Appearance.Database[displayId]
+			if !displayInfo then continue end
+			
 			if hiddenSlots[slot] then continue end
 
 			local visualInfo = displayInfo
@@ -337,9 +364,11 @@ if SERVER then
 
 		self.lastPoseParams = params
 		
+		local handsPriority = -math.huge
+		local targetHands = nil
+
 		for layer, part in ipairs(self.layers) do
 			if !IsValid(part) then continue end
-
 
 			local targetModel = nil
 			local bodyGroups = {}
@@ -355,6 +384,15 @@ if SERVER then
 				if visualInfo then
 					if visualInfo.model and not targetModel then
 						targetModel = visualInfo.model
+					end
+
+					if visualInfo.hands then
+						local currentPriority = visualInfo.hands.priority or -math.huge
+
+						if currentPriority > handsPriority then
+							targetHands = visualInfo.hands
+							handsPriority = currentPriority
+						end
 					end
 
 					if visualInfo.bodyGroups then
@@ -409,6 +447,33 @@ if SERVER then
 
 				if val != nil and part:GetBodygroup(i) != val then
 					part:SetBodygroup(i, val)
+				end
+			end
+		end
+
+		if self.owner:IsPlayer() then
+			if targetHands then
+				local hands = self.owner:GetHands()
+
+				if IsValid(hands) then
+					if hands:GetModel() != targetHands.model then
+						hands:SetModel(targetHands.model)
+					end
+
+					hands:SetSkin(targetHands.skin or 0)
+
+					local handsGroups = targetHands.bodyGroups or {}
+					for _, group in pairs(hands:GetBodyGroups()) do
+						hands:SetBodygroup(group.id, handsGroups[group.id] or 0)
+					end
+
+					self.lastHands = targetHands.model
+				end
+			else
+				if self.lastHands then
+					hook.Run("PlayerSetHandsModel", self.owner, self.owner:GetHands())
+
+					self.lastHands = nil
 				end
 			end
 		end
