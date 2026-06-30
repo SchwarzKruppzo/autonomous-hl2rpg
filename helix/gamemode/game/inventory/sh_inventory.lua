@@ -109,7 +109,7 @@ if SERVER then
 		end
 	end
 
-	function GM:InventoryItemRemoved(oldInventory, item, newInventory)
+	function GM:InventoryItemAdded(oldInventory, newInventory, item)
 		if item.OnTransfer then
 			item:OnTransfer(newInventory, oldInventory)
 		end
