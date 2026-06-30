@@ -1,7 +1,7 @@
 do
 	local PLAYER = FindMetaTable("Player")
 
-	function PLAYER:CreateInventories()
+	function PLAYER:CreateInventories(loadCallback)
 		local inventories = {}
 
 		hook.Run("CreatePlayerInventories", self, inventories)
@@ -20,6 +20,10 @@ do
 		
 		self:LoadInventories(function()
 			self:SyncInventories()
+
+			if loadCallback then
+				loadCallback(self)
+			end
 		end)
 	end
 
