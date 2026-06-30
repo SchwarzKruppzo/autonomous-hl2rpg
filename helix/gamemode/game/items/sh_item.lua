@@ -408,11 +408,13 @@ if SERVER then
 
 			if hook.Run('CanPlayerDropItem', client, item) == false then return end
 
+			local wasEquipped = item.IsEquipped and item:IsEquipped()
+
 			inventory:TakeItemTable(item)
 
 			local result
 			if item.OnDrop then
-				result = item:OnDrop(client, inventory)
+				result = item:OnDrop(client, inventory, wasEquipped)
 			end
 			
 			if result != true then
