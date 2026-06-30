@@ -298,8 +298,6 @@ function GM:PlayerLoadedCharacter(client, character, lastChar)
 		client.ixRagdoll.ixIgnoreDelete = true
 		client.ixRagdoll:Remove()
 	end
-
-	hook.Run("PlayerLoadout", client)
 end
 
 function GM:CharacterLoaded(character)
@@ -310,7 +308,9 @@ function GM:CharacterLoaded(character)
 			character.meta_vars[var]:Load(character.vars)
 		end
 
-		client:CreateInventories()
+		client:CreateInventories(function(client)
+			hook.Run("PlayerLoadout", client)
+		end)
 
 		local uniqueID = "ixSaveChar"..client:SteamID()
 
