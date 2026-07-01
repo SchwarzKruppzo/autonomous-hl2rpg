@@ -73,8 +73,8 @@ if (SERVER) then
 			end
 		end
 
-		for k, _ in ipairs(toRemove) do
-			table.remove(self.corpses, k)
+		for i = #toRemove, 1, -1 do
+			table.remove(self.corpses, toRemove[i])
 		end
 	end
 
