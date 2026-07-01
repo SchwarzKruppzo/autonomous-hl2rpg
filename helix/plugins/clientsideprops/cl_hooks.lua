@@ -105,7 +105,7 @@ net.Receive("clientprop.recreate", function()
 		break
 	end
 
-	for _, prop in ipairs(PLUGIN.activeClientProps) do
+	for k, prop in ipairs(PLUGIN.activeClientProps) do
 		if !prop:GetPos():IsEqualTol(pos, 0.1) then continue end
 
 		prop:Remove()
