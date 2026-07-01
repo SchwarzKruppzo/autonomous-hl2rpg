@@ -1,5 +1,6 @@
 local PANEL = {}
 PANEL.item_data = nil
+PANEL.item_count = 1
 
 local RARITY_CLR = {
 	[0] = Color(72, 72, 72, 128),
@@ -31,11 +32,19 @@ function PANEL:Paint(w, h)
 		if IsValid(self.mdl) then
 			self.mdl:PaintManual()
 		end
+	elseif self.missingItemID then
+		surface.SetDrawColor(96, 60, 60, 220)
+		surface.DrawRect(1, 1, w - 2, h - 2)
+
+		surface.SetDrawColor(255, 32, 32, 160)
+		surface.DrawOutlinedRect(1, 1, w - 2, h - 2)
+
+		draw.SimpleText(tostring(self.missingItemID), "DermaDefault", w * 0.5, h * 0.5, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 	end
 end
 
 function PANEL:PaintOver(w, h)
-	if self.item_count >= 2 then
+	if (self.item_count or 0) >= 2 then
 		//DisableClipping(true)
 			draw.SimpleText(self.item_count, 'item.count', w - math.scale(12), h - 16, Color(225, 225, 225))
 		//DisableClipping(false)
@@ -81,6 +90,19 @@ end
 
 function PANEL:Rebuild(itemID, slotSize, customModel)
 	self.item_data = ix.Item.stored[itemID]
+	self.missingItemID = nil
+
+	if !self.item_data then
+		self.missingItemID = itemID
+		self:SetSize(slotSize, slotSize)
+
+		if IsValid(self.mdl) then
+			self.mdl:Remove()
+		end
+
+		self.mdl = nil
+		return
+	end
 
 	
 	if !self:IsRotated() then

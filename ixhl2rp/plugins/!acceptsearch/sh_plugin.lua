@@ -39,6 +39,10 @@ if CLIENT then
 	net.Receive("rp.search.request", function(len)
 		local client = net.ReadEntity()
 
+		if !IsValid(client) then
+			return
+		end
+
 		Derma_Query(
     		L("psearchRequestMessage", client:GetName()),
     		L("psearchRequestTitle"),
@@ -53,7 +57,17 @@ if CLIENT then
 		local sender = net.ReadEntity()
 		local itemID = net.ReadString()
 		local item = ix.Item:Get(itemID)
+
+		if !IsValid(sender) or !item then
+			return
+		end
+
 		local target = sender:GetEyeTraceNoCursor().Entity
+
+		if !IsValid(target) then
+			return
+		end
+
 		local entityPlayer = target:GetNetVar("player")
 
 		local name = hook.Run("GetCharacterName", target:IsRagdoll() and entityPlayer or target, "me")

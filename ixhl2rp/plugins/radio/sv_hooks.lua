@@ -164,6 +164,11 @@ netstream.Hook("ixRadioFrequency", function(player, id, freq)
 	local has, itemTable = player:HasItemByID(id)
 	
 	if itemTable then
+		if !isstring(freq) then
+			player:NotifyLocalized("radioFrequencyFormat")
+			return
+		end
+
 		if string.find(freq, "^%d%d%d%.%d$") then
 			local first = string.match(freq, "(%d)%d%d%.%d")
 			if first != "0" then

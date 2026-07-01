@@ -15,6 +15,51 @@ local function ValidateItem(recipe, entry)
 	end
 end
 
+local function IsKnownItem(uniqueID)
+	return !isstring(uniqueID) or ix.Item:Get(uniqueID) != nil
+end
+
+local function IsKnownItemMap(items)
+	if isstring(items) then
+		return IsKnownItem(items)
+	end
+
+	if istable(items) then
+		for key, value in pairs(items) do
+			if isstring(key) and !IsKnownItem(key) then
+				return false
+			end
+
+			if istable(value) then
+				for childKey, _ in pairs(value) do
+					if isstring(childKey) and !IsKnownItem(childKey) then
+						return false
+					end
+				end
+			end
+		end
+	end
+
+	return true
+end
+
+local function IsKnownItemList(items)
+	for _, uniqueID in pairs(items or {}) do
+		if !IsKnownItem(uniqueID) then
+			return false
+		end
+	end
+
+	return true
+end
+
+local function IsKnownRecipeItems(recipe)
+	return IsKnownItemMap(recipe.requirements)
+		and IsKnownItemMap(recipe.results)
+		and IsKnownItemMap(recipe.any)
+		and IsKnownItemList(recipe.tools)
+end
+
 function Craft:ValidateRecipe(recipe, data)
 	if data.requirements then
 		ValidateItem(recipe, data.requirements)
@@ -76,10 +121,24 @@ if SERVER then
 	util.AddNetworkString("ixCraftRecipe")
 
 	function Craft:AttemptCraft(recipe, client)
+		if !IsValid(client) then
+			return false
+		end
+
 		local character = client:GetCharacter()
 
 		if !character then
 			return false
+		end
+
+		if !IsKnownRecipeItems(recipe) then
+			return false, "craftNeedItems"
+		end
+
+		local inventory = client:GetInventory("main")
+
+		if !inventory then
+			return false, "craftNeedItems"
 		end
 		
 		if recipe.skill and istable(recipe.skill) then
@@ -98,10 +157,11 @@ if SERVER then
 
 		if recipe.station then
 			local hasStation
+			local stationTable = IsValid(client.ixStation) and client.ixStation:GetStationTable()
 
 			if istable(recipe.station) then
 				for k, v in ipairs(recipe.station) do
-					if IsValid(client.ixStation) and client.ixStation:GetStationTable().uniqueID == v then
+					if stationTable and stationTable.uniqueID == v then
 						hasStation = true
 						break
 					end
@@ -113,18 +173,19 @@ if SERVER then
 			else
 				local stationInfo = self.stations[recipe.station]
 				
-				if IsValid(client.ixStation) and client.ixStation:GetStationTable().uniqueID == recipe.station then
+				if stationTable and stationTable.uniqueID == recipe.station then
 					hasStation = true
 				end
 
 				if !hasStation then
-					return false, "craftNeedStation", L(stationInfo.name)
+					return false, "craftNeedStation", stationInfo and L(stationInfo.name, client) or tostring(recipe.station)
 				end
 			end
 		end
 
 		local hasItems = true
 		local hasTools = true
+		local stationInventory = IsValid(client.ixStation) and client.ixStation.inventory
 
 		if recipe.tools then
 			for _, uniqueID in pairs(recipe.tools or {}) do
@@ -142,8 +203,8 @@ if SERVER then
 		if recipe.isBreakdown then
 			local hasInCraft
 
-			if IsValid(client.ixStation) then
-				hasInCraft = client.ixStation.inventory:HasItem(recipe.requirements)
+			if stationInventory then
+				hasInCraft = stationInventory:HasItem(recipe.requirements)
 			end
 
 			if !client:HasItem(recipe.requirements, "main") and !hasInCraft then
@@ -154,15 +215,18 @@ if SERVER then
 				local count = 0
 				local stored = ix.Item:Get(uniqueID)
 
-				if stored.stackable_legacy then
-					for k, v in ipairs(client:GetInventory("main"):GetItems()) do
+				if !stored then
+					hasItems = false
+					break
+				elseif stored.stackable_legacy then
+					for k, v in ipairs(inventory:GetItems()) do
 						if v.uniqueID == uniqueID then
 							count = count + v:GetValue()
 						end
 					end
 
-					if IsValid(client.ixStation) then
-						for k, v in ipairs(client.ixStation.inventory:GetItems()) do
+					if stationInventory then
+						for k, v in ipairs(stationInventory:GetItems()) do
 							if v.uniqueID == uniqueID then
 								count = count + v:GetValue()
 							end
@@ -174,30 +238,30 @@ if SERVER then
 						break
 					end
 				else
-					count = count + client:GetInventory("main"):GetItemsCount(uniqueID)
+					count = count + inventory:GetItemsCount(uniqueID)
 
-					if IsValid(client.ixStation) then
-						count = count + client.ixStation.inventory:GetItemsCount(uniqueID)
+					if stationInventory then
+						count = count + stationInventory:GetItemsCount(uniqueID)
 					end
 
 				if recipe.any and recipe.any[uniqueID] then
 					for k, v in pairs(recipe.any[uniqueID]) do
-						count = count + client:GetInventory("main"):GetItemsCount(k)
+						count = count + inventory:GetItemsCount(k)
 
-						if IsValid(client.ixStation) then
-							count = count + client.ixStation.inventory:GetItemsCount(k)
+						if stationInventory then
+							count = count + stationInventory:GetItemsCount(k)
 						end
 					end
 				end
 
-				for _, item in ipairs(client:GetInventory("main"):GetItems()) do
+				for _, item in ipairs(inventory:GetItems()) do
 					if item.reusable and item.junk == uniqueID and (item:GetData("value") or 0) <= 0.1 then
 						count = count + 1
 					end
 				end
 
-				if IsValid(client.ixStation) then
-					for _, item in ipairs(client.ixStation.inventory:GetItems()) do
+				if stationInventory then
+					for _, item in ipairs(stationInventory:GetItems()) do
 						if item.reusable and item.junk == uniqueID and (item:GetData("value") or 0) <= 0.1 then
 							count = count + 1
 						end
@@ -227,7 +291,16 @@ if SERVER then
 	end
 
 	function Craft:OnCraft(recipe, client)
+		if !IsValid(client) or !IsKnownRecipeItems(recipe) then
+			return false
+		end
+
 		local character = client:GetCharacter()
+		local inventory = client:GetInventory("main")
+
+		if !character or !inventory then
+			return false
+		end
 
 		local xp = recipe.xp or 0
 
@@ -240,10 +313,9 @@ if SERVER then
 			character:DoAction("craft_"..skill, xp)
 		end
 
-		local inventory = client:GetInventory("main")
-
 		local deltaRemoved = {}
 		local deltaAdded = {}
+		local stationInventory = IsValid(client.ixStation) and client.ixStation.inventory
 
 		if recipe.isBreakdown then
 			local hasItem
@@ -261,12 +333,12 @@ if SERVER then
 				end
 			end
 
-			if IsValid(client.ixStation) and !hasItem then
-				for k, v in ipairs(client.ixStation.inventory:GetItems()) do
+			if stationInventory and !hasItem then
+				for k, v in ipairs(stationInventory:GetItems()) do
 					if v.uniqueID == recipe.requirements then
 						local inv_id = v.inventory_id
 						local old_x, old_y, old_id = v.x, v.y, v.id
-						local old_w, old_h = client.ixStation.inventory:GetItemSize(v)
+						local old_w, old_h = stationInventory:GetItemSize(v)
 						hasItem = true
 						v:Remove(nil, true)
 
@@ -296,15 +368,17 @@ if SERVER then
 			local countRemoved = 0
 			local stored = ix.Item:Get(uniqueID)
 
-			if stored.stackable_legacy then
+			if !stored then
+				return false
+			elseif stored.stackable_legacy then
 				for k, v in ipairs(inventory:FindItems(uniqueID)) do
 					if countRemoved >= amount then break end
 
 					countRemoved = countRemoved + v:TakeValue(amount - countRemoved)
 				end
 
-				if countRemoved < amount and IsValid(client.ixStation) then
-					for k, v in ipairs(client.ixStation.inventory:FindItems(uniqueID)) do
+				if countRemoved < amount and stationInventory then
+					for k, v in ipairs(stationInventory:FindItems(uniqueID)) do
 						if countRemoved >= amount then 
 							break
 						end
@@ -330,15 +404,15 @@ if SERVER then
 					continue
 				end
 				
-				if IsValid(client.ixStation) then
-					for k, v in ipairs(client.ixStation.inventory:GetItems()) do
+				if stationInventory then
+					for k, v in ipairs(stationInventory:GetItems()) do
 						if isAccept(recipe, v, uniqueID) then
 							if (countRemoved + 1) > amount then continue end
 
 							countRemoved = countRemoved + 1
 							local inv_id = v.inventory_id
 							local old_x, old_y, old_id = v.x, v.y, v.id
-							local old_w, old_h = client.ixStation.inventory:GetItemSize(v)
+							local old_w, old_h = stationInventory:GetItemSize(v)
 							v:Remove(nil, true)
 							table.insert(deltaRemoved, {inv_id = inv_id, item_id = old_id, x = old_x, y = old_y, w = old_w, h = old_h})
 						end
@@ -387,7 +461,9 @@ if SERVER then
 
 			local stored = ix.Item:Get(uniqueID)
 
-			if stored.stackable_legacy then
+			if !stored then
+				return false
+			elseif stored.stackable_legacy then
 				local countAdded = 0
 
 				for k, v in ipairs(inventory:FindItems(uniqueID)) do
@@ -396,8 +472,8 @@ if SERVER then
 					countAdded = countAdded + v:AddValue(amount - countAdded)
 				end
 
-				if countAdded < amount and IsValid(client.ixStation) then
-					for k, v in ipairs(client.ixStation.inventory:FindItems(uniqueID)) do
+				if countAdded < amount and stationInventory then
+					for k, v in ipairs(stationInventory:FindItems(uniqueID)) do
 						if countAdded >= amount then break end
 
 						countAdded = countAdded + v:AddValue(amount - countAdded)
@@ -419,9 +495,9 @@ if SERVER then
 						item:SetData("stack", value)
 						local x, y, need_rotation = inventory:FindPosition(item, item.width, item.height)
 
-						if IsValid(client.ixStation) then
+						if stationInventory then
 							if !x or !y then
-								inventory = client.ixStation.inventory
+								inventory = stationInventory
 
 								x, y, need_rotation = inventory:FindPosition(item, item.width, item.height)
 							end
@@ -448,9 +524,9 @@ if SERVER then
 					local item = ix.Item:Instance(uniqueID)
 					local x, y, need_rotation = inventory:FindPosition(item, item.width, item.height)
 
-					if IsValid(client.ixStation) then
+					if stationInventory then
 						if !x or !y then
-							inventory = client.ixStation.inventory
+							inventory = stationInventory
 
 							x, y, need_rotation = inventory:FindPosition(item, item.width, item.height)
 						end

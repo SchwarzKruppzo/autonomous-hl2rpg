@@ -3,6 +3,12 @@ local PANEL = {}
 
 AccessorFunc(PANEL, "bReadOnly", "ReadOnly", FORCE_BOOL)
 
+local function GetLocalMoney()
+	local character = LocalPlayer():GetCharacter()
+
+	return character and character:GetMoney() or 0
+end
+
 function PANEL:Init()
 	self:SetSize(ScrW() * 0.45, ScrH() * 0.65)
 	self:SetTitle("")
@@ -24,7 +30,7 @@ function PANEL:Init()
 	self.ourName = header:Add("DLabel")
 	self.ourName:Dock(RIGHT)
 	self.ourName:SetWide(self:GetWide() * 0.5 - 7)
-	self.ourName:SetText(L"you".." ("..ix.currency.Get(LocalPlayer():GetCharacter():GetMoney())..")")
+	self.ourName:SetText(L"you".." ("..ix.currency.Get(GetLocalMoney())..")")
 	self.ourName:SetTextInset(0, 0)
 	self.ourName:SetTextColor(color_white)
 	self.ourName:SetFont("ixMediumFont")
@@ -176,7 +182,7 @@ function PANEL:Think()
 	if ((self.nextUpdate or 0) < CurTime()) then
 		self:SetTitle(self.entity:GetDisplayName())
 		self.vendorName:SetText(entity:GetDisplayName()..(entity.money and " ("..ix.currency.Get(entity.money)..")" or ""))
-		self.ourName:SetText(L"you".." ("..ix.currency.Get(LocalPlayer():GetCharacter():GetMoney())..")")
+		self.ourName:SetText(L"you".." ("..ix.currency.Get(GetLocalMoney())..")")
 
 		self.nextUpdate = CurTime() + 0.25
 	end

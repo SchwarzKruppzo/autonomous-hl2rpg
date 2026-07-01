@@ -4,6 +4,34 @@ PLUGIN.name = "MPF Items"
 PLUGIN.author = "SchwarzKruppzo"
 PLUGIN.description = ""
 
+do
+	local PLAYER = FindMetaTable("Player")
+
+	if !PLAYER.SetPrimaryVisorColor then
+		function PLAYER:SetPrimaryVisorColor(color)
+			self:SetNWVector("ixPrimaryVisorColor", isvector(color) and color or vector_origin)
+		end
+	end
+
+	if !PLAYER.GetPrimaryVisorColor then
+		function PLAYER:GetPrimaryVisorColor()
+			return self:GetNWVector("ixPrimaryVisorColor", vector_origin)
+		end
+	end
+
+	if !PLAYER.SetSecondaryVisorColor then
+		function PLAYER:SetSecondaryVisorColor(color)
+			self:SetNWVector("ixSecondaryVisorColor", isvector(color) and color or vector_origin)
+		end
+	end
+
+	if !PLAYER.GetSecondaryVisorColor then
+		function PLAYER:GetSecondaryVisorColor()
+			return self:GetNWVector("ixSecondaryVisorColor", vector_origin)
+		end
+	end
+end
+
 if SERVER then
 	function PLUGIN:PlayerLoadedCharacter(client, character, lastChar)
 		client.ArmorItems = {}

@@ -2,7 +2,17 @@ local PLUGIN = PLUGIN
 
 function PLUGIN:CreateNotesTab(characterId, charNotes)
     local maxLen = ix.config.Get("notesMaxLen")
-    local dataKey = "notes-"..string.gsub(game.GetIPAddress(), "%p", "").."-"..LocalPlayer():GetCharacter():GetID()
+    local character = LocalPlayer():GetCharacter()
+    local dataKey
+
+    if characterId == nil then
+        if !character then
+            LocalPlayer():NotifyLocalized("notes.cantOpen")
+            return
+        end
+
+        dataKey = "notes-"..string.gsub(game.GetIPAddress(), "%p", "").."-"..character:GetID()
+    end
 
     local frame = vgui.Create("DFrame")
     frame:SetSize(ScrW() * 0.4, ScrH() * 0.4)

@@ -147,9 +147,14 @@ else
 
 	net.Receive("ixOpenStationCraft", function(len)
 		local station = net.ReadEntity()
-		local stationTable = station:GetStationTable()
 		local id = net.ReadUInt(32)
 		local inventory = ix.Inventory:Get(id)
+
+		if !IsValid(station) then
+			return
+		end
+
+		local stationTable = station:GetStationTable()
 
 		LocalPlayer().ixStation = station
 

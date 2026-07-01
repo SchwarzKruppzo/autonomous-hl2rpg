@@ -73,11 +73,12 @@ end)
 function PLUGIN:PlayerLeaveSequence(client)
 	if client:GetNetVar("sitHelperPos") then
 		client.ixUntimedSequence = nil
+		local character = client:GetCharacter()
 
 		client:SetNetVar("sitHelperPos", nil)
 		client:SetNetVar("actEnterAngle", nil)
 
-		if client.latestCharKey == client:GetCharacter():GetID() then
+		if character and client.latestCharKey == character:GetID() then
 			client:SetPos(client.latestSitPos)
 			client:SetAngles(client.latestSitAng)
 		end
