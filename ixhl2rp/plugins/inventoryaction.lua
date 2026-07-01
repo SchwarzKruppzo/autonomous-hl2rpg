@@ -30,7 +30,7 @@ ix.command.Add("InventoryAction", {
         local has, item
 
         if (number) then
-            has, item = client:HasItemByID(id)
+            has, item = client:HasItemByID(number)
             if (!has) then
                 return "@inventoryaction.noItemById", id
             end
