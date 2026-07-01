@@ -43,6 +43,10 @@ if SERVER then
 				target.inventory = clientTarget:GetInventory('main')
 			end
 
+			if !target.inventory then
+				return
+			end
+
 			ix.storage.Open(ply, target.inventory, {
 				entity = clientTarget,
 				name = "searchragdoll.invTitle",

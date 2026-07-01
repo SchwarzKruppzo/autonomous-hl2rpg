@@ -24,9 +24,14 @@ end)
 
 netstream.Hook("civil.terminal.request", function(client, page)
 	local character = client:GetCharacter()
-	local id = character:GetID()
 
-	if character.noDatafile then return end
+	if !character or character.noDatafile then return end
+
+	page = tonumber(page)
+
+	if !page then return end
+
+	local id = character:GetID()
 	
 	print("civil.terminal.request", page)
 
@@ -41,18 +46,28 @@ end)
 
 netstream.Hook("civil.terminal.transactions", function(client, targetPage)
 	local character = client:GetCharacter()
-	local id = character:GetID()
 
-	if character.noDatafile then return end
+	if !character or character.noDatafile then return end
+
+	targetPage = tonumber(targetPage)
+
+	if !targetPage then return end
+
+	local id = character:GetID()
 
 	PLUGIN:TerminalFetchCredits(client, id, targetPage)
 end)
 
 netstream.Hook("civil.terminal.messages", function(client, targetPage)
 	local character = client:GetCharacter()
-	local id = character:GetID()
 
-	if character.noDatafile then return end
+	if !character or character.noDatafile then return end
+
+	targetPage = tonumber(targetPage)
+
+	if !targetPage then return end
+
+	local id = character:GetID()
 
 	PLUGIN:TerminalFetchMessages(client, id, targetPage)
 end)

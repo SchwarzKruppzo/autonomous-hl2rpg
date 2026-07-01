@@ -33,7 +33,13 @@ function PANEL:CacheRecipeNeeds(stationID, stationInventory)
 
 			if canCraft then
 				for k, itemID in ipairs(recipe.tools or {}) do
-					if !client:HasItem(itemID) and (stationID and !stationInventory:HasItem(itemID) or false) then
+					local hasTool = client:HasItem(itemID)
+
+					if !hasTool and stationID and stationInventory then
+						hasTool = stationInventory:HasItem(itemID)
+					end
+
+					if !hasTool then
 						canCraft = false
 						break
 					end
@@ -41,7 +47,7 @@ function PANEL:CacheRecipeNeeds(stationID, stationInventory)
 
 				if recipe.isBreakdown then
 					local hasInInv = client:HasItem(recipe.requirements, "main")
-					local hasInStash = (stationID and stationInventory:HasItem(recipe.requirements) or false)
+					local hasInStash = (stationID and stationInventory and stationInventory:HasItem(recipe.requirements) or false)
 					
 					canCraft = hasInStash or hasInInv
 				else
@@ -49,14 +55,17 @@ function PANEL:CacheRecipeNeeds(stationID, stationInventory)
 						local count = 0
 						local stored = ix.Item:Get(uniqueID)
 						
-						if stored.stackable_legacy then
+						if !stored then
+							canCraft = false
+							break
+						elseif stored.stackable_legacy then
 							for k, v in ipairs(client:GetInventory("main"):GetItems()) do
 								if v.uniqueID == uniqueID then
 									count = count + v:GetValue()
 								end
 							end
 
-							if stationID then
+							if stationID and stationInventory then
 								for k, v in ipairs(stationInventory:GetItems()) do
 									if v.uniqueID == uniqueID then
 										count = count + v:GetValue()
@@ -71,7 +80,7 @@ function PANEL:CacheRecipeNeeds(stationID, stationInventory)
 						else
 							count = count + client:GetInventory("main"):GetItemsCount(uniqueID)
 
-							if stationID then
+							if stationID and stationInventory then
 								count = count + stationInventory:GetItemsCount(uniqueID)
 							end
 
@@ -79,7 +88,7 @@ function PANEL:CacheRecipeNeeds(stationID, stationInventory)
 								for k, v in pairs(recipe.any[uniqueID]) do
 									count = count + client:GetInventory("main"):GetItemsCount(k)
 
-									if stationID then
+									if stationID and stationInventory then
 										count = count + stationInventory:GetItemsCount(k)
 									end
 								end

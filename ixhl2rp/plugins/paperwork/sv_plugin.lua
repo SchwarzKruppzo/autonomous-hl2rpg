@@ -9,6 +9,8 @@ do
 	local FIELDF = "<span class=\"textarea\" contenteditable></span>$f$"
 
 	function PLUGIN:ParseText(character, text)
+		text = isstring(text) and text or ""
+
 		text = string.gsub(text, F1, F2)
 		text = string.Replace(text, "$s$", "")
 		text = string.Replace(text, "$/s$", "")
@@ -26,6 +28,8 @@ do
 	local FIELDF = "<span class%=%ptextarea%p contenteditable><%/span>%$f%$"
 
 	function PLUGIN:ParseFields(character, text, fields)
+		fields = istable(fields) and fields or {}
+
 		local i = 1
 		for field in string.gmatch(text, FIELDF) do
 			local replacement = FIELD
@@ -54,6 +58,10 @@ netstream.Hook("ixWritePaper", function(client, itemID, title, text, pickup)
 
 	if !item then return end
 	if !item.user[client] then return end
+
+	title = isstring(title) and title or ""
+	text = isstring(text) and text or ""
+	pickup = pickup == true
 
 	local owner = item:GetData("O", 0)
 	local time = item:GetData("canEdit", nil)

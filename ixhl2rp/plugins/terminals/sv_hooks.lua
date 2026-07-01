@@ -65,6 +65,11 @@ net.Receive("ixTerminalRequest", function(len, player)
 	if CurTime() < (player.nextTerminalRequest or 0) then return; end
 
 	local b = player:GetIDCard()
+
+	if !b then
+		return
+	end
+
 	Schema:AddCombineDisplayMessage(Format("NOTICE: %s (#%s) is requesting officer at information terminal.", player:Name(), b:GetData("cid", 0)), Color(255, 180, 0));
 
 	local waypoint = {

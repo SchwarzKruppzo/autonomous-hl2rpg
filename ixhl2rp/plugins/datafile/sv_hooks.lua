@@ -57,6 +57,11 @@ function PLUGIN:SaveData()
 		saved[id] = true
 
 		local v = self.stored[id]
+
+		if !v then
+			continue
+		end
+
 		local query = mysql:Update("ix_datafiles")
 			query:Where("datafile_id", id)
 			query:Update("character_name", v[1])
@@ -167,7 +172,7 @@ function PLUGIN:HandleDatafile(player, target)
 	if istable(target) then
 		for id, v in pairs(self.stored) do
 			if (target[1] and v[2] == target[1]) then
-				if (target[2] and v[3] == target[2] or true) then
+				if (!target[2] or v[3] == target[2]) then
 					target = id
 					break
 				end
@@ -175,7 +180,13 @@ function PLUGIN:HandleDatafile(player, target)
 		end
 	end
 
-	local playerValue = player:GetCharacter():ReturnDatafilePermission()
+	local playerCharacter = IsValid(player) and player:GetCharacter()
+
+	if !playerCharacter then
+		return false
+	end
+
+	local playerValue = playerCharacter:ReturnDatafilePermission()
 	local targetValue
 	player.lastDatafile = nil
 
@@ -188,6 +199,11 @@ function PLUGIN:HandleDatafile(player, target)
 			end
 			
 			local dID, datafile, genericdata = self:ReturnDatafileByID(target)
+
+			if !dID or !datafile or !genericdata then
+				return false
+			end
+
 			local bTargetIsRestricted, restrictedText = self:IsRestricted(genericdata)
 			local data = {}
 			local db = self.stored[tonumber(dID)]
@@ -203,9 +219,11 @@ function PLUGIN:HandleDatafile(player, target)
 				end
 
 				local restrictedDatafile = table.Copy(datafile)
-				for k, v in pairs(restrictedDatafile) do
-					if v.category == "civil" then
-						table.remove(restrictedDatafile, k)
+				for i = #restrictedDatafile, 1, -1 do
+					local entry = restrictedDatafile[i]
+
+					if entry and entry.category == "civil" then
+						table.remove(restrictedDatafile, i)
 					end
 				end
 
@@ -222,7 +240,11 @@ function PLUGIN:HandleDatafile(player, target)
 			return false
 		end
 	else
-		local targetCharacter = target:GetCharacter()
+		local targetCharacter = IsValid(target) and target:GetCharacter()
+
+		if !targetCharacter then
+			return false
+		end
 
 		targetValue = targetCharacter:ReturnDatafilePermission()
 
@@ -234,6 +256,11 @@ function PLUGIN:HandleDatafile(player, target)
 			end
 
 			local dID, datafile, genericdata = targetCharacter:ReturnDatafile()
+
+			if !dID or !datafile or !genericdata then
+				return false
+			end
+
 			local bTargetIsRestricted, restrictedText = self:IsRestricted(genericdata)
 			local data = {}
 			local db = self.stored[tonumber(dID)]
@@ -249,9 +276,11 @@ function PLUGIN:HandleDatafile(player, target)
 				end
 
 				local restrictedDatafile = table.Copy(datafile)
-				for k, v in pairs(restrictedDatafile) do
-					if v.category == "civil" then
-						table.remove(restrictedDatafile, k)
+				for i = #restrictedDatafile, 1, -1 do
+					local entry = restrictedDatafile[i]
+
+					if entry and entry.category == "civil" then
+						table.remove(restrictedDatafile, i)
 					end
 				end
 
@@ -275,6 +304,11 @@ end
 function PLUGIN:CharacterLoaded(character)
 	timer.Simple(1, function()
 		local player = character:GetPlayer()
+
+		if !IsValid(player) then
+			return
+		end
+
 		local cid = player:GetIDCard()
 
 		if cid then
@@ -291,9 +325,12 @@ function PLUGIN:RefreshDatafile(client, datafileID)
 
 	local data = {}
 	local db = self.stored[datafileID]
-	if db then
-		data = {db[1], db[2], db[3], datafileID}
+
+	if !db then
+		return
 	end
+
+	data = {db[1], db[2], db[3], datafileID}
 
 	for _, v in ipairs(rf:GetPlayers()) do
 		if v.lastDatafile != datafileID or !v:GetCharacter() then
@@ -309,6 +346,7 @@ end
 netstream.Hook("UpdateLastSeen", function(client, datafileID)
 	local char = client:GetCharacter()
 
+	if !char then return end
 	if (char:ReturnDatafilePermission() < 1) then return end
 	if PLUGIN:IsRestricted((PLUGIN.stored[tonumber(datafileID)] or {})[4]) then return end
 	if !PLUGIN:HasDatafileAccess(char, datafileID) then return end
@@ -320,6 +358,7 @@ end)
 netstream.Hook("UpdateCivilStatus", function(client, datafileID, civilStatus)
 	local char = client:GetCharacter()
 
+	if !char then return end
 	if (char:ReturnDatafilePermission() < 2) then return end
 	if PLUGIN:IsRestricted((PLUGIN.stored[tonumber(datafileID)] or {})[4]) then return end
 	if !PLUGIN:HasDatafileAccess(char, datafileID) then return end
@@ -331,6 +370,7 @@ end) --{target, tier})
 netstream.Hook("AddDatafileEntry", function(client, datafileID, category, text, points)
 	local char = client:GetCharacter()
 
+	if !char then return end
 	if ((char:ReturnDatafilePermission() <= 1 && category == "civil") || char:ReturnDatafilePermission() == 0) then return end
 	if PLUGIN:IsRestricted((PLUGIN.stored[tonumber(datafileID)] or {})[4]) then return end
 	if !PLUGIN:HasDatafileAccess(char, datafileID) then return end
@@ -341,6 +381,7 @@ end) --{target, category, text, points});
 netstream.Hook("SetBOL", function(client, datafileID)
 	local char = client:GetCharacter()
 
+	if !char then return end
 	if (char:ReturnDatafilePermission() < 1) then return end
 	if PLUGIN:IsRestricted((PLUGIN.stored[tonumber(datafileID)] or {})[4]) then return end
 	if !PLUGIN:HasDatafileAccess(char, datafileID) then return end
@@ -352,18 +393,22 @@ end) --{self.Player});
 netstream.Hook("RemoveDatafileEntry", function(client, datafileID, key, date, category, text)
 	local char = client:GetCharacter()
 
+	if !char then return end
 	if (char:ReturnDatafilePermission() < 4) then return end
 
 	--if (char:ReturnDatafilePermission() < 4) then return end
 end) --{target, key, date, category, text})
 
 netstream.Hook("RefreshDatafile", function(client, datafileID)
+	if !client:GetCharacter() then return end
+
 	PLUGIN:HandleDatafile(client, datafileID)
 end) --target)
 
 netstream.Hook("SetRegistryEntry", function(client, datafileID, text)
 	local char = client:GetCharacter()
 
+	if !char then return end
 	if (char:ReturnDatafilePermission() < 1) then return end
 	if PLUGIN:IsRestricted((PLUGIN.stored[tonumber(datafileID)] or {})[4]) then return end
 	if !PLUGIN:HasDatafileAccess(char, datafileID) then return end

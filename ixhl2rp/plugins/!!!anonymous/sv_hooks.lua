@@ -55,10 +55,29 @@ function PLUGIN:PrePlayerLoadedCharacter(client, character, oldcharacter)
 	end
 end
 
-local statusx, err = pcall(require, "statusx")
-local quax, err = pcall(require, "quax")
+local function CanRequireModule(name)
+	if file.Exists("includes/modules/"..name..".lua", "LUA") then
+		return true
+	end
 
-if query then
+	local files = file.Find("lua/bin/gmsv_"..name.."_*.dll", "GAME")
+
+	return files and #files > 0
+end
+
+local function TryRequireModule(name)
+	if !CanRequireModule(name) then
+		return false
+	end
+
+	return pcall(require, name)
+end
+
+local statusx = TryRequireModule("statusx")
+local quax = TryRequireModule("quax")
+local modulesAvailable = statusx and quax
+
+if modulesAvailable and query then
 	query.EnableInfoDetour(true)
 end
 
@@ -115,8 +134,11 @@ function PLUGIN:A2S_INFO(ip, port, info)
 	return info 
 end
 
-if err then
-	ErrorNoHalt("[Anonymous System] StatusX or QuaX not found, anonymous system will be disabled!")
+if !modulesAvailable then
+	if !PLUGIN.missingModulesWarned then
+		ErrorNoHalt("[Anonymous System] StatusX or QuaX not found, anonymous system will be disabled!")
+		PLUGIN.missingModulesWarned = true
+	end
 
 	local PLAYER = FindMetaTable("Player")
 

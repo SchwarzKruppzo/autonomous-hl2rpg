@@ -98,10 +98,16 @@ function PANEL:Setup(isMini, inventoryID)
 
 	for _, recipe in pairs(ix.Craft.recipes) do
 		if recipe.skill then
+			local character = LocalPlayer():GetCharacter()
+
+			if !character then
+				continue
+			end
+
 			local skill = recipe.skill[1]
 			local level = recipe.skill[2]
 
-			local currentLevel = LocalPlayer():GetCharacter():GetSkillModified(skill)
+			local currentLevel = character:GetSkillModified(skill)
 
 			if level > currentLevel then
 				continue

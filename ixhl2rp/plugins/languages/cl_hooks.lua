@@ -31,16 +31,18 @@ function Derma_LanguageSelect(list, confirmCallback)
 	table.SortByMember(list, "text", true)
 
 	for k, v in pairs(list) do
+		local text = v.text
+		local value = v.value
 		local btn = layout:Add( "DButton" )
-		btn:SetText(L(v.text))
+		btn:SetText(L(text))
 		btn:SetIcon(v.icon)
 		btn.DoClick = function()
 			Derma_Query(
-			L("langConfirmExtraLanguage", v.text),
+			L("langConfirmExtraLanguage", text),
 			L("langConfirmTitle"),
 			L("yes"),
 			function()
-				confirmCallback(v.value)
+				confirmCallback(value)
 				panel:Close()
 			end,
 			L("no"),

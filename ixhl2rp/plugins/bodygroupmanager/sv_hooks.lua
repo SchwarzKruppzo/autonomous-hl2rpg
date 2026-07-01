@@ -21,6 +21,10 @@ net.Receive("ixBodygroupTableSet", function(length, client)
 
 	local bodygroups = net.ReadTable()
 
+	if !istable(bodygroups) then
+		return
+	end
+
 	local skindex = net.ReadUInt(8)
 
 	local groups = {}

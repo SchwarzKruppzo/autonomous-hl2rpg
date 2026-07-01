@@ -615,7 +615,15 @@ do
 					return
 				end
 
-				local icon = serverguard.ranks:GetRank(serverguard.player:GetRank(speaker)).texture or "icon16/user.png"
+				local icon = "icon16/user.png"
+
+				if serverguard and serverguard.ranks and serverguard.player then
+					local rank = serverguard.ranks:GetRank(serverguard.player:GetRank(speaker))
+
+					if rank and rank.texture then
+						icon = rank.texture
+					end
+				end
 
 				icon = Material(hook.Run("GetPlayerIcon", speaker) or icon)
 

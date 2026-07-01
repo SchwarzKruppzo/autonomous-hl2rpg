@@ -24,7 +24,9 @@ function PANEL:Init()
 			for k, id in pairs(languages) do
 				local info = ix.languages:FindByID(id)
 
-				chatLanguages[#chatLanguages + 1] = {name = info.name, icon = info.icon, tag = id}
+				if info then
+					chatLanguages[#chatLanguages + 1] = {name = info.name, icon = info.icon, tag = id}
+				end
 			end
 
 			chatLanguages[#chatLanguages + 1] = {name = L("langDefault"), icon = "flags16/gb.png", tag = nil}
@@ -32,18 +34,21 @@ function PANEL:Init()
 			if !table.IsEmpty(chatLanguages) then
 				local menu = DermaMenu()
 				for k, v in ipairs(chatLanguages) do
-					local option = menu:AddOption(L(v.name), function()
+					local name = v.name
+					local icon = v.icon
+					local tag = v.tag
+					local option = menu:AddOption(L(name), function()
 						net.Start("lang.change")
-							if v.tag then
-								net.WriteString(v.tag)
+							if tag then
+								net.WriteString(tag)
 							end
 						net.SendToServer()
 
-						self:ChangeFlagIcon(v.tag)
+						self:ChangeFlagIcon(tag)
 					end)
 
-					if v.icon then
-						option:SetIcon(v.icon)
+					if icon then
+						option:SetIcon(icon)
 					end
 				end
 				menu:Open()
@@ -86,7 +91,7 @@ function PANEL:ChangeFlagIcon(lang)
 
 	if lang then
 		local info = ix.languages:FindByID(lang)
-		icon = info.icon
+		icon = info and info.icon or icon
 	end
 
 	self.flag:SetMaterial(icon)

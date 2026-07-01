@@ -450,14 +450,16 @@ if SERVER then
 			return
 		end
 
-		item.player = client
-
 		if item.inventory_id != inventory_id then
 			return
 		end
 
 		local action_key = isnumber(action_id) and item.functions_id[action_id] or action_id
 		local action = item.functions[action_key]
+
+		if !action then
+			return
+		end
 
 		/*
 		if (!item.bAllowMultiCharacterInteraction and IsValid(client) and client:GetCharacter()) then
@@ -475,41 +477,45 @@ if SERVER then
 			end
 		end*/
 
-		if action then
-			local items = {item.id}
+		item.player = client
 
-			if item_count > 1 then
-				local slot = inventory:GetSlot(item.x, item.y)
+		local items = {item.id}
 
-				items = {}
+		if item_count > 1 then
+			local slot = inventory:GetSlot(item.x, item.y)
 
-				for i = 1, item_count do
-					table.insert(items, slot[i])
-				end
+			items = {}
+
+			for i = 1, item_count do
+				table.insert(items, slot[i])
 			end
+		end
 
-			if action.OnCanRun and action.OnCanRun(item, items, data) == false then
-				item.player = nil
-
-				return
-			end
-
-			hook.Run("PlayerInteractItem", client, action.name or action_key, item)
-
-			local result = action.OnRun(item, items, data)
-
-			if action.Sound then
-				item.player:EmitSound(action.Sound, 65, 100, 1)
-			end
-
+		if action.OnCanRun and action.OnCanRun(item, items, data) == false then
 			item.player = nil
 
-			return result
+			return
 		end
+
+		hook.Run("PlayerInteractItem", client, action.name or action_key, item)
+
+		local result = action.OnRun(item, items, data)
+
+		if action.Sound then
+			item.player:EmitSound(action.Sound, 65, 100, 1)
+		end
+
+		item.player = nil
+
+		return result
 	end
 
 	function Item:PerformItemEntityAction(client, item, entity, action_id)
 		print("Item::EntityAction", client, item, entity, action_id)
+
+		if !item or !IsValid(entity) then
+			return
+		end
 
 		local character = client:GetCharacter()
 
@@ -525,14 +531,16 @@ if SERVER then
 		//	return
 		//end
 
-		item.player = client
-
 		if entity:GetPos():Distance(client:GetPos()) > 96 then
 			return
 		end
 
 		local action_key = isnumber(action_id) and item.functions_id[action_id] or action_id
 		local action = item.functions[action_key]
+
+		if !action then
+			return
+		end
 
 		/*
 		if (!item.bAllowMultiCharacterInteraction and IsValid(client) and client:GetCharacter()) then
@@ -550,25 +558,25 @@ if SERVER then
 			end
 		end*/
 
-		if action then
-			if action.OnCanRun and action.OnCanRun(item, data) == false then
-				item.player = nil
+		item.player = client
 
-				return
-			end
-
-			hook.Run("PlayerInteractItem", client, action.name or action_key, entity)
-
-			local result = action.OnRun(item, data)
-
-			if action.Sound then
-				entity:EmitSound(action.Sound, 65, 100, 1)
-			end
-
+		if action.OnCanRun and action.OnCanRun(item, data) == false then
 			item.player = nil
 
-			return result
+			return
 		end
+
+		hook.Run("PlayerInteractItem", client, action.name or action_key, entity)
+
+		local result = action.OnRun(item, data)
+
+		if action.Sound then
+			entity:EmitSound(action.Sound, 65, 100, 1)
+		end
+
+		item.player = nil
+
+		return result
 	end
 
 	function Item:PerformInventoryCombineAction(client, item, targetItem, action_id, data, item_count)
@@ -591,6 +599,10 @@ if SERVER then
 		local inventory = ix.Inventory:Get(item.inventory_id)
 		local targetInventory = ix.Inventory:Get(targetItem.inventory_id)
 
+		if !inventory or !targetInventory then
+			return
+		end
+
 		//if hook.Run("CanPlayerInteractItem", client, action, item, data) == false then
 		//	return
 		//end
@@ -599,11 +611,12 @@ if SERVER then
 			return
 		end
 
-		item.player = client
-		targetItem.player = client
-
 		local action_key = isnumber(action_id) and item.combine_id[action_id] or action_id
 		local action = item.combine[action_key]
+
+		if !action then
+			return
+		end
 
 		/*
 		if (!item.bAllowMultiCharacterInteraction and IsValid(client) and client:GetCharacter()) then
@@ -621,39 +634,40 @@ if SERVER then
 			end
 		end*/
 
-		if action then
-			local items = {item.id}
+		item.player = client
+		targetItem.player = client
 
-			if item_count > 1 then
-				local slot = inventory:GetSlot(item.x, item.y)
+		local items = {item.id}
 
-				items = {}
+		if item_count > 1 then
+			local slot = inventory:GetSlot(item.x, item.y)
 
-				for i = 1, item_count do
-					table.insert(items, slot[i])
-				end
+			items = {}
+
+			for i = 1, item_count do
+				table.insert(items, slot[i])
 			end
+		end
 
-			if action.OnCanRun and action.OnCanRun(item, targetItem, items, data) == false then
-				item.player = nil
-				targetItem.player = nil
-
-				return
-			end
-
-			hook.Run("PlayerInteractItem", client, action.name or action_key, item)
-
-			local result = action.OnRun(item, targetItem, items, data)
-
-			if action.Sound then
-				item.player:EmitSound(action.Sound, 65, 100, 1)
-			end
-
+		if action.OnCanRun and action.OnCanRun(item, targetItem, items, data) == false then
 			item.player = nil
 			targetItem.player = nil
 
-			return result
+			return
 		end
+
+		hook.Run("PlayerInteractItem", client, action.name or action_key, item)
+
+		local result = action.OnRun(item, targetItem, items, data)
+
+		if action.Sound then
+			item.player:EmitSound(action.Sound, 65, 100, 1)
+		end
+
+		item.player = nil
+		targetItem.player = nil
+
+		return result
 	end
 
 	net.Receive('item.action', function(len, client)
@@ -675,6 +689,11 @@ if SERVER then
 
 	net.Receive('item.drop', function(len, client)
 		local item = ix.Item.instances[net.ReadUInt(32)]
+
+		if !item then
+			return
+		end
+
 		local normal = net.ReadVector()
 		local ang = net.ReadAngle()
 
@@ -700,8 +719,11 @@ if SERVER then
 		local trace = util.TraceLine(data)
 
 		ix.Item:DropItem(client, item.id, trace.HitPos, ang)
-		
 		timer.Simple(0, function()
+			if !IsValid(item.entity) then
+				return
+			end
+
 			local vFlushPoint = item.entity:NearestPoint(trace.HitPos - (trace.HitNormal * 512))
 			vFlushPoint = item.entity:GetPos() - vFlushPoint
 			vFlushPoint = trace.HitPos + vFlushPoint
@@ -1119,4 +1141,3 @@ else
 		return true
 	end
 end
-		

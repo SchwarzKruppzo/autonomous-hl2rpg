@@ -17,6 +17,8 @@ function PLUGIN:ReturnDatafile(CID, RegID, type)
 end
 
 function PLUGIN:ReturnDatafileByID(id, type)
+	id = tonumber(id)
+
 	local data = self.stored[id]
 	if data then
 		if type == true then
@@ -78,6 +80,8 @@ function PLUGIN:ReturnPermission(CID, RegID, callback)
 end
 
 function PLUGIN:ReturnPermissionByID(id)
+	id = tonumber(id)
+
 	local access = 0
 	local data = (self.stored[id] or {})[6]
 
@@ -136,17 +140,30 @@ function PLUGIN:SetCivilStatus(datafileID, civilStatus, client, char)
 end
 
 function PLUGIN:AddEntry(poster, player, category, text, points)
-	local posterCharacter = poster:GetCharacter()
+	local posterCharacter = IsValid(poster) and poster:GetCharacter()
 	if !posterCharacter then return end
 	if !self.Categories[category] then return  end
+	points = tonumber(points) or 0
 
 	local id, datafile, genericdata
 
 	if isstring(player) or isnumber(player) then
 		id, datafile, genericdata = self:ReturnDatafileByID(player)
+	else
+		local character = IsValid(player) and player:GetCharacter()
+
+		if !character then return end
+
+		id, datafile, genericdata = character:ReturnDatafile()
+	end
+
+	if !id or !datafile or !genericdata then
+		return
+	end
+
+	if isstring(player) or isnumber(player) then
 		ix.log.AddRaw(poster:Name() .. " has added an entry to #" .. self:GetDatafileCID(id) .. " datafile with category: " .. category)
 	else
-		id, datafile, genericdata = player:GetCharacter():ReturnDatafile()
 		ix.log.AddRaw(poster:Name() .. " has added an entry to " .. player:Name() .. "'s datafile with category: " .. category)
 	end
 
@@ -194,7 +211,15 @@ function PLUGIN:SetBOL(poster, player, bBOL, reason)
 	if isstring(player) or isnumber(player) then
 		id, genericdata = self:ReturnDatafileByID(player, false)
 	else
-		id, genericdata = player:GetCharacter():ReturnDatafile(false)
+		local character = IsValid(player) and player:GetCharacter()
+
+		if !character then return end
+
+		id, genericdata = character:ReturnDatafile(false)
+	end
+
+	if !id or !genericdata then
+		return
 	end
 
 	if bBOL == true then
@@ -208,10 +233,12 @@ function PLUGIN:SetBOL(poster, player, bBOL, reason)
 		genericdata.bol_reason = genericdata.bol and reason or ""
 	end
 
-	if IsValid(poster) then
+	local posterCharacter = IsValid(poster) and poster:GetCharacter()
+
+	if posterCharacter then
 		local text = genericdata.bol and "%s has put a bol." or "%s has removed a bol."
 
-		self:AddEntry(poster, id, "union", Format(text, poster:GetCharacter():GetName()), 0)
+		self:AddEntry(poster, id, "union", Format(text, posterCharacter:GetName()), 0)
 	end
 
 	table.insert(self.datafiles_save, id)
@@ -223,19 +250,35 @@ function PLUGIN:SetRestricted(poster, player, bRestricted, text)
 	if isstring(player) or isnumber(player) then
 		id, genericdata = self:ReturnDatafileByID(player, false)
 	else
-		id, genericdata = player:GetCharacter():ReturnDatafile(false)
+		local character = IsValid(player) and player:GetCharacter()
+
+		if !character then return end
+
+		id, genericdata = character:ReturnDatafile(false)
+	end
+
+	if !id or !genericdata then
+		return
 	end
 
 	if bRestricted then
 		genericdata.restricted = true
 		genericdata.restricted_reason = text
 
-		self:AddEntry(poster, id, "civil", Format("%s has made this file restricted.", poster:GetCharacter():GetName()), 0)
+		local posterCharacter = IsValid(poster) and poster:GetCharacter()
+
+		if posterCharacter then
+			self:AddEntry(poster, id, "civil", Format("%s has made this file restricted.", posterCharacter:GetName()), 0)
+		end
 	else
 		genericdata.restricted = false
 		genericdata.restricted_reason = ""
 
-		self:AddEntry(poster, id, "civil", Format("%s has removed the restriction on this file.", poster:GetCharacter():GetName()), 0)
+		local posterCharacter = IsValid(poster) and poster:GetCharacter()
+
+		if posterCharacter then
+			self:AddEntry(poster, id, "civil", Format("%s has removed the restriction on this file.", posterCharacter:GetName()), 0)
+		end
 	end
 
 	table.insert(self.datafiles_save, id)
@@ -247,37 +290,56 @@ function PLUGIN:SetRegistry(poster, player, text)
 	if isstring(player) or isnumber(player) then
 		id, genericdata = self:ReturnDatafileByID(player, false)
 	else
-		id, genericdata = player:GetCharacter():ReturnDatafile(false)
+		local character = IsValid(player) and player:GetCharacter()
+
+		if !character then return end
+
+		id, genericdata = character:ReturnDatafile(false)
+	end
+
+	if !id or !genericdata then
+		return
 	end
 
 	if text then
 		genericdata.aparts = text
 
-		self:AddEntry(poster, id, "reg", Format("%s has registered this file to %s.", poster:GetCharacter():GetName(), text), 0)
+		local posterCharacter = IsValid(poster) and poster:GetCharacter()
+
+		if posterCharacter then
+			self:AddEntry(poster, id, "reg", Format("%s has registered this file to %s.", posterCharacter:GetName(), text), 0)
+		end
 	elseif genericdata.aparts != "N/A" then
 		genericdata.aparts = "N/A"
 
-		self:AddEntry(poster, id, "reg", Format("%s has removed a registration of this file.", poster:GetCharacter():GetName()), 0)
+		local posterCharacter = IsValid(poster) and poster:GetCharacter()
+
+		if posterCharacter then
+			self:AddEntry(poster, id, "reg", Format("%s has removed a registration of this file.", posterCharacter:GetName()), 0)
+		end
 	end
 
 	table.insert(self.datafiles_save, id)
 end
 
 function PLUGIN:ReturnPoints(player)
-	local id, genericdata = player:GetCharacter():ReturnDatafile(false)
+	local character = IsValid(player) and player:GetCharacter()
+	local id, genericdata = character and character:ReturnDatafile(false)
 
-	return genericdata.points
+	return genericdata and genericdata.points or 0
 end
 
 function PLUGIN:ReturnCivilStatus(player)
-	local id, genericdata = player:GetCharacter():ReturnDatafile(false)
+	local character = IsValid(player) and player:GetCharacter()
+	local id, genericdata = character and character:ReturnDatafile(false)
 
-	return genericdata.status
+	return genericdata and genericdata.status or "Citizen"
 end
 
 function PLUGIN:ReturnBOL(player)
-	local id, genericdata = player:GetCharacter():ReturnDatafile(false)
-	local bHasBOL = genericdata.bol
+	local character = IsValid(player) and player:GetCharacter()
+	local id, genericdata = character and character:ReturnDatafile(false)
+	local bHasBOL = genericdata and genericdata.bol
 
 	if bHasBOL then
 		return true, genericdata.bol_reason
@@ -305,6 +367,10 @@ do
 
 	function CHAR:ReturnDatafile(type, callback)
 		local player = self:GetPlayer()
+
+		if !IsValid(player) then
+			return
+		end
 		
 		if player.ixDatafile then
 			local _, v1, v2 = PLUGIN:ReturnDatafileByID(player.ixDatafile, type)
@@ -335,7 +401,13 @@ do
 	end
 
 	function CHAR:ReturnDatafilePermission()
-		local cid = self:GetPlayer():GetIDCard()
+		local player = self:GetPlayer()
+
+		if !IsValid(player) then
+			return 0
+		end
+
+		local cid = player:GetIDCard()
 
 		if !cid then 
 			return 0 

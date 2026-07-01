@@ -1,7 +1,7 @@
 local PLUGIN = PLUGIN
 
 PLUGIN.name = "Better Crafting"
-PLUGIN.author = "Schwarz Kruppzo"
+PLUGIN.author = "Schwarz Kruppzo, Kushida"
 PLUGIN.description = "Adds a better crafting solution to helix."
 
 if CLIENT then

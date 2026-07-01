@@ -43,13 +43,17 @@ ix.chat.Register("level", {
 	end,
 	OnChatAdd = function(self, speaker, text, bAnonymous, data)
 		if data.t == 1 then
-			chat.AddText(color_white, L("chat.level.increased", LocalPlayer():GetCharacter():GetLevel()))
+			local character = LocalPlayer():GetCharacter()
+
+			chat.AddText(color_white, L("chat.level.increased", character and character:GetLevel() or 0))
 		elseif data.t == 2 then
 			local name = L((ix.skills.list[data.skill] or {}).name) or "Unknown"
 
 			chat.AddText(color_white, L("chat.skill.increased", name, data.value))
 		elseif data.t == 3 then
-			chat.AddText(color_white, L("chat.level.decreased", LocalPlayer():GetCharacter():GetLevel()))
+			local character = LocalPlayer():GetCharacter()
+
+			chat.AddText(color_white, L("chat.level.decreased", character and character:GetLevel() or 0))
 		elseif data.t == 4 then
 			local name = L((ix.skills.list[data.skill] or {}).name) or "Unknown"
 
