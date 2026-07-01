@@ -30,6 +30,16 @@ local function action(self, time, condition, callback)
 	end)
 end
 
+local function GetMedicalUseTime(time, medicineSkill)
+	time = time or 10
+
+	if (time > 0) then
+		time = time * (1 - (medicineSkill * 0.09))
+	end
+
+	return math.max(time, 0.1)
+end
+
 function ItemMedical:Init()
 	self.category = "item.category.medical"
 
@@ -55,11 +65,7 @@ function ItemMedical:Init()
 			client.bUsingMedical = true
 			item.inUse = client
 
-			local time = item.stats.time or 10
-			
-			if (time > 0) then
-    			time = time * (1 - (medicineSkill * 0.09))
-			end
+			local time = GetMedicalUseTime(item.stats.time, medicineSkill)
 
 			client:SetAction("@medInject", time)
 
@@ -148,11 +154,7 @@ function ItemMedical:Init()
 			client.bUsingMedical = true
 			item.inUse = client
 
-			local time = (item.stats.time or 10) * .8 -- использование НА ком-то должно быть быстрее, чем использование на себе
-
-			if (time > 0) then
-    			time = time * (1 - (medicineSkill * 0.09))
-			end
+			local time = GetMedicalUseTime((item.stats.time or 10) * .8, medicineSkill) -- использование НА ком-то должно быть быстрее, чем использование на себе
 
 			client:SetAction("@medInject", time)
 			
