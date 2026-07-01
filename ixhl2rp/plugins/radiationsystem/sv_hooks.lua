@@ -99,7 +99,7 @@ function PLUGIN:RadTick(client, character)
 	local radResistance, filter = client:GetRadResistance()
 	
 	if filter and filter:GetFilterQuality() > 0 then
-		local value = math.abs(math.max(0.0025, rate * 0.05))
+		local value = math.abs(math.max(0.0025, rad * 0.05))
 
 		filter:SetFilterQuality(math.max(filter:GetFilterQuality() - value, 0))
 	end
