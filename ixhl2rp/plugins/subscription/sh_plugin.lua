@@ -114,7 +114,9 @@ do
 			end)
 		end
 	end
-	serverguard.command:Add(command)
+	if serverguard and serverguard.command then
+		serverguard.command:Add(command)
+	end
 
 	command = {}
 	command.help	= ""
@@ -186,7 +188,9 @@ do
 		end
 	end
 
-	serverguard.command:Add(command)
+	if serverguard and serverguard.command then
+		serverguard.command:Add(command)
+	end
 
 	command = {}
 	command.help	= ""
@@ -247,5 +251,7 @@ do
 		end
 	end
 
-	serverguard.command:Add(command)
+	if serverguard and serverguard.command then
+		serverguard.command:Add(command)
+	end
 end

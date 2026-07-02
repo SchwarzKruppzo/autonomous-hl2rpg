@@ -338,14 +338,21 @@ if (SERVER) then
 
 		local entity = client.ixVendor
 
-		if (!IsValid(entity) or client:GetPos():Distance(entity:GetPos()) > 192) then
+		if (!IsValid(entity) or !entity.items or client:GetPos():Distance(entity:GetPos()) > 192) then
+			return
+		end
+
+		local character = client:GetCharacter()
+
+		if (!character) then
 			return
 		end
 
 		local uniqueID = net.ReadString()
 		local isSellingToVendor = net.ReadBool()
+		local itemTable = ix.Item.stored[uniqueID]
 
-		if (entity.items[uniqueID] and
+		if (itemTable and entity.items[uniqueID] and
 			hook.Run("CanPlayerTradeWithVendor", client, entity, uniqueID, isSellingToVendor) != false) then
 			local price = entity:GetPrice(uniqueID, isSellingToVendor)
 
@@ -391,7 +398,7 @@ if (SERVER) then
 					return client:NotifyLocalized("tellAdmin", "trd!iid")
 				end
 
-				client:GetCharacter():GiveMoney(price)
+				character:GiveMoney(price)
 				client:NotifyLocalized("businessSell", name, ix.currency.Get(price))
 				entity:TakeMoney(price)
 				entity:AddStock(uniqueID)
@@ -405,13 +412,13 @@ if (SERVER) then
 					return client:NotifyLocalized("vendorNoStock")
 				end
 
-				if (!client:GetCharacter():HasMoney(price)) then
+				if (!character:HasMoney(price)) then
 					return client:NotifyLocalized("canNotAfford")
 				end
 
-				local name = L(ix.Item:Get(uniqueID).name, client)
+				local name = L(itemTable.name, client)
 
-				client:GetCharacter():TakeMoney(price)
+				character:TakeMoney(price)
 				client:NotifyLocalized("businessPurchase", name, ix.currency.Get(price))
 
 				entity:GiveMoney(price)

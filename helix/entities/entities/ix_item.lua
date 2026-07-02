@@ -186,7 +186,16 @@ if SERVER then
 
 	net.Receive('item.entity.action', function(len, client)
 		local entity = net.ReadEntity()
+
+		if !IsValid(entity) or !entity.GetItem then
+			return
+		end
+
 		local item = entity:GetItem()
+
+		if !item then
+			return
+		end
 
 		ix.Item:PerformItemEntityAction(client, item, entity, net.ReadUInt(item.functions_bits))
 	end)

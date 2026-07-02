@@ -138,7 +138,7 @@ if (SERVER) then
 				end
 			end)
 		else
-			ix.dynloot.Sync(client, inventory)
+			ix.dynloot.Sync(client, inventoryID)
 		end
 	end
 
@@ -154,7 +154,7 @@ if (SERVER) then
 				net.Send(receivers)
 			end
 
-			ix.dynloot.RemoveContext(inventory)
+			ix.dynloot.RemoveContext(inventoryID)
 		end
 	end
 
@@ -181,7 +181,7 @@ if (SERVER) then
 			if uniqueID then
 				local inventory = ix.Inventory:Get(invID)
 
-				if inventory then
+				if inventory and inventory:OnCheckAccess(client) then
 					local item = ix.Item:Instance(uniqueID)
 					item.rotated = rotated
 

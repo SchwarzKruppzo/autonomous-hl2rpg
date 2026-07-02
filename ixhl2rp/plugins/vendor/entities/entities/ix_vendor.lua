@@ -50,8 +50,14 @@ end
 
 function ENT:CanAccess(client)
 	local bAccess = false
-	local uniqueID = ix.faction.indices[client:Team()].uniqueID
+	local character = client:GetCharacter()
+	local faction = ix.faction.indices[client:Team()]
+	local uniqueID = faction and faction.uniqueID
 	local free_access = true
+
+	if (!character) then
+		return false
+	end
 
 	if (self.password != "") then
 		free_access = false
@@ -72,7 +78,7 @@ function ENT:CanAccess(client)
 	end
 
 	if (bAccess and self.classes and !table.IsEmpty(self.classes)) then
-		local class = ix.class.list[client:GetCharacter():GetClass()]
+		local class = ix.class.list[character:GetClass()]
 		local classID = class and class.uniqueID
 
 		if (classID and !self.classes[classID]) then
@@ -85,32 +91,42 @@ function ENT:CanAccess(client)
 	if (self.password == "") then
 		return false
 	end
-	if (self.Sessions[client:GetCharacter():GetID()]) then
+	if (self.Sessions[character:GetID()]) then
 		return true
 	end
 	return false
 end
 
 function ENT:GetStock(uniqueID)
-	if (self.items[uniqueID] and self.items[uniqueID][VENDOR_MAXSTOCK]) then
-		return self.items[uniqueID][VENDOR_STOCK] or 0, self.items[uniqueID][VENDOR_MAXSTOCK]
+	local data = self.items and self.items[uniqueID]
+
+	if (data and data[VENDOR_MAXSTOCK]) then
+		return data[VENDOR_STOCK] or 0, data[VENDOR_MAXSTOCK]
 	end
 end
 
 function ENT:GetPrice(uniqueID, selling, editor)
-	local price = ix.Item.stored[uniqueID] and self.items[uniqueID] and
-		self.items[uniqueID][VENDOR_PRICE] or ix.Item.stored[uniqueID].cost or ix.Item.stored[uniqueID].price or 0
+	local itemTable = ix.Item.stored[uniqueID]
+
+	if !itemTable then
+		return 0
+	end
+
+	local data = self.items and self.items[uniqueID]
+	local price = data and data[VENDOR_PRICE] or itemTable.cost or itemTable.price or 0
 
 	if (selling) then
 		price = math.floor(price * (self.scale or 0.5))
 	end
 
 	if !editor then
-		if price != 0 then
-			local sell = self.items[uniqueID][5]
-			local buy = self.items[uniqueID][6]
+		if price != 0 and data then
+			local sell = tonumber(data[5]) or 0
+			local buy = tonumber(data[6]) or 0
 
-			price = math.max(math.floor(price * math.max(1 + 0.975 * math.Remap(buy, 0, sell, -0.975, 0), 1 - 0.975)), 1)
+			if sell > 0 then
+				price = math.max(math.floor(price * math.max(1 + 0.975 * math.Remap(buy, 0, sell, -0.975, 0), 1 - 0.975)), 1)
+			end
 		end
 	end
 
@@ -118,9 +134,10 @@ function ENT:GetPrice(uniqueID, selling, editor)
 end
 
 function ENT:CanSellToPlayer(client, uniqueID)
-	local data = self.items[uniqueID]
+	local data = self.items and self.items[uniqueID]
+	local character = client:GetCharacter()
 
-	if (!data or !client:GetCharacter() or !ix.Item.stored[uniqueID]) then
+	if (!data or !character or !ix.Item.stored[uniqueID]) then
 		return false
 	end
 
@@ -128,7 +145,7 @@ function ENT:CanSellToPlayer(client, uniqueID)
 		return false
 	end
 
-	if (!client:GetCharacter():HasMoney(self:GetPrice(uniqueID))) then
+	if (!character:HasMoney(self:GetPrice(uniqueID))) then
 		return false
 	end
 
@@ -140,9 +157,10 @@ function ENT:CanSellToPlayer(client, uniqueID)
 end
 
 function ENT:CanBuyFromPlayer(client, uniqueID)
-	local data = self.items[uniqueID]
+	local data = self.items and self.items[uniqueID]
+	local character = client:GetCharacter()
 
-	if (!data or !client:GetCharacter() or !ix.Item.stored[uniqueID]) then
+	if (!data or !character or !ix.Item.stored[uniqueID]) then
 		return false
 	end
 
@@ -215,15 +233,17 @@ if (SERVER) then
 		if (self.password == "") then
 			return
 		end
-		if (password and password == self.password) then
-			self.Sessions[client:GetCharacter():GetID()] = true
+		local character = client:GetCharacter()
+
+		if (password and password == self.password and character) then
+			self.Sessions[character:GetID()] = true
 		end
 	end
 	
 	function ENT:Use(activator)
 		local character = activator:GetCharacter()
 
-		if (!self:CanAccess(activator) or hook.Run("CanPlayerUseVendor", activator) == false) then
+		if (!character or !self:CanAccess(activator) or hook.Run("CanPlayerUseVendor", activator) == false) then
 			if (self.messages[VENDOR_NOTRADE]) then
 				activator:ChatPrint(self:GetDisplayName()..": "..self.messages[VENDOR_NOTRADE])
 			else

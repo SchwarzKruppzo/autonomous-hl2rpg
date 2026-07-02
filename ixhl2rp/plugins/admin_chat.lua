@@ -51,7 +51,11 @@ else
 	}
 
 	net.Receive("ixOpenURL", function(len)
-	    gui.OpenURL(urls[net.ReadUInt(3)])
+		local url = urls[net.ReadUInt(3)]
+
+		if url then
+			gui.OpenURL(url)
+		end
 	end)
 end
 
@@ -59,6 +63,18 @@ CAMI.RegisterPrivilege({
 	Name = "Helix - Admin Chat",
 	MinAccess = "admin"
 })
+
+local function GetPlayerIconTexture(speaker)
+	if serverguard and serverguard.ranks and serverguard.player then
+		local rank = serverguard.ranks:GetRank(serverguard.player:GetRank(speaker))
+
+		if rank and rank.texture then
+			return rank.texture
+		end
+	end
+
+	return "icon16/user.png"
+end
 
 ix.chat.Register("adminchat", {
 	format = "whocares",
@@ -73,7 +89,7 @@ ix.chat.Register("adminchat", {
 		return false
 	end,
 	OnCanSay = function(self, speaker, text)
-		if (CAMI.PlayerHasAccess(speaker, "Helix - Admin Chat", nil)) then
+		if (!CAMI.PlayerHasAccess(speaker, "Helix - Admin Chat", nil)) then
 			speaker:Notify(L("adminchat.notAdmin"))
 
 			return false
@@ -82,7 +98,7 @@ ix.chat.Register("adminchat", {
 		return true
 	end,
 	OnChatAdd = function(self, speaker, text)
-		local icon = serverguard.ranks:GetRank(serverguard.player:GetRank(speaker)).texture or "icon16/user.png"
+		local icon = GetPlayerIconTexture(speaker)
 
 		icon = Material(hook.Run("GetPlayerIcon", speaker) or icon)
 

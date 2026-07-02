@@ -285,7 +285,7 @@ end
 function PANEL:SetItemMulti(ids)
 	local item_data = ix.Item.instances[ids[1]]
 
-	if item_data and !item_data.stackable then return end
+	if !item_data or !item_data.stackable then return end
 
 	self.item_data = item_data
 	self.item_count = #ids

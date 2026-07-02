@@ -18,6 +18,10 @@ end
 function PLUGIN:HealTick(client, rate)
 	local character = client:GetCharacter()
 
+	if !character then
+		return
+	end
+
 	local HP = (75 * rate * 5 / 3600)
 
 	character.healingHP = character.healingHP or 0
@@ -105,6 +109,11 @@ end
 
 function PLUGIN:CharacterPreSave(character)
 	local client = character:GetPlayer()
+
+	if !IsValid(client) then
+		return
+	end
+
 	local uniqueID = "ixHeal" .. client:SteamID64()
 
 	if timer.Exists(uniqueID) then

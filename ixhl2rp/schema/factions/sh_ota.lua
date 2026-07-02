@@ -1,4 +1,5 @@
 FACTION.name = "faction.ota"
+FACTION.description = "faction.ota.desc"
 FACTION.isDefault = false
 FACTION.color = Color(150, 50, 50, 255)
 FACTION.scoreboardClass = "scOTA"

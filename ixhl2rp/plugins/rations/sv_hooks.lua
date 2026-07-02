@@ -171,6 +171,11 @@ net.Receive("crate.take", function(len, client)
 
 	local angle = net.ReadAngle()
 
+	if !IsValid(crate) then
+		client.crateTake = nil
+		return
+	end
+
 	local trace = client:GetEyeTraceNoCursor()
 	local mins, maxs = crate:GetModelBounds() 
 	local data = {}

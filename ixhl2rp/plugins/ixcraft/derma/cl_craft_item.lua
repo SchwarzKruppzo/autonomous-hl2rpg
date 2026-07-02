@@ -49,7 +49,7 @@ function PANEL:Init()
 
 	local character = LocalPlayer():GetCharacter()
 
-	if !self.recipe.skill then
+	if !self.recipe.skill or !character then
 		return
 	end
 	
@@ -86,6 +86,11 @@ local skill_scale_colors = {
 
 function PANEL:GetSkillScale(skill, level)
 	local character = LocalPlayer():GetCharacter()
+
+	if !character then
+		return 0, skill_scale_colors[6]
+	end
+
 	local currentLevel = character:GetSkillModified(skill)
 	local int = math.Remap(level, currentLevel - 4, currentLevel, 0, 1)
 	
@@ -125,7 +130,9 @@ function PANEL:SetupCraft()
 				surface.SetDrawColor(96, 60, 60)
 				surface.DrawRect(1, 1, w - 1, h - 1)
 
-				_.mdl:PaintManual()
+				if IsValid(_.mdl) then
+					_.mdl:PaintManual()
+				end
 
 				surface.SetDrawColor(0, 0, 0, 64)
 				surface.DrawRect(1, 1, w - 1, h - 1)
@@ -261,25 +268,30 @@ function PANEL:SetupCraft()
 	parent.components:Clear()
 
 	local client = LocalPlayer()
-	for k, v in pairs(self.recipe.isBreakdown and self.recipe.results or self.recipe.requirements) do
-		local stored = ix.Item:Get(k)
-		local v = istable(v) and (v[1] .. " - " .. v[2]) or v
+	for uniqueID, amount in pairs(self.recipe.isBreakdown and self.recipe.results or self.recipe.requirements) do
+		local stored = ix.Item:Get(uniqueID)
+		local amountText = istable(amount) and (amount[1] .. " - " .. amount[2]) or tostring(amount)
+		local neededAmount = istable(amount) and (tonumber(amount[1]) or 0) or (tonumber(amount) or 0)
 
 		parent.componentsTitle:SetVisible(true)
 
 		local itemIcon = parent.components:Add("craft.preview")
-		itemIcon:Rebuild(k, 64)
+		itemIcon:Rebuild(uniqueID, 64)
 		if !self.recipe.isBreakdown then
-			if stored.stackable_legacy then
+			if stored and stored.stackable_legacy then
 				itemIcon.Think = function(_, w, h)
 					_.hasItem = false
 
+					local inventory = client:GetInventory("main")
 					local count = 0
-					for k, v in ipairs(client:GetInventory('main'):FindItems(k)) do
-						count = count + v:GetValue()
+
+					if inventory then
+						for _, item in ipairs(inventory:FindItems(uniqueID)) do
+							count = count + item:GetValue()
+						end
 					end
 
-					if count >= v then
+					if count >= neededAmount then
 						_.hasItem = true
 					end
 				end
@@ -287,7 +299,7 @@ function PANEL:SetupCraft()
 				itemIcon.Think = function(_, w, h)
 					_.hasItem = false
 
-					if client:GetItemsCount(k, "main") >= v then
+					if client:GetItemsCount(uniqueID, "main") >= neededAmount then
 						_.hasItem = true
 					end
 				end
@@ -297,7 +309,9 @@ function PANEL:SetupCraft()
 					surface.SetDrawColor(96, 60, 60)
 					surface.DrawRect(1, 1, w - 1, h - 1)
 
-					_.mdl:PaintManual()
+					if IsValid(_.mdl) then
+						_.mdl:PaintManual()
+					end
 
 					surface.SetDrawColor(0, 0, 0, 64)
 					surface.DrawRect(1, 1, w - 1, h - 1)
@@ -311,22 +325,22 @@ function PANEL:SetupCraft()
 				end
 
 				surface.SetFont("craft.component.count")
-				local x, z = surface.GetTextSize(v)
+				local x, z = surface.GetTextSize(amountText)
 				if _.hasItem then
 					surface.SetTextColor(255, 255, 255, 255)
 				else
 					surface.SetTextColor(255, 32, 0, 255)
 				end
 				surface.SetTextPos(w - x - 2, h - z)
-				surface.DrawText(v)
+				surface.DrawText(amountText)
 			end
 		else
 			itemIcon.PaintOver = function(_, w, h)
 				surface.SetFont("craft.component.count")
-				local x, z = surface.GetTextSize(v)
+				local x, z = surface.GetTextSize(amountText)
 				surface.SetTextColor(255, 255, 255, 255)
 				surface.SetTextPos(w - x - 2, h - z)
-				surface.DrawText(v)
+				surface.DrawText(amountText)
 			end
 		end
 	end

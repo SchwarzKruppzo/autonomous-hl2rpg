@@ -119,27 +119,27 @@ function PANEL:PopulateBodygroupOptions()
 	for k, v in pairs(self.target:GetBodyGroups()) do
 		-- Disregard the model bodygroup.
 		if v.id != 0 then
-			local index = v.id
+			local bodygroupID = v.id
 
-			self.bodygroupBox[v.id] = self.bodygroups:Add("DPanel")
-			self.bodygroupBox[v.id]:Dock(TOP)
-			self.bodygroupBox[v.id]:DockMargin(20, 20, 20, 0)
-			self.bodygroupBox[v.id]:SetHeight(50)
+			self.bodygroupBox[bodygroupID] = self.bodygroups:Add("DPanel")
+			self.bodygroupBox[bodygroupID]:Dock(TOP)
+			self.bodygroupBox[bodygroupID]:DockMargin(20, 20, 20, 0)
+			self.bodygroupBox[bodygroupID]:SetHeight(50)
 
-			self.bodygroupName[v.id] = self.bodygroupBox[v.id]:Add("DLabel")
-			self.bodygroupName[v.id].index = v.id
-			self.bodygroupName[v.id]:SetText(v.name:gsub("^%l", string.upper))
-			self.bodygroupName[v.id]:SetFont("ixMediumFont")
-			self.bodygroupName[v.id]:Dock(LEFT)
-			self.bodygroupName[v.id]:DockMargin(30, 0, 0, 0)
-			self.bodygroupName[v.id]:SetWidth(200)
+			self.bodygroupName[bodygroupID] = self.bodygroupBox[bodygroupID]:Add("DLabel")
+			self.bodygroupName[bodygroupID].index = bodygroupID
+			self.bodygroupName[bodygroupID]:SetText(v.name:gsub("^%l", string.upper))
+			self.bodygroupName[bodygroupID]:SetFont("ixMediumFont")
+			self.bodygroupName[bodygroupID]:Dock(LEFT)
+			self.bodygroupName[bodygroupID]:DockMargin(30, 0, 0, 0)
+			self.bodygroupName[bodygroupID]:SetWidth(200)
 
-			self.bodygroupNext[v.id] = self.bodygroupBox[v.id]:Add("DButton")
-			self.bodygroupNext[v.id].index = v.id
-			self.bodygroupNext[v.id]:Dock(RIGHT)
-			self.bodygroupNext[v.id]:SetText(L("next"))
-			self.bodygroupNext[v.id].DoClick = function()
-				local index = v.id
+			self.bodygroupNext[bodygroupID] = self.bodygroupBox[bodygroupID]:Add("DButton")
+			self.bodygroupNext[bodygroupID].index = bodygroupID
+			self.bodygroupNext[bodygroupID]:Dock(RIGHT)
+			self.bodygroupNext[bodygroupID]:SetText(L("next"))
+			self.bodygroupNext[bodygroupID].DoClick = function()
+				local index = bodygroupID
 				if (self.model.Entity:GetBodygroupCount(index) - 1) <= self.bodygroupIndex[index].value then
 					return
 				end
@@ -149,20 +149,20 @@ function PANEL:PopulateBodygroupOptions()
 				self.model.Entity:SetBodygroup(index, self.bodygroupIndex[index].value)
 			end
 
-			self.bodygroupIndex[v.id] = self.bodygroupBox[v.id]:Add("DLabel")
-			self.bodygroupIndex[v.id].index = v.id
-			self.bodygroupIndex[v.id].value = self.target:GetBodygroup(index)
-			self.bodygroupIndex[v.id]:SetText(self.bodygroupIndex[v.id].value)
-			self.bodygroupIndex[v.id]:SetFont("ixMediumFont")
-			self.bodygroupIndex[v.id]:Dock(RIGHT)
-			self.bodygroupIndex[v.id]:SetContentAlignment(5)
+			self.bodygroupIndex[bodygroupID] = self.bodygroupBox[bodygroupID]:Add("DLabel")
+			self.bodygroupIndex[bodygroupID].index = bodygroupID
+			self.bodygroupIndex[bodygroupID].value = self.target:GetBodygroup(bodygroupID)
+			self.bodygroupIndex[bodygroupID]:SetText(self.bodygroupIndex[bodygroupID].value)
+			self.bodygroupIndex[bodygroupID]:SetFont("ixMediumFont")
+			self.bodygroupIndex[bodygroupID]:Dock(RIGHT)
+			self.bodygroupIndex[bodygroupID]:SetContentAlignment(5)
 
-			self.bodygroupPrevious[v.id] = self.bodygroupBox[v.id]:Add("DButton")
-			self.bodygroupPrevious[v.id].index = v.id
-			self.bodygroupPrevious[v.id]:Dock(RIGHT)
-			self.bodygroupPrevious[v.id]:SetText(L("previous"))
-			self.bodygroupPrevious[v.id].DoClick = function()
-				local index = v.id
+			self.bodygroupPrevious[bodygroupID] = self.bodygroupBox[bodygroupID]:Add("DButton")
+			self.bodygroupPrevious[bodygroupID].index = bodygroupID
+			self.bodygroupPrevious[bodygroupID]:Dock(RIGHT)
+			self.bodygroupPrevious[bodygroupID]:SetText(L("previous"))
+			self.bodygroupPrevious[bodygroupID].DoClick = function()
+				local index = bodygroupID
 				if 0 == self.bodygroupIndex[index].value then
 					return
 				end
@@ -172,7 +172,7 @@ function PANEL:PopulateBodygroupOptions()
 
 			end
 
-			self.model.Entity:SetBodygroup(index, self.target:GetBodygroup(index))
+			self.model.Entity:SetBodygroup(bodygroupID, self.target:GetBodygroup(bodygroupID))
 		end
 	end
 

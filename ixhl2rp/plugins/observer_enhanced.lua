@@ -251,7 +251,13 @@ if CLIENT then
 			local colorWhite = Color(255, 255, 255, 255)
 			local colorRed = Color(255, 0, 0, 255)
 			local colorHealth = self:GetValueColor(health)
-			local icon = serverguard and (serverguard.ranks:GetRank(serverguard.player:GetRank(player)).texture or "icon16/user.png") or "icon16/user.png"
+			local icon = "icon16/user.png"
+
+			if serverguard and serverguard.ranks and serverguard.player then
+				local rank = serverguard.ranks:GetRank(serverguard.player:GetRank(player))
+
+				icon = rank and rank.texture or icon
+			end
 
 			icon = Material(hook.Run("GetPlayerIcon", player) or icon)
 

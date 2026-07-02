@@ -87,9 +87,10 @@ end
 function Schema:PostPlayerLoadout(client)
 	if (client:IsCombine()) then
 		local factionTable = ix.faction.Get(client:Team())
+		local character = client:GetCharacter()
 
-		if (factionTable.OnNameChanged) then
-			factionTable:OnNameChanged(client, "", client:GetCharacter():GetName())
+		if (factionTable and character and factionTable.OnNameChanged) then
+			factionTable:OnNameChanged(client, "", character:GetName())
 		end
 	end
 end
@@ -109,7 +110,7 @@ function Schema:CharacterVarChanged(character, key, oldValue, value)
 	if (key == "name") then
 		local factionTable = ix.faction.Get(client:Team())
 
-		if (factionTable.OnNameChanged) then
+		if (factionTable and factionTable.OnNameChanged) then
 			factionTable:OnNameChanged(client, oldValue, value)
 		end
 	end
@@ -118,7 +119,7 @@ end
 function Schema:PlayerFootstep(client, position, foot, soundName, volume)
 	local factionTable = ix.faction.Get(client:Team())
 
-	if (factionTable.runSounds and client:IsRunning()) then
+	if (factionTable and factionTable.runSounds and client:IsRunning()) then
 		client:EmitSound(factionTable.runSounds[foot])
 		return true
 	end
@@ -288,8 +289,9 @@ end
 
 netstream.Hook("PlayerChatTextChanged", function(client, key)
 	if (Schema:ShouldPlayTypingBeep(client, key) and !client.bTypingBeep) then
-		local faction = ix.faction.indices[client:GetCharacter():GetFaction()]
-		local beeps = faction.typingBeeps
+		local character = client:GetCharacter()
+		local faction = character and ix.faction.indices[character:GetFaction()]
+		local beeps = faction and faction.typingBeeps
 
 		if istable(beeps) then
 			client:EmitSound(beeps[1])
@@ -301,8 +303,9 @@ end)
 
 netstream.Hook("PlayerFinishChat", function(client)
 	if (Schema:ShouldPlayTypingBeep(client, "ic") and client.bTypingBeep) then
-		local faction = ix.faction.indices[client:GetCharacter():GetFaction()]
-		local beeps = faction.typingBeeps
+		local character = client:GetCharacter()
+		local faction = character and ix.faction.indices[character:GetFaction()]
+		local beeps = faction and faction.typingBeeps
 
 		if istable(beeps) then
 			client:EmitSound(beeps[2])

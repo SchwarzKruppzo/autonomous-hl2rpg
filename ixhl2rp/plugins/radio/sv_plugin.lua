@@ -93,8 +93,8 @@ function ix.radio:ResetTransmitChannel(player)
 
 	if !channel then
 		for chnlID, v in pairs(player.globalChannels) do
-			local chnl = self:FindByID(chnl)
-			if (chnl and (!channel) or channel.defaultPriority < chnl.defaultPriority) then
+			local chnl = self:FindByID(chnlID)
+			if chnl and (!channel or channel.defaultPriority < chnl.defaultPriority) then
 				channel = chnl
 			end
 		end
@@ -130,9 +130,11 @@ function ix.radio:RemoveChannelFromPlayer(player, channelID)
 	if channel then
 		local ret = nil
 		if !channel.global then
-			ret = table.remove(player.listenChannels, channel.uniqueID)
+			ret = player.listenChannels[channel.uniqueID]
+			player.listenChannels[channel.uniqueID] = nil
 		else
-			ret = table.remove(player.globalChannels, channel.uniqueID)
+			ret = player.globalChannels[channel.uniqueID]
+			player.globalChannels[channel.uniqueID] = nil
 		end
 
 		if ret then
@@ -148,7 +150,7 @@ function ix.radio:RemoveChannelFromPlayer(player, channelID)
 end
 
 function ix.radio:RegisterSayType(sayType, range, typetext)
-	if range and isnumber(range) and typetext and isstring(typeText) then
+	if range and isnumber(range) and typetext and isstring(typetext) then
 		self.sayTypes[sayType] = {range, typetext}
 	end
 end

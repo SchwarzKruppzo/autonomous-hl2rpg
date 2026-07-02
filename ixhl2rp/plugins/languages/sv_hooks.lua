@@ -23,7 +23,7 @@ local shouts = {
 }
 
 netstream.Hook("ForceShoutAnim", function(client, speaker)
-	if client != speaker then -- cringe
+	if client != speaker or !IsValid(speaker) then -- cringe
 		return
 	end
 
@@ -78,6 +78,11 @@ netstream.Hook("lang.select", function(client, value)
 
 	local character = client:GetCharacter()
 
+	if !character then
+		client.selectingLang = nil
+		return
+	end
+
 	if !value then
 		local langs = {}
 		for k, v in pairs(ix.languages.stored) do
@@ -86,13 +91,18 @@ netstream.Hook("lang.select", function(client, value)
 			langs[#langs + 1] = v.uniqueID
 		end
 
+		if #langs == 0 then
+			client.selectingLang = nil
+			return
+		end
+
 		value = langs[math.random(1, #langs)]
 	end
 	
 	local language = ix.languages:FindByID(value)
 
 	if language then
-		local knownLanguages = character:GetLanguages()
+		local knownLanguages = character:GetLanguages() or {}
 
 		if !table.HasValue(knownLanguages, value) then
 			table.insert(knownLanguages, value)
