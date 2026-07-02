@@ -76,8 +76,6 @@ function PLUGIN:SetupHealTimer(client, entity, rate)
 			if !client:GetNetVar("forcedSequence") then
 				return
 			end
-
-			self:HealTick(client, rate)
 		end)
 	end
 end
