@@ -74,6 +74,7 @@ if SERVER then
 		self.prepareItems = nil
 		self.owner:SetNWFloat("speed_debuff", 1)
 		
+		self.items = {}
 		self.armor = {}
 		self.gasmask = nil
 
