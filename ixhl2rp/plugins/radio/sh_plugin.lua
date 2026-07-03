@@ -116,7 +116,7 @@ function PLUGIN:InitializedChatClasses()
 	-- radio eavesdrop
 	ix.chat.Register("radio_eavesdrop", {
 		color = Color(255, 255, 150),
-		format = "radioFormatEavesdrop",
+		format = "radioFormat",
 		SelectStyle = function(class, speaker, data)
 			return typeTextStyles[data.typeText]
 		end,
