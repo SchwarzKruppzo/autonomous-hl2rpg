@@ -26,12 +26,12 @@ html, body {
 }
 #log .m-line {
 	flex-shrink: 0;
+	margin: 0 0 0 0 !important;
 }
 #log .m-line.overlay-hidden {
 	opacity: 0 !important;
 	visibility: hidden;
 	max-height: 0 !important;
-	margin: 0 !important;
 	padding: 0 !important;
 	overflow: hidden;
 	line-height: 0;
@@ -45,7 +45,6 @@ html.history-open #log .m-line.overlay-hidden {
 	opacity: 1 !important;
 	visibility: visible !important;
 	max-height: none !important;
-	margin: 0 0 0px 0 !important;
 	line-height: auto !important;
 	overflow: visible !important;
 	overflow-x: auto !important;
