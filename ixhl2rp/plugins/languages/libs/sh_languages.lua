@@ -241,14 +241,14 @@ ix.command.Add("CharCheckLanguage", {
 	},
 	alias = "CharLanguages",
 	OnRun = function(self, client, target)
-		if (SERVER) then
+		if SERVER then
 			local knownLanguages = target:GetLanguages()
 			local langs = ""
 
 			for k, v in pairs(knownLanguages) do
 				local lang = ix.languages:FindByID(v)
 
-				langs = langs .. L(lang.name) .. ((k != #knownLanguages) and ", " or "")
+				langs = langs .. L(lang.name, client) .. ((k != #knownLanguages) and ", " or "")
 			end
 
 			client:ChatNotifyLocalized("lang.knowsLanguages", target:GetName(), langs)
@@ -262,17 +262,19 @@ ix.command.Add("CharSetLanguage", {
 	arguments = {ix.type.character, ix.type.text},
 	alias = "CharSetBilingual",
 	OnRun = function(self, client, character, lang)
-		if (character) then
+		if character then
 			local language = ix.languages:FindByID(lang)
-			if (language) then
+			if language then
 				local knownLanguages = character:GetLanguages()
-				if (table.HasValue(knownLanguages, language.uniqueID)) then
-					client:NotifyLocalized("lang.alreadyKnows", L(language.name))
+				local langName = L(language.name, client)
+
+				if table.HasValue(knownLanguages, language.uniqueID) then
+					client:NotifyLocalized("lang.alreadyKnows", langName)
 					return false
 				else
 					table.insert(knownLanguages, language.uniqueID)
 					character:SetLanguages(knownLanguages)
-					client:NotifyLocalized("lang.addedLanguage", character:GetName(), L(language.name))
+					client:NotifyLocalized("lang.addedLanguage", character:GetName(), langName)
 				end
 			else
 				client:NotifyLocalized("lang.doesntExist")
@@ -292,15 +294,17 @@ ix.command.Add("CharRemoveLanguage", {
 	OnRun = function(self, client, character, lang)
 		if (character) then
 			local language = ix.languages:FindByID(lang)
-			if (language) then
+			if language then
 				local knownLanguages = character:GetLanguages()
-				if (!table.HasValue(knownLanguages, language.uniqueID)) then
-					client:NotifyLocalized("lang.doesntKnow", L(language.name))
+				local langName = L(language.name, client)
+
+				if !table.HasValue(knownLanguages, language.uniqueID) then
+					client:NotifyLocalized("lang.doesntKnow", langName)
 					return false
 				else
 					table.RemoveByValue(knownLanguages, language.uniqueID)
 					character:SetLanguages(knownLanguages)
-					client:NotifyLocalized("lang.removedLanguage", L(language.name), character:GetName())
+					client:NotifyLocalized("lang.removedLanguage", langName, character:GetName())
 				end
 			else
 				client:NotifyLocalized("lang.doesntExist")
