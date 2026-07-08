@@ -218,7 +218,11 @@ if SERVER then
 			self:CreateInventory()
 
 			if self.items then
-				ix.Item:LoadToInventory(self.items, self.inventory)
+				ix.Item:LoadToInventory(self.items, self.inventory, nil, function()
+					if self.inventory then
+						self.inventory:Sync()
+					end
+				end)
 
 				self.items = nil
 			end
