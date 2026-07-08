@@ -219,11 +219,13 @@ function PANEL:AddPanel(pnl)
 end
 
 function PANEL:AddOption(strText, funcFunction)
-	local pnl = vgui.Create('simple.option.button', self)
+	local pnl = vgui.Create("simple.option.button", self)
 	pnl:SetMenu(self)
 	pnl:SetText(strText:utf8upper())
 
-	if funcFunction then pnl.DoClick = funcFunction end
+	if isfunction(funcFunction) then 
+		pnl.DoClick = funcFunction 
+	end
 
 	self:AddPanel(pnl)
 
@@ -244,11 +246,13 @@ function PANEL:AddSpacer()
 end
 
 function PANEL:AddSubMenu(strText, funcFunction)
-	local pnl = vgui.Create('simple.option.button', self)
+	local pnl = vgui.Create("simple.option.button", self)
 	local SubMenu = pnl:AddSubMenu(strText, funcFunction)
 	pnl:SetText(strText:utf8upper())
 
-	if funcFunction then pnl.DoClick = funcFunction end
+	if isfunction(funcFunction) then 
+		pnl.DoClick = funcFunction 
+	end
 
 	self:AddPanel(pnl)
 
@@ -382,12 +386,12 @@ end
 
 function PANEL:OptionSelected(option, text)
 end
-vgui.Register('simple.option', PANEL, 'DScrollPanel')
+vgui.Register("simple.option", PANEL, "DScrollPanel")
 
 function ix.SimpleMenu(parentmenu, parent)
 	if !parentmenu then CloseDermaMenus() end
 
-	local menux = vgui.Create('simple.option', parent)
+	local menux = vgui.Create("simple.option", parent)
 
 	return menux
 end

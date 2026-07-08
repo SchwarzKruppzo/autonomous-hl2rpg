@@ -125,6 +125,18 @@ do
 			local options = {}
 
 			hook.Run("GetPlayerEntityMenu", self, options)
+
+			-- should be removed in future (lack of localization)
+			for k, v in pairs(options) do
+				if !isbool(v) then continue end
+
+				options[k] = function()
+					ix.menu.NetworkChoice(self, k, true)
+
+					return false
+				end
+			end
+
 			return options
 		end
 	else
