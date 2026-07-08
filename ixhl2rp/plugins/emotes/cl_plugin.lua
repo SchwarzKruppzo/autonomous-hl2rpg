@@ -1,9 +1,9 @@
 do
 	local meta = FindMetaTable("Player")
 
-	function meta:Emote(chatType, emoteType, args)
+	function meta:Emote(chatType, emoteType, ...)
+		local args = {...}
 		chatType = string.lower(chatType)
-		args = args or {}
 
 		local class = ix.chat.classes[chatType]
 
@@ -34,5 +34,5 @@ net.Receive("ixEmote", function(len)
 	local emoteType = net.ReadString()
 	local args = net.ReadTable()
 
-	client:Emote(chatType, emoteType, args)
+	client:Emote(chatType, emoteType, unpack(args))
 end)
