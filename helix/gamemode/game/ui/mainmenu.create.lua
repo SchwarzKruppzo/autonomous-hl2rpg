@@ -1575,9 +1575,11 @@ function PANEL:CreateVisualStage(container)
 
 			if faction.genders then
 				for k, v in ipairs(gendersButtons) do
-					genders[v]:SetVisible(false)
+					local hasGender = faction.genders[k]
 
-					ix.CharacterPayload.genders[v] = false
+					v:SetVisible(hasGender)
+
+					ix.CharacterPayload.genders[k] = hasGender
 				end
 			else
 				body1:SetVisible(true)
@@ -1831,6 +1833,13 @@ function PANEL:PrepareVisualStage()
 		self:SelectGender(math.random(1, 2))
 	else
 		self:SelectGender(availableGender)
+	end
+
+	local factionID = ix.CharacterPayload:Get("faction")
+	local faction = ix.faction.indices[factionID]
+
+	if faction and faction.GetDefaultName then
+		self:SetCharName(faction:GetDefaultName(LocalPlayer()))
 	end
 
 	self:RandomizeAge()
