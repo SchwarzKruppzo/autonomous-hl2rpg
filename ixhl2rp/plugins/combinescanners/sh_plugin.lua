@@ -21,10 +21,12 @@ end
 
 function PLUGIN:SetupMove(player, mvd, cmd)
 	if (player:IsPilotScanner()) then
-		if mvd:KeyDown(IN_JUMP) then
-			local newbuttons = bit.band(mvd:GetButtons(), bit.bnot(IN_JUMP))
-			mvd:SetButtons(newbuttons)
-		end
+		mvd:SetForwardSpeed(0)
+		mvd:SetSideSpeed(0)
+		mvd:SetUpSpeed(0)
+		mvd:SetVelocity(vector_origin)
+		mvd:SetMaxSpeed(0)
+		mvd:SetMaxClientSpeed(0)
 	end
 end
 
@@ -55,7 +57,10 @@ function PLUGIN:GetActiveScanners(forceRebellion) // by default returns combine 
 end
 
 function PLUGIN:CanEnterToScanner(client, scanner, terminal)
-	if (!IsValid(scanner) or scanner:GetClass() != "ix_scanner" or client:IsRestricted() or IsValid(scanner:GetPilot()) or (isentity(terminal) && (terminal:GetClass() != "ix_scannerterminal" || client:GetPos():DistToSqr(terminal:GetPos()) > 400 * 400))) then
+	if (!IsValid(client) or !IsValid(scanner) or scanner:GetClass() != "ix_scanner"
+		or client:IsRestricted() or IsValid(scanner:GetPilot())
+		or (isentity(terminal) and (terminal:GetClass() != "ix_scannerterminal"
+			or client:GetPos():DistToSqr(terminal:GetPos()) > 400 * 400))) then
 		return false
 	end
 

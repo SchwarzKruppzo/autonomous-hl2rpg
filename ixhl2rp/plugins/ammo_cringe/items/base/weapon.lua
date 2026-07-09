@@ -223,11 +223,7 @@ function Item:OnInstanced(isCreated)
 end
 
 function Item:Equip(client, bNoSelect, bNoSound)
-	if self.hasLock then
-		if !self:GetData("locked") then
-			self:SetData("locked", client:GetCharacter():GetID())
-		end
-	end
+	local bindBiolock = self.hasLock and !self:GetData("locked")
 
 	local items = client:GetItems()
 
@@ -258,6 +254,10 @@ function Item:Equip(client, bNoSelect, bNoSound)
 	local weapon = client:Give(self.class, !self.isGrenade)
 
 	if IsValid(weapon) then
+		if bindBiolock then
+			self:SetData("locked", client:GetCharacter():GetID())
+		end
+
 		local ammoType = weapon:GetPrimaryAmmoType()
 
 		client.carryWeapons[self.weaponCategory] = weapon
@@ -306,7 +306,11 @@ function Item:Equip(client, bNoSelect, bNoSound)
 		end
 	else
 		print(Format("[Helix] Cannot equip weapon - %s does not exist!", self.class))
+
+		return false
 	end
+
+	return true
 end
 
 function Item:Unequip(user, bPlaySound, bRemoveItem)

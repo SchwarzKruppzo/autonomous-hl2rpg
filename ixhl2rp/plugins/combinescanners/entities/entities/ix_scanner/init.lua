@@ -36,7 +36,7 @@ function ENT:Eject()
 	if (IsValid(pilot)) then
 		--pilot:SetForcedAnimation(false)
 		pilot:SetNWEntity("Scanner", NULL)
-		pilot:SetViewEntity(nil)
+		pilot:SetViewEntity(pilot)
 
 		net.Start("ScannerExit")
 		net.Send(pilot);
@@ -198,10 +198,30 @@ function ENT:HandlePilotMove()
 	local still = true
 	local pilot = self:GetPilot()
 	local thirdperson = false --pilot:GetSharedVar("InThirdPerson")
+	local forward = pilot:GetAimVector()
+	local right = pilot:EyeAngles():Right()
 
 	if pilot:KeyDown(IN_FORWARD) then
 		self.accelXY = Lerp(0.1, self.accelXY, 10)
-		self.targetDir = self.targetDir + pilot:GetAimVector()
+		self.targetDir = self.targetDir + forward
+		still = false
+	end
+
+	if pilot:KeyDown(IN_BACK) then
+		self.accelXY = Lerp(0.1, self.accelXY, 10)
+		self.targetDir = self.targetDir - forward
+		still = false
+	end
+
+	if pilot:KeyDown(IN_MOVERIGHT) then
+		self.accelXY = Lerp(0.1, self.accelXY, 10)
+		self.targetDir = self.targetDir + right
+		still = false
+	end
+
+	if pilot:KeyDown(IN_MOVELEFT) then
+		self.accelXY = Lerp(0.1, self.accelXY, 10)
+		self.targetDir = self.targetDir - right
 		still = false
 	end
 
