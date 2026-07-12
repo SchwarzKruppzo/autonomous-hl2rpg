@@ -533,6 +533,10 @@ local mul_npc = {
 	["npc_antlionguardian"] = 5,
 }
 
+local MetalSounds = {
+	Sound("weapons/ric_metal-1.wav"),
+	Sound("weapons/ric_metal-2.wav"),
+}
 function PLUGIN:EntityTakeDamage(target, dmg, penetrate)
 	if IsValid(target.ixPlayer) then
 		if IsValid(target.ixHeldOwner) then
@@ -680,6 +684,18 @@ function PLUGIN:EntityTakeDamage(target, dmg, penetrate)
 		return
 	end
 
+	if hit_group == 10 then
+		target:EmitSound(MetalSounds[math.random(1, 2)], 100, 100, 1, CHAN_VOICE)
+
+		local Spark = EffectData()
+		Spark:SetOrigin(dmg:GetDamagePosition())
+		Spark:SetMagnitude(50)
+		Spark:SetNormal(-1 * (dmg:GetDamagePosition() - client:GetPos() ):GetNormal())
+		util.Effect("MetalSpark", Spark, nil, true)
+
+		return true
+	end
+
 	if inflictor:IsNPC() then
 		local part = SelectRandomPart(health)
 
@@ -692,12 +708,13 @@ function PLUGIN:EntityTakeDamage(target, dmg, penetrate)
 		end
 	end
 
+
 	client.dmgSeed = (client.dmgSeed or 0) + 1
 
 	local seed = CurTime() + client:EntIndex() + client.dmgSeed
 	math.randomseed(seed)
 
-	local isEnergy = (ammoType == 1)
+	local isEnergy = (ammoType == 1) or weapon.IsPulse
 	local isFists = weapon.IsFists
 	local isBuckshot = (ammoType == 7) or damageType == DMG_BUCKSHOT or inflictor.IsBuckshot
 	local isSlash = damageType == DMG_SLASH or inflictor.IsSlash
