@@ -1337,10 +1337,10 @@ function ix.util.Slur(phrase, slurLetters)
 			local lowerChar = char:utf8lower()
 			if lowerChar == "o" then
 				newChar = "u"
-			elseif lowerChar == "Ò" then
-				newChar = "Ò¯"
-			elseif lowerChar == "‡" then
-				newChar = "‡ı"
+			elseif lowerChar == "—Å" then
+				newChar = "—Å—à"
+			elseif lowerChar == "–∞" then
+				newChar = "–∞—Ö"
 			end
 		end
 		
@@ -1378,7 +1378,7 @@ function ix.util.Stutter(phrase, stamina_loss)
 		local first_letter = string.utf8sub(word, 1, 1)
 
 		local first_sound = string.utf8sub(word, 1, 2)
-		if string.utf8lower(first_sound) == "c" or string.utf8lower(first_sound) == "¯" or string.utf8lower(first_sound) == "ı" then
+		if string.utf8lower(first_sound) == "c" or string.utf8lower(first_sound) == "—à" or string.utf8lower(first_sound) == "—Ö" then
 			first_letter = first_sound
 		end
 
