@@ -7,9 +7,12 @@ function PLUGIN:CalcView(client, origin, angles, fieldOfView)
 		return
 	end
 
+	local viewAngles = client:EyeAngles()
+	viewAngles.y = viewAngles.y + controller:GetYawOffset()
+
 	return {
 		origin = controller:GetPos(),
-		angles = client:EyeAngles(),
+		angles = viewAngles,
 		fov = fieldOfView,
 		drawviewer = false,
 		znear = 1
