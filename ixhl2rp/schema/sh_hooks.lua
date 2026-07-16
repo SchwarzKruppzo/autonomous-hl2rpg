@@ -387,6 +387,20 @@ function Schema:OnPlayerHitGround(client)
 end
 
 function Schema:SetupMove(client, moveData, userCmd)
+	local scanner = isfunction(client.GetPilotingScanner) and client:GetPilotingScanner()
+	local manhack = client:GetNWEntity("OmniManhack")
+
+	if (IsValid(scanner) or IsValid(manhack)) then
+		moveData:SetForwardSpeed(0)
+		moveData:SetSideSpeed(0)
+		moveData:SetUpSpeed(0)
+		moveData:SetVelocity(vector_origin)
+		moveData:SetMaxSpeed(0)
+		moveData:SetMaxClientSpeed(0)
+
+		return
+	end
+
 	local value = client:GetNW2Bool("Arcade")
 	
 	if !value and (userCmd:KeyDown(IN_BACK)) then
