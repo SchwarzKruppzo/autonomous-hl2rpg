@@ -258,10 +258,22 @@ Reagents:Register("olive_oil", {
 	hunger = 0.03,
 })
 
-Reagents:Register("quasi_cola", {
+Reagents:Register("unicola", {
 	state = ix.Reagents.liquid,
-	thirst = 0.227,
-	hunger = 0.076,
+	thirst = 0.285,
+	hunger = 0.05,
+	OnConsume = function(self, client, consumed)
+		-- TO DO: add a health effect that speed up stamina regeneration
+	end,
+})
+
+Reagents:Register("unicola_milk", {
+	state = ix.Reagents.liquid,
+	thirst = 0.3,
+	hunger = 0.075,
+	OnConsume = function(self, client, consumed)
+		-- TO DO: add a health effect that speed up bruise & fractures regeneration
+	end,
 })
 
 -- Solid food base reagent

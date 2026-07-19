@@ -109,6 +109,10 @@ item.champagne 						= "Champagne"
 item.champagne.desc 				= "A large bottle with yellow liquid inside."
 item.sake_bottle 					= "Sake"
 item.sake_bottle.desc 				= "An ordinary bottle of sake, slightly dusty."
+item.unicola_classic				= "Uni-Cola Classic"
+item.unicola_classic.desc 			= "The classic variation of Uni-Cola that everyone has known since childhood. Inside the 350 ml aluminum can lies a sweet brown liquid. A light caramel flavor quickly gives way to a sweet aftertaste. The high sugar content instantly gives you energy. Uni-Cola Corporation recommends consuming the drink strictly cold to fully experience the intended flavor!"
+item.unicola_lactospark				= "Uni-Cola Lacto Spark"
+item.unicola_lactospark.desc 		= "A new drink bottled at Uni-Cola factories around the world. Inside is a sweet, milky white beverage. Its pronounced sweet taste combined with natural milk instantly refreshes. The high calcium content is beneficial for bones. Recommended by civilian doctors of the Medical Union and Uni-Cola scientists for daily consumption by factory workers — to strengthen bones and faith in a brighter tomorrow."
 
 -- Food items
 item.antlion_corpse = "Antlion Carcass"
