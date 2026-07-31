@@ -14,7 +14,7 @@ ix.util.Include("cl_plugin.lua")
 
 ix.char.RegisterVar("notes", {
     field = "notes",
-    fieldType = ix.type.string,
+    fieldType = ix.type.text,
     default = "",
     isLocal = true,
     bNoDisplay = true,

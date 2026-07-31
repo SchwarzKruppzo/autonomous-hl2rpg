@@ -4,7 +4,7 @@ PLUGIN.description = ""
 
 ix.char.RegisterVar("bookInfo", {
 	field = "books",
-	fieldType = ix.type.string,
+	fieldType = ix.type.text,
 	default = {},
 	isLocal = true,
 	Net = {

@@ -19,7 +19,7 @@ end
 
 ix.char.RegisterVar("knownTopics", {
 	field = "topics",
-	fieldType = ix.type.string,
+	fieldType = ix.type.text,
 	default = {},
 	isLocal = true,
 	Net = {
@@ -30,7 +30,7 @@ ix.char.RegisterVar("knownTopics", {
 
 ix.char.RegisterVar("dialogData", {
 	field = "dlgdata",
-	fieldType = ix.type.string,
+	fieldType = ix.type.text,
 	default = {},
 	isLocal = true,
 	Net = {
