@@ -36,7 +36,7 @@ function ItemMagazine:Init()
 
 			local time = 5
 
-			client:SetAction(L("magazineReading"), time)
+			client:SetAction("@magazineReading", time)
 
 			action(client, time, function()
 				if client:Alive() and !IsValid(client.ixRagdoll) and client:GetCharacter() == character then --and !client:IsUnconscious() then
