@@ -333,7 +333,14 @@ function GM:PlayerSay(client, text)
 		end
 	end
 
-	text = ix.chat.Send(client, chatType, message, anonymous, nil, {lang = (IsValid(client) and client:GetLanguage())})
+	local speakingLanguage = (IsValid(client) and client:GetLanguage())
+	local newLanguage = hook.Run("GetSpeakingLanguage", client)
+
+	if newLanguage then
+		speakingLanguage = newLanguage
+	end
+
+	text = ix.chat.Send(client, chatType, message, anonymous, nil, {lang = speakingLanguage})
 
 	if (isstring(text) and chatType != "ic") then
 		ix.log.Add(client, "chat", chatType and chatType:utf8upper() or "??", text)
