@@ -215,22 +215,33 @@ end
 
 -- Called when a player attempts to speak a language
 function ix.languages:PlayerCanSpeakLanguage(language, client)
-	if (client:GetMoveType() == MOVETYPE_NOCLIP and !client:InVehicle()) then return true end
+	if client:GetMoveType() == MOVETYPE_NOCLIP and !client:InVehicle() then return true end
+
+	local canSpeak = false
 	local clientFaction = client:Team()
 	if clientFaction then
-		if (ix.faction.Get(clientFaction).allLanguages) then
+		local faction = ix.faction.Get(clientFaction)
+		local factionLanguages = faction.knownLanguages
+		
+		if faction.allLanguages then
 			return true
+		end
+
+		if factionLanguages then
+			if !table.IsEmpty(factionLanguages) and table.HasValue(factionLanguages, language) then
+				canSpeak = true
+			end
 		end
 	end
 
 	local languages = client:GetCharacter():GetLanguages()
-	if (languages) then
-		if (!table.IsEmpty(languages) and table.HasValue(languages, language)) then
-			return true
+	if languages then
+		if !table.IsEmpty(languages) and table.HasValue(languages, language) then
+			canSpeak = true
 		end
 	end
 
-	return false
+	return canSpeak
 end
 
 ix.command.Add("CharCheckLanguage", {
