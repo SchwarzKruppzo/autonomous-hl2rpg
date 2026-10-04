@@ -383,6 +383,9 @@ local function ApplyDamageToPart(health, hit_group, info)
 	if !info.penetrate and value > 0 then
 		local penetration_factor = (weapon.armor and weapon.armor.penetration[item.armor.class] or 1)
 		local armor_factor = (1 - (value * penetration_factor))
+		--local armor_factor = penetration_factor / (penetration_factor + value)
+		--local armor_factor = penetration_factor / (value + 0.3)
+		--local armor_factor = (penetration_factor - value)
 		local ap_dmg = ((amount * 0.75) / item.armor.max_durability)
 		
 		local chance = math.min(math.Rand(0, 1), math.Rand(0, 1))
@@ -650,6 +653,11 @@ function PLUGIN:EntityTakeDamage(target, dmg, penetrate)
 
 	target:SetBloodColor(DONT_BLEED)
 
+	local shouldOverride = hook.Run("CustomEntityTakeDamage", target, dmg, penetrate)
+
+	if shouldOverride then
+		return true
+	end
 	
 	local character = target:GetCharacter()
 	local health = character:Health()
