@@ -1818,6 +1818,8 @@ function PANEL:SendPayload()
 end
 
 function PANEL:PrepareVisualStage()
+	local client = LocalPlayer()
+
 	self:UpdateAvailableGenders()
 
 	local genderCount = 0
@@ -1838,8 +1840,14 @@ function PANEL:PrepareVisualStage()
 	local factionID = ix.CharacterPayload:Get("faction")
 	local faction = ix.faction.indices[factionID]
 
-	if faction and faction.GetDefaultName then
-		self:SetCharName(faction:GetDefaultName(LocalPlayer()))
+	if faction then
+		if faction.GetDefaultName then
+			self:SetCharName(faction:GetDefaultName(client))
+		end
+		
+		if faction.GetDefaultDesc then
+			self:SetCharDesc(faction:GetDefaultDesc(client))
+		end
 	end
 
 	self:RandomizeAge()
