@@ -49,6 +49,10 @@ do
 				return true
 			end
 
+			if (data.isDonator and self.IsDonator) then
+				return self:IsDonator()
+			end
+
 			local ixData = self:GetData("whitelists", {})
 
 			return ixData[Schema.folder] and ixData[Schema.folder][data.uniqueID] == true or false
