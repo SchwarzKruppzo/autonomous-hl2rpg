@@ -87,7 +87,7 @@ do
 	"gaka", "galih", "gallalam", "gerr", "gog", "gram", "gu", "gunn", "gurrah", "ha", "hallam", "harra", "hen", "hi", "jah", "jurr", "kallah", "keh", "kih",
 	"kurr", "lalli", "llam", "lih", "ley", "lillmah", "lurh", "mah", "min", "nach", "nahh", "neh", "nohaa", "nuy", "raa", "ruhh", "rum", "saa", "seh", "sennah",
 	"shaa", "shuu", "surr", "taa", "tan", "tsah", "turr", "uhn", "ula", "vahh", "vech", "veh", "vin", "voo", "vouch", "vurr", "xkah", "xih", "zurr"}
-
+	language.noBook = true
 	language:Register()
 end
 
@@ -564,7 +564,6 @@ do
 	language.uniqueID = "xen"
 	language.name = "language.name.xen"
 	language.chat = "language.chat.xen"
-	language.icon = "icon16/briefcase.png"
 	language.notSelectable = true
 	language.color = Color(92, 29, 5)
 	language.gibberish = {"⊑⟒⌰⌰⍜", "⍙⊑⊬", "⏃", "⋏⍜", "⍙⊑⏃⏁", "⟟⋔⌿⍜⌇⌇⟟⏚⌰⟒", "⌿⍜⌇⌇⟟⏚⌰⟒", "☊⏃⋏'⏁", "⌿⍀⍜☌⍀⏃⋔⋔⟟⋏☌", "☊⍜⎅⟟⋏☌", "⋉⟒⏁⏃", "⌇⌿⊑⟒⍀⟟☊⏃⌰", "⌇⟒☊⏁⍜⍀",
@@ -574,7 +573,7 @@ do
 	"⌇⟒", "⍙⊑⟟⋏⟒", "⏚⍜⋔⏚", "⋏⟒☌⏃⏁⟟⎐⟒", "⏃⎎⎎⟟⍀⋔⏃⏁⟟⎐⟒", "⍜⎐⟒⍀⍙⏃⏁☊⊑", "⌇⏁⏃⋏⎅⏚⊬", "⊬⏃⋔⏃⏁⍜", "⊬⏃", "⊬⍜", "⌇⏁⍜⌿", "☌⟒⏁ ⎅⍜⍙⋏", "⏚⏃☊☍", "⍾⍙", "⎎⏃⟟⌰⎍⍀⟒", "⟒⋏⍜⎍☌⊑", "☌⏃⊬",
 	"⏃⏁⌰⟒", "⎅⟒⎐", "⎐⟒☊⏁⍜⍀", "⊑⍜⌿⌿⟒⍀", "⋔⟟⋏⟒", "⋔⟟⋏⟒⎎⟟⟒⌰⎅", "⋔⟟⌰⟟⏁⏃⍀⊬", "☊⍜⋏⌇☊⍀⟟⌿⏁", "⏁⍀⟒⌇⌿⏃⌇⌇⟒⍀", "⎍⋏⟟⏁⟒", "⎍⋏⟟⎎⊬", "⋉⏃⏁", "⟊⏃☊☍", "⍙⊑⊬ ⍙⍜⎍⌰⎅ ⊬⍜⎍ ⎅⍜ ⏁⊑⟟⌇ ⏁⍜ ⋔⟒",
 	"⏃⟟", "⎐⟟", "☊⍜⍀⟒", "⌿⍜⍙⟒⍀", "⎅⟒⌇⏁⍀⎍☊⏁⟟⍜⋏", "⍀⎍⟟⋏", "⌰⏃⌇⏁⌰⊬", "⍙⟒"}
-
+	language.noBook = true
 	language:Register()
 end
 
@@ -594,14 +593,14 @@ do
 	"⌇⟒", "⍙⊑⟟⋏⟒", "⏚⍜⋔⏚", "⋏⟒☌⏃⏁⟟⎐⟒", "⏃⎎⎎⟟⍀⋔⏃⏁⟟⎐⟒", "⍜⎐⟒⍀⍙⏃⏁☊⊑", "⌇⏁⏃⋏⎅⏚⊬", "⊬⏃⋔⏃⏁⍜", "⊬⏃", "⊬⍜", "⌇⏁⍜⌿", "☌⟒⏁ ⎅⍜⍙⋏", "⏚⏃☊☍", "⍾⍙", "⎎⏃⟟⌰⎍⍀⟒", "⟒⋏⍜⎍☌⊑", "☌⏃⊬",
 	"⏃⏁⌰⟒", "⎅⟒⎐", "⎐⟒☊⏁⍜⍀", "⊑⍜⌿⌿⟒⍀", "⋔⟟⋏⟒", "⋔⟟⋏⟒⎎⟟⟒⌰⎅", "⋔⟟⌰⟟⏁⏃⍀⊬", "☊⍜⋏⌇☊⍀⟟⌿⏁", "⏁⍀⟒⌇⌿⏃⌇⌇⟒⍀", "⎍⋏⟟⏁⟒", "⎍⋏⟟⎎⊬", "⋉⏃⏁", "⟊⏃☊☍", "⍙⊑⊬ ⍙⍜⎍⌰⎅ ⊬⍜⎍ ⎅⍜ ⏁⊑⟟⌇ ⏁⍜ ⋔⟒",
 	"⏃⟟", "⎐⟟", "☊⍜⍀⟒", "⌿⍜⍙⟒⍀", "⎅⟒⌇⏁⍀⎍☊⏁⟟⍜⋏", "⍀⎍⟟⋏", "⌰⏃⌇⏁⌰⊬", "⍙⟒"}
-
+	language.noBook = true
 	language:Register()
 end
 
 
 function PLUGIN:InitializedPlugins()
 	for _, v in pairs(ix.languages.stored) do
-		if v.uniqueID != "xen" and v.uniqueID != "imp" and v.uniqueID != "vort" then
+		if !v.noBook then
 			for i = 1, 5 do
 				local ITEM = ix.meta.Item:New("langbook_"..i..v.uniqueID)
 				ITEM:Base("skillbook")
