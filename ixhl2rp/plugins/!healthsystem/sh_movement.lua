@@ -194,6 +194,12 @@ function PLUGIN:SetupMove(ply, mv, cmd)
 	if !character then
 		return
 	end
+
+	local shouldSkip = hook.Run("ShouldSkipDefaultMovement", ply)
+
+	if shouldSkip then
+		return
+	end
 	
 	local speedx = ix.config.Get("walkSpeed")
 	local hp = character:Health()
