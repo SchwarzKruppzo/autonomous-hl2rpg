@@ -1281,20 +1281,25 @@ if SERVER then
 				net.WriteString('invalidInventory')
 			net.Send(client)
 
-			if old_inventory then old_inventory:SyncTo(client) end
-			if inventory then inventory:SyncTo(client) end
+			--if old_inventory then old_inventory:SyncTo(client) end
+			--if inventory then inventory:SyncTo(client) end
 
 			return
 		end
 
-		if !inventory:OnCheckAccess(client) or !old_inventory:OnCheckAccess(client) then
+		local hasAccessInventoryFrom = old_inventory:OnCheckAccess(client)
+		local hasAccessInventoryTo = inventory:OnCheckAccess(client)
+
+		if !hasAccessInventoryTo or !hasAccessInventoryFrom then
 			net.Start('inventory.move.reject')
 				net.WriteString('noAccess')
 			net.Send(client)
 
-			old_inventory:SyncTo(client)
+			if hasAccessInventoryFrom then
+				old_inventory:SyncTo(client)
+			end
 
-			if to_id != from_id then
+			if to_id != from_id and hasAccessInventoryTo then
 				inventory:SyncTo(client)
 			end
 
